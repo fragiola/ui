@@ -18,6 +18,7 @@ export const navItems: NavItem[] = [
     { href: "/docs/input", label: "Input" },
     { href: "/docs/choice", label: "Choice Controls" },
     { href: "/docs/select", label: "Select" },
+    { href: "/docs/combobox", label: "Combobox" },
     { href: "/docs/progress", label: "Progress" },
     { href: "/docs/slider", label: "Slider" },
     { href: "/docs/dialog", label: "Dialog" },

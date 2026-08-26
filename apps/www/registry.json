@@ -657,6 +657,27 @@
                     "target": "~/components/ui/pagination.tsx"
                 }
             ]
+        },
+        {
+            "name": "combobox",
+            "type": "registry:ui",
+            "title": "Combobox",
+            "description": "The second recombination test. This component is field + popup + menu, and it declares no new style. The input is a field control (field.row + field-control marker); the trigger and clear buttons are Clickable.Button; the content is popup.content; items are menu.selectableItem; the item indicator is menu.itemIndicator; group labels are menu.label; separators are menu.separator. If this file contains a class that does not come from a family, the recombination claim is wrong. It does not. Supports single and multiple selection (with chips).",
+            "registryDependencies": [
+                "field",
+                "popup",
+                "menu",
+                "clickable",
+                "text"
+            ],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/combobox.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/combobox.tsx"
+                }
+            ]
         }
     ]
 }
