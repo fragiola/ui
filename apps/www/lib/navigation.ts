@@ -10,6 +10,8 @@ export const navItems: NavItem[] = [
     { href: "/docs/palettes", label: "Palettes" },
     { href: "/docs/style-families", label: "Style families" },
     { href: "/docs/composition", label: "Composition" },
+    { href: "/docs/dropdown-menu", label: "Dropdown Menu" },
+    { href: "/docs/context-menu", label: "Context Menu" },
     { href: "/docs/dark-mode", label: "Dark mode" },
     { href: "/docs/rtl", label: "RTL" },
     { href: "/docs/density", label: "Density" },

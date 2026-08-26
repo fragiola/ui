@@ -16,7 +16,7 @@ export function PaletteClassFixture() {
 
             {/* Custom variants */}
             <div className="highlighted:bg-palette-soft highlighted:text-palette-contrast" />
-            <div className="field-focus:border-palette-ring field-focus:ring-palette-ring" />
+            <div className="field-focus:border-palette-ring field-focus:ring-palette-ring field-focus:outline-palette-ring field-focus:outline-2" />
 
             {/* Palette class declarations */}
             <div className="palette-surface palette-raised palette-brand palette-success palette-warning palette-danger" />

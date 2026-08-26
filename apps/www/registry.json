@@ -154,6 +154,75 @@
                     "target": "~/components/atoms/icon/index.ts"
                 }
             ]
+        },
+        {
+            "name": "popup",
+            "type": "registry:lib",
+            "title": "popup family",
+            "description": "The floating box family — one member, content. Zero variants. Carries the box (raised palette, border, radius, shadow), sizing from Base UI's positioner, open/close animations and per-side slide-in including logical inline-start/inline-end with rtl counterparts. Shared by dropdown-menu, context-menu, select and combobox.",
+            "registryDependencies": ["theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/popup.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/popup.ts"
+                }
+            ]
+        },
+        {
+            "name": "menu",
+            "type": "registry:lib",
+            "title": "menu family + parts factory",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator. Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select and combobox.",
+            "registryDependencies": ["theme", "cn", "popup"],
+            "dependencies": [
+                "tailwind-variants",
+                "@base-ui/react",
+                "lucide-react"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/menu.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/menu.ts"
+                },
+                {
+                    "path": "registry/families/menu/parts.tsx",
+                    "type": "registry:lib",
+                    "target": "~/components/families/menu/parts.tsx"
+                }
+            ]
+        },
+        {
+            "name": "dropdown-menu",
+            "type": "registry:ui",
+            "title": "Dropdown Menu",
+            "description": "A menu of actions triggered by a button. Declares only Root, Trigger, Content and SubContent with its own positioning defaults — everything else comes from the menu parts factory. No tone/variant/destructive prop; tone arrives as a palette class.",
+            "registryDependencies": ["menu", "popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/dropdown-menu.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/dropdown-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "context-menu",
+            "type": "registry:ui",
+            "title": "Context Menu",
+            "description": "A menu of actions triggered by right-click. Declares only Root, Trigger (with select-none — behavioural, not visual), Content and SubContent. Installing after dropdown-menu writes exactly one file — the shared families are already on disk.",
+            "registryDependencies": ["menu", "popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/context-menu.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/context-menu.tsx"
+                }
+            ]
         }
     ]
 }
