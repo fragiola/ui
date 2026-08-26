@@ -15,6 +15,7 @@ export const navItems: NavItem[] = [
     { href: "/docs/field", label: "Field" },
     { href: "/docs/input", label: "Input" },
     { href: "/docs/choice", label: "Choice Controls" },
+    { href: "/docs/select", label: "Select" },
     { href: "/docs/dark-mode", label: "Dark mode" },
     { href: "/docs/rtl", label: "RTL" },
     { href: "/docs/density", label: "Density" },
