@@ -1,0 +1,56 @@
+# Registry
+
+Fragiola publishes a registry in shadcn's format, consumed by their CLI. The
+registry is a static directory of JSON on a CDN: no server, no compute,
+edge-cacheable.
+
+## Two formats
+
+| | lives at | has `content`? | read by |
+|---|---|---|---|
+| source | `registry.json` | no — only `path` | the build |
+| served | `public/r/<name>.json` | yes, inlined | the CLI |
+
+The CLI fetches one JSON per item and has everything it needs. It resolves
+`registryDependencies` recursively, with a `visited` set that both
+deduplicates and prevents cycles.
+
+## The dependency chain
+
+```
+theme  ←  palette-*  ←  atom  ←  ui
+```
+
+Declare only direct dependencies. `dropdown-menu` will not restate `cn` or
+`tailwind-variants` because `menu` already pulls them; the graph resolves the
+rest, and restating is noise that goes stale.
+
+## `target`
+
+Items carry a `target` so files land in the right place:
+`~/components/ui/`, `~/components/families/`, `~/components/atoms/`,
+`~/lib/`, `~/hooks/`, `~/styles/palettes/`. The `~` prefix resolves to the
+project root; `@components/`, `@ui/`, `@lib/`, `@hooks/` resolve to the
+aliases in your `components.json`.
+
+## CSS install is idempotent
+
+`global.css` is touched by anything depending on `theme`, and each palette
+adds an `@import`. Installing a second component does **not** overwrite a
+`global.css` you have edited — only the missing `@import` is appended.
+
+## No versioning, therefore no update
+
+The format has no `version` field. Whoever installs keeps a frozen copy. That
+is inherent to copy-paste distribution, it is accepted deliberately, and
+pretending otherwise would be worse than saying it plainly.
+
+## Adding a new item
+
+1. Add the source file under `registry/` at the right path.
+2. Add an entry to `registry.json` with `type`, `files` (with `path` and
+   `target`), `registryDependencies` (direct only), and `dependencies` (npm
+   packages).
+3. Run `pnpm registry:build` to emit `public/r/<name>.json`.
+4. The guard tests run over `registry/**` — adding a family or palette means
+   the tests are the check, not review.
