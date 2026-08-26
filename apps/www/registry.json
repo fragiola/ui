@@ -492,6 +492,51 @@
                     "target": "~/components/ui/popover.tsx"
                 }
             ]
+        },
+        {
+            "name": "disclosure",
+            "type": "registry:lib",
+            "title": "disclosure family",
+            "description": "The expand/collapse family — trigger, panel, content. Zero variants. trigger is the toggle button (group for chevron rotation, w-full, justify-between, logical padding, hover on soft, focus ring). panel is the animated container (overflow-hidden, data-starting-style/data-ending-style fade). content is the inner padded content (p-4 pt-0). Shared by accordion and collapsible.",
+            "registryDependencies": ["theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/disclosure.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/disclosure.ts"
+                }
+            ]
+        },
+        {
+            "name": "accordion",
+            "type": "registry:ui",
+            "title": "Accordion",
+            "description": "A group of expand/collapse items with coordination. Composes the disclosure family (trigger, panel, content). Declares only Root, Item and Header — the coordination points. openMultiple controls whether one or many items can be open. The trigger is a group; put a chevron inside with group-data-[panel-open]:rotate-180.",
+            "registryDependencies": ["disclosure"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/accordion.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/accordion.tsx"
+                }
+            ]
+        },
+        {
+            "name": "collapsible",
+            "type": "registry:ui",
+            "title": "Collapsible",
+            "description": "A single expand/collapse section. Composes the disclosure family (trigger, panel, content). An accordion is a group of collapsibles with coordination; a collapsible is one section on its own. Both share the same trigger, panel and content — the zero-variant rule is preserved.",
+            "registryDependencies": ["disclosure"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/collapsible.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/collapsible.tsx"
+                }
+            ]
         }
     ]
 }
