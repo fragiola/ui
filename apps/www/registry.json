@@ -612,6 +612,51 @@
                     "target": "~/components/ui/slider.tsx"
                 }
             ]
+        },
+        {
+            "name": "tabs",
+            "type": "registry:ui",
+            "title": "Tabs",
+            "description": "A strip of triggers where one is current, with an animated indicator. The indicator uses the primitive's CSS variables (--active-tab-*), not React measurement — it tracks on resize and under RTL automatically. Orientation is behaviour from the primitive. Focus ring is palette-ring; the active state is a role (bg-palette-soft), not a colour. No navigation family — tabs and navigation-menu share state normalisation (highlighted) but not enough structural style. The negative result is in the port report.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/tabs.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/tabs.tsx"
+                }
+            ]
+        },
+        {
+            "name": "navigation-menu",
+            "type": "registry:ui",
+            "title": "Navigation Menu",
+            "description": "A strip of triggers where each opens a morphing popup with a viewport that resizes between items. The popup is popup.content (the second consumer outside menus). The viewport morphs via the primitive's --popup-width/--popup-height CSS variables — no new popup member, no !important. Link renders Text.Link through render. The trigger's chevron rotates on open and sits on the inline end (ms-auto).",
+            "registryDependencies": ["popup", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/navigation-menu.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/navigation-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "pagination",
+            "type": "registry:ui",
+            "title": "Pagination",
+            "description": "A strip of links where one is the current page. Every clickable part is Clickable — Link for pages, Previous/Next as Clickable.Link with an icon. No button style in this file. The current page carries aria-current=page and is distinguished by a fill strategy (variant=outline), never by a colour. Previous/next chevrons invert under RTL via rtl:rotate-180. Ships no page-computation logic.",
+            "registryDependencies": ["clickable", "theme", "cn"],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/pagination.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/pagination.tsx"
+                }
+            ]
         }
     ]
 }
