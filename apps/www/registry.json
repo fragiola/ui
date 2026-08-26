@@ -567,6 +567,51 @@
                     "target": "~/components/ui/breadcrumb.tsx"
                 }
             ]
+        },
+        {
+            "name": "track",
+            "type": "registry:lib",
+            "title": "track family",
+            "description": "A rail with a filled portion — the two things slider and progress genuinely share. Two members (rail, fill), zero variants. Orientation is data-orientation from the primitive, not a style axis. The fill's geometry comes from the primitive's inline styles (logical properties, so RTL inverts automatically); the family carries only the visual treatment. Installing slider after progress writes exactly one file.",
+            "registryDependencies": ["theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/track.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/track.ts"
+                }
+            ]
+        },
+        {
+            "name": "progress",
+            "type": "registry:ui",
+            "title": "Progress",
+            "description": "The rail without the interaction. Determinate and indeterminate; the indeterminate animation respects prefers-reduced-motion. Fills from the inline start and inverts under RTL (logical properties from the primitive). Tone arrives as a palette class from outside (palette-warning), not a prop. Uses the track family (rail + fill).",
+            "registryDependencies": ["theme", "cn", "track", "text"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/progress.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/progress.tsx"
+                }
+            ]
+        },
+        {
+            "name": "slider",
+            "type": "registry:ui",
+            "title": "Slider",
+            "description": "A field control — the thesis test of the control/body rule for a non-text control. Carries no border, background, height, focus ring or invalid state of its own; all of that arrives from field.row. The Control carries the field-control marker so the row's outline fires on focus. The thumb's own focus ring uses palette-ring. Range sliders work with the same component. Uses the track family (rail + fill). Installing after progress writes exactly one file.",
+            "registryDependencies": ["theme", "cn", "track", "text", "field"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/slider.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/slider.tsx"
+                }
+            ]
         }
     ]
 }
