@@ -537,6 +537,36 @@
                     "target": "~/components/ui/collapsible.tsx"
                 }
             ]
+        },
+        {
+            "name": "badge",
+            "type": "registry:ui",
+            "title": "Badge",
+            "description": "A small status indicator. One axis (variant: soft / solid / outline), none of which is colour. Tone arrives as a palette class (palette-danger, palette-success, etc.) — no variant=\"destructive\", no tone prop. The palette class overrides the six roles, so bg-palette-soft becomes the danger soft tint and text-palette-contrast becomes the danger contrast.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/atoms/badge/index.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/badge/index.tsx"
+                }
+            ]
+        },
+        {
+            "name": "breadcrumb",
+            "type": "registry:ui",
+            "title": "Breadcrumb",
+            "description": "A navigation trail. Uses a semantic nav with an ordered list. The last item is the current page (aria-current), not a link. Separators are chevrons on the inline axis, RTL-aware. No variants — visual differences (separator type, truncation) are composition. Breadcrumb.Ellipsis for collapsed items.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/breadcrumb.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/breadcrumb.tsx"
+                }
+            ]
         }
     ]
 }
