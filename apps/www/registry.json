@@ -143,6 +143,21 @@
             ]
         },
         {
+            "name": "clickable",
+            "type": "registry:ui",
+            "title": "Clickable",
+            "description": "The button surface — Button, Link and ExternalLink under one namespace. Three orthogonal axes (variant: solid/ghost/outline/icon, size: sm/md, shape: auto/square), none of which is colour. Tone arrives as a palette class. Link is a plain <a>; consumers stitch a router link through render. ExternalLink is a separate export for its outbound defaults.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/atoms/clickable/index.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/clickable/index.tsx"
+                }
+            ]
+        },
+        {
             "name": "icon-size",
             "type": "registry:ui",
             "title": "iconSize table",
@@ -360,6 +375,75 @@
             ]
         },
         {
+            "name": "layer",
+            "type": "registry:lib",
+            "title": "layer family + parts factory",
+            "description": "The backdrop + panel family — backdrop, panel, header, body, footer, title, description. Zero variants. The backdrop uses bg-scrim (outside the palette contract — a scrim is not a role). title/description carry no typography (Text through render). Plus createLayerParts(P): a factory that takes a Base UI overlay namespace (Dialog or AlertDialog) and returns the styled wrappers. Shared by dialog, alert-dialog and drawer.",
+            "registryDependencies": ["theme", "cn", "text", "clickable"],
+            "dependencies": [
+                "tailwind-variants",
+                "@base-ui/react",
+                "lucide-react"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/layer.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/layer.ts"
+                },
+                {
+                    "path": "registry/families/layer/parts.tsx",
+                    "type": "registry:lib",
+                    "target": "~/components/families/layer/parts.tsx"
+                }
+            ]
+        },
+        {
+            "name": "dialog",
+            "type": "registry:ui",
+            "title": "Dialog",
+            "description": "A modal layer — a centred panel over a scrim. Consumes the layer family through createLayerParts; declares only Root, Trigger, Portal and the centring transform. Title renders Text.Heading as=\"h2\" through render; Description renders Text.Paragraph. The close affordance is Clickable.Button variant=\"icon\" shape=\"square\" size=\"sm\" with an sr-only label, positioned with logical properties.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/dialog.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/dialog.tsx"
+                }
+            ]
+        },
+        {
+            "name": "alert-dialog",
+            "type": "registry:ui",
+            "title": "Alert Dialog",
+            "description": "A modal layer that requires an explicit action to dismiss — no backdrop click, no close button. This file is the proof that layer is a family: it declares only what genuinely differs from dialog (the namespace, showClose={false}, the action/cancel pair). Installing after dialog writes exactly one file. A destructive confirmation is className=\"palette-danger\" on the action button.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/alert-dialog.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/alert-dialog.tsx"
+                }
+            ]
+        },
+        {
+            "name": "drawer",
+            "type": "registry:ui",
+            "title": "Drawer",
+            "description": "An edge-anchored layer with real swipe and snap-point support, built on Base UI's Drawer primitive. Consumes the layer family directly (panel, header, body, footer, title, description) but is not built from createLayerParts — it has its own Viewport, Handle and a transform-based positioning model. The inline edges invert under RTL. This is why sheet does not exist: an edge-anchored dialog and a drawer are the same component.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/drawer.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/drawer.tsx"
+                }
+            ]
+        },
+        {
             "name": "chart",
             "type": "registry:ui",
             "title": "Chart",
@@ -376,6 +460,111 @@
                     "path": "registry/ui/chart.tsx",
                     "type": "registry:ui",
                     "target": "~/components/ui/chart.tsx"
+                }
+            ]
+        },
+        {
+            "name": "tooltip",
+            "type": "registry:ui",
+            "title": "Tooltip",
+            "description": "A transient text label that appears on hover or focus. Composes popup.tooltip — a new member of the popup family, not a variant of popup.content. Inverted palette (accent as background, base as text), no border, no shadow, compact padding, fade-only animation. Provider coordinates delay between siblings.",
+            "registryDependencies": ["popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/tooltip.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/tooltip.tsx"
+                }
+            ]
+        },
+        {
+            "name": "popover",
+            "type": "registry:ui",
+            "title": "Popover",
+            "description": "A floating surface positioned against a trigger. Composes popup.content (the same floating box dropdown-menu uses) and adds Title, Description and Close through render. Title renders Text.Heading as=\"h2\"; Description renders Text.Paragraph. The close affordance is Clickable.Button variant=\"icon\" positioned with logical properties.",
+            "registryDependencies": ["popup", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/popover.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/popover.tsx"
+                }
+            ]
+        },
+        {
+            "name": "disclosure",
+            "type": "registry:lib",
+            "title": "disclosure family",
+            "description": "The expand/collapse family — trigger, panel, content. Zero variants. trigger is the toggle button (group for chevron rotation, w-full, justify-between, logical padding, hover on soft, focus ring). panel is the animated container (overflow-hidden, data-starting-style/data-ending-style fade). content is the inner padded content (p-4 pt-0). Shared by accordion and collapsible.",
+            "registryDependencies": ["theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/disclosure.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/disclosure.ts"
+                }
+            ]
+        },
+        {
+            "name": "accordion",
+            "type": "registry:ui",
+            "title": "Accordion",
+            "description": "A group of expand/collapse items with coordination. Composes the disclosure family (trigger, panel, content). Declares only Root, Item and Header — the coordination points. openMultiple controls whether one or many items can be open. The trigger is a group; put a chevron inside with group-data-[panel-open]:rotate-180.",
+            "registryDependencies": ["disclosure"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/accordion.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/accordion.tsx"
+                }
+            ]
+        },
+        {
+            "name": "collapsible",
+            "type": "registry:ui",
+            "title": "Collapsible",
+            "description": "A single expand/collapse section. Composes the disclosure family (trigger, panel, content). An accordion is a group of collapsibles with coordination; a collapsible is one section on its own. Both share the same trigger, panel and content — the zero-variant rule is preserved.",
+            "registryDependencies": ["disclosure"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/collapsible.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/collapsible.tsx"
+                }
+            ]
+        },
+        {
+            "name": "badge",
+            "type": "registry:ui",
+            "title": "Badge",
+            "description": "A small status indicator. One axis (variant: soft / solid / outline), none of which is colour. Tone arrives as a palette class (palette-danger, palette-success, etc.) — no variant=\"destructive\", no tone prop. The palette class overrides the six roles, so bg-palette-soft becomes the danger soft tint and text-palette-contrast becomes the danger contrast.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/atoms/badge/index.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/badge/index.tsx"
+                }
+            ]
+        },
+        {
+            "name": "breadcrumb",
+            "type": "registry:ui",
+            "title": "Breadcrumb",
+            "description": "A navigation trail. Uses a semantic nav with an ordered list. The last item is the current page (aria-current), not a link. Separators are chevrons on the inline axis, RTL-aware. No variants — visual differences (separator type, truncation) are composition. Breadcrumb.Ellipsis for collapsed items.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/breadcrumb.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/breadcrumb.tsx"
                 }
             ]
         }

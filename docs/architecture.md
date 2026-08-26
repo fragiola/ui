@@ -96,10 +96,11 @@ Components sharing a visual skeleton share a **family** — one source of style,
 consumed by all of them.
 
 ```
-popup    the floating box       dropdown, context, menubar, select, combobox, popover
-menu     the option list        dropdown, context, menubar, select, combobox, command
-field    the input control      input, textarea, select trigger
-layer    backdrop + panel       dialog, alert-dialog, sheet, drawer
+popup       the floating box       dropdown, context, select, combobox, popover, tooltip
+menu        the option list        dropdown, context, select, combobox
+field       the input control      input, textarea, select trigger
+layer       backdrop + panel       dialog, alert-dialog, drawer
+disclosure  expand/collapse        accordion, collapsible
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -240,10 +241,14 @@ consider our own CLI, not before.
 
 ## 6. What is not settled
 
-**~47 components remain unconverted.** The initial port (Epic #7) covered nine
+**~38 components remain unconverted.** The initial port (Epic #7) covered nine
 components across four style families (popup, menu, field, choice) plus the
-chart wrapper — proving the three architectural claims on a meaningful surface.
-The contract held; see `docs/port-report.md` for the full record. Known risks
+chart wrapper. Epic #16 extended the surface with overlay and disclosure:
+clickable (the button surface), layer (backdrop + panel, shared by dialog,
+alert-dialog and drawer), popup.tooltip (a second popup member), disclosure
+(expand/collapse, shared by accordion and collapsible), plus badge and
+breadcrumb. The contract held across all of it; see `docs/port-report.md`
+and `docs/port-report-epic-16.md` for the full records. Known risks
 in the remaining surface:
 
 - **Secondary text.** `muted-foreground` is shadcn's most-used token (44 occurrences)
