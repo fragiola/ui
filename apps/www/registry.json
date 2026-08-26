@@ -358,6 +358,26 @@
                     "target": "~/components/ui/select.tsx"
                 }
             ]
+        },
+        {
+            "name": "chart",
+            "type": "registry:ui",
+            "title": "Chart",
+            "description": "An ECharts wrapper that resolves the active theme's tokens and applies them to axes, series and tooltip. The chart tokens are a separate axis from the palette contract — no role describes 'the third series'. Includes useThemeTokens hook (MutationObserver on data-theme). Thin wrapper: consumer passes a full EChartsOption, wrapper only injects colours.",
+            "registryDependencies": ["theme", "cn", "get-token"],
+            "dependencies": ["echarts", "echarts-for-react"],
+            "files": [
+                {
+                    "path": "registry/hooks/use-theme-tokens.ts",
+                    "type": "registry:ui",
+                    "target": "~/hooks/use-theme-tokens.ts"
+                },
+                {
+                    "path": "registry/ui/chart.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/chart.tsx"
+                }
+            ]
         }
     ]
 }
