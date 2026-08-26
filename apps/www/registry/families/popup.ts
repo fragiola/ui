@@ -1,4 +1,4 @@
-// Family `popup` — the floating box (content).
+// Family `popup` — the floating box family.
 // Origin: .cn-dropdown-menu-content, .cn-context-menu-content,
 // .cn-popover-content, .cn-select-content, .cn-combobox-content in shadcn's
 // style-nova.css (removed from the project after conversion).
@@ -20,10 +20,26 @@
 //    !important (forbidden by the rules) and is cross-cutting decoration,
 //    not popup structure. See the port report.
 //
-// Zero variants: popup.content is tv({ base }) with no variants. p-2 and
-// min-w-36 are always applied.
+// Zero variants: each member is tv({ base }) with no variants. p-2 and
+// min-w-36 are always applied on `content`; the tooltip member has its own
+// compact padding and sizing.
 //
-// Namespace object: a single `popup` export with the `content` member.
+// ─── TWO MEMBERS, NOT TWO VARIANTS ──────────────────────────────────────────
+// `content` is the menu/popover floating box: raised surface, border, radius,
+// shadow, p-2, min-w-36, zoom animation. `tooltip` is a transient text label:
+// inverted palette (accent as background, base as text), no border, no shadow,
+// compact padding, text-xs, fade-only animation. These are genuinely different
+// things — a menu list and a text label — so they are named members, not
+// variants. The zero-variant rule is preserved.
+//
+// ─── TOOLTIP COLOURS ────────────────────────────────────────────────────────
+// `bg-palette-accent text-palette-base` — the accent role (normally the
+// foreground) becomes the background, and the base role (normally the
+// background) becomes the text. This is a natural inversion that follows the
+// 6-role contract: no new role, no new palette. In a light theme the tooltip
+// is dark-on-light inverted; in a dark theme it inverts automatically.
+//
+// Namespace object: a single `popup` export with `content` and `tooltip`.
 
 import { tv } from "tailwind-variants";
 
@@ -48,4 +64,22 @@ const content = tv({
     `,
 });
 
-export const popup = { content };
+// tooltip — a transient text label. Inverted palette (accent as background,
+// base as text), no border, no shadow, compact padding, text-xs. Fade-only
+// animation (a tooltip does not zoom or slide — it appears in place).
+// `data-starting-style` / `data-ending-style` are the transition markers the
+// tooltip primitive emits; `data-open` / `data-closed` are also emitted but
+// the transition markers are more precise for a transient surface.
+const tooltip = tv({
+    base: `
+        bg-palette-accent text-palette-base
+        rounded-md
+        max-w-72 px-2 py-1 text-xs
+        data-starting-style:animate-in data-starting-style:fade-in-0
+        data-ending-style:animate-out data-ending-style:fade-out-0
+        duration-100
+        z-50
+    `,
+});
+
+export const popup = { content, tooltip };

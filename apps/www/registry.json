@@ -462,6 +462,36 @@
                     "target": "~/components/ui/chart.tsx"
                 }
             ]
+        },
+        {
+            "name": "tooltip",
+            "type": "registry:ui",
+            "title": "Tooltip",
+            "description": "A transient text label that appears on hover or focus. Composes popup.tooltip — a new member of the popup family, not a variant of popup.content. Inverted palette (accent as background, base as text), no border, no shadow, compact padding, fade-only animation. Provider coordinates delay between siblings.",
+            "registryDependencies": ["popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/tooltip.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/tooltip.tsx"
+                }
+            ]
+        },
+        {
+            "name": "popover",
+            "type": "registry:ui",
+            "title": "Popover",
+            "description": "A floating surface positioned against a trigger. Composes popup.content (the same floating box dropdown-menu uses) and adds Title, Description and Close through render. Title renders Text.Heading as=\"h2\"; Description renders Text.Paragraph. The close affordance is Clickable.Button variant=\"icon\" positioned with logical properties.",
+            "registryDependencies": ["popup", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/popover.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/popover.tsx"
+                }
+            ]
         }
     ]
 }

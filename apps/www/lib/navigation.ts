@@ -21,6 +21,8 @@ export const navItems: NavItem[] = [
     { href: "/docs/dialog", label: "Dialog" },
     { href: "/docs/alert-dialog", label: "Alert Dialog" },
     { href: "/docs/drawer", label: "Drawer" },
+    { href: "/docs/tooltip", label: "Tooltip" },
+    { href: "/docs/popover", label: "Popover" },
     { href: "/docs/chart", label: "Chart" },
     { href: "/docs/dark-mode", label: "Dark mode" },
     { href: "/docs/rtl", label: "RTL" },
