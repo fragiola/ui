@@ -1,0 +1,11 @@
+@import "../registry/styles/global.css";
+@import "../registry/styles/palettes/surface.css";
+@import "../registry/styles/palettes/raised.css";
+@import "../registry/styles/palettes/brand.css";
+@import "../registry/styles/palettes/success.css";
+@import "../registry/styles/palettes/warning.css";
+@import "../registry/styles/palettes/danger.css";
+
+@source "../registry/**/*.{ts,tsx}";
+@source "../content/**/*.{md,mdx}";
+@source "../components/**/*.{ts,tsx}";

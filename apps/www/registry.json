@@ -1,0 +1,159 @@
+{
+    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+    "name": "fragiola",
+    "homepage": "https://fragiola.com",
+    "items": [
+        {
+            "name": "theme",
+            "type": "registry:theme",
+            "title": "Fragiola theme",
+            "description": "The global stylesheet: @theme inline with the six palette roles, the highlighted and field-focus custom variants, chart token axes, density, radius and --height-control. The chart categorical derivation block lives here (theme machinery, not a palette).",
+            "files": [
+                {
+                    "path": "registry/styles/global.css",
+                    "type": "registry:theme",
+                    "target": "~/styles/global.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface",
+            "type": "registry:file",
+            "title": "Surface palette",
+            "description": "The neutral floor palette. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-raised",
+            "type": "registry:file",
+            "title": "Raised palette",
+            "description": "Elevated surface (card, popover, dialog). Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/raised.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/raised.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-brand",
+            "type": "registry:file",
+            "title": "Brand palette",
+            "description": "The project accent colour. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/brand.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/brand.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-success",
+            "type": "registry:file",
+            "title": "Success palette",
+            "description": "Confirmation, positive state. Hue ~150. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/success.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/success.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-warning",
+            "type": "registry:file",
+            "title": "Warning palette",
+            "description": "Caution, attention. Hue ~65. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/warning.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/warning.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-danger",
+            "type": "registry:file",
+            "title": "Danger palette",
+            "description": "Error, destructive action. Hue ~25. Applied automatically by [data-invalid]. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/danger.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/danger.css"
+                }
+            ]
+        },
+        {
+            "name": "cn",
+            "type": "registry:lib",
+            "title": "cn helper",
+            "description": "clsx + extendTailwindMerge with a palette class group so cn(\"palette-brand\", \"palette-danger\") resolves to one.",
+            "dependencies": ["clsx", "tailwind-merge"],
+            "files": [
+                {
+                    "path": "registry/lib/cn.ts",
+                    "type": "registry:lib",
+                    "target": "~/lib/cn.ts"
+                }
+            ]
+        },
+        {
+            "name": "get-token",
+            "type": "registry:lib",
+            "title": "getToken helper",
+            "description": "Reads a CSS custom property from the document, with px/rem formatting and a fallback.",
+            "files": [
+                {
+                    "path": "registry/lib/get-token/index.ts",
+                    "type": "registry:lib",
+                    "target": "~/lib/get-token/index.ts"
+                }
+            ]
+        },
+        {
+            "name": "text",
+            "type": "registry:ui",
+            "title": "Text atom",
+            "description": "Heading, Paragraph, Link, Small, Label, Error, Strong, Highlight, Clickable. No react-twc, no router coupling. Text.Link is a plain <a>; consumers wire Next's or TanStack's Link through render.",
+            "registryDependencies": ["cn"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/atoms/text/index.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/text/index.tsx"
+                }
+            ]
+        },
+        {
+            "name": "icon-size",
+            "type": "registry:ui",
+            "title": "iconSize table",
+            "description": "Icon sizes by context as Tailwind classes. The documented escape from 'which size does an icon use here'.",
+            "files": [
+                {
+                    "path": "registry/atoms/icon/index.ts",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/icon/index.ts"
+                }
+            ]
+        }
+    ]
+}

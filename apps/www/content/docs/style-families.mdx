@@ -1,0 +1,43 @@
+# Style families
+
+Components sharing a visual skeleton share a **family** — one source of
+style, consumed by all of them.
+
+```
+popup    the floating box       dropdown, context, menubar, select, combobox, popover
+menu     the option list        dropdown, context, menubar, select, combobox, command
+field    the input control      input, textarea, select trigger
+layer    backdrop + panel       dialog, alert-dialog, sheet, drawer
+```
+
+Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` +
+`menu`. A new component is a recombination.
+
+## Zero variants, variation as a named member
+
+```ts
+export const menu = {
+  item:           tv({ base: "…" }),
+  selectableItem: tv({ extend: item, base: "pe-8 ps-1.5" }),  // has an indicator
+}
+```
+
+As a CSS override, `pe-8` is silent — you cannot tell intent from drift. As a
+named member it documents itself, and drift becomes impossible by
+construction.
+
+A variant is only justified when two components need different values and
+both are right. If one side is arbitrary, unify.
+
+## Normalize state before sharing
+
+Libraries disagree on what "the active item" is — `:focus`,
+`[data-highlighted]`, `[data-selected]`. While three selectors mean one
+thing, shared style cannot be written once. Normalize in CSS, in one place:
+
+```css
+@custom-variant highlighted (&:is(:focus, [data-highlighted], [data-selected]));
+```
+
+A new library is one more selector here. This is cheaper than a React
+translation layer per component.

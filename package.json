@@ -1,22 +1,35 @@
 {
-  "name": "ui",
-  "version": "0.0.1",
-  "private": true,
-  "license": "MIT",
-  "type": "module",
-  "author": {
-    "name": "Mauro de Souza",
-    "email": "maurodesouza.me@gmail.com",
-    "url": "https://github.com/maurodesouza"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "packageManager": "pnpm@11.23.0",
-  "engines": {
-    "node": ">=24",
-    "pnpm": ">=11"
-  },
-  "scripts": {}
+    "name": "ui",
+    "version": "0.0.1",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "author": {
+        "name": "Mauro de Souza",
+        "email": "maurodesouza.me@gmail.com",
+        "url": "https://github.com/maurodesouza"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "packageManager": "pnpm@11.23.0",
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=11"
+    },
+    "scripts": {
+        "format": "biome format --write",
+        "lint": "biome lint",
+        "check": "biome check",
+        "check:fix": "biome check --write",
+        "typecheck": "pnpm -r typecheck",
+        "test": "pnpm -r test",
+        "build": "pnpm -r build",
+        "dev": "pnpm --filter www dev",
+        "registry:build": "pnpm --filter www registry:build"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.5.10"
+    }
 }
