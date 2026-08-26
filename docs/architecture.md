@@ -240,8 +240,11 @@ consider our own CLI, not before.
 
 ## 6. What is not settled
 
-**~56 components were never converted.** The contract held on the ones that were, but
-that is a tenth of the surface. Known risks:
+**~47 components remain unconverted.** The initial port (Epic #7) covered nine
+components across four style families (popup, menu, field, choice) plus the
+chart wrapper — proving the three architectural claims on a meaningful surface.
+The contract held; see `docs/port-report.md` for the full record. Known risks
+in the remaining surface:
 
 - **Secondary text.** `muted-foreground` is shadcn's most-used token (44 occurrences)
   and maps to a role Fragiola deliberately lacks. Settled value:

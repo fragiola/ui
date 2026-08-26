@@ -168,8 +168,10 @@ describe("class compilation guard", () => {
             )
                 continue;
 
-            // For utility classes, check that the escaped version exists in CSS
-            const escaped = cls.replace(/\//g, "\\/");
+            // For utility classes, check that the escaped version exists in CSS.
+            // Tailwind escapes special characters in selectors: `/` → `\/`,
+            // `:` → `\:`, etc.
+            const escaped = cls.replace(/[/:]/g, "\\$&");
             if (!compiledCss.includes(escaped)) {
                 missing.push(cls);
             }

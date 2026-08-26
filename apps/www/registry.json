@@ -154,6 +154,230 @@
                     "target": "~/components/atoms/icon/index.ts"
                 }
             ]
+        },
+        {
+            "name": "popup",
+            "type": "registry:lib",
+            "title": "popup family",
+            "description": "The floating box family — one member, content. Zero variants. Carries the box (raised palette, border, radius, shadow), sizing from Base UI's positioner, open/close animations and per-side slide-in including logical inline-start/inline-end with rtl counterparts. Shared by dropdown-menu, context-menu, select and combobox.",
+            "registryDependencies": ["theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/popup.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/popup.ts"
+                }
+            ]
+        },
+        {
+            "name": "menu",
+            "type": "registry:lib",
+            "title": "menu family + parts factory",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator. Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select and combobox.",
+            "registryDependencies": ["theme", "cn", "popup"],
+            "dependencies": [
+                "tailwind-variants",
+                "@base-ui/react",
+                "lucide-react"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/menu.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/menu.ts"
+                },
+                {
+                    "path": "registry/families/menu/parts.tsx",
+                    "type": "registry:lib",
+                    "target": "~/components/families/menu/parts.tsx"
+                }
+            ]
+        },
+        {
+            "name": "dropdown-menu",
+            "type": "registry:ui",
+            "title": "Dropdown Menu",
+            "description": "A menu of actions triggered by a button. Declares only Root, Trigger, Content and SubContent with its own positioning defaults — everything else comes from the menu parts factory. No tone/variant/destructive prop; tone arrives as a palette class.",
+            "registryDependencies": ["menu", "popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/dropdown-menu.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/dropdown-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "context-menu",
+            "type": "registry:ui",
+            "title": "Context Menu",
+            "description": "A menu of actions triggered by right-click. Declares only Root, Trigger (with select-none — behavioural, not visual), Content and SubContent. Installing after dropdown-menu writes exactly one file — the shared families are already on disk.",
+            "registryDependencies": ["menu", "popup"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/context-menu.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/context-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "field",
+            "type": "registry:ui",
+            "title": "Field",
+            "description": "The field family (root, choiceRoot, row, body, control, addon, inset, label, description, error — zero variants) plus the Field composition stitching Base UI's Field primitive to the family via render. The box is the row; the control is only its middle. Invalid state by inheritance from data-invalid. Addon sides via data-side in logical vocabulary.",
+            "registryDependencies": ["theme", "cn", "text"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/field.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/field.ts"
+                },
+                {
+                    "path": "registry/ui/field.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "input",
+            "type": "registry:ui",
+            "title": "Input / Textarea / Numeric",
+            "description": "One input component — Input, Textarea and Numeric. None carry a border, background, height, radius, focus ring, invalid state or theme; the box comes from the row. Numeric is the thesis test: a control written from scratch with no box styling. Includes Input.Template.Simple — a composition template with at most 7 props, no appearance props.",
+            "registryDependencies": ["field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/atoms/fields/index.ts",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/index.ts"
+                },
+                {
+                    "path": "registry/atoms/fields/input.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/input.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/textarea.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/textarea.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/numeric.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/numeric.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/templates/index.ts"
+                },
+                {
+                    "path": "registry/atoms/fields/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/templates/simple.tsx"
+                }
+            ]
+        },
+        {
+            "name": "choice",
+            "type": "registry:lib",
+            "title": "choice family",
+            "description": "The checkable controls family — root, control, indicator, label, description. Zero variants. Shared by Checkbox, Radio and Switch. data-checked fills with palette-base and swaps text to contrast.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/choice.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/choice.ts"
+                }
+            ]
+        },
+        {
+            "name": "checkbox",
+            "type": "registry:ui",
+            "title": "Checkbox",
+            "description": "A checkable box. Uses the choice family's root (the box) and indicator (the check icon). Base UI's Checkbox provides checked/unchecked/indeterminate states, keyboard and aria.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/checkbox.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/checkbox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "radio",
+            "type": "registry:ui",
+            "title": "Radio + RadioGroup",
+            "description": "A checkable circle. Uses the choice family's root (the circle, rounded-full) and indicator (a filled dot). RadioGroup provides the group behaviour and keyboard navigation.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/radio.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/radio.tsx"
+                }
+            ]
+        },
+        {
+            "name": "switch",
+            "type": "registry:ui",
+            "title": "Switch",
+            "description": "A toggle. Uses the choice family's root (the track, w-9 h-5 rounded-full) and control (the thumb that slides). data-checked fills the track with palette-base.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/switch.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/switch.tsx"
+                }
+            ]
+        },
+        {
+            "name": "select",
+            "type": "registry:ui",
+            "title": "Select",
+            "description": "The recombination test: field + popup + menu, declaring no new style. Trigger uses field.row + field.control; Content uses popup.content; Item uses menu.selectableItem; Indicator uses menu.itemIndicator. Installing after dropdown-menu and field writes exactly one file.",
+            "registryDependencies": ["field", "popup", "menu"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/select.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/select.tsx"
+                }
+            ]
+        },
+        {
+            "name": "chart",
+            "type": "registry:ui",
+            "title": "Chart",
+            "description": "An ECharts wrapper that resolves the active theme's tokens and applies them to axes, series and tooltip. The chart tokens are a separate axis from the palette contract — no role describes 'the third series'. Includes useThemeTokens hook (MutationObserver on data-theme). Thin wrapper: consumer passes a full EChartsOption, wrapper only injects colours.",
+            "registryDependencies": ["theme", "cn", "get-token"],
+            "dependencies": ["echarts", "echarts-for-react"],
+            "files": [
+                {
+                    "path": "registry/hooks/use-theme-tokens.ts",
+                    "type": "registry:ui",
+                    "target": "~/hooks/use-theme-tokens.ts"
+                },
+                {
+                    "path": "registry/ui/chart.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/chart.tsx"
+                }
+            ]
         }
     ]
 }
