@@ -223,6 +223,66 @@
                     "target": "~/components/ui/context-menu.tsx"
                 }
             ]
+        },
+        {
+            "name": "field",
+            "type": "registry:ui",
+            "title": "Field",
+            "description": "The field family (root, choiceRoot, row, body, control, addon, inset, label, description, error — zero variants) plus the Field composition stitching Base UI's Field primitive to the family via render. The box is the row; the control is only its middle. Invalid state by inheritance from data-invalid. Addon sides via data-side in logical vocabulary.",
+            "registryDependencies": ["theme", "cn", "text"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/field.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/field.ts"
+                },
+                {
+                    "path": "registry/ui/field.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "input",
+            "type": "registry:ui",
+            "title": "Input / Textarea / Numeric",
+            "description": "One input component — Input, Textarea and Numeric. None carry a border, background, height, radius, focus ring, invalid state or theme; the box comes from the row. Numeric is the thesis test: a control written from scratch with no box styling. Includes Input.Template.Simple — a composition template with at most 7 props, no appearance props.",
+            "registryDependencies": ["field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/atoms/fields/index.ts",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/index.ts"
+                },
+                {
+                    "path": "registry/atoms/fields/input.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/input.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/textarea.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/textarea.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/numeric.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/numeric.tsx"
+                },
+                {
+                    "path": "registry/atoms/fields/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/templates/index.ts"
+                },
+                {
+                    "path": "registry/atoms/fields/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/fields/templates/simple.tsx"
+                }
+            ]
         }
     ]
 }
