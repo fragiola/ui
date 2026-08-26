@@ -244,9 +244,14 @@ consider our own CLI, not before.
 that is a tenth of the surface. Known risks:
 
 - **Secondary text.** `muted-foreground` is shadcn's most-used token (44 occurrences)
-  and maps to a role Fragiola deliberately lacks. Measured answer:
-  `text-palette-accent/70` clears AA on every palette, where 60% fails. **Standardize
-  this before converting** — including the placeholder, which used a different value.
+  and maps to a role Fragiola deliberately lacks. Settled value:
+  `text-palette-accent/85`. The architecture initially proposed `accent/70`, but
+  OKLCH→WCAG measurement showed 70% fails AA (4.5:1) even on neutral surfaces
+  (surface/light/base = 2.85:1). At 85%, `accent` clears AA on every neutral surface
+  (surface + raised, base + soft) in both themes — worst case 4.71:1. Secondary text
+  appears only on neutral backgrounds; chromatic palettes use `contrast` for their
+  text. **Standardized** — including the placeholder, which used a different value
+  in the POC. The palette-contract guard test asserts this.
 - **`sidebar`** carries its own token set upstream; it should map to its own palette.
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.
 - **`command`** brings a third state vocabulary, which joins the `highlighted`

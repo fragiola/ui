@@ -44,3 +44,31 @@ These are deliberately tight. Do not "fix" them.
 8. **Verify by compiling, not by reading.** A class that does not exist fails
    silently: no build error, no type error, no visible crash — it simply does
    nothing. This was the dominant failure mode in the POC.
+
+## Secondary text
+
+The most-used token in the shadcn baseline (`muted-foreground`, 44 occurrences)
+maps to a role Fragiola deliberately lacks. The settled value is
+**`text-palette-accent/85`**.
+
+The architecture proposed `accent/70`, but OKLCH→WCAG measurement showed 70%
+fails AA (4.5:1) even on neutral surfaces (surface/light/base = 2.85:1). At 85%,
+`accent` clears AA on every neutral surface (surface + raised, base + soft) in
+both themes — worst case 4.71:1. Secondary text realistically appears only on
+neutral backgrounds; chromatic palettes use `contrast` for their text, not a
+muted variant. The palette-contract guard test checks the neutral surface
+palettes.
+
+Apply this value uniformly, including to placeholders.
+
+## Verification commands
+
+| command | does |
+|---|---|
+| `pnpm install` | install dependencies |
+| `pnpm check` | Biome lint + format + assist (non-mutating) |
+| `pnpm check:fix` | Biome check with auto-fix |
+| `pnpm typecheck` | `pnpm -r typecheck` (TypeScript, no emit) |
+| `pnpm test` | `pnpm -r test` (guard tests) |
+| `pnpm build` | `pnpm -r build` (production build) |
+| `pnpm registry:build` | build the registry JSON files |

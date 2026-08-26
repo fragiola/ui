@@ -51,5 +51,16 @@
             "lineEnding": "lf",
             "trailingNewline": true
         }
+    },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        },
+        "formatter": {
+            "indentStyle": "space",
+            "indentWidth": 4,
+            "lineEnding": "lf",
+            "trailingNewline": true
+        }
     }
 }
