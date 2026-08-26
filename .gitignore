@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+.turbo/
+
+# Test coverage
+coverage/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Env files (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+
+# Generated registry output (built by `pnpm registry:build`)
+apps/www/public/r/
