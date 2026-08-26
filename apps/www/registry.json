@@ -143,6 +143,21 @@
             ]
         },
         {
+            "name": "clickable",
+            "type": "registry:ui",
+            "title": "Clickable",
+            "description": "The button surface — Button, Link and ExternalLink under one namespace. Three orthogonal axes (variant: solid/ghost/outline/icon, size: sm/md, shape: auto/square), none of which is colour. Tone arrives as a palette class. Link is a plain <a>; consumers stitch a router link through render. ExternalLink is a separate export for its outbound defaults.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["@base-ui/react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/atoms/clickable/index.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/atoms/clickable/index.tsx"
+                }
+            ]
+        },
+        {
             "name": "icon-size",
             "type": "registry:ui",
             "title": "iconSize table",
