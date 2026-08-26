@@ -283,6 +283,66 @@
                     "target": "~/components/atoms/fields/templates/simple.tsx"
                 }
             ]
+        },
+        {
+            "name": "choice",
+            "type": "registry:lib",
+            "title": "choice family",
+            "description": "The checkable controls family — root, control, indicator, label, description. Zero variants. Shared by Checkbox, Radio and Switch. data-checked fills with palette-base and swaps text to contrast.",
+            "registryDependencies": ["theme", "cn"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/choice.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/choice.ts"
+                }
+            ]
+        },
+        {
+            "name": "checkbox",
+            "type": "registry:ui",
+            "title": "Checkbox",
+            "description": "A checkable box. Uses the choice family's root (the box) and indicator (the check icon). Base UI's Checkbox provides checked/unchecked/indeterminate states, keyboard and aria.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/checkbox.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/checkbox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "radio",
+            "type": "registry:ui",
+            "title": "Radio + RadioGroup",
+            "description": "A checkable circle. Uses the choice family's root (the circle, rounded-full) and indicator (a filled dot). RadioGroup provides the group behaviour and keyboard navigation.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/radio.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/radio.tsx"
+                }
+            ]
+        },
+        {
+            "name": "switch",
+            "type": "registry:ui",
+            "title": "Switch",
+            "description": "A toggle. Uses the choice family's root (the track, w-9 h-5 rounded-full) and control (the thumb that slides). data-checked fills the track with palette-base.",
+            "registryDependencies": ["choice", "field"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/switch.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/switch.tsx"
+                }
+            ]
         }
     ]
 }
