@@ -375,6 +375,75 @@
             ]
         },
         {
+            "name": "layer",
+            "type": "registry:lib",
+            "title": "layer family + parts factory",
+            "description": "The backdrop + panel family — backdrop, panel, header, body, footer, title, description. Zero variants. The backdrop uses bg-scrim (outside the palette contract — a scrim is not a role). title/description carry no typography (Text through render). Plus createLayerParts(P): a factory that takes a Base UI overlay namespace (Dialog or AlertDialog) and returns the styled wrappers. Shared by dialog, alert-dialog and drawer.",
+            "registryDependencies": ["theme", "cn", "text", "clickable"],
+            "dependencies": [
+                "tailwind-variants",
+                "@base-ui/react",
+                "lucide-react"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/layer.ts",
+                    "type": "registry:lib",
+                    "target": "~/components/families/layer.ts"
+                },
+                {
+                    "path": "registry/families/layer/parts.tsx",
+                    "type": "registry:lib",
+                    "target": "~/components/families/layer/parts.tsx"
+                }
+            ]
+        },
+        {
+            "name": "dialog",
+            "type": "registry:ui",
+            "title": "Dialog",
+            "description": "A modal layer — a centred panel over a scrim. Consumes the layer family through createLayerParts; declares only Root, Trigger, Portal and the centring transform. Title renders Text.Heading as=\"h2\" through render; Description renders Text.Paragraph. The close affordance is Clickable.Button variant=\"icon\" shape=\"square\" size=\"sm\" with an sr-only label, positioned with logical properties.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/dialog.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/dialog.tsx"
+                }
+            ]
+        },
+        {
+            "name": "alert-dialog",
+            "type": "registry:ui",
+            "title": "Alert Dialog",
+            "description": "A modal layer that requires an explicit action to dismiss — no backdrop click, no close button. This file is the proof that layer is a family: it declares only what genuinely differs from dialog (the namespace, showClose={false}, the action/cancel pair). Installing after dialog writes exactly one file. A destructive confirmation is className=\"palette-danger\" on the action button.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react"],
+            "files": [
+                {
+                    "path": "registry/ui/alert-dialog.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/alert-dialog.tsx"
+                }
+            ]
+        },
+        {
+            "name": "drawer",
+            "type": "registry:ui",
+            "title": "Drawer",
+            "description": "An edge-anchored layer with real swipe and snap-point support, built on Base UI's Drawer primitive. Consumes the layer family directly (panel, header, body, footer, title, description) but is not built from createLayerParts — it has its own Viewport, Handle and a transform-based positioning model. The inline edges invert under RTL. This is why sheet does not exist: an edge-anchored dialog and a drawer are the same component.",
+            "registryDependencies": ["layer", "text", "clickable"],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/drawer.tsx",
+                    "type": "registry:ui",
+                    "target": "~/components/ui/drawer.tsx"
+                }
+            ]
+        },
+        {
             "name": "chart",
             "type": "registry:ui",
             "title": "Chart",
