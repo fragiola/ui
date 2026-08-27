@@ -78,6 +78,24 @@ unrelated scopes. "Optional token" does not exist here.
 another exists only to fit one case, and the next case will ask for another
 exception. The tell: a role with no coherent source.
 
+### Tinted surfaces
+
+"The number of palettes is free; the number of roles is not" extends sideways as
+well as upwards. A **tinted surface** palette (`surface-blue`, `surface-purple`,
+`surface-green`, `surface-orange`, `surface-rose`) is a near-neutral base carrying
+a trace of a hue — `base` at L0.99/C0.008, `soft` at L0.95/C0.02. It exists so two
+panels on the same page can be recognisably different surfaces without either being
+"coloured". The tinted-surface tier is a direct application of the rule: the need
+is real (distinguish two surfaces), the answer is a new palette, not a seventh role.
+
+### The documentation site is an instance of the contract
+
+The docs site (built on Fumadocs) maps every Fumadocs chrome token (`--color-fd-*`)
+onto a Fragiola role in `@theme inline`. The sidebar, header, search, code blocks
+and page chrome are all painted through the six roles. This is not a detail — the
+site being an instance of the contract is the cheapest ongoing test the project
+has: an unpainted surface in the chrome is immediately visible.
+
 ### Where this reaches its limit
 
 Chart series colors are **not** palettes. No role describes "the third series", and
@@ -256,10 +274,12 @@ in the remaining surface:
   `text-palette-accent/85`. The architecture initially proposed `accent/70`, but
   OKLCH→WCAG measurement showed 70% fails AA (4.5:1) even on neutral surfaces
   (surface/light/base = 2.85:1). At 85%, `accent` clears AA on every neutral surface
-  (surface + raised, base + soft) in both themes — worst case 4.71:1. Secondary text
-  appears only on neutral backgrounds; chromatic palettes use `contrast` for their
-  text. **Standardized** — including the placeholder, which used a different value
-  in the POC. The palette-contract guard test asserts this.
+  (surface + raised, base + soft) in both themes — worst case 4.58:1
+  (surface-green/light/soft). Secondary text appears only on neutral backgrounds;
+  chromatic palettes use `contrast` for their text. **Standardized** — including
+  the placeholder, which used a different value in the POC. The contrast guard in
+  `tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
+  for every surface-tier palette, in both themes.
 - **`sidebar`** carries its own token set upstream; it should map to its own palette.
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.
 - **`command`** brings a third state vocabulary, which joins the `highlighted`
@@ -268,11 +288,14 @@ in the remaining surface:
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
 error, no type error, no crash — it simply does nothing, and type-check and lint both
-pass. Two cheap tests close most of it:
+pass. Three cheap tests close most of it:
 
 1. **Class compilation** — extract every utility used in source, compile the
    stylesheet, assert each generates CSS.
-2. **Palette contract** — assert every palette declares all six roles, and that each
-   `base`/`contrast` pair clears the contrast floor in both themes.
+2. **Palette contract** — assert every palette declares all six roles, no
+   `!important`, and that the five lists (directory, globals.css, cn.ts, compile
+   fixture, registry.json) agree.
+3. **Contrast guard** — assert `contrast`/`base` ≥ 4.5:1 for every palette in both
+   themes, and accent@85% over base and soft ≥ 4.5:1 for every surface-tier palette.
 
 Screenshot diffing covers the rest, and gets cheaper the earlier it lands.
