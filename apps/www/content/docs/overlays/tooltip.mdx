@@ -1,0 +1,27 @@
+---
+title: "Tooltip"
+description: "A transient text label that appears on hover or focus. Composes the `popup.tooltip` member — a new member of the `popup` family, not a variant of `popup.content`."
+---
+
+<InstallCommand name="tooltip" />
+
+<ComponentPreview name="tooltip-demo" />
+
+## Two members, not two variants
+
+`popup.content` is the menu/popover floating box: raised surface, border, shadow, zoom animation. `popup.tooltip` is a transient text label: inverted palette, no border, no shadow, fade-only animation. These are genuinely different things — a menu list and a text label — so they are named members, not variants. The zero-variant rule is preserved.
+
+## Inverted palette
+
+The tooltip uses `bg-palette-accent text-palette-base` — the accent role (normally the foreground) becomes the background, and the base role (normally the background) becomes the text. This is a natural inversion that follows the 6-role contract: no new role, no new palette. In a light theme the tooltip is dark with light text; in a dark theme it inverts automatically.
+
+## Provider and delay
+
+`Tooltip.Provider` wraps a group of tooltips and coordinates their delay: when you move from one trigger to another, the first tooltip closes and the second opens without waiting for the delay again. This is behaviour from the primitive, not a style concern.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Provider` / `Root` / `Trigger` | Base UI `Tooltip` |
+| `Content` | `popup.tooltip()` + Portal + Positioner |

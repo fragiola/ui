@@ -1,0 +1,22 @@
+---
+title: "Progress"
+description: "The rail without the interaction. Determinate and indeterminate; the indeterminate animation respects `prefers-reduced-motion`. Fills from the inline start and inverts under RTL. Tone arrives as a palette class from outside, not a prop."
+---
+
+<InstallCommand name="progress" />
+
+<ComponentPreview name="progress-demo" />
+
+## The track family
+
+`Progress` and `Slider` share the `track` family: `track.rail` (the rail) and `track.fill` (the filled portion). The indeterminate animation is a real animation and is disabled under `prefers-reduced-motion` via the `motion-reduce:` variant.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `Progress.Root` |
+| `Track` | `track.rail()` |
+| `Indicator` | `track.fill()` + indeterminate animation |
+| `Value` | Base UI `Progress.Value` |
+| `Label` | `Text.Label` + `field.label()` |

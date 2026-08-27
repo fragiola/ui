@@ -1,0 +1,22 @@
+---
+title: "Tabs"
+description: "A strip of triggers where one is current, with an animated indicator. The indicator uses the primitive's CSS variables (`--active-tab-*`), not React measurement — it tracks on resize and under RTL automatically."
+---
+
+<InstallCommand name="tabs" />
+
+<ComponentPreview name="tabs-demo" />
+
+## No navigation family
+
+Tabs, navigation-menu and pagination are all "a strip of triggers", but the overlap is thinner than it first looks. Tabs and navigation-menu share state normalisation (the `highlighted` custom variant) but differ in cursor, rounding and state-specific treatments. Pagination is `Clickable` in a `<nav>`. No family was created — the negative result is recorded in the port report.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `Tabs.Root` |
+| `List` | layout + `border-palette-line` |
+| `Tab` | `highlighted` + `palette-ring` + layout |
+| `Indicator` | primitive CSS variables + `bg-palette-base` |
+| `Panel` | Base UI `Tabs.Panel` |

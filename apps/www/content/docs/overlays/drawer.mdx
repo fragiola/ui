@@ -1,0 +1,33 @@
+---
+title: "Drawer"
+description: "An edge-anchored layer with real swipe and snap-point support. Built on Base UI's `Drawer` primitive, which is why this component exists and why `sheet` does not."
+---
+
+<InstallCommand name="drawer" />
+
+<ComponentPreview name="drawer-demo" />
+
+## Why no `sheet`
+
+An edge-anchored dialog and a drawer are the same component with different gesture support, and the behaviour library ships a real `Drawer` primitive that anchors to any edge. Two items would be exactly the duplication this project removes. `drawer` covers the case; do not add `sheet` back by reflex.
+
+## RTL and the inline edges
+
+The inline edges (`left` / `right`) invert under RTL: the viewport's flex direction flips so the drawer opens from the correct side. A drawer that opens from the wrong side in Arabic is the classic silent failure — it renders perfectly while pointing the wrong way.
+
+## Style families
+
+The drawer consumes the `layer` family directly (`panel`, `header`, `body`, `footer`, `title`, `description`) but is not built from `createLayerParts`: it has its own `Viewport`, `Handle` and a transform-based positioning model that the dialog does not share. A factory for one component would be padding.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `Trigger` / `Portal` | Base UI `Drawer` |
+| `Backdrop` | `layer.backdrop()` |
+| `Viewport` | drawer-specific positioning (flex justify, RTL-aware) |
+| `Popup` | `layer.panel()` + edge transform |
+| `Handle` | drawer-specific (`bg-palette-line`) |
+| `Header` / `Body` / `Footer` | `layer.header/body/footer()` |
+| `Title` / `Description` | `Text` via `render` |
+| `Close` | `Clickable.Button` via `render` |

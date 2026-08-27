@@ -2,7 +2,12 @@
 
 import type { EChartsOption } from "echarts";
 import { Chart } from "#/ui/chart";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
+// Each cell is a tinted surface palette. The chart series derive from
+// --palette-base, so the same option renders with different colour ramps
+// per cell — the most convincing demo of palette-driven charting.
 const lineOption: EChartsOption = {
     title: {
         text: "Monthly visits",
@@ -61,7 +66,7 @@ const pieOption: EChartsOption = {
     ],
 };
 
-export default function ChartDemo() {
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             <div className="h-72">
@@ -88,5 +93,13 @@ export default function ChartDemo() {
                 <Chart option={pieOption} />
             </div>
         </div>
+    );
+}
+
+export default function ChartDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

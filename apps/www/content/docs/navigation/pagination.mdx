@@ -1,0 +1,21 @@
+---
+title: "Pagination"
+description: "A strip of links where one is the current page. Every clickable part is `Clickable` — there is no button style in this file. The current page carries `aria-current=\"page\"` and is distinguished by a fill strategy, never by a colour."
+---
+
+<InstallCommand name="pagination" />
+
+<ComponentPreview name="pagination-demo" />
+
+## All Clickable, no button style
+
+`Link` is `Clickable.Link`, `Previous` and `Next` are `Clickable.Link` with an icon. The current page uses `variant="outline"` (a fill strategy), not a colour. The previous/next chevrons invert under RTL via `rtl:rotate-180` — there is no logical utility for icon direction.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | `<nav aria-label>` |
+| `Link` | `Clickable.Link` |
+| `Previous` / `Next` | `Clickable.Link` + icon |
+| `Ellipsis` | decorative `<span>` + sr-only |

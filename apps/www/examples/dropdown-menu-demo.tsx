@@ -2,8 +2,13 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { DropdownMenu } from "#/ui/dropdown-menu";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function DropdownMenuDemo() {
+// Each cell is a tinted surface palette. The trigger button and the menu
+// content read roles from the cell — the portal inherits the palette from
+// the owning cell. The destructive item carries palette-danger explicitly.
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             <DropdownMenu.Root>
@@ -116,5 +121,13 @@ export default function DropdownMenuDemo() {
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
         </div>
+    );
+}
+
+export default function DropdownMenuDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

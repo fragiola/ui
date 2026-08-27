@@ -4,8 +4,13 @@ import { Clickable } from "#/atoms/clickable";
 import { Input } from "#/atoms/fields";
 import { Field } from "#/ui/field";
 import { Popover } from "#/ui/popover";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function PopoverDemo() {
+// Each cell is a tinted surface palette. The popover content travels through
+// a portal but inherits the palette from the cell that owns the root — the
+// title, description, fields and buttons all read roles from that cell.
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             {/* A popover with a form — title, description, body, close */}
@@ -76,5 +81,13 @@ export default function PopoverDemo() {
                 </Popover.Content>
             </Popover.Root>
         </div>
+    );
+}
+
+export default function PopoverDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

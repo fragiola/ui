@@ -1,8 +1,13 @@
 "use client";
 
 import { NavigationMenu } from "#/ui/navigation-menu";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function NavigationMenuDemo() {
+// Each cell is a tinted surface palette. The navigation menu — triggers,
+// links and portal content — reads roles from the cell. Stacked vertically
+// because the menu needs horizontal space.
+function DemoContent() {
     return (
         <NavigationMenu.Root>
             <NavigationMenu.List>
@@ -86,5 +91,13 @@ export default function NavigationMenuDemo() {
                 </NavigationMenu.Positioner>
             </NavigationMenu.Portal>
         </NavigationMenu.Root>
+    );
+}
+
+export default function NavigationMenuDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES} className="flex flex-col gap-4">
+            <DemoContent />
+        </PaletteGrid>
     );
 }

@@ -1,0 +1,13 @@
+{
+    "title": "Display",
+    "pages": [
+        "badge",
+        "table",
+        "avatar",
+        "skeleton",
+        "separator",
+        "progress",
+        "slider",
+        "chart"
+    ]
+}

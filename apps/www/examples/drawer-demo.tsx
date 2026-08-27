@@ -2,8 +2,13 @@
 
 import { Clickable } from "#/atoms/clickable";
 import { Drawer } from "#/ui/drawer";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function DrawerDemo() {
+// Each cell is a tinted surface palette. The drawer shares the layer family
+// with the dialog — the panel, header, body and footer read roles from the
+// cell that owns the root, even through the portal.
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             {/* Right-anchored drawer with a handle, header, body, footer */}
@@ -112,5 +117,13 @@ export default function DrawerDemo() {
                 </Drawer.Portal>
             </Drawer.Root>
         </div>
+    );
+}
+
+export default function DrawerDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

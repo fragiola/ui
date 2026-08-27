@@ -1,8 +1,13 @@
 "use client";
 
 import { Separator } from "#/ui/separator";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function SeparatorDemo() {
+// Each cell is a tinted surface palette. The separator reads the cell's line
+// role — the same line colour as the border, derived from the palette. The
+// surrounding text uses accent/85 for secondary text.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* Horizontal */}
@@ -30,5 +35,13 @@ export default function SeparatorDemo() {
                 <span className="text-sm text-palette-accent/85">Right</span>
             </div>
         </div>
+    );
+}
+
+export default function SeparatorDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

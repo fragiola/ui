@@ -1,7 +1,12 @@
 "use client";
 
 import { Combobox } from "#/ui/combobox";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
+// Each cell is a tinted surface palette. The combobox — input, trigger, list
+// and items — reads roles from the cell. The portal content inherits the
+// palette from the cell that owns the root.
 const frameworks = [
     { value: "react", label: "React" },
     { value: "solid", label: "Solid" },
@@ -10,7 +15,7 @@ const frameworks = [
     { value: "angular", label: "Angular" },
 ];
 
-export default function ComboboxDemo() {
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* Basic — single selection */}
@@ -80,5 +85,13 @@ export default function ComboboxDemo() {
                 </Combobox.Content>
             </Combobox.Root>
         </div>
+    );
+}
+
+export default function ComboboxDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

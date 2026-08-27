@@ -1,8 +1,13 @@
 "use client";
 
 import { Tabs } from "#/ui/tabs";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function TabsDemo() {
+// Each cell is a tinted surface palette. The tabs — list, triggers and panels
+// — read roles from the cell. The active tab uses contrast, inactive tabs use
+// accent, panel text uses accent/85.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* Horizontal with indicator */}
@@ -73,5 +78,13 @@ export default function TabsDemo() {
                 </Tabs.Panel>
             </Tabs.Root>
         </div>
+    );
+}
+
+export default function TabsDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

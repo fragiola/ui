@@ -1,10 +1,13 @@
 {
-    "title": "Getting Started",
     "pages": [
-        "installation",
-        "theming",
-        "palettes",
-        "style-families",
-        "composition"
+        "getting-started",
+        "architecture",
+        "atoms",
+        "fields",
+        "menus",
+        "overlays",
+        "disclosure",
+        "navigation",
+        "display"
     ]
 }

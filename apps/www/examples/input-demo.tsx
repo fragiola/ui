@@ -3,8 +3,14 @@
 import { SearchIcon } from "lucide-react";
 import { Input } from "#/atoms/fields";
 import { Field } from "#/ui/field";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function InputDemo() {
+// Each cell is a tinted surface palette. The "one input" claim: the same
+// Input bare, in a group, and with an inset — all reading roles from the
+// cell. The field frame carries border, background and focus ring; the input
+// carries none.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-6">
             {/* The "one input" claim: same Input bare, in a group, and with an inset */}
@@ -48,5 +54,13 @@ export default function InputDemo() {
                 required
             />
         </div>
+    );
+}
+
+export default function InputDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

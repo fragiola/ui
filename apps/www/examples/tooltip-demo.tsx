@@ -2,8 +2,13 @@
 
 import { Clickable } from "#/atoms/clickable";
 import { Tooltip } from "#/ui/tooltip";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function TooltipDemo() {
+// Each cell is a tinted surface palette. The tooltip content travels through
+// a portal but inherits the palette from the cell that owns the provider.
+// The provider coordinates the delay between the two triggers in each cell.
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             {/* A single tooltip — provider coordinates delay between siblings */}
@@ -33,5 +38,13 @@ export default function TooltipDemo() {
                 </Tooltip.Root>
             </Tooltip.Provider>
         </div>
+    );
+}
+
+export default function TooltipDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

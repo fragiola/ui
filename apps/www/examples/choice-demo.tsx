@@ -4,8 +4,13 @@ import { Checkbox } from "#/ui/checkbox";
 import { Field } from "#/ui/field";
 import { Radio, RadioGroup } from "#/ui/radio";
 import { Switch } from "#/ui/switch";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function ChoiceDemo() {
+// Each cell is a tinted surface palette. The choice controls — checkbox,
+// radio, switch — read roles from the cell. The disabled radio in one cell
+// does not affect its siblings.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-6">
             {/* Checkbox with Field.ChoiceRoot */}
@@ -79,5 +84,13 @@ export default function ChoiceDemo() {
                 </div>
             </Field.ChoiceRoot>
         </div>
+    );
+}
+
+export default function ChoiceDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

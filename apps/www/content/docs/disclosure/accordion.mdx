@@ -1,0 +1,25 @@
+---
+title: "Accordion"
+description: "A group of expand/collapse items with coordination. Composes the `disclosure` family (trigger, panel, content). The only things this component declares for itself are Root, Item and Header — the coordination points."
+---
+
+<InstallCommand name="accordion" />
+
+<ComponentPreview name="accordion-demo" />
+
+## Style families
+
+`accordion` and `collapsible` render from the same `disclosure` source — `trigger`, `panel`, `content`. The only difference is coordination: an accordion coordinates multiple items (one open at a time, or many); a collapsible is a single section. That is behaviour from the primitive, not a style variant.
+
+## The chevron
+
+The trigger is a `group`. Put a chevron inside with `transition-transform duration-200 group-data-[panel-open]:rotate-180` and it rotates when the panel opens. The rotation is driven by `data-panel-open`, which the primitive emits on the trigger.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `Item` / `Header` | Base UI `Accordion` |
+| `Trigger` | `disclosure.trigger()` |
+| `Panel` | `disclosure.panel()` |
+| `Content` | `disclosure.content()` |

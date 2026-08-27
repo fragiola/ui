@@ -1,0 +1,29 @@
+---
+title: "Dark mode"
+description: "Fragiola supports light and dark themes via `data-theme` on the `<html>`"
+---
+
+Fragiola supports light and dark themes via `data-theme` on the `<html>`
+element. The palette custom properties are scoped to
+`:root[data-theme="light"]` and `:root[data-theme="dark"]`, so switching is a
+single attribute change — no reload, no flash.
+
+## No flash on first paint
+
+Theme switching is handled by `next-themes` via Fumadocs' `RootProvider`. The
+provider is configured in `app/layout.tsx` to emit both the `.dark` class
+(for Fumadocs UI's own styles) and `data-theme="light"|"dark"` (for Fragiola's
+palette files). `next-themes` injects its no-flash script before first paint,
+falling back to `prefers-color-scheme` when no stored choice exists.
+
+## What changes
+
+In dark mode, the inline axis inverts: hover lightens instead of darkening
+(`--palette-state-shift` flips from `-0.1` to `+0.1`), and `soft` becomes a
+dark saturated tone instead of a light pastel. The roles are the same; only
+the values follow the theme.
+
+## Switching at runtime
+
+Fumadocs' built-in theme toggle (in the docs header) switches between light
+and dark. The choice persists across refreshes via `next-themes`.

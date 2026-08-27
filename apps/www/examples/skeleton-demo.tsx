@@ -1,6 +1,11 @@
 import { Skeleton } from "#/ui/skeleton";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function SkeletonDemo() {
+// Each cell is a tinted surface palette. The skeleton reads the cell's soft
+// role for its shimmer background — the placeholder shape inherits the
+// palette's surface tint.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-6">
             {/* Card skeleton */}
@@ -27,5 +32,13 @@ export default function SkeletonDemo() {
                 <Skeleton className="h-8 w-full" />
             </div>
         </div>
+    );
+}
+
+export default function SkeletonDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

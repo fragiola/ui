@@ -1,0 +1,38 @@
+---
+title: "Text"
+description: "The primitive every other component points at through `render`. It is what stops a dialog title, a field label and a menu label from each growing their own typography class — seventeen title classes is exactly the duplication this project exists to remove."
+---
+
+<InstallCommand name="text" />
+
+<ComponentPreview name="text-demo" />
+
+## What `Text` is for
+
+A component part that needs a heading does not declare one — it wears `Text.Heading` through `render`, keeping the behaviour library's a11y wiring (the ids for `aria-labelledby` / `aria-describedby`) while taking Text's typography:
+
+```tsx
+<DialogPrimitive.Title render={<Text.Heading as="h2" />} {...props} />
+```
+
+`Dialog.Title`, `Field.Label` and `Menu.Label` all resolve to a `Text` member this way. If any of them grows its own typography class, the composition rule has been broken.
+
+## Secondary text
+
+The most-used token in the shadcn baseline (`muted-foreground`, 44 occurrences) maps to a role Fragiola deliberately lacks. The settled value is `text-palette-accent/85`. The architecture initially proposed `accent/70`, but OKLCH→WCAG measurement showed 70% fails AA (4.5:1) even on neutral surfaces. At 85%, `accent` clears AA on every neutral surface (surface + raised, base + soft) in both themes — worst case 4.71:1. Secondary text realistically appears only on neutral backgrounds; chromatic palettes use `contrast` for their text, not a muted variant.
+
+## `Text.Clickable` vs `Clickable.Button`
+
+`Text.Clickable` is a *textual* link rendered as a button — inline, underlined on hover, no fill. `Clickable.Button` is a filled affordance with a fill strategy, a measure and a form. They are different jobs; do not merge them.
+
+## Parts
+
+| Part | Renders |
+|---|---|
+| `Heading` | `<h1\|h2\|h3>`, `text-palette-contrast` |
+| `Paragraph` | `<p>`, `text-palette-contrast` |
+| `Link` | plain `<a>` — stitch a router link through `render` |
+| `Label` | `<label>`, block, semibold |
+| `Error` | `<span>` + `palette-danger` |
+| `Strong` / `Small` / `Highlight` | `<strong>` / `<small>` / `<span>` |
+| `Clickable` | `<button>`, inline textual link |

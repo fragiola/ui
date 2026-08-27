@@ -2,8 +2,13 @@
 
 import { Field } from "#/ui/field";
 import { Select } from "#/ui/select";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function SelectDemo() {
+// Each cell is a tinted surface palette. The select trigger, content and
+// items read roles from the cell — the portal inherits the palette from the
+// owning cell. The disabled select is scoped to its own Field.Root.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-6">
             {/* Basic select */}
@@ -61,5 +66,13 @@ export default function SelectDemo() {
                 </Select.Root>
             </Field.Root>
         </div>
+    );
+}
+
+export default function SelectDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

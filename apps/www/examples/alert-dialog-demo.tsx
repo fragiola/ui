@@ -2,8 +2,14 @@
 
 import { Clickable } from "#/atoms/clickable";
 import { AlertDialog } from "#/ui/alert-dialog";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function AlertDialogDemo() {
+// Each cell is a tinted surface palette. The dialog content reads roles from
+// the cell that owns the trigger — the palette travels through the portal.
+// The destructive button carries palette-danger explicitly, overriding the
+// cell's palette for that one element.
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             {/* A destructive confirmation — done the Fragiola way:
@@ -78,5 +84,13 @@ export default function AlertDialogDemo() {
                 </AlertDialog.Portal>
             </AlertDialog.Root>
         </div>
+    );
+}
+
+export default function AlertDialogDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

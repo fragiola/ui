@@ -1,0 +1,23 @@
+---
+title: "Alert Dialog"
+description: "A modal layer that requires an explicit action to dismiss — no backdrop click, no close button. This file is the proof that `layer` is a family: it declares only what genuinely differs from `dialog`."
+---
+
+<InstallCommand name="alert-dialog" />
+
+<ComponentPreview name="alert-dialog-demo" />
+
+## One file
+
+Installing `alert-dialog` after `dialog` writes exactly one file — this one. The `layer` family and the `createLayerParts` factory are already on disk. AlertDialog reuses Dialog's `Backdrop`, `Popup`, `Title`, `Description`, `Close` and `Portal` at runtime; the factory injects the namespace so each component inherits its own divergence if Base UI ever splits them.
+
+## What differs
+
+Only three things: the primitive namespace, the absence of a close button (`showClose={false}`), and the action/cancel pair (which is just `Clickable.Button` composed in the footer, not a new part). A destructive confirmation is `className="palette-danger"` on the action button — no `variant="destructive"`, no `tone` prop.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `Trigger` / `Portal` | Base UI `AlertDialog` |
+| `Backdrop` / `Content` / `Header` / `Body` / `Footer` / `Title` / `Description` / `Close` | `layer` via `createLayerParts` |

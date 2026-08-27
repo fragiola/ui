@@ -1,8 +1,13 @@
 "use client";
 
 import { Pagination } from "#/ui/pagination";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function PaginationDemo() {
+// Each cell is a tinted surface palette. The pagination links and the active
+// state read roles from the cell — the active link uses contrast, the rest
+// use accent.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* Basic */}
@@ -89,5 +94,13 @@ export default function PaginationDemo() {
                 </Pagination.Content>
             </Pagination.Root>
         </div>
+    );
+}
+
+export default function PaginationDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

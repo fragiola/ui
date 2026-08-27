@@ -1,0 +1,28 @@
+---
+title: "Dialog"
+description: "A modal layer — a centred panel over a scrim. Shares the `layer` family with alert-dialog and drawer; the only things this component declares for itself are `Root`, `Trigger`, `Portal` and the centring transform."
+---
+
+<InstallCommand name="dialog" />
+
+<ComponentPreview name="dialog-demo" />
+
+## Style families
+
+`dialog`, `alert-dialog` and `drawer` render from the same `layer` source — `backdrop`, `panel`, `header`, `body`, `footer`, `title`, `description`. The parts factory (`createLayerParts`) takes a Base UI namespace and returns the styled wrappers. Installing `alert-dialog` after `dialog` writes exactly one file.
+
+## Title and description point at Text
+
+`Dialog.Title` is `Text.Heading as="h2"` wearing the primitive's a11y wiring, stitched with `render`. `Dialog.Description` is `Text.Paragraph`. Neither declares its own typography — this is the rule that keeps seventeen title classes from coming back.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `Trigger` / `Portal` | Base UI `Dialog` |
+| `Backdrop` | `layer.backdrop()` (bg-scrim) |
+| `Content` | `layer.panel()` + centring transform |
+| `Header` / `Body` / `Footer` | `layer.header/body/footer()` |
+| `Title` | `Text.Heading as="h2"` via `render` |
+| `Description` | `Text.Paragraph` via `render` |
+| `Close` | `Clickable.Button` via `render` |

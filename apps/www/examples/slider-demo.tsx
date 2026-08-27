@@ -2,8 +2,14 @@
 
 import { Field } from "#/ui/field";
 import { Slider } from "#/ui/slider";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function SliderDemo() {
+// Each cell is a tinted surface palette. The composition claim: every box
+// style comes from field.row, none from the slider. The slider track, indicator
+// and thumb read roles from the cell. The invalid state is scoped to its own
+// Field.Root.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* The composition claim: every box style here comes from
@@ -129,5 +135,13 @@ export default function SliderDemo() {
                 </Slider.Root>
             </div>
         </div>
+    );
+}
+
+export default function SliderDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

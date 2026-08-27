@@ -4,10 +4,15 @@ import { Clickable } from "#/atoms/clickable";
 import { Input } from "#/atoms/fields";
 import { Dialog } from "#/ui/dialog";
 import { Field } from "#/ui/field";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
+// Each cell is a tinted surface palette. The dialog content travels through a
+// portal but inherits the palette from the cell that owns the root — the
+// header, body, footer and fields all read roles from that cell.
 const TERMS_SECTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default function DialogDemo() {
+function DemoContent() {
     return (
         <div className="flex flex-wrap gap-4">
             {/* A form inside a dialog — header, scrollable body, pinned footer */}
@@ -96,5 +101,13 @@ export default function DialogDemo() {
                 </Dialog.Portal>
             </Dialog.Root>
         </div>
+    );
+}
+
+export default function DialogDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

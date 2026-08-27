@@ -1,7 +1,12 @@
 "use client";
 
 import { Table } from "#/ui/table";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
+// Each cell is a tinted surface palette. The table — header, rows, footer —
+// reads roles from the cell. Stacked vertically because a table needs
+// horizontal space.
 const invoices = [
     {
         invoice: "INV001",
@@ -29,7 +34,7 @@ const invoices = [
     },
 ];
 
-export default function TableDemo() {
+function DemoContent() {
     return (
         <Table.Root>
             <Table.Caption>A list of recent invoices.</Table.Caption>
@@ -62,5 +67,13 @@ export default function TableDemo() {
                 </Table.Row>
             </Table.Footer>
         </Table.Root>
+    );
+}
+
+export default function TableDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES} className="flex flex-col gap-4">
+            <DemoContent />
+        </PaletteGrid>
     );
 }

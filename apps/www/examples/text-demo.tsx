@@ -1,15 +1,22 @@
 import { Text } from "#/atoms/text";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
 // Text is the target every other component points at through `render`. The
 // snippet below is the whole idea in one place: a heading that another
 // component's part wears, keeping its a11y wiring while taking Text's
 // typography. (Shown statically here; the dialog/field docs show it wired to
 // a behaviour primitive through `render`.)
+//
+// Each cell is a tinted surface palette — this is where secondary text
+// (text-palette-accent/85) lives. The heading, paragraph, label, error and
+// link all read roles from the cell, demonstrating text roles across
+// palettes.
 function WornHeading() {
     return <Text.Heading as="h2">A heading worn by another part</Text.Heading>;
 }
 
-export default function TextDemo() {
+function DemoContent() {
     return (
         <div className="flex flex-col gap-3">
             <Text.Heading as="h1">Heading level 1</Text.Heading>
@@ -46,5 +53,13 @@ export default function TextDemo() {
                 <Text.Clickable type="button">try it now</Text.Clickable>.
             </p>
         </div>
+    );
+}
+
+export default function TextDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

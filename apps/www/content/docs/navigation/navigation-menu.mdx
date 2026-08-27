@@ -1,0 +1,22 @@
+---
+title: "Navigation Menu"
+description: "A strip of triggers where each opens a morphing popup with a viewport that resizes between items. The popup is `popup.content` — the same floating box dropdown-menu and popover use. The viewport morphs via the primitive's CSS variables, not a new popup member."
+---
+
+<InstallCommand name="navigation-menu" />
+
+<ComponentPreview name="navigation-menu-demo" />
+
+## popup.content, no new member
+
+The popup is `popup.content` — the second consumer of that family outside menus (after popover). The viewport's size transition uses the primitive's `--popup-width` / `--popup-height` CSS variables; no new popup member was needed, and no `!important`.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `NavigationMenu.Root` |
+| `Trigger` | `highlighted` + `palette-ring` + layout |
+| `Popup` | `popup.content()` |
+| `Link` | `Text.Link` via render |
+| `Viewport` | primitive CSS variables + transition |

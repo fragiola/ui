@@ -72,7 +72,7 @@ export default function HomePage() {
                     <li>
                         <Link
                             className="text-palette-contrast hover:underline"
-                            href="/docs/theming"
+                            href="/docs/architecture/theming"
                         >
                             Theming — the six roles
                         </Link>
@@ -80,7 +80,7 @@ export default function HomePage() {
                     <li>
                         <Link
                             className="text-palette-contrast hover:underline"
-                            href="/docs/palettes"
+                            href="/docs/architecture/palettes"
                         >
                             Palettes — the core palettes, rendered
                         </Link>
@@ -88,7 +88,7 @@ export default function HomePage() {
                     <li>
                         <Link
                             className="text-palette-contrast hover:underline"
-                            href="/docs/installation"
+                            href="/docs/getting-started/installation"
                         >
                             Installation — adding the registry
                         </Link>

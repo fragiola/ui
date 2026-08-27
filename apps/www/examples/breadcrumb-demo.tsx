@@ -1,8 +1,13 @@
 "use client";
 import { ChevronRightIcon } from "lucide-react";
 import { Breadcrumb } from "#/ui/breadcrumb";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function BreadcrumbDemo() {
+// Each cell is a tinted surface palette. The breadcrumb links and separators
+// read roles from the cell — the current page uses contrast, links use
+// accent, the separator uses accent/60.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-6">
             {/* Basic breadcrumb */}
@@ -70,5 +75,13 @@ export default function BreadcrumbDemo() {
                 </Breadcrumb.List>
             </Breadcrumb.Root>
         </div>
+    );
+}
+
+export default function BreadcrumbDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

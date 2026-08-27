@@ -1,8 +1,12 @@
 "use client";
 
 import { Avatar } from "#/ui/avatar";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function AvatarDemo() {
+// Each cell is a tinted surface palette. The avatar fallback reads the cell's
+// palette — the ring and fallback background inherit roles from the surface.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-8">
             {/* With image */}
@@ -51,5 +55,13 @@ export default function AvatarDemo() {
                 </Avatar.Root>
             </div>
         </div>
+    );
+}
+
+export default function AvatarDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

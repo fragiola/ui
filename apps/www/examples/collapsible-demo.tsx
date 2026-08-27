@@ -2,8 +2,13 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { Collapsible } from "#/ui/collapsible";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function CollapsibleDemo() {
+// Each cell is a tinted surface palette. The collapsible shares the disclosure
+// family with the accordion — the trigger, panel and content read roles from
+// the cell.
+function DemoContent() {
     return (
         <div className="flex flex-col gap-4 w-full max-w-md">
             {/* Single collapsible — default closed */}
@@ -50,5 +55,13 @@ export default function CollapsibleDemo() {
                 </Collapsible.Panel>
             </Collapsible.Root>
         </div>
+    );
+}
+
+export default function CollapsibleDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }

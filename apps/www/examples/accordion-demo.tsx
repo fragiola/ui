@@ -2,8 +2,13 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { Accordion } from "#/ui/accordion";
+import { PaletteGrid } from "@/components/preview/palette-grid";
+import { SURFACES } from "@/lib/palette-sets";
 
-export default function AccordionDemo() {
+// Each cell is a tinted surface palette. The accordion reads roles from the
+// cell — the trigger, panel and content all inherit the palette. The disabled
+// item is scoped to its own Accordion.Item, not to the cell.
+function DemoContent() {
     return (
         <Accordion.Root>
             <Accordion.Item>
@@ -69,5 +74,13 @@ export default function AccordionDemo() {
                 </Accordion.Panel>
             </Accordion.Item>
         </Accordion.Root>
+    );
+}
+
+export default function AccordionDemo() {
+    return (
+        <PaletteGrid palettes={SURFACES}>
+            <DemoContent />
+        </PaletteGrid>
     );
 }
