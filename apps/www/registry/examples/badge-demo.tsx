@@ -15,9 +15,9 @@ export default function BadgeDemo() {
             {/* tone by palette class — no tone prop, no variant="destructive" */}
             <div className="flex flex-wrap items-center gap-3">
                 <Badge className="palette-danger">Error</Badge>
-                <Badge className="palette-success">Success</Badge>
-                <Badge className="palette-warning">Warning</Badge>
-                <Badge className="palette-brand">Brand</Badge>
+                <Badge className="palette-green">Green</Badge>
+                <Badge className="palette-orange">Orange</Badge>
+                <Badge className="palette-blue">Blue</Badge>
             </div>
 
             {/* solid variant with palette classes */}
@@ -25,11 +25,11 @@ export default function BadgeDemo() {
                 <Badge variant="solid" className="palette-danger">
                     Error
                 </Badge>
-                <Badge variant="solid" className="palette-success">
-                    Success
+                <Badge variant="solid" className="palette-green">
+                    Green
                 </Badge>
-                <Badge variant="solid" className="palette-warning">
-                    Warning
+                <Badge variant="solid" className="palette-orange">
+                    Orange
                 </Badge>
             </div>
 
@@ -38,14 +38,14 @@ export default function BadgeDemo() {
                 <Badge variant="outline" className="palette-danger">
                     Error
                 </Badge>
-                <Badge variant="outline" className="palette-success">
-                    Success
+                <Badge variant="outline" className="palette-green">
+                    Green
                 </Badge>
             </div>
 
             {/* with icon */}
             <div className="flex flex-wrap items-center gap-3">
-                <Badge className="palette-success">
+                <Badge className="palette-green">
                     <CheckIcon />
                     Verified
                 </Badge>

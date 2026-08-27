@@ -3,18 +3,22 @@
 export type PreviewPalette =
     | "surface"
     | "raised"
-    | "brand"
-    | "success"
-    | "warning"
-    | "danger";
+    | "danger"
+    | "blue"
+    | "green"
+    | "orange"
+    | "purple"
+    | "rose";
 
 const palettes: PreviewPalette[] = [
     "surface",
     "raised",
-    "brand",
-    "success",
-    "warning",
     "danger",
+    "blue",
+    "green",
+    "orange",
+    "purple",
+    "rose",
 ];
 
 type PaletteSwitcherProps = {

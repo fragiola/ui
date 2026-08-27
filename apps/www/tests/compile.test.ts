@@ -3,6 +3,8 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { readPaletteNames } from "./palette-utils";
+
 // ─── Class compilation guard ────────────────────────────────────────────────
 // Rule 8: "Verify by compiling, not by reading." A class that does not exist
 // fails silently. This test compiles the registry CSS with Tailwind and asserts
@@ -15,6 +17,7 @@ const TMP_DIR = path.join(ROOT, ".tmp-tailwind-test");
 const OUTPUT_CSS = path.join(TMP_DIR, "out.css");
 
 let compiledCss = "";
+let paletteNames: string[] = [];
 
 async function collectSourceFiles(dir: string): Promise<string[]> {
     const entries = await readdir(dir, { withFileTypes: true });
@@ -63,15 +66,15 @@ async function extractClasses(files: string[]): Promise<Set<string>> {
 beforeAll(async () => {
     await mkdir(TMP_DIR, { recursive: true });
 
-    // Use absolute paths so Tailwind resolves imports regardless of input location
+    // Derive the palette import list from the directory — no second hardcoded
+    // copy. The agreement test in palette-contract.test.ts asserts this stays
+    // in sync with globals.css and the other lists.
+    paletteNames = await readPaletteNames();
     const importPaths = [
         path.join(REGISTRY_DIR, "styles", "global.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "surface.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "raised.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "brand.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "success.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "warning.css"),
-        path.join(REGISTRY_DIR, "styles", "palettes", "danger.css"),
+        ...paletteNames.map((p) =>
+            path.join(REGISTRY_DIR, "styles", "palettes", `${p}.css`),
+        ),
     ];
 
     const inputCss =
@@ -109,16 +112,8 @@ describe("class compilation guard", () => {
         }
     });
 
-    it("generates palette class declarations for all six core palettes", () => {
-        const palettes = [
-            "surface",
-            "raised",
-            "brand",
-            "success",
-            "warning",
-            "danger",
-        ];
-        for (const p of palettes) {
+    it("generates palette class declarations for every palette in the directory", () => {
+        for (const p of paletteNames) {
             expect(compiledCss).toContain(`.palette-${p}`);
         }
     });
@@ -152,6 +147,14 @@ describe("class compilation guard", () => {
         const sourceFiles = await collectSourceFiles(REGISTRY_DIR);
         const usedClasses = await extractClasses(sourceFiles);
 
+        // Build a regex that skips plain palette class names (palette-X) for
+        // every palette in the directory — those are plain CSS classes, not
+        // Tailwind utilities.
+        const paletteNamePattern = paletteNames
+            .map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+            .join("|");
+        const plainPaletteRe = new RegExp(`^palette-(${paletteNamePattern})$`);
+
         const missing: string[] = [];
         for (const cls of usedClasses) {
             // Skip non-palette classes or template fragments
@@ -161,12 +164,7 @@ describe("class compilation guard", () => {
             if (cls.includes("${") || cls.includes("{")) continue;
             // Skip classes that are just the palette name (e.g. "palette-surface")
             // — those are plain CSS classes, not Tailwind utilities
-            if (
-                /^palette-(surface|raised|brand|success|warning|danger)$/.test(
-                    cls,
-                )
-            )
-                continue;
+            if (plainPaletteRe.test(cls)) continue;
 
             // For utility classes, check that the escaped version exists in CSS.
             // Tailwind escapes special characters in selectors: `/` → `\/`,

@@ -3,11 +3,11 @@ import { clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
 // NOTE: the palette list is hardcoded on purpose. tailwind-merge needs to know
-// which classes form a single "palette" group so that `cn("palette-brand",
+// which classes form a single "palette" group so that `cn("palette-blue",
 // "palette-danger")` resolves to one (the last) rather than both. The cost of
 // correct merge behaviour is that adding a palette means adding it here too.
-// This list is the six core palettes only; feature palettes join it when they
-// ship.
+// A test asserts this list agrees with the palettes directory — see
+// tests/palette-contract.test.ts.
 const customTwMerge = extendTailwindMerge<"palette">({
     extend: {
         classGroups: {
@@ -16,10 +16,17 @@ const customTwMerge = extendTailwindMerge<"palette">({
                     palette: [
                         "surface",
                         "raised",
-                        "brand",
-                        "success",
-                        "warning",
                         "danger",
+                        "blue",
+                        "green",
+                        "orange",
+                        "purple",
+                        "rose",
+                        "surface-blue",
+                        "surface-purple",
+                        "surface-green",
+                        "surface-orange",
+                        "surface-rose",
                     ],
                 },
             ],

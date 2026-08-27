@@ -1,10 +1,17 @@
 @import "../registry/styles/global.css";
 @import "../registry/styles/palettes/surface.css";
 @import "../registry/styles/palettes/raised.css";
-@import "../registry/styles/palettes/brand.css";
-@import "../registry/styles/palettes/success.css";
-@import "../registry/styles/palettes/warning.css";
 @import "../registry/styles/palettes/danger.css";
+@import "../registry/styles/palettes/blue.css";
+@import "../registry/styles/palettes/green.css";
+@import "../registry/styles/palettes/orange.css";
+@import "../registry/styles/palettes/purple.css";
+@import "../registry/styles/palettes/rose.css";
+@import "../registry/styles/palettes/surface-blue.css";
+@import "../registry/styles/palettes/surface-purple.css";
+@import "../registry/styles/palettes/surface-green.css";
+@import "../registry/styles/palettes/surface-orange.css";
+@import "../registry/styles/palettes/surface-rose.css";
 
 @source "../registry/**/*.{ts,tsx}";
 @source "../content/**/*.{md,mdx}";

@@ -25,14 +25,14 @@ export default function ProgressDemo() {
             </Progress.Root>
 
             {/* Tone by palette class — not a prop */}
-            <Progress.Root value={80} className="palette-warning">
-                <Progress.Label>Warning</Progress.Label>
+            <Progress.Root value={80} className="palette-orange">
+                <Progress.Label>Orange</Progress.Label>
                 <Progress.Track>
                     <Progress.Indicator />
                 </Progress.Track>
             </Progress.Root>
 
-            <Progress.Root value={100} className="palette-success">
+            <Progress.Root value={100} className="palette-green">
                 <Progress.Label>Complete</Progress.Label>
                 <Progress.Track>
                     <Progress.Indicator />

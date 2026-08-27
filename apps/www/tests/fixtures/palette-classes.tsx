@@ -19,7 +19,7 @@ export function PaletteClassFixture() {
             <div className="field-focus:border-palette-ring field-focus:ring-palette-ring field-focus:outline-palette-ring field-focus:outline-2" />
 
             {/* Palette class declarations */}
-            <div className="palette-surface palette-raised palette-brand palette-success palette-warning palette-danger" />
+            <div className="palette-surface palette-raised palette-danger palette-blue palette-green palette-orange palette-purple palette-rose palette-surface-blue palette-surface-purple palette-surface-green palette-surface-orange palette-surface-rose" />
 
             {/* Derived tokens */}
             <div className="bg-palette-base-hover" />

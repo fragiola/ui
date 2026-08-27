@@ -9,7 +9,7 @@ import { cn } from "#/lib/cn";
 
 // Progress — the rail without the interaction. The same `track` family as
 // slider: `track.rail` for the rail, `track.fill` for the indicator. Tone
-// arrives as a palette class from outside (`className="palette-warning"`), not
+// arrives as a palette class from outside (`className="palette-orange"`), not
 // as a prop — the same discipline as Clickable and Badge.
 //
 // Determinate and indeterminate. The primitive supplies the ARIA
