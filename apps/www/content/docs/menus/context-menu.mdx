@@ -1,0 +1,22 @@
+---
+title: "Context Menu"
+description: "A menu of actions triggered by a right-click. Shares the `popup` and `menu` style families with dropdown-menu — installing it after `dropdown-menu` writes exactly one file."
+---
+
+<InstallCommand name="context-menu" />
+
+<ComponentPreview name="context-menu-demo" />
+
+## Style families
+
+`context-menu` renders from the same `menu` source as `dropdown-menu`. The only differences are `Root`, `Trigger` (which carries `select-none` — behavioural, not visual, so it does not come from a family) and the positioning defaults.
+
+The `select-none` on `ContextMenu.Trigger` stops text selection on right-click. It is behavioural, not visual, so it does not come from a family — keep the distinction.
+
+## Distribution proof
+
+Installing `dropdown-menu` pulls `menu` and `popup`. Installing `context-menu` afterwards writes **one file** — `context-menu.tsx` itself. The shared families are already on disk. This is the distribution-level proof that the duplication claim holds.
+
+## Parts
+
+Identical to `dropdown-menu` — same factory, same members. See the [dropdown-menu parts table](./dropdown-menu#parts).

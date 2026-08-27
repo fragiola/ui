@@ -54,10 +54,11 @@ maps to a role Fragiola deliberately lacks. The settled value is
 The architecture proposed `accent/70`, but OKLCH→WCAG measurement showed 70%
 fails AA (4.5:1) even on neutral surfaces (surface/light/base = 2.85:1). At 85%,
 `accent` clears AA on every neutral surface (surface + raised, base + soft) in
-both themes — worst case 4.71:1. Secondary text realistically appears only on
-neutral backgrounds; chromatic palettes use `contrast` for their text, not a
-muted variant. The palette-contract guard test checks the neutral surface
-palettes.
+both themes — worst case 4.58:1 (surface-green/light/soft). Secondary text
+realistically appears only on neutral backgrounds; chromatic palettes use
+`contrast` for their text, not a muted variant. The contrast guard in
+`tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
+for every surface-tier palette, in both themes.
 
 Apply this value uniformly, including to placeholders.
 

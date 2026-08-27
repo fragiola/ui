@@ -1,0 +1,12 @@
+{
+    "title": "Architecture",
+    "pages": [
+        "theming",
+        "palettes",
+        "style-families",
+        "composition",
+        "dark-mode",
+        "rtl",
+        "density"
+    ]
+}

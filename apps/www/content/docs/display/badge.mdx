@@ -1,0 +1,18 @@
+---
+title: "Badge"
+description: "A small status indicator. One axis (variant: soft / solid / outline), none of which is colour. Tone arrives as a palette class — the same discipline as Clickable."
+---
+
+<InstallCommand name="badge" />
+
+<ComponentPreview name="badge-demo" />
+
+## No colour variant
+
+A destructive badge is `<Badge className="palette-danger">` — there is no `variant="destructive"` and no `tone` prop. The palette class overrides the six roles, so `bg-palette-soft` becomes the danger soft tint and `text-palette-contrast` becomes the danger contrast. This is what stops `destructive` from coming back as a hundred copies.
+
+## Parts
+
+| Part | Renders |
+|---|---|
+| `Badge` | `<span>` with `badge()` variants |

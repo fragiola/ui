@@ -45,44 +45,142 @@
             ]
         },
         {
-            "name": "palette-brand",
+            "name": "palette-blue",
             "type": "registry:file",
-            "title": "Brand palette",
-            "description": "The project accent colour. Both themes, all six roles.",
+            "title": "Blue palette",
+            "description": "Chromatic palette, hue ~250. The colour IS the element: CTA, badge, marked control. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
-                    "path": "registry/styles/palettes/brand.css",
+                    "path": "registry/styles/palettes/blue.css",
                     "type": "registry:file",
-                    "target": "~/styles/palettes/brand.css"
+                    "target": "~/styles/palettes/blue.css"
                 }
             ]
         },
         {
-            "name": "palette-success",
+            "name": "palette-green",
             "type": "registry:file",
-            "title": "Success palette",
-            "description": "Confirmation, positive state. Hue ~150. Both themes, all six roles.",
+            "title": "Green palette",
+            "description": "Chromatic palette, hue ~150. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
-                    "path": "registry/styles/palettes/success.css",
+                    "path": "registry/styles/palettes/green.css",
                     "type": "registry:file",
-                    "target": "~/styles/palettes/success.css"
+                    "target": "~/styles/palettes/green.css"
                 }
             ]
         },
         {
-            "name": "palette-warning",
+            "name": "palette-orange",
             "type": "registry:file",
-            "title": "Warning palette",
-            "description": "Caution, attention. Hue ~65. Both themes, all six roles.",
+            "title": "Orange palette",
+            "description": "Chromatic palette, hue ~55. Distinct from danger (hue ~25). Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
-                    "path": "registry/styles/palettes/warning.css",
+                    "path": "registry/styles/palettes/orange.css",
                     "type": "registry:file",
-                    "target": "~/styles/palettes/warning.css"
+                    "target": "~/styles/palettes/orange.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-purple",
+            "type": "registry:file",
+            "title": "Purple palette",
+            "description": "Chromatic palette, hue ~300. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/purple.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/purple.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-rose",
+            "type": "registry:file",
+            "title": "Rose palette",
+            "description": "Chromatic palette, hue ~345. Distinct from danger (hue ~25) — reads as pink, not as an error state. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/rose.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/rose.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface-blue",
+            "type": "registry:file",
+            "title": "Surface-blue palette",
+            "description": "Tinted surface, hue ~250. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface-blue.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface-blue.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface-purple",
+            "type": "registry:file",
+            "title": "Surface-purple palette",
+            "description": "Tinted surface, hue ~300. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface-purple.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface-purple.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface-green",
+            "type": "registry:file",
+            "title": "Surface-green palette",
+            "description": "Tinted surface, hue ~150. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface-green.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface-green.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface-orange",
+            "type": "registry:file",
+            "title": "Surface-orange palette",
+            "description": "Tinted surface, hue ~55. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface-orange.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface-orange.css"
+                }
+            ]
+        },
+        {
+            "name": "palette-surface-rose",
+            "type": "registry:file",
+            "title": "Surface-rose palette",
+            "description": "Tinted surface, hue ~345. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "registryDependencies": ["theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/surface-rose.css",
+                    "type": "registry:file",
+                    "target": "~/styles/palettes/surface-rose.css"
                 }
             ]
         },
@@ -104,7 +202,7 @@
             "name": "cn",
             "type": "registry:lib",
             "title": "cn helper",
-            "description": "clsx + extendTailwindMerge with a palette class group so cn(\"palette-brand\", \"palette-danger\") resolves to one.",
+            "description": "clsx + extendTailwindMerge with a palette class group so cn(\"palette-blue\", \"palette-danger\") resolves to one.",
             "dependencies": ["clsx", "tailwind-merge"],
             "files": [
                 {
@@ -542,7 +640,7 @@
             "name": "badge",
             "type": "registry:ui",
             "title": "Badge",
-            "description": "A small status indicator. One axis (variant: soft / solid / outline), none of which is colour. Tone arrives as a palette class (palette-danger, palette-success, etc.) — no variant=\"destructive\", no tone prop. The palette class overrides the six roles, so bg-palette-soft becomes the danger soft tint and text-palette-contrast becomes the danger contrast.",
+            "description": "A small status indicator. One axis (variant: soft / solid / outline), none of which is colour. Tone arrives as a palette class (palette-danger, palette-blue, etc.) — no variant=\"destructive\", no tone prop. The palette class overrides the six roles, so bg-palette-soft becomes the danger soft tint and text-palette-contrast becomes the danger contrast.",
             "registryDependencies": ["theme", "cn"],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -587,7 +685,7 @@
             "name": "progress",
             "type": "registry:ui",
             "title": "Progress",
-            "description": "The rail without the interaction. Determinate and indeterminate; the indeterminate animation respects prefers-reduced-motion. Fills from the inline start and inverts under RTL (logical properties from the primitive). Tone arrives as a palette class from outside (palette-warning), not a prop. Uses the track family (rail + fill).",
+            "description": "The rail without the interaction. Determinate and indeterminate; the indeterminate animation respects prefers-reduced-motion. Fills from the inline start and inverts under RTL (logical properties from the primitive). Tone arrives as a palette class from outside (palette-orange), not a prop. Uses the track family (rail + fill).",
             "registryDependencies": ["theme", "cn", "track", "text"],
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [

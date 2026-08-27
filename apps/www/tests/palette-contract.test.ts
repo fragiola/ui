@@ -1,53 +1,60 @@
-import { readdir, readFile } from "node:fs/promises";
+import { readdirSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import {
+    accent85ContrastOver,
+    contrastOverBase,
+    type OklchValue,
+    PALETTES_DIR,
+    parseOklch,
+    type Role,
+    readPaletteFile,
+    SIX_ROLES,
+    SURFACE_TIER,
+    THEMES,
+    type Theme,
+} from "./palette-utils";
 
 // ─── Palette contract guard ─────────────────────────────────────────────────
 // Rules 1 & 2: The palette contract is 6 roles (base, soft, line, contrast,
 // accent, ring). Every palette declares all 6, no exceptions. This test parses
 // each palette CSS file and asserts the contract holds.
+//
+// The palette list is derived from the contents of registry/styles/palettes/ —
+// a new palette file is covered automatically. The agreement test below
+// asserts that globals.css, cn.ts, the compile fixture and registry.json all
+// agree with this directory, so no list can drift.
 
 const ROOT = process.cwd();
-const PALETTES_DIR = path.join(ROOT, "registry", "styles", "palettes");
 
-const SIX_ROLES = [
-    "base",
-    "soft",
-    "line",
-    "contrast",
-    "accent",
-    "ring",
-] as const;
-type Role = (typeof SIX_ROLES)[number];
-
-const CORE_PALETTES = [
-    "surface",
-    "raised",
-    "brand",
-    "success",
-    "warning",
-    "danger",
-];
-
-const THEMES = ["light", "dark"] as const;
-type Theme = (typeof THEMES)[number];
-
-async function readPaletteFile(name: string): Promise<string> {
-    return readFile(path.join(PALETTES_DIR, `${name}.css`), "utf-8");
-}
+// Read the palette directory synchronously at module load time so the
+// `for` loops below can register a test per palette. vitest's `describe`/`it`
+// run at load time, before any `beforeAll` — a directory read in `beforeAll`
+// would leave the loops empty.
+const paletteNames: string[] = readdirSync(PALETTES_DIR)
+    .filter((f) => f.endsWith(".css"))
+    .map((f) => f.slice(0, -4))
+    .sort();
 
 // Match blocks like:
 //   :root[data-theme="light"] .palette-surface { ... }
 //   :root[data-theme="light"] :is(.palette-danger, [data-invalid]) { ... }
+//
+// The selector is anchored so a palette name cannot match a longer name:
+// `surface` must not match `.palette-surface-purple`. The `(?:-|$)` boundary
+// after the palette name ensures `.palette-surface` matches only when the
+// class name ends there or is followed by a non-identifier character.
 function extractPaletteRoles(
     css: string,
     palette: string,
     theme: Theme,
 ): Set<string> {
     const roles = new Set<string>();
-    // The selector may be .palette-X or :is(.palette-X, [data-invalid])
+    // Escape the palette name for regex (handles the hyphen in surface-*).
+    const escaped = palette.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const blockRe = new RegExp(
-        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${palette}|:is\\([^)]*\\.palette-${palette}[^)]*\\))\\s*\\{([^}]+)\\}`,
+        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${escaped}(?![\\w-])|:is\\([^)]*\\.palette-${escaped}(?![\\w-])[^)]*\\))\\s*\\{([^}]+)\\}`,
         "g",
     );
     const matches = [...css.matchAll(blockRe)];
@@ -63,24 +70,68 @@ function extractPaletteRoles(
 }
 
 function countThemeBlocks(css: string, palette: string, theme: Theme): number {
+    const escaped = palette.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const blockRe = new RegExp(
-        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${palette}|:is\\([^)]*\\.palette-${palette}[^)]*\\))\\s*\\{`,
+        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${escaped}(?![\\w-])|:is\\([^)]*\\.palette-${escaped}(?![\\w-])[^)]*\\))\\s*\\{`,
         "g",
     );
     return [...css.matchAll(blockRe)].length;
 }
 
-describe("palette contract guard", () => {
-    it("all six core palette files exist", async () => {
-        const files = await readdir(PALETTES_DIR);
-        for (const p of CORE_PALETTES) {
-            expect(files, `Missing palette file: ${p}.css`).toContain(
-                `${p}.css`,
-            );
+// Extract the oklch value of a role from a palette file for a given theme.
+function extractRoleValue(
+    css: string,
+    palette: string,
+    theme: Theme,
+    role: Role,
+): OklchValue | null {
+    const escaped = palette.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const blockRe = new RegExp(
+        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${escaped}(?![\\w-])|:is\\([^)]*\\.palette-${escaped}(?![\\w-])[^)]*\\))\\s*\\{([^}]+)\\}`,
+        "g",
+    );
+    const matches = [...css.matchAll(blockRe)];
+    for (const match of matches) {
+        const body = match[1] ?? "";
+        // Resolve --palette-ring: var(--palette-accent) indirection.
+        const ringRe = new RegExp(
+            `--palette-${role}:\\s*var\\(--palette-(\\w+)\\)`,
+        );
+        const ringMatch = body.match(ringRe);
+        if (ringMatch) {
+            const sourceRole = ringMatch[1] ?? "";
+            return extractRoleValue(css, palette, theme, sourceRole as Role);
         }
+        const valueRe = new RegExp(`--palette-${role}:\\s*(oklch\\([^)]+\\))`);
+        const valueMatch = body.match(valueRe);
+        if (valueMatch) {
+            return parseOklch(valueMatch[1] ?? "");
+        }
+    }
+    return null;
+}
+
+describe("palette contract guard", () => {
+    it("derives the palette list from the directory", async () => {
+        expect(paletteNames.length).toBeGreaterThanOrEqual(11);
+        // The three removed palettes are gone.
+        expect(paletteNames).not.toContain("brand");
+        expect(paletteNames).not.toContain("success");
+        expect(paletteNames).not.toContain("warning");
+        // The new palettes are present.
+        expect(paletteNames).toContain("blue");
+        expect(paletteNames).toContain("green");
+        expect(paletteNames).toContain("orange");
+        expect(paletteNames).toContain("purple");
+        expect(paletteNames).toContain("rose");
+        expect(paletteNames).toContain("surface-blue");
+        expect(paletteNames).toContain("surface-purple");
+        expect(paletteNames).toContain("surface-green");
+        expect(paletteNames).toContain("surface-orange");
+        expect(paletteNames).toContain("surface-rose");
     });
 
-    for (const palette of CORE_PALETTES) {
+    for (const palette of paletteNames) {
         describe(`palette-${palette}`, () => {
             for (const theme of THEMES) {
                 it(`declares all 6 roles in ${theme} theme`, async () => {
@@ -126,7 +177,7 @@ describe("palette contract guard", () => {
     }
 
     it("no palette uses !important", async () => {
-        for (const p of CORE_PALETTES) {
+        for (const p of paletteNames) {
             const css = await readPaletteFile(p);
             expect(
                 css.includes("!important"),
@@ -179,7 +230,6 @@ describe("palette contract guard", () => {
             "utf-8",
         );
         expect(css).toContain("--palette-state-shift");
-        // Light should darken (negative), dark should lighten (positive)
         expect(css).toMatch(
             /data-theme="light"[^}]*--palette-state-shift:\s*-0\.1/,
         );
@@ -215,4 +265,153 @@ describe("palette contract guard", () => {
         expect(css).toContain('data-density="compact"');
         expect(css).toContain('data-density="spacious"');
     });
+});
+
+// ─── Five-list agreement ────────────────────────────────────────────────────
+// The palette name list is hardcoded in five places. Missing one produces no
+// error. This test asserts that globals.css, cn.ts, the compile fixture and
+// registry.json all agree with the palettes directory — no list may drift.
+
+describe("five-list agreement", () => {
+    it("globals.css imports every palette file", async () => {
+        const css = await readFile(
+            path.join(ROOT, "app", "globals.css"),
+            "utf-8",
+        );
+        for (const p of paletteNames) {
+            expect(css, `globals.css does not import ${p}.css`).toContain(
+                `palettes/${p}.css`,
+            );
+        }
+    });
+
+    it("cn.ts lists every palette in the tailwind-merge group", async () => {
+        const cn = await readFile(
+            path.join(ROOT, "registry", "lib", "cn.ts"),
+            "utf-8",
+        );
+        for (const p of paletteNames) {
+            expect(
+                cn,
+                `cn.ts does not list palette "${p}" in the class group`,
+            ).toContain(`"${p}"`);
+        }
+    });
+
+    it("compile fixture declares every palette class", async () => {
+        const fixture = await readFile(
+            path.join(ROOT, "tests", "fixtures", "palette-classes.tsx"),
+            "utf-8",
+        );
+        for (const p of paletteNames) {
+            expect(fixture, `fixture does not declare palette-${p}`).toContain(
+                `palette-${p}`,
+            );
+        }
+    });
+
+    it("registry.json has a palette-* item for every palette file", async () => {
+        const json = await readFile(path.join(ROOT, "registry.json"), "utf-8");
+        const parsed = JSON.parse(json);
+        const itemNames = new Set(
+            (parsed.items as { name: string }[]).map((i) => i.name),
+        );
+        for (const p of paletteNames) {
+            expect(
+                itemNames,
+                `registry.json does not have item palette-${p}`,
+            ).toContain(`palette-${p}`);
+        }
+    });
+
+    it("registry.json has no palette item for a removed palette", async () => {
+        const json = await readFile(path.join(ROOT, "registry.json"), "utf-8");
+        const parsed = JSON.parse(json);
+        const itemNames = (parsed.items as { name: string }[]).map(
+            (i) => i.name,
+        );
+        expect(itemNames).not.toContain("palette-brand");
+        expect(itemNames).not.toContain("palette-success");
+        expect(itemNames).not.toContain("palette-warning");
+    });
+});
+
+// ─── Contrast guard ─────────────────────────────────────────────────────────
+// AGENTS.md and docs/architecture.md §6 both state that the palette-contract
+// guard asserts the contrast floor. This is that guard.
+//
+// For EVERY palette and BOTH themes: contrast on base ≥ 4.5:1 (AA).
+// For every SURFACE-tier palette and both themes: accent at 85% opacity over
+// base and over soft ≥ 4.5:1 (AA).
+//
+// Chromatic palettes are deliberately excluded from the accent/85 assertion:
+// they use `contrast` for their text, not a muted variant. Secondary text
+// (text-palette-accent/85) realistically appears only on neutral/tinted
+// backgrounds. Do NOT "fix" this exclusion — it is intentional.
+
+describe("contrast guard", () => {
+    for (const palette of paletteNames) {
+        for (const theme of THEMES) {
+            it(`palette-${palette} ${theme}: contrast on base ≥ 4.5:1`, async () => {
+                const css = await readPaletteFile(palette);
+                const contrast = extractRoleValue(
+                    css,
+                    palette,
+                    theme,
+                    "contrast",
+                );
+                const base = extractRoleValue(css, palette, theme, "base");
+                expect(contrast).not.toBeNull();
+                expect(base).not.toBeNull();
+                const ratio = contrastOverBase(
+                    contrast as OklchValue,
+                    base as OklchValue,
+                );
+                expect(
+                    ratio,
+                    `palette-${palette} ${theme}: contrast/base = ${ratio.toFixed(2)}:1 (need ≥ 4.5)`,
+                ).toBeGreaterThanOrEqual(4.5);
+            });
+        }
+    }
+
+    // Surface-tier palettes only: accent@85% over base and over soft.
+    // The 85% figure is settled (text-palette-accent/85) and is NOT a variable
+    // this test may adjust. If a tinted surface cannot clear the floor at 85%,
+    // the palette's numbers move, not the opacity.
+    for (const palette of SURFACE_TIER) {
+        for (const theme of THEMES) {
+            it(`palette-${palette} ${theme}: accent@85% over base ≥ 4.5:1`, async () => {
+                const css = await readPaletteFile(palette);
+                const accent = extractRoleValue(css, palette, theme, "accent");
+                const base = extractRoleValue(css, palette, theme, "base");
+                expect(accent).not.toBeNull();
+                expect(base).not.toBeNull();
+                const ratio = accent85ContrastOver(
+                    accent as OklchValue,
+                    base as OklchValue,
+                );
+                expect(
+                    ratio,
+                    `palette-${palette} ${theme}: accent@85%/base = ${ratio.toFixed(2)}:1 (need ≥ 4.5)`,
+                ).toBeGreaterThanOrEqual(4.5);
+            });
+
+            it(`palette-${palette} ${theme}: accent@85% over soft ≥ 4.5:1`, async () => {
+                const css = await readPaletteFile(palette);
+                const accent = extractRoleValue(css, palette, theme, "accent");
+                const soft = extractRoleValue(css, palette, theme, "soft");
+                expect(accent).not.toBeNull();
+                expect(soft).not.toBeNull();
+                const ratio = accent85ContrastOver(
+                    accent as OklchValue,
+                    soft as OklchValue,
+                );
+                expect(
+                    ratio,
+                    `palette-${palette} ${theme}: accent@85%/soft = ${ratio.toFixed(2)}:1 (need ≥ 4.5)`,
+                ).toBeGreaterThanOrEqual(4.5);
+            });
+        }
+    }
 });

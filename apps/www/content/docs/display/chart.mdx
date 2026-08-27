@@ -1,0 +1,22 @@
+---
+title: "Chart"
+description: "An ECharts wrapper that resolves the active theme's tokens and applies them to axes, series and tooltip. The chart tokens are a separate axis from the palette contract — no role describes \"the third series\"."
+---
+
+<InstallCommand name="chart" />
+
+<ComponentPreview name="chart-demo" />
+
+## Series axis
+
+Chart series colours are their own axis: `--chart-1` through `--chart-8` (categorical) and `--chart-ramp-1` through `--chart-ramp-5` (ordinal). They are derived from `--palette-base` via `oklch(from ...)` in `global.css` — theme machinery, not a palette.
+
+No palette role describes "the third series", and reusing `danger` as series 4 breaks its meaning. The categorical derivation rotates hue while keeping lightness and chroma constant — the series are distinguishable without being a rainbow.
+
+## Theme resolution
+
+The `useThemeTokens` hook reads the chart and palette tokens from the document and re-reads on theme change via a `MutationObserver` on `documentElement`'s `data-theme` attribute. Switch the palette in the preview above to see the chart re-colour live.
+
+## Thin wrapper
+
+The wrapper does not re-implement ECharts' API. The consumer passes a full `EChartsOption`, and the wrapper only injects colours. This keeps it thin and avoids locking consumers out of ECharts' features.

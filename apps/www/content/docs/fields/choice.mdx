@@ -1,0 +1,20 @@
+---
+title: "Choice Controls"
+description: "Checkbox, Radio + RadioGroup, and Switch — three components sharing one `choice` style family. The box, the focus ring, the checked state and the disabled state are written once."
+---
+
+<InstallCommand name="checkbox" />
+
+<ComponentPreview name="choice-demo" />
+
+## Style family
+
+The `choice` family has five members — `root`, `control`, `indicator`, `label`, `description` — and zero variants. Checkbox and Radio use `root` + `indicator`; Switch uses `root` (the track) + `control` (the thumb). Each component overrides only what differs: Radio adds `rounded-full`, Switch adds `w-9 h-5 rounded-full` and a translate on the thumb.
+
+## Field.ChoiceRoot
+
+Checkable controls use `Field.ChoiceRoot` instead of `Field.Root` — a horizontal row (control on the left, label on the right) instead of a vertical column. The same Label, Description and Error members are reused.
+
+## State normalization
+
+Base UI emits `data-checked` and `data-unchecked` (not `data-state=checked`). The family uses `data-checked:bg-palette-base` and `data-checked:text-palette-contrast` — the indicator icon inherits the text colour and inverts automatically.

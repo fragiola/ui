@@ -1,0 +1,23 @@
+/* Surface-orange — a tinted surface, hue ~55. A surface first: base is a
+   near-neutral carrying a trace of the hue, contrast is body text, accent is
+   secondary text. It exists so two panels on the same page can be
+   recognisably different surfaces without either being "coloured". Both
+   themes declare all six roles. */
+
+:root[data-theme="light"] .palette-surface-orange {
+    --palette-base: oklch(0.99 0.008 55);
+    --palette-soft: oklch(0.95 0.02 55);
+    --palette-line: oklch(0.85 0.04 55);
+    --palette-contrast: oklch(0.18 0.03 55);
+    --palette-accent: oklch(0.28 0.06 55);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-surface-orange {
+    --palette-base: oklch(0.17 0.015 55);
+    --palette-soft: oklch(0.26 0.03 55);
+    --palette-line: oklch(0.32 0.04 55);
+    --palette-contrast: oklch(0.95 0.01 55);
+    --palette-accent: oklch(0.85 0.03 55);
+    --palette-ring: var(--palette-accent);
+}

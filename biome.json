@@ -63,16 +63,5 @@
             "trailingNewline": true
         }
     },
-    "overrides": [
-        {
-            "includes": ["apps/www/app/layout.tsx"],
-            "linter": {
-                "rules": {
-                    "security": {
-                        "noDangerouslySetInnerHtml": "off"
-                    }
-                }
-            }
-        }
-    ]
+    "overrides": []
 }

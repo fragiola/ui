@@ -1,0 +1,30 @@
+---
+title: "Select"
+description: "The recombination test. `Select` is `field` + `popup` + `menu` — and it declares no new style. Every class comes from a family."
+---
+
+<InstallCommand name="select" />
+
+<ComponentPreview name="select-demo" />
+
+## Recombination
+
+The trigger is a `field.row` (the box) with a `field.control` (the bare middle). The content is a `popup.content` (the floating box). The items are `menu.selectableItem` (the option with indicator space). The indicator is a `menu.itemIndicator`. The separator is a `menu.separator`. The label is a `menu.label`.
+
+If this file contained a class that did not come from a family, the recombination claim would be wrong. It does not.
+
+## Distribution proof
+
+Installing `select` after `dropdown-menu` and `field` writes exactly one file — `select.tsx` itself. The three families it depends on are already on disk.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `Select.Root` |
+| `Trigger` | `field.row()` + layout |
+| `Value` | Base UI `Select.Value` |
+| `Content` | `popup.content()` |
+| `Item` | `menu.selectableItem()` |
+| `Label` | `menu.label()` |
+| `Separator` | `menu.separator()` |

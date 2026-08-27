@@ -1,0 +1,26 @@
+---
+title: "Combobox"
+description: "The second recombination test. This component is `field` + `popup` + `menu`, and it declares no new style. Every class comes from a family. If this file contained a class that did not come from a family, the recombination claim would be wrong. It does not."
+---
+
+<InstallCommand name="combobox" />
+
+<ComponentPreview name="combobox-demo" />
+
+## Recombination
+
+The input is a field control — `field.row` provides the box (border, background, focus ring); the input carries the `field-control` marker so the row's outline fires on focus. The trigger and clear buttons are `Clickable.Button`. The content is `popup.content`. Items are `menu.selectableItem`. The item indicator is `menu.itemIndicator`. Group labels are `menu.label`. Separators are `menu.separator`.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `Combobox.Root` |
+| `InputGroup` | `field.row()` + layout |
+| `Input` | `field-control` marker + layout |
+| `Trigger` / `Clear` | `Clickable.Button` |
+| `Content` | `popup.content()` |
+| `Item` | `menu.selectableItem()` |
+| `ItemIndicator` | `menu.itemIndicator()` |
+| `GroupLabel` | `menu.label()` |
+| `Separator` | `menu.separator()` |

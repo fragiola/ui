@@ -1,0 +1,24 @@
+---
+title: "Breadcrumb"
+description: "A navigation trail. Uses a semantic `<nav>` with an ordered list. The last item is the current page (aria-current), not a link. Separators are chevrons on the inline axis, RTL-aware."
+---
+
+<InstallCommand name="breadcrumb" />
+
+<ComponentPreview name="breadcrumb-demo" />
+
+## Composition, not variation
+
+The breadcrumb has no variants — visual differences (separator type, truncation) are composition. Pass any element as the separator's child (a chevron, a slash, a dot). Use `Breadcrumb.Ellipsis` for collapsed items. Use `render` on `Breadcrumb.Link` to stitch a router link.
+
+## Parts
+
+| Part | Renders |
+|---|---|
+| `Root` | `<nav aria-label>` |
+| `List` | `<ol>` |
+| `Item` | `<li>` |
+| `Link` | `<a>` — stitch a router link through `render` |
+| `Page` | `<span aria-current>` |
+| `Separator` | `<li aria-hidden>` |
+| `Ellipsis` | `<span aria-hidden>` + MoreHorizontalIcon |

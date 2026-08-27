@@ -27,3 +27,6 @@ Thumbs.db
 
 # Generated registry output (built by `pnpm registry:build`)
 apps/www/public/r/
+
+# Fumadocs generated source
+apps/www/.source/

@@ -1,0 +1,124 @@
+---
+title: "Palettes"
+description: "The palette set has two tiers: **chromatic** palettes where the colour IS the"
+---
+
+---
+title: "Palettes"
+description: "The palette set has two tiers: chromatic palettes where the colour IS the element,"
+---
+
+The palette set has two tiers: **chromatic** palettes where the colour IS the
+element, and **tinted surface** palettes where a near-neutral base carries a
+trace of a hue so two panels can be recognisably different surfaces without
+either being "coloured". Plus the two neutral surfaces that everything sits on.
+Every palette declares all six roles in both light and dark.
+
+## The neutral surfaces
+
+### Surface
+
+The floor of the app. Neutral, the palette everything else sits on.
+
+### Raised
+
+An elevated surface — card, popover, dialog. Like surface but a step up in
+lightness so a raised element reads as sitting above the floor.
+
+## The chromatic palettes
+
+A chromatic palette is one where the colour *is* the element: `base` is
+saturated, `contrast` is near-white or near-black against it, `accent` is a
+darker/lighter version of the same hue for use on foreign backgrounds.
+
+### Blue
+
+Hue ~250. The project's accent colour, used where the colour IS the element:
+CTA, badge, marked control. Every role carries the blue hue.
+
+### Green
+
+Hue ~150. Confirmation, positive state — though the semantic-status set is
+temporarily withdrawn; green is a colour here, not a status.
+
+### Orange
+
+Hue ~55, distinct from danger (hue ~25) so the two never read as the same
+state.
+
+### Purple
+
+Hue ~300.
+
+### Rose
+
+Hue ~345. Deliberately kept distinct from danger (hue ~25): rose reads as
+pink/magenta, not as an error state.
+
+### Danger
+
+Hue ~25. Error, destructive action. Applied automatically by `[data-invalid]`
+— Base UI's Field emits `data-invalid` on `Field.Root`, and because palette
+roles are inherited via custom properties, the whole subtree becomes danger
+with no extra class.
+
+Do **not** use `aria-invalid:palette-danger` — Tailwind variants only apply to
+utilities, and `palette-*` is a plain CSS class. That syntax compiles
+nothing.
+
+## The tinted surfaces
+
+A tinted surface is a surface first: `base` is a near-neutral carrying a trace
+of the hue, `contrast` is body text, `accent` is secondary text. It exists so
+that two panels on the same page can be recognisably different surfaces without
+either of them being "coloured". This is the architecture's own answer to "two
+background levels are two palettes, not a seventh role" — extended sideways
+instead of upwards.
+
+### Surface-blue
+
+Hue ~250. A blue-tinted surface.
+
+### Surface-purple
+
+Hue ~300. A purple-tinted surface.
+
+### Surface-green
+
+Hue ~150. A green-tinted surface.
+
+### Surface-orange
+
+Hue ~55. An orange-tinted surface.
+
+### Surface-rose
+
+Hue ~345. A rose-tinted surface.
+
+## Writing a palette
+
+A palette is a CSS class that declares six custom properties:
+
+```css
+:root[data-theme="light"] .palette-my-blue {
+    --palette-base: oklch(0.55 0.2 250);
+    --palette-soft: oklch(0.95 0.03 250);
+    --palette-line: oklch(0.85 0.08 250);
+    --palette-contrast: oklch(1 0 0);
+    --palette-accent: oklch(0.45 0.18 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-my-blue {
+    --palette-base: oklch(0.7 0.18 250);
+    --palette-soft: oklch(0.3 0.08 250);
+    --palette-line: oklch(0.4 0.1 250);
+    --palette-contrast: oklch(0.12 0.02 250);
+    --palette-accent: oklch(0.78 0.15 250);
+    --palette-ring: var(--palette-accent);
+}
+```
+
+Both themes, all six roles, no exceptions. Add the palette name to the `cn`
+helper's palette class group so `cn("palette-surface", "palette-my-blue")`
+resolves to one.

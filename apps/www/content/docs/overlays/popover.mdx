@@ -1,0 +1,26 @@
+---
+title: "Popover"
+description: "A floating surface positioned against a trigger. Composes `popup.content` — the same floating box dropdown-menu uses — and adds Title, Description and Close through `render`."
+---
+
+<InstallCommand name="popover" />
+
+<ComponentPreview name="popover-demo" />
+
+## `popup.content`, not `layer.panel`
+
+A popover is positioned by a floating-ui positioner and sized by `--available-height`; a dialog panel is not. The overlap (raised surface, border, radius, shadow) is checked, not assumed — and it is small enough that unifying them would couple a positioned surface to a centring transform it does not use. They stay separate: `layer.panel` for modal surfaces, `popup.content` for positioned surfaces.
+
+## Title and description point at Text
+
+`Popover.Title` is `Text.Heading as="h2"` wearing the primitive's a11y wiring, stitched with `render`. `Popover.Description` is `Text.Paragraph`. The close affordance is `Clickable.Button variant="icon"`, positioned with logical properties.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `Trigger` | Base UI `Popover` |
+| `Content` | `popup.content()` + Portal + Positioner |
+| `Title` | `Text.Heading as="h2"` via `render` |
+| `Description` | `Text.Paragraph` via `render` |
+| `Close` | `Clickable.Button` via `render` |

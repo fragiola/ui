@@ -1,0 +1,29 @@
+---
+title: "Introduction"
+description: "A copy-paste component library built on Base UI primitives and Tailwind v4."
+---
+
+Fragiola UI is a copy-paste component library built on Base UI primitives and
+Tailwind v4. Inspired by shadcn/ui, it reuses shadcn's registry format and CLI
+for distribution — there is no `@fragiola/ui` package to install. The CLI
+copies source files into your project, and you own them from that point on.
+
+## Why Fragiola exists
+
+Three problems with shadcn/ui do not scale, each measured in the proof of
+concept that validated this architecture:
+
+- **Rigid theming.** 41 fixed global tokens; swapping a theme redefines ~20 at
+  once. No way to tint one area while keeping its surface neutral, no way to
+  scope a color to a subtree.
+- **Duplicated styles.** 422 `cn-*` classes where components sharing a visual
+  skeleton have the CSS pasted rather than shared. `destructive` appears 132
+  times.
+- **Duplicated components.** ~250 identical wrapper lines between
+  dropdown-menu and context-menu. Three different ways to write an input.
+
+## Where to start
+
+- [Theming](../architecture/theming) — the six roles every palette declares
+- [Palettes](../architecture/palettes) — the core palettes, rendered
+- [Installation](./installation) — adding the registry and installing items

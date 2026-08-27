@@ -1,0 +1,30 @@
+---
+title: "Field"
+description: "One way to write a field, and one input. The box lives on the row; the control is only its middle. The `field` family has ten members and zero variants."
+---
+
+<InstallCommand name="field" />
+
+<ComponentPreview name="field-demo" />
+
+## Anatomy
+
+| Member | Is |
+|---|---|
+| `row` | **the box** — border, background, height, radius, focus ring |
+| `body` | the control's area inside the box: flex, no padding, no border |
+| `control` | the bare middle — transparent in every sense |
+| `addon` | sibling of body inside row: no border of its own, only a divider |
+| `inset` | child of body: inside the padding, no divider, no border |
+
+## The box is the row, not the body
+
+An earlier version put the border on the body and gave the addon its own border. Joining two bordered boxes then required zeroing border and radius on the seam — that is where both of the project's `!important`s came from. With the border on the row, `overflow-hidden` clips the corners, no child declares a radius, and focusing the control highlights the whole field, addon included.
+
+## Invalid state by inheritance
+
+`data-invalid` on the field root turns the whole subtree danger with no extra class on any child. Base UI emits `data-invalid` on `Field.Root`, and the themes register `[data-invalid]` as a `palette-danger` applier.
+
+## Addon sides
+
+Four sides through `data-side`, in logical vocabulary: `inline-start` / `inline-end` use `border-s` / `border-e` and invert in RTL; `block-start` / `block-end` use `basis-full` + `order-first`/`order-last` and do not. Side is a data attribute, not a variant.

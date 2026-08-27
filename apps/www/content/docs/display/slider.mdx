@@ -1,0 +1,30 @@
+---
+title: "Slider"
+description: "The thesis test of the control/body rule for a non-text control. `Slider` carries no border, no background box, no height, no focus ring on a box, no invalid state and no theme of its own. Every box style visible in the preview below comes from `field.row` — none from the slider."
+---
+
+<InstallCommand name="slider" />
+
+<ComponentPreview name="slider-demo" />
+
+## Composition
+
+The `Control` carries the `field-control` marker class, which is what the `field-focus` custom variant matches — focusing the thumb fires the row's outline. The thumb's own focus ring uses `palette-ring`. The fill grows from the inline start and inverts under RTL (the primitive sets `inset-inline-start` inline, a logical property). Vertical orientation is behaviour from the primitive, not a style variant. Range sliders work with the same component.
+
+The slider is also usable bare, outside `Field`.
+
+## The track family
+
+`Slider` and `Progress` share the `track` family: `track.rail` (the rail) and `track.fill` (the filled portion). Those are the two things they genuinely share; the thumb, the interaction and the indeterminate state live in the components. Installing `slider` after `progress` writes exactly one file — `slider.tsx` itself.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | Base UI `Slider.Root` |
+| `Label` | `Text.Label` + `field.label()` |
+| `Value` | Base UI `Slider.Value` |
+| `Control` | `field-control` marker + layout |
+| `Track` | `track.rail()` |
+| `Indicator` | `track.fill()` |
+| `Thumb` | `palette-ring` focus + layout |

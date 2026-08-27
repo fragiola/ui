@@ -1,0 +1,23 @@
+/* Surface-purple — a tinted surface, hue ~300. A surface first: base is a
+   near-neutral carrying a trace of the hue, contrast is body text, accent is
+   secondary text. It exists so two panels on the same page can be
+   recognisably different surfaces without either being "coloured". Both
+   themes declare all six roles. */
+
+:root[data-theme="light"] .palette-surface-purple {
+    --palette-base: oklch(0.99 0.008 300);
+    --palette-soft: oklch(0.95 0.02 300);
+    --palette-line: oklch(0.85 0.04 300);
+    --palette-contrast: oklch(0.18 0.03 300);
+    --palette-accent: oklch(0.28 0.06 300);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-surface-purple {
+    --palette-base: oklch(0.17 0.015 300);
+    --palette-soft: oklch(0.26 0.03 300);
+    --palette-line: oklch(0.32 0.04 300);
+    --palette-contrast: oklch(0.95 0.01 300);
+    --palette-accent: oklch(0.85 0.03 300);
+    --palette-ring: var(--palette-accent);
+}
