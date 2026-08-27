@@ -1,6 +1,5 @@
-import NavigationMenuDemo from "#/examples/navigation-menu-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function NavigationMenuPage() {
     return (
@@ -20,9 +19,7 @@ export default function NavigationMenuPage() {
 
             <InstallCommand name="navigation-menu" />
 
-            <ComponentPreviewServer name="navigation-menu-demo">
-                <NavigationMenuDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="navigation-menu-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

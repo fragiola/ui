@@ -1,6 +1,5 @@
-import ClickableDemo from "#/examples/clickable-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ClickablePage() {
     return (
@@ -21,9 +20,7 @@ export default function ClickablePage() {
 
             <InstallCommand name="clickable" />
 
-            <ComponentPreviewServer name="clickable-demo">
-                <ClickableDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="clickable-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

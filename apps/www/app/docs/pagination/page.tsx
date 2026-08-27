@@ -1,6 +1,5 @@
-import PaginationDemo from "#/examples/pagination-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function PaginationPage() {
     return (
@@ -20,9 +19,7 @@ export default function PaginationPage() {
 
             <InstallCommand name="pagination" />
 
-            <ComponentPreviewServer name="pagination-demo">
-                <PaginationDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="pagination-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

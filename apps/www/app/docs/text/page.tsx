@@ -1,6 +1,5 @@
-import TextDemo from "#/examples/text-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function TextPage() {
     return (
@@ -20,9 +19,7 @@ export default function TextPage() {
 
             <InstallCommand name="text" />
 
-            <ComponentPreviewServer name="text-demo">
-                <TextDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="text-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

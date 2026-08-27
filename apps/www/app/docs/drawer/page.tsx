@@ -1,6 +1,5 @@
-import DrawerDemo from "#/examples/drawer-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function DrawerPage() {
     return (
@@ -19,9 +18,7 @@ export default function DrawerPage() {
 
             <InstallCommand name="drawer" />
 
-            <ComponentPreviewServer name="drawer-demo">
-                <DrawerDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="drawer-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

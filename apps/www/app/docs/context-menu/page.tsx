@@ -1,6 +1,5 @@
-import ContextMenuDemo from "#/examples/context-menu-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ContextMenuPage() {
     return (
@@ -19,9 +18,7 @@ export default function ContextMenuPage() {
 
             <InstallCommand name="context-menu" />
 
-            <ComponentPreviewServer name="context-menu-demo">
-                <ContextMenuDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="context-menu-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

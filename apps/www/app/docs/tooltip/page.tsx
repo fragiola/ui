@@ -1,6 +1,5 @@
-import TooltipDemo from "#/examples/tooltip-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function TooltipPage() {
     return (
@@ -19,9 +18,7 @@ export default function TooltipPage() {
 
             <InstallCommand name="tooltip" />
 
-            <ComponentPreviewServer name="tooltip-demo">
-                <TooltipDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="tooltip-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

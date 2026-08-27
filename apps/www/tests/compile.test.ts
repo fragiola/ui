@@ -13,6 +13,7 @@ import { readPaletteNames } from "./palette-utils";
 
 const ROOT = process.cwd();
 const REGISTRY_DIR = path.join(ROOT, "registry");
+const EXAMPLES_DIR = path.join(ROOT, "examples");
 const TMP_DIR = path.join(ROOT, ".tmp-tailwind-test");
 const OUTPUT_CSS = path.join(TMP_DIR, "out.css");
 
@@ -80,6 +81,7 @@ beforeAll(async () => {
     const inputCss =
         importPaths.map((p) => `@import "${p}";`).join("\n") +
         `\n@source "${REGISTRY_DIR}/**/*.{ts,tsx}";` +
+        `\n@source "${EXAMPLES_DIR}/**/*.{ts,tsx}";` +
         `\n@source "${path.join(ROOT, "tests", "fixtures")}/**/*.{ts,tsx}";\n`;
 
     const inputPath = path.join(TMP_DIR, "input.css");
@@ -145,7 +147,13 @@ describe("class compilation guard", () => {
 
     it("every palette class used in source files compiles to a CSS rule", async () => {
         const sourceFiles = await collectSourceFiles(REGISTRY_DIR);
-        const usedClasses = await extractClasses(sourceFiles);
+        // Also collect from the examples directory — it moved out of
+        // registry/ in Issue #34 and is the most class-dense tree.
+        const exampleFiles = await collectSourceFiles(EXAMPLES_DIR);
+        const usedClasses = await extractClasses([
+            ...sourceFiles,
+            ...exampleFiles,
+        ]);
 
         // Build a regex that skips plain palette class names (palette-X) for
         // every palette in the directory — those are plain CSS classes, not

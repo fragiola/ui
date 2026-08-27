@@ -1,6 +1,5 @@
-import PopoverDemo from "#/examples/popover-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function PopoverPage() {
     return (
@@ -19,9 +18,7 @@ export default function PopoverPage() {
 
             <InstallCommand name="popover" />
 
-            <ComponentPreviewServer name="popover-demo">
-                <PopoverDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="popover-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

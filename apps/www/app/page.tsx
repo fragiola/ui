@@ -1,9 +1,7 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import Link from "next/link";
-import { Text } from "#/atoms/text";
-import TextDemo from "#/examples/text-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 import { baseOptions } from "@/lib/layout.shared";
 
 export default function HomePage() {
@@ -28,21 +26,21 @@ export default function HomePage() {
                 </p>
                 <ul className="space-y-2 text-sm text-palette-accent/85 mb-6">
                     <li>
-                        <Text.Strong>Rigid theming.</Text.Strong> 41 fixed
-                        global tokens; swapping a theme redefines ~20 at once.
-                        No way to tint one area while keeping its surface
-                        neutral, no way to scope a color to a subtree.
+                        <strong>Rigid theming.</strong> 41 fixed global tokens;
+                        swapping a theme redefines ~20 at once. No way to tint
+                        one area while keeping its surface neutral, no way to
+                        scope a color to a subtree.
                     </li>
                     <li>
-                        <Text.Strong>Duplicated styles.</Text.Strong> 422{" "}
+                        <strong>Duplicated styles.</strong> 422{" "}
                         <code>cn-*</code> classes where components sharing a
                         visual skeleton have the CSS pasted rather than shared.{" "}
                         <code>destructive</code> appears 132 times.
                     </li>
                     <li>
-                        <Text.Strong>Duplicated components.</Text.Strong> ~250
-                        identical wrapper lines between dropdown-menu and
-                        context-menu. Three different ways to write an input.
+                        <strong>Duplicated components.</strong> ~250 identical
+                        wrapper lines between dropdown-menu and context-menu.
+                        Three different ways to write an input.
                     </li>
                 </ul>
 
@@ -56,9 +54,7 @@ export default function HomePage() {
                     leaving the page. That scoping is the demonstration: a
                     subtree carries its own palette.
                 </p>
-                <ComponentPreviewServer name="text-demo">
-                    <TextDemo />
-                </ComponentPreviewServer>
+                <ComponentPreview name="text-demo" />
 
                 <h2 className="text-xl font-semibold text-palette-contrast mt-8 mb-3">
                     Install

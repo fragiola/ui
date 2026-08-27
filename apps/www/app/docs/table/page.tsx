@@ -1,6 +1,5 @@
-import TableDemo from "#/examples/table-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function TablePage() {
     return (
@@ -18,9 +17,7 @@ export default function TablePage() {
                 </p>
             </div>
             <InstallCommand name="table" />
-            <ComponentPreviewServer name="table-demo">
-                <TableDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="table-demo" />
         </div>
     );
 }

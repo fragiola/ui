@@ -1,6 +1,5 @@
-import ComboboxDemo from "#/examples/combobox-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ComboboxPage() {
     return (
@@ -21,9 +20,7 @@ export default function ComboboxPage() {
 
             <InstallCommand name="combobox" />
 
-            <ComponentPreviewServer name="combobox-demo">
-                <ComboboxDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="combobox-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

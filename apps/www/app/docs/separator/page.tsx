@@ -1,6 +1,5 @@
-import SeparatorDemo from "#/examples/separator-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function SeparatorPage() {
     return (
@@ -18,9 +17,7 @@ export default function SeparatorPage() {
                 </p>
             </div>
             <InstallCommand name="separator" />
-            <ComponentPreviewServer name="separator-demo">
-                <SeparatorDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="separator-demo" />
         </div>
     );
 }

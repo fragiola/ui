@@ -1,6 +1,5 @@
-import FieldDemo from "#/examples/field-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function FieldPage() {
     return (
@@ -18,9 +17,7 @@ export default function FieldPage() {
 
             <InstallCommand name="field" />
 
-            <ComponentPreviewServer name="field-demo">
-                <FieldDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="field-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

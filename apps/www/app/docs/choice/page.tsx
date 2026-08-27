@@ -1,6 +1,5 @@
-import ChoiceDemo from "#/examples/choice-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ChoicePage() {
     return (
@@ -19,9 +18,7 @@ export default function ChoicePage() {
 
             <InstallCommand name="checkbox" />
 
-            <ComponentPreviewServer name="choice-demo">
-                <ChoiceDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="choice-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

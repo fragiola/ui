@@ -1,6 +1,5 @@
-import DropdownMenuDemo from "#/examples/dropdown-menu-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function DropdownMenuPage() {
     return (
@@ -20,9 +19,7 @@ export default function DropdownMenuPage() {
 
             <InstallCommand name="dropdown-menu" />
 
-            <ComponentPreviewServer name="dropdown-menu-demo">
-                <DropdownMenuDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="dropdown-menu-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

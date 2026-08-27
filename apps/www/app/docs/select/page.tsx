@@ -1,6 +1,5 @@
-import SelectDemo from "#/examples/select-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function SelectPage() {
     return (
@@ -19,9 +18,7 @@ export default function SelectPage() {
 
             <InstallCommand name="select" />
 
-            <ComponentPreviewServer name="select-demo">
-                <SelectDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="select-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

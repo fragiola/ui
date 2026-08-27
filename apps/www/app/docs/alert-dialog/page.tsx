@@ -1,6 +1,5 @@
-import AlertDialogDemo from "#/examples/alert-dialog-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function AlertDialogPage() {
     return (
@@ -19,9 +18,7 @@ export default function AlertDialogPage() {
 
             <InstallCommand name="alert-dialog" />
 
-            <ComponentPreviewServer name="alert-dialog-demo">
-                <AlertDialogDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="alert-dialog-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

@@ -1,6 +1,5 @@
-import AvatarDemo from "#/examples/avatar-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function AvatarPage() {
     return (
@@ -17,9 +16,7 @@ export default function AvatarPage() {
                 </p>
             </div>
             <InstallCommand name="avatar" />
-            <ComponentPreviewServer name="avatar-demo">
-                <AvatarDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="avatar-demo" />
         </div>
     );
 }

@@ -1,6 +1,5 @@
-import BadgeDemo from "#/examples/badge-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function BadgePage() {
     return (
@@ -18,9 +17,7 @@ export default function BadgePage() {
 
             <InstallCommand name="badge" />
 
-            <ComponentPreviewServer name="badge-demo">
-                <BadgeDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="badge-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

@@ -1,6 +1,5 @@
-import SkeletonDemo from "#/examples/skeleton-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function SkeletonPage() {
     return (
@@ -18,9 +17,7 @@ export default function SkeletonPage() {
                 </p>
             </div>
             <InstallCommand name="skeleton" />
-            <ComponentPreviewServer name="skeleton-demo">
-                <SkeletonDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="skeleton-demo" />
         </div>
     );
 }

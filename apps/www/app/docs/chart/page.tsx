@@ -1,6 +1,5 @@
-import ChartDemo from "#/examples/chart-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ChartPage() {
     return (
@@ -19,9 +18,7 @@ export default function ChartPage() {
 
             <InstallCommand name="chart" />
 
-            <ComponentPreviewServer name="chart-demo">
-                <ChartDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="chart-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

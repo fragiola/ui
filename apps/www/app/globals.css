@@ -96,5 +96,6 @@
 
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 @source "../registry/**/*.{ts,tsx}";
+@source "../examples/**/*.{ts,tsx}";
 @source "../content/**/*.{md,mdx}";
 @source "../components/**/*.{ts,tsx}";

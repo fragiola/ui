@@ -1,6 +1,5 @@
-import DialogDemo from "#/examples/dialog-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function DialogPage() {
     return (
@@ -20,9 +19,7 @@ export default function DialogPage() {
 
             <InstallCommand name="dialog" />
 
-            <ComponentPreviewServer name="dialog-demo">
-                <DialogDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="dialog-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

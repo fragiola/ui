@@ -1,6 +1,5 @@
-import TabsDemo from "#/examples/tabs-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function TabsPage() {
     return (
@@ -19,9 +18,7 @@ export default function TabsPage() {
 
             <InstallCommand name="tabs" />
 
-            <ComponentPreviewServer name="tabs-demo">
-                <TabsDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="tabs-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

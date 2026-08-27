@@ -1,6 +1,5 @@
-import SliderDemo from "#/examples/slider-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function SliderPage() {
     return (
@@ -21,9 +20,7 @@ export default function SliderPage() {
 
             <InstallCommand name="slider" />
 
-            <ComponentPreviewServer name="slider-demo">
-                <SliderDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="slider-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

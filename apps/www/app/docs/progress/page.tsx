@@ -1,6 +1,5 @@
-import ProgressDemo from "#/examples/progress-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function ProgressPage() {
     return (
@@ -20,9 +19,7 @@ export default function ProgressPage() {
 
             <InstallCommand name="progress" />
 
-            <ComponentPreviewServer name="progress-demo">
-                <ProgressDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="progress-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

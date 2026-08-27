@@ -1,6 +1,5 @@
-import BreadcrumbDemo from "#/examples/breadcrumb-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function BreadcrumbPage() {
     return (
@@ -19,9 +18,7 @@ export default function BreadcrumbPage() {
 
             <InstallCommand name="breadcrumb" />
 
-            <ComponentPreviewServer name="breadcrumb-demo">
-                <BreadcrumbDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="breadcrumb-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">

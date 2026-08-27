@@ -1,6 +1,5 @@
-import InputDemo from "#/examples/input-demo";
-import { ComponentPreviewServer } from "@/components/component-preview-server";
 import { InstallCommand } from "@/components/install-command";
+import { ComponentPreview } from "@/components/preview";
 
 export default function InputPage() {
     return (
@@ -20,9 +19,7 @@ export default function InputPage() {
 
             <InstallCommand name="input" />
 
-            <ComponentPreviewServer name="input-demo">
-                <InputDemo />
-            </ComponentPreviewServer>
+            <ComponentPreview name="input-demo" />
 
             <section className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold text-palette-contrast">
