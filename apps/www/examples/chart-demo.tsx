@@ -1,13 +1,16 @@
 "use client";
 
 import type { EChartsOption } from "echarts";
+import type { ReactNode } from "react";
 import { Chart } from "#/ui/chart";
-import { PaletteGrid } from "@/components/preview/palette-grid";
-import { SURFACES } from "@/lib/palette-sets";
 
-// Each cell is a tinted surface palette. The chart series derive from
-// --palette-base, so the same option renders with different colour ramps
-// per cell — the most convincing demo of palette-driven charting.
+// The floor is palette-surface. The chart series derive from --palette-base,
+// so the same option renders with the theme's colour ramp. Shows line, bar,
+// and pie (donut) — the three chart types the Chart wrapper handles.
+//
+// Each Chart carries h-full so ECharts can read the parent's height — the
+// wrapper div has w-full only, and a 100%-height child of a zero-height
+// parent is the classic ECharts silent failure.
 const lineOption: EChartsOption = {
     title: {
         text: "Monthly visits",
@@ -66,40 +69,53 @@ const pieOption: EChartsOption = {
     ],
 };
 
-function DemoContent() {
+export default function ChartDemo() {
     return (
-        <div className="flex flex-col gap-8">
-            <div className="h-72">
-                <Chart
-                    option={lineOption}
-                    categories={[
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat",
-                        "Sun",
-                    ]}
-                />
-            </div>
-            <div className="h-72">
-                <Chart
-                    option={barOption}
-                    categories={["Q1", "Q2", "Q3", "Q4"]}
-                />
-            </div>
-            <div className="h-72">
-                <Chart option={pieOption} />
-            </div>
+        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+            <Row label="line">
+                <div className="h-72">
+                    <Chart
+                        className="h-full"
+                        option={lineOption}
+                        categories={[
+                            "Mon",
+                            "Tue",
+                            "Wed",
+                            "Thu",
+                            "Fri",
+                            "Sat",
+                            "Sun",
+                        ]}
+                    />
+                </div>
+            </Row>
+
+            <Row label="bar">
+                <div className="h-72">
+                    <Chart
+                        className="h-full"
+                        option={barOption}
+                        categories={["Q1", "Q2", "Q3", "Q4"]}
+                    />
+                </div>
+            </Row>
+
+            <Row label="pie (donut)">
+                <div className="h-72">
+                    <Chart className="h-full" option={pieOption} />
+                </div>
+            </Row>
         </div>
     );
 }
 
-export default function ChartDemo() {
+function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
-        <PaletteGrid palettes={SURFACES}>
-            <DemoContent />
-        </PaletteGrid>
+        <div className="flex flex-col gap-2">
+            <span className="text-xs font-mono text-palette-accent/85">
+                {label}
+            </span>
+            {children}
+        </div>
     );
 }

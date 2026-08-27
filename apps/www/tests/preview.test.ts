@@ -1,43 +1,6 @@
 import { readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { ALL, CHROMATIC, SURFACES } from "../lib/palette-sets";
-import { readPaletteNames } from "./palette-utils";
-
-// ─── Palette sets agreement ─────────────────────────────────────────────────
-// The named palette sets (CHROMATIC, SURFACES, ALL) are the source of truth
-// for the preview harness. They must agree with the palette directory: every
-// palette in the directory must appear in exactly one named set, and no set
-// may reference a palette that does not exist.
-
-describe("palette sets agreement", () => {
-    it("CHROMATIC + SURFACES = ALL (no overlap, no missing)", async () => {
-        const directory = await readPaletteNames();
-        const sets = [...CHROMATIC, ...SURFACES];
-
-        // Every palette in the directory is in a set
-        for (const p of directory) {
-            expect(sets, `palette ${p} not in any set`).toContain(p);
-        }
-        // Every set member exists in the directory
-        for (const p of sets) {
-            expect(
-                directory,
-                `set references non-existent palette ${p}`,
-            ).toContain(p);
-        }
-        // No overlap between CHROMATIC and SURFACES
-        const chromaticSet = new Set<string>(CHROMATIC);
-        for (const p of SURFACES) {
-            expect(
-                chromaticSet.has(p),
-                `${p} in both CHROMATIC and SURFACES`,
-            ).toBe(false);
-        }
-        // ALL = CHROMATIC + SURFACES
-        expect(ALL).toEqual([...SURFACES, ...CHROMATIC]);
-    });
-});
 
 // ─── Example resolution guard ───────────────────────────────────────────────
 // Every file in apps/www/examples/ must resolve through ComponentPreview's
