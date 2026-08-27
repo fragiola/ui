@@ -1,5 +1,9 @@
-import type { MDXComponents } from "mdx/types";
+import { getMDXComponents } from "@/components/mdx";
 
-export function useMDXComponents(): MDXComponents {
-    return {};
+// Next.js convention: useMDXComponents is called by the MDX runtime to
+// resolve components. Delegates to the Fumadocs-aware registry in
+// components/mdx.tsx.
+
+export function useMDXComponents() {
+    return getMDXComponents();
 }

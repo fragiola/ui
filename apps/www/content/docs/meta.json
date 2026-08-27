@@ -1,0 +1,10 @@
+{
+    "title": "Getting Started",
+    "pages": [
+        "installation",
+        "theming",
+        "palettes",
+        "style-families",
+        "composition"
+    ]
+}
