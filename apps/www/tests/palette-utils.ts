@@ -38,11 +38,11 @@ export type Role = (typeof SIX_ROLES)[number];
 export const THEMES = ["light", "dark"] as const;
 export type Theme = (typeof THEMES)[number];
 
-// Surface-tier palettes: neutral surfaces + tinted surfaces. These are the
-// palettes where `accent` at 85% opacity must clear AA over `base` and `soft`,
-// because secondary text (text-palette-accent/85) realistically appears only
-// on neutral/tinted backgrounds. Chromatic palettes use `contrast` for their
-// text, not a muted variant — they are deliberately excluded from the
+// Surface-tier palettes: neutral surfaces + surface-ring palettes. These are
+// the palettes where `accent` at 85% opacity must clear AA over `base` and
+// `soft`, because secondary text (text-palette-accent/85) realistically
+// appears only on neutral backgrounds. Chromatic palettes use `contrast` for
+// their text, not a muted variant — they are deliberately excluded from the
 // accent/85 assertion.
 export const SURFACE_TIER = [
     "surface",

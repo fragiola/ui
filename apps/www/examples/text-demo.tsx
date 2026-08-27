@@ -1,65 +1,76 @@
+import type { ReactNode } from "react";
 import { Text } from "#/atoms/text";
-import { PaletteGrid } from "@/components/preview/palette-grid";
-import { SURFACES } from "@/lib/palette-sets";
 
-// Text is the target every other component points at through `render`. The
-// snippet below is the whole idea in one place: a heading that another
-// component's part wears, keeping its a11y wiring while taking Text's
-// typography. (Shown statically here; the dialog/field docs show it wired to
-// a behaviour primitive through `render`.)
-//
-// Each cell is a tinted surface palette — this is where secondary text
-// (text-palette-accent/85) lives. The heading, paragraph, label, error and
-// link all read roles from the cell, demonstrating text roles across
-// palettes.
+// The floor is palette-surface. Text is the target every other component
+// points at through `render` — the snippet below is the whole idea in one
+// place: a heading that another component's part wears, keeping its a11y
+// wiring while taking Text's typography. This is where secondary text
+// (text-palette-accent/85) lives.
 function WornHeading() {
     return <Text.Heading as="h2">A heading worn by another part</Text.Heading>;
 }
 
-function DemoContent() {
+export default function TextDemo() {
     return (
-        <div className="flex flex-col gap-3">
-            <Text.Heading as="h1">Heading level 1</Text.Heading>
-            <Text.Heading as="h2">Heading level 2</Text.Heading>
-            <Text.Heading as="h3">Heading level 3</Text.Heading>
-            <Text.Paragraph>
-                This is a paragraph. The body uses the surface palette — switch
-                the palette above to see the same content under different roles.
-            </Text.Paragraph>
-            <Text.Paragraph>
-                <Text.Strong>Bold text</Text.Strong> and{" "}
-                <Text.Small>small italic text</Text.Small> in the same line.
-            </Text.Paragraph>
-            <Text.Label>Field label</Text.Label>
-            <Text.Error>This is an error message.</Text.Error>
-            <Text.Link href="#">A plain link</Text.Link>
+        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+            <Row label="headings">
+                <div className="flex flex-col gap-3">
+                    <Text.Heading as="h1">Heading level 1</Text.Heading>
+                    <Text.Heading as="h2">Heading level 2</Text.Heading>
+                    <Text.Heading as="h3">Heading level 3</Text.Heading>
+                </div>
+            </Row>
 
-            {/* A heading worn by another component's part — the composition
-                idea in one snippet. */}
-            <WornHeading />
+            <Row label="paragraph + inline">
+                <div className="flex flex-col gap-3">
+                    <Text.Paragraph>
+                        This is a paragraph. The body uses the surface palette.
+                    </Text.Paragraph>
+                    <Text.Paragraph>
+                        <Text.Strong>Bold text</Text.Strong> and{" "}
+                        <Text.Small>small italic text</Text.Small> in the same
+                        line.
+                    </Text.Paragraph>
+                </div>
+            </Row>
 
-            {/* Secondary text — text-palette-accent/85, the settled value. */}
-            <p className="text-sm text-palette-accent/85">
-                Secondary text uses <code>text-palette-accent/85</code> — the
-                measured point at which <code>accent</code> clears AA on every
-                neutral surface in both themes.
-            </p>
+            <Row label="label + error + link">
+                <div className="flex flex-col gap-3">
+                    <Text.Label>Field label</Text.Label>
+                    <Text.Error>This is an error message.</Text.Error>
+                    <Text.Link href="#">A plain link</Text.Link>
+                </div>
+            </Row>
 
-            {/* Text.Clickable — a textual link rendered as a button. A
-                different job from Clickable.Button, which is a filled
-                affordance. */}
-            <p className="text-sm text-palette-contrast">
-                Read the docs and{" "}
-                <Text.Clickable type="button">try it now</Text.Clickable>.
-            </p>
+            <Row label="worn by another part">
+                <WornHeading />
+            </Row>
+
+            <Row label="secondary text">
+                <p className="text-sm text-palette-accent/85">
+                    Secondary text uses <code>text-palette-accent/85</code> —
+                    the measured point at which <code>accent</code> clears AA on
+                    every neutral surface in both themes.
+                </p>
+            </Row>
+
+            <Row label="Text.Clickable">
+                <p className="text-sm text-palette-contrast">
+                    Read the docs and{" "}
+                    <Text.Clickable type="button">try it now</Text.Clickable>.
+                </p>
+            </Row>
         </div>
     );
 }
 
-export default function TextDemo() {
+function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
-        <PaletteGrid palettes={SURFACES}>
-            <DemoContent />
-        </PaletteGrid>
+        <div className="flex flex-col gap-2">
+            <span className="text-xs font-mono text-palette-accent/85">
+                {label}
+            </span>
+            {children}
+        </div>
     );
 }

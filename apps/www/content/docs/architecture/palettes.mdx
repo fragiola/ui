@@ -9,10 +9,11 @@ description: "The palette set has two tiers: chromatic palettes where the colour
 ---
 
 The palette set has two tiers: **chromatic** palettes where the colour IS the
-element, and **tinted surface** palettes where a near-neutral base carries a
-trace of a hue so two panels can be recognisably different surfaces without
-either being "coloured". Plus the two neutral surfaces that everything sits on.
-Every palette declares all six roles in both light and dark.
+element, and **surface-ring** palettes — neutral surfaces whose only difference
+from `surface` is a chromatic focus ring, so a field's frame stays neutral
+while its focus states the theme's colour. Plus the two neutral surfaces that
+everything sits on. Every palette declares all six roles in both light and
+dark.
 
 ## The neutral surfaces
 
@@ -66,34 +67,37 @@ Do **not** use `aria-invalid:palette-danger` — Tailwind variants only apply to
 utilities, and `palette-*` is a plain CSS class. That syntax compiles
 nothing.
 
-## The tinted surfaces
+## The surface-ring palettes
 
-A tinted surface is a surface first: `base` is a near-neutral carrying a trace
-of the hue, `contrast` is body text, `accent` is secondary text. It exists so
-that two panels on the same page can be recognisably different surfaces without
-either of them being "coloured". This is the architecture's own answer to "two
-background levels are two palettes, not a seventh role" — extended sideways
-instead of upwards.
+A surface-ring palette is a neutral surface first: `base`, `soft`, `line`,
+`contrast` and `accent` are byte-identical to `surface`. The only role that
+differs is `ring`, which is a literal chromatic value taken from the
+corresponding chromatic palette's `base`. It exists so a field's frame can
+stay neutral (a field is a surface, not a coloured element) while its focus
+ring states the theme's colour. This is the architecture's own answer to "the
+need is real (theme a field's focus), the answer is a new palette, not a
+seventh role" — the same reasoning that justifies `raised`, applied sideways
+to a single role instead of a whole tier.
 
 ### Surface-blue
 
-Hue ~250. A blue-tinted surface.
+Neutral surface, blue focus ring (~250).
 
 ### Surface-purple
 
-Hue ~300. A purple-tinted surface.
+Neutral surface, purple focus ring (~300).
 
 ### Surface-green
 
-Hue ~150. A green-tinted surface.
+Neutral surface, green focus ring (~150).
 
 ### Surface-orange
 
-Hue ~55. An orange-tinted surface.
+Neutral surface, orange focus ring (~55).
 
 ### Surface-rose
 
-Hue ~345. A rose-tinted surface.
+Neutral surface, rose focus ring (~345).
 
 ## Writing a palette
 

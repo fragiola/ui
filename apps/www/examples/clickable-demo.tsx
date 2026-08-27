@@ -3,7 +3,19 @@
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Clickable } from "#/atoms/clickable";
-import { CHROMATIC } from "@/lib/palette-sets";
+
+// The chromatic palettes — the colour IS the element. Literal here because
+// examples are published source (ComponentPreview reads and displays this
+// file with a copy button); an import of docs-site chrome would break for
+// whoever copies it.
+const CHROMATIC = [
+    "blue",
+    "purple",
+    "green",
+    "orange",
+    "rose",
+    "danger",
+] as const;
 
 // The palette class goes on the button itself, not on a wrapping context.
 // The floor is palette-surface; each button carries its own palette-* class

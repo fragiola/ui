@@ -1,38 +1,86 @@
 "use client";
+
 import { CheckIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { Badge } from "#/atoms/badge";
-import { PaletteGrid } from "@/components/preview/palette-grid";
-import { CHROMATIC } from "@/lib/palette-sets";
 
-// Each cell is a chromatic palette. The badge reads roles from the cell —
-// the variant axis (default / solid / outline) is the same across every
-// palette, only the colour changes. This is the palette-as-concept argument:
-// the same component, six colours, zero variants.
-function DemoContent() {
+// The palette class goes on the badge itself, not on a wrapping context.
+// The floor is palette-surface; each badge carries its own palette-* class
+// and styles only itself. Six palettes, one subtree, side by side — the
+// architecture's claim made visible.
+//
+// Axes shown, one per row, all aligned:
+//   variant  soft / solid / outline
+//   with-icon  soft + icon
+const CHROMATIC = [
+    "blue",
+    "purple",
+    "green",
+    "orange",
+    "rose",
+    "danger",
+] as const;
+
+export default function BadgeDemo() {
     return (
-        <div className="flex flex-col gap-6">
-            {/* variant axis: default / solid / outline */}
-            <div className="flex flex-wrap items-center gap-3">
-                <Badge>Default</Badge>
-                <Badge variant="solid">Solid</Badge>
-                <Badge variant="outline">Outline</Badge>
-            </div>
+        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+            {/* soft — one badge per chromatic palette */}
+            <Row label="soft">
+                {CHROMATIC.map((palette) => (
+                    <Badge key={palette} className={`palette-${palette}`}>
+                        {palette}
+                    </Badge>
+                ))}
+            </Row>
 
-            {/* with icon */}
-            <div className="flex flex-wrap items-center gap-3">
-                <Badge>
-                    <CheckIcon />
-                    Verified
-                </Badge>
-            </div>
+            {/* solid — one badge per chromatic palette */}
+            <Row label="solid">
+                {CHROMATIC.map((palette) => (
+                    <Badge
+                        key={palette}
+                        className={`palette-${palette}`}
+                        variant="solid"
+                    >
+                        {palette}
+                    </Badge>
+                ))}
+            </Row>
+
+            {/* outline — one badge per chromatic palette */}
+            <Row label="outline">
+                {CHROMATIC.map((palette) => (
+                    <Badge
+                        key={palette}
+                        className={`palette-${palette}`}
+                        variant="outline"
+                    >
+                        {palette}
+                    </Badge>
+                ))}
+            </Row>
+
+            {/* with icon — soft variant, one badge per chromatic palette */}
+            <Row label="with icon">
+                {CHROMATIC.map((palette) => (
+                    <Badge key={palette} className={`palette-${palette}`}>
+                        <CheckIcon />
+                        Verified
+                    </Badge>
+                ))}
+            </Row>
         </div>
     );
 }
 
-export default function BadgeDemo() {
+// Row — a labelled, aligned row of badges. The label is a <span>, not a
+// heading, so it does not pollute the page's table of contents.
+function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
-        <PaletteGrid palettes={CHROMATIC}>
-            <DemoContent />
-        </PaletteGrid>
+        <div className="flex flex-col gap-2">
+            <span className="text-xs font-mono text-palette-accent/85">
+                {label}
+            </span>
+            <div className="flex flex-wrap items-center gap-2">{children}</div>
+        </div>
     );
 }

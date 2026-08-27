@@ -336,6 +336,130 @@ describe("five-list agreement", () => {
     });
 });
 
+// ─── Surface-ring tier guard ────────────────────────────────────────────────
+// The surface-* palettes (surface-blue, surface-purple, surface-green,
+// surface-orange, surface-rose) are neutral surfaces whose ONLY difference
+// from `surface` is --palette-ring, which is a literal chromatic value (not
+// var(--palette-accent)) taken from the corresponding chromatic palette's
+// base. This guard makes drift impossible: the neutrals must be byte-identical
+// to surface, and the ring must be literal and must differ from surface's
+// (resolved) ring.
+//
+// See Epic #39 / Issue #40. This is a values change, not a contract change:
+// every surface-* palette still declares all six roles (asserted above).
+
+const SURFACE_RING_TIER = [
+    "surface-blue",
+    "surface-purple",
+    "surface-green",
+    "surface-orange",
+    "surface-rose",
+];
+
+// Extract the RAW (unresolved) declaration string for a role — e.g.
+// "var(--palette-accent)" or "oklch(0.55 0.2 250)". Unlike extractRoleValue,
+// this does NOT resolve var() indirection, so it can distinguish a literal
+// chromatic value from a var() reference.
+function extractRawRoleDeclaration(
+    css: string,
+    palette: string,
+    theme: Theme,
+    role: Role,
+): string | null {
+    const escaped = palette.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const blockRe = new RegExp(
+        `:root\\[data-theme="${theme}"\\]\\s*(?:\\.palette-${escaped}(?![\\w-])|:is\\([^)]*\\.palette-${escaped}(?![\\w-])[^)]*\\))\\s*\\{([^}]+)\\}`,
+        "g",
+    );
+    const matches = [...css.matchAll(blockRe)];
+    for (const match of matches) {
+        const body = match[1] ?? "";
+        const valueRe = new RegExp(`--palette-${role}:\\s*([^;]+);`);
+        const valueMatch = body.match(valueRe);
+        if (valueMatch) {
+            return (valueMatch[1] ?? "").trim();
+        }
+    }
+    return null;
+}
+
+describe("surface-ring tier guard", () => {
+    for (const palette of SURFACE_RING_TIER) {
+        describe(`palette-${palette}`, () => {
+            for (const theme of THEMES) {
+                // Neutrals identical to surface: base, soft, line, contrast, accent.
+                for (const role of [
+                    "base",
+                    "soft",
+                    "line",
+                    "contrast",
+                    "accent",
+                ] as const) {
+                    it(`${theme}: ${role} is byte-identical to surface`, async () => {
+                        const surfaceCss = await readPaletteFile("surface");
+                        const css = await readPaletteFile(palette);
+                        const surfaceVal = extractRawRoleDeclaration(
+                            surfaceCss,
+                            "surface",
+                            theme,
+                            role,
+                        );
+                        const val = extractRawRoleDeclaration(
+                            css,
+                            palette,
+                            theme,
+                            role,
+                        );
+                        expect(val).not.toBeNull();
+                        expect(surfaceVal).not.toBeNull();
+                        expect(
+                            val,
+                            `palette-${palette} ${theme} ${role} = "${val}" but surface ${role} = "${surfaceVal}"`,
+                        ).toBe(surfaceVal);
+                    });
+                }
+
+                it(`${theme}: ring is a literal oklch (not var)`, async () => {
+                    const css = await readPaletteFile(palette);
+                    const raw = extractRawRoleDeclaration(
+                        css,
+                        palette,
+                        theme,
+                        "ring",
+                    );
+                    expect(raw).not.toBeNull();
+                    expect(
+                        raw,
+                        `palette-${palette} ${theme} ring is "${raw}", expected a literal oklch(...)`,
+                    ).toMatch(/^oklch\(/);
+                    expect(
+                        raw,
+                        `palette-${palette} ${theme} ring must not be var(--palette-accent)`,
+                    ).not.toContain("var(");
+                });
+
+                it(`${theme}: ring differs from surface's (resolved) ring`, async () => {
+                    const surfaceCss = await readPaletteFile("surface");
+                    const css = await readPaletteFile(palette);
+                    const surfaceRing = extractRoleValue(
+                        surfaceCss,
+                        "surface",
+                        theme,
+                        "ring",
+                    );
+                    const ring = extractRoleValue(css, palette, theme, "ring");
+                    expect(ring).not.toBeNull();
+                    expect(surfaceRing).not.toBeNull();
+                    expect(
+                        ring,
+                        `palette-${palette} ${theme} ring resolved to the same value as surface's ring`,
+                    ).not.toEqual(surfaceRing);
+                });
+            }
+        });
+    }
+});
+
 // ─── Contrast guard ─────────────────────────────────────────────────────────
 // AGENTS.md and docs/architecture.md §6 both state that the palette-contract
 // guard asserts the contrast floor. This is that guard.
@@ -346,8 +470,8 @@ describe("five-list agreement", () => {
 //
 // Chromatic palettes are deliberately excluded from the accent/85 assertion:
 // they use `contrast` for their text, not a muted variant. Secondary text
-// (text-palette-accent/85) realistically appears only on neutral/tinted
-// backgrounds. Do NOT "fix" this exclusion — it is intentional.
+// (text-palette-accent/85) realistically appears only on neutral backgrounds.
+// Do NOT "fix" this exclusion — it is intentional.
 
 describe("contrast guard", () => {
     for (const palette of paletteNames) {
@@ -377,7 +501,7 @@ describe("contrast guard", () => {
 
     // Surface-tier palettes only: accent@85% over base and over soft.
     // The 85% figure is settled (text-palette-accent/85) and is NOT a variable
-    // this test may adjust. If a tinted surface cannot clear the floor at 85%,
+    // this test may adjust. If a surface-tier palette cannot clear the floor at 85%,
     // the palette's numbers move, not the opacity.
     for (const palette of SURFACE_TIER) {
         for (const theme of THEMES) {
