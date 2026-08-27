@@ -73,7 +73,7 @@ function TabsTab({
             className={cn(
                 "relative cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
                 "highlighted:bg-palette-soft highlighted:text-palette-contrast",
-                "data-[active]:bg-palette-soft data-[active]:text-palette-contrast",
+                "data-active:bg-palette-soft data-active:text-palette-contrast",
                 "focus-visible:outline-2 focus-visible:outline-palette-ring",
                 "data-disabled:pointer-events-none data-disabled:opacity-50",
                 "data-[orientation=horizontal]:-mb-px data-[orientation=horizontal]:rounded-b-none",
@@ -106,7 +106,7 @@ function TabsIndicator({
             className={cn(
                 "absolute rounded-sm bg-palette-base transition-all duration-200",
                 "data-[orientation=horizontal]:bottom-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:left-(--active-tab-left) data-[orientation=horizontal]:w-(--active-tab-width)",
-                "data-[orientation=vertical]:end-0 data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:top-(--active-tab-top) data-[orientation=vertical]:h-(--active-tab-height)",
+                "data-[orientation=vertical]:inset-e-0 data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:top-(--active-tab-top) data-[orientation=vertical]:h-(--active-tab-height)",
                 className as string,
             )}
             {...props}

@@ -83,7 +83,7 @@ function NavigationMenuTrigger({
             className={cn(
                 "relative cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
                 "highlighted:bg-palette-soft highlighted:text-palette-contrast",
-                "data-[popup-open]:bg-palette-soft data-[popup-open]:text-palette-contrast",
+                "data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast",
                 "focus-visible:outline-2 focus-visible:outline-palette-ring",
                 className as string,
             )}
@@ -91,7 +91,7 @@ function NavigationMenuTrigger({
         >
             {children}
             <ChevronDownIcon
-                className="size-4 text-palette-accent/85 transition-transform duration-200 data-[popup-open]:rotate-180"
+                className="size-4 text-palette-accent/85 transition-transform duration-200 data-popup-open:rotate-180"
                 data-slot="navigation-menu-icon"
             />
         </NavigationMenuPrimitive.Trigger>
@@ -136,7 +136,7 @@ function NavigationMenuLink({
             data-slot="navigation-menu-link"
             render={<Text.Link />}
             className={cn(
-                "text-palette-accent/85 data-[active]:text-palette-contrast",
+                "text-palette-accent/85 data-active:text-palette-contrast",
                 className as string,
             )}
             {...props}
