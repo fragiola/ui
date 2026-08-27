@@ -78,15 +78,18 @@ unrelated scopes. "Optional token" does not exist here.
 another exists only to fit one case, and the next case will ask for another
 exception. The tell: a role with no coherent source.
 
-### Tinted surfaces
+### Surface-ring palettes
 
 "The number of palettes is free; the number of roles is not" extends sideways as
-well as upwards. A **tinted surface** palette (`surface-blue`, `surface-purple`,
-`surface-green`, `surface-orange`, `surface-rose`) is a near-neutral base carrying
-a trace of a hue — `base` at L0.99/C0.008, `soft` at L0.95/C0.02. It exists so two
-panels on the same page can be recognisably different surfaces without either being
-"coloured". The tinted-surface tier is a direct application of the rule: the need
-is real (distinguish two surfaces), the answer is a new palette, not a seventh role.
+well as upwards. A **surface-ring** palette (`surface-blue`, `surface-purple`,
+`surface-green`, `surface-orange`, `surface-rose`) is a neutral surface
+byte-identical to `surface` in five of six roles — the only difference is
+`--palette-ring`, which is a literal chromatic value taken from the
+corresponding chromatic palette's `base`. It exists so a field's frame can
+stay neutral (a field is a surface, not a coloured element — Rule 3) while its
+focus ring states the theme's colour. The surface-ring tier is a direct
+application of the rule: the need is real (theme a field's focus), the answer
+is a new palette, not a seventh role.
 
 ### The documentation site is an instance of the contract
 
@@ -274,9 +277,9 @@ in the remaining surface:
   `text-palette-accent/85`. The architecture initially proposed `accent/70`, but
   OKLCH→WCAG measurement showed 70% fails AA (4.5:1) even on neutral surfaces
   (surface/light/base = 2.85:1). At 85%, `accent` clears AA on every neutral surface
-  (surface + raised, base + soft) in both themes — worst case 4.58:1
-  (surface-green/light/soft). Secondary text appears only on neutral backgrounds;
-  chromatic palettes use `contrast` for their text. **Standardized** — including
+  (surface + raised, base + soft) in both themes. Secondary text appears only on
+  neutral backgrounds; chromatic palettes use `contrast` for their text.
+  **Standardized** — including
   the placeholder, which used a different value in the POC. The contrast guard in
   `tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
   for every surface-tier palette, in both themes.

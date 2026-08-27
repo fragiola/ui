@@ -118,7 +118,7 @@
             "name": "palette-surface-blue",
             "type": "registry:file",
             "title": "Surface-blue palette",
-            "description": "Tinted surface, hue ~250. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "description": "Neutral surface with a blue focus ring (~250). Neutrals identical to surface; only --palette-ring is chromatic. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
@@ -132,7 +132,7 @@
             "name": "palette-surface-purple",
             "type": "registry:file",
             "title": "Surface-purple palette",
-            "description": "Tinted surface, hue ~300. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "description": "Neutral surface with a purple focus ring (~300). Neutrals identical to surface; only --palette-ring is chromatic. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
@@ -146,7 +146,7 @@
             "name": "palette-surface-green",
             "type": "registry:file",
             "title": "Surface-green palette",
-            "description": "Tinted surface, hue ~150. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "description": "Neutral surface with a green focus ring (~150). Neutrals identical to surface; only --palette-ring is chromatic. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
@@ -160,7 +160,7 @@
             "name": "palette-surface-orange",
             "type": "registry:file",
             "title": "Surface-orange palette",
-            "description": "Tinted surface, hue ~55. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "description": "Neutral surface with an orange focus ring (~55). Neutrals identical to surface; only --palette-ring is chromatic. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {
@@ -174,7 +174,7 @@
             "name": "palette-surface-rose",
             "type": "registry:file",
             "title": "Surface-rose palette",
-            "description": "Tinted surface, hue ~345. A surface first: near-neutral base carrying a trace of the hue. Both themes, all six roles.",
+            "description": "Neutral surface with a rose focus ring (~345). Neutrals identical to surface; only --palette-ring is chromatic. Both themes, all six roles.",
             "registryDependencies": ["theme"],
             "files": [
                 {

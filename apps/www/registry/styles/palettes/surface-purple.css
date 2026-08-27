@@ -1,23 +1,27 @@
-/* Surface-purple — a tinted surface, hue ~300. A surface first: base is a
-   near-neutral carrying a trace of the hue, contrast is body text, accent is
-   secondary text. It exists so two panels on the same page can be
-   recognisably different surfaces without either being "coloured". Both
-   themes declare all six roles. */
+/* Surface-purple — a neutral surface whose focus ring carries a purple
+   hue (~300). The neutrals are byte-identical to surface.css; the ONLY
+   role that differs is --palette-ring, which is a literal chromatic value
+   taken verbatim from purple.css's base. A field's frame must read as a
+   surface, not as a coloured element (Rule 3: a control never carries its
+   own body), but its focus ring should state the theme's colour. This
+   tier exists for that: the need is real (theme a field's focus), the
+   answer is a new palette, not a seventh role. Both themes declare all
+   six roles. */
 
 :root[data-theme="light"] .palette-surface-purple {
-    --palette-base: oklch(0.99 0.008 300);
-    --palette-soft: oklch(0.95 0.02 300);
-    --palette-line: oklch(0.85 0.04 300);
-    --palette-contrast: oklch(0.18 0.03 300);
-    --palette-accent: oklch(0.28 0.06 300);
-    --palette-ring: var(--palette-accent);
+    --palette-base: oklch(1 0 0);
+    --palette-soft: oklch(0.96 0.003 250);
+    --palette-line: oklch(0.86 0.004 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.3 0.01 250);
+    --palette-ring: oklch(0.55 0.2 300);
 }
 
 :root[data-theme="dark"] .palette-surface-purple {
-    --palette-base: oklch(0.17 0.015 300);
-    --palette-soft: oklch(0.26 0.03 300);
-    --palette-line: oklch(0.32 0.04 300);
-    --palette-contrast: oklch(0.95 0.01 300);
-    --palette-accent: oklch(0.85 0.03 300);
-    --palette-ring: var(--palette-accent);
+    --palette-base: oklch(0.15 0.01 250);
+    --palette-soft: oklch(0.26 0.012 250);
+    --palette-line: oklch(0.31 0.012 250);
+    --palette-contrast: oklch(0.95 0.005 250);
+    --palette-accent: oklch(0.88 0.005 250);
+    --palette-ring: oklch(0.7 0.18 300);
 }
