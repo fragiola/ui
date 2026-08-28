@@ -2,10 +2,28 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import "./globals.css";
 
+// The settled positioning, declared once and reused by the page title, the
+// Open Graph card and the Twitter card. No image fields: there is no OG image
+// asset in the repository, and pointing at one that does not exist is worse
+// than omitting it.
+const TITLE = "Fragiola UI";
+const DESCRIPTION =
+    "A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes — scope one to a page, a card, or a single button.";
+
 export const metadata: Metadata = {
-    title: "Fragiola UI",
-    description:
-        "A copy-paste component library built on Base UI and Tailwind v4.",
+    title: TITLE,
+    description: DESCRIPTION,
+    openGraph: {
+        title: TITLE,
+        description: DESCRIPTION,
+        siteName: TITLE,
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: TITLE,
+        description: DESCRIPTION,
+    },
 };
 
 // next-themes is configured to emit BOTH the .dark class (for Fumadocs UI's

@@ -1,6 +1,7 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import Link from "next/link";
 import { InstallCommand } from "@/components/install-command";
+import { SiteFooter } from "@/components/landing/site-footer";
 import { ComponentPreview } from "@/components/preview";
 import { baseOptions } from "@/lib/layout.shared";
 
@@ -95,6 +96,7 @@ export default function HomePage() {
                     </li>
                 </ul>
             </div>
+            <SiteFooter />
         </HomeLayout>
     );
 }
