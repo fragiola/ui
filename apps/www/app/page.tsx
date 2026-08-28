@@ -1,6 +1,8 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
+import { Demonstration } from "@/components/landing/demonstration";
 import { Hero } from "@/components/landing/hero";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { TokenSystem } from "@/components/landing/token-system";
 import { WhyFragiola } from "@/components/landing/why-fragiola";
 import { baseOptions } from "@/lib/layout.shared";
 
@@ -20,6 +22,8 @@ export default function HomePage() {
             <div className="flex flex-1 flex-col">
                 <Hero />
                 <WhyFragiola />
+                <TokenSystem />
+                <Demonstration />
             </div>
             <SiteFooter />
         </HomeLayout>
