@@ -14,6 +14,13 @@ import { readPaletteNames } from "./palette-utils";
 const ROOT = process.cwd();
 const REGISTRY_DIR = path.join(ROOT, "registry");
 const EXAMPLES_DIR = path.join(ROOT, "examples");
+// App code is bound by the palette contract too (architecture.md §1: the site
+// is an instance of the contract), and it is not published — so nothing else
+// checks it. The landing page is the most palette-class-dense non-registry
+// code in the repository; unguarded, an invented decorative class would fail
+// silently (Rule 8).
+const APP_DIR = path.join(ROOT, "app");
+const COMPONENTS_DIR = path.join(ROOT, "components");
 const TMP_DIR = path.join(ROOT, ".tmp-tailwind-test");
 const OUTPUT_CSS = path.join(TMP_DIR, "out.css");
 
@@ -82,6 +89,8 @@ beforeAll(async () => {
         importPaths.map((p) => `@import "${p}";`).join("\n") +
         `\n@source "${REGISTRY_DIR}/**/*.{ts,tsx}";` +
         `\n@source "${EXAMPLES_DIR}/**/*.{ts,tsx}";` +
+        `\n@source "${APP_DIR}/**/*.{ts,tsx}";` +
+        `\n@source "${COMPONENTS_DIR}/**/*.{ts,tsx}";` +
         `\n@source "${path.join(ROOT, "tests", "fixtures")}/**/*.{ts,tsx}";\n`;
 
     const inputPath = path.join(TMP_DIR, "input.css");
@@ -150,9 +159,15 @@ describe("class compilation guard", () => {
         // Also collect from the examples directory — it moved out of
         // registry/ in Issue #34 and is the most class-dense tree.
         const exampleFiles = await collectSourceFiles(EXAMPLES_DIR);
+        // …and from the app itself: routes and app-level components (the
+        // landing page, the docs chrome) paint through the same roles.
+        const appFiles = await collectSourceFiles(APP_DIR);
+        const componentFiles = await collectSourceFiles(COMPONENTS_DIR);
         const usedClasses = await extractClasses([
             ...sourceFiles,
             ...exampleFiles,
+            ...appFiles,
+            ...componentFiles,
         ]);
 
         // Build a regex that skips plain palette class names (palette-X) for
