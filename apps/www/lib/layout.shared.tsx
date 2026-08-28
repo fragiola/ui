@@ -1,14 +1,32 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 
-// Shared options for the docs and home layouts: nav title and GitHub link.
-// Anything both layouts need lives here so it is declared once.
+// Shared options for the docs and home layouts: nav title, header links and
+// the GitHub link. Anything both layouts need lives here so it is declared
+// once — both HomeLayout and DocsLayout spread baseOptions(), so `links` is
+// declared here and never passed again at a call site.
 
-export function baseOptions(): Pick<BaseLayoutProps, "nav" | "githubUrl"> {
+/** The repository. Declared once; the footer links to the same place. */
+export const GITHUB_URL = "https://github.com/fragiola/ui";
+
+export function baseOptions(): Pick<
+    BaseLayoutProps,
+    "nav" | "githubUrl" | "links"
+> {
     return {
         nav: {
             title: "Fragiola UI",
-            url: "https://github.com/fragiola/ui",
+            // The wordmark returns home. GitHub has its own slot in the
+            // navbar (githubUrl) and does not need to steal this one.
+            url: "/",
         },
-        githubUrl: "https://github.com/fragiola/ui",
+        links: [
+            {
+                text: "Documentation",
+                url: "/docs",
+                // Stays active for every page under /docs.
+                active: "nested-url",
+            },
+        ],
+        githubUrl: GITHUB_URL,
     };
 }
