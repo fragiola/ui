@@ -94,6 +94,56 @@
     --color-fd-diff-add-symbol: rgb(10, 200, 100);
 }
 
+/* ─── Landing decoration and reveal ────────────────────────────────────────
+   App-level CSS. The landing page is site chrome, not a registry item, so
+   none of this ships. Colours still resolve through roles
+   (var(--palette-line)); what lives here is geometry and timing.
+
+   Geometry lives in CSS rather than in arbitrary Tailwind values on purpose:
+   an arbitrary value carrying a palette variable —
+   bg-[linear-gradient(...var(--palette-line)...)] — is not something the
+   compile guard can verify, so every colour utility written in TSX stays a
+   plain, checkable class. */
+
+/* The hero's background grid. Both axes are drawn, so the pattern is
+   symmetric and needs no RTL treatment. */
+.landing-grid {
+    background-image:
+        linear-gradient(to right, var(--palette-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--palette-line) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+}
+
+/* Scroll reveal — ADDITIVE BY CONSTRUCTION. The default state is fully
+   visible; the animation exists only inside @supports. Firefox and older
+   Safari do not implement scroll-driven animations, and an element stuck at
+   opacity: 0 there would mean a blank landing page — the worst failure this
+   page can have. Gated on prefers-reduced-motion as well. */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .landing-reveal {
+            animation: landing-reveal linear both;
+            animation-timeline: view();
+            /* Finishes early in the entry range: the last section before the
+               footer has to complete while scroll room is left, otherwise it
+               would stall part-way at the end of the document. */
+            animation-range: entry 0% entry 35%;
+        }
+    }
+}
+
+@keyframes landing-reveal {
+    from {
+        opacity: 0;
+        /* Block axis — physical by design (AGENTS.md rule 6). */
+        transform: translateY(1.5rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 @source "../registry/**/*.{ts,tsx}";
 @source "../examples/**/*.{ts,tsx}";
