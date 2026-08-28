@@ -79,7 +79,7 @@ function HeroBackdrop() {
             className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         >
             <div className="landing-grid absolute inset-0 opacity-50" />
-            <div className="absolute inset-x-0 -top-40 mx-auto h-96 w-full max-w-4xl rounded-full bg-radial from-palette-soft to-transparent blur-3xl" />
+            <div className="absolute inset-inline-0 -top-40 mx-auto h-96 w-full max-w-4xl rounded-full bg-radial from-palette-soft to-transparent blur-3xl" />
             <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-palette-base" />
         </div>
     );
