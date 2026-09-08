@@ -54,8 +54,12 @@ function DialogContent({
         // The grid wrapper is the centring concern: fixed, inset-0, grid
         // place-items-center. It is NOT a style variant of the panel — it is
         // positioning that lives in the component. The panel (layer.panel)
-        // is the surface.
-        <div className="fixed inset-0 grid place-items-center overflow-y-auto p-4">
+        // is the surface. `z-50` lifts the wrapper (and the panel it traps)
+        // above the backdrop's z-40: `position: fixed` establishes a stacking
+        // context, so without this the panel's own z-50 is confined inside the
+        // wrapper and the backdrop paints over it. The drawer's Viewport does
+        // the same (z-50 over the backdrop's z-40).
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-4">
             <parts.Content
                 data-slot="dialog-content"
                 className={cn("w-full max-w-lg", className as string)}

@@ -61,7 +61,10 @@ function AlertDialogContent({
     ...props
 }: React.ComponentProps<typeof parts.Content>) {
     return (
-        <div className="fixed inset-0 grid place-items-center overflow-y-auto p-4">
+        // `z-50` lifts the wrapper above the backdrop's z-40: `position: fixed`
+        // establishes a stacking context, so without this the panel's own z-50
+        // is confined inside the wrapper and the backdrop paints over it.
+        <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-4">
             <parts.Content
                 data-slot="alert-dialog-content"
                 // No close button — an alert dialog is dismissed by an
