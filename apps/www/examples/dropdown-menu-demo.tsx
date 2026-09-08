@@ -27,10 +27,10 @@ export default function DropdownMenuDemo() {
                         <DropdownMenu.Item>
                             <span>Profile</span>
                         </DropdownMenu.Item>
-                        <DropdownMenu.Item inset>
+                        <DropdownMenu.Item>
                             <span>Billing</span>
                         </DropdownMenu.Item>
-                        <DropdownMenu.Item inset>
+                        <DropdownMenu.Item>
                             <span>Settings</span>
                         </DropdownMenu.Item>
                         <DropdownMenu.Separator />
@@ -112,8 +112,8 @@ export default function DropdownMenuDemo() {
                         <DropdownMenu.Separator />
                         <DropdownMenu.Item>
                             <span>Save</span>
+                            <DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
                         </DropdownMenu.Item>
-                        <DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
             </Row>
