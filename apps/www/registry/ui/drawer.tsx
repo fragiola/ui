@@ -34,7 +34,11 @@ import { cn } from "#/lib/cn";
 // Behaviour, exposed as props by the primitive, not as style variants.
 //
 // ─── RADIUS ─────────────────────────────────────────────────────────────────
-// The panel takes its radius on the edges AWAY from the anchored side only.
+// Radius is removed on the ANCHORED edge (the one flush with the screen); the
+// free edges keep it. left/right use physical radius (rounded-r/l) to match
+// the physical `side` prop — the Viewport keeps anchoring physical via
+// rtl:flex-row-reverse, and the slide animations are physical, so a logical
+// radius would flip against the anchoring under RTL.
 
 type Side = "up" | "down" | "left" | "right";
 
@@ -120,15 +124,22 @@ function DrawerPopup({
                 // drawer adds a slide on the anchored edge via the primitive's
                 // transition markers.
                 "data-starting-style:animate-in data-ending-style:animate-out",
-                // sizing + radius per anchored edge
+                // sizing + radius per anchored edge. Radius is removed on the
+                // ANCHORED edge (the one touching the screen); the free edges
+                // keep it. left/right use PHYSICAL radius (rounded-r/l), not
+                // logical (rounded-s/e): `side` is physical, the Viewport keeps
+                // it physical via rtl:flex-row-reverse, and the slide animations
+                // (slide-in-from-right) are physical — a logical radius would
+                // flip against the physical anchoring under RTL. The block
+                // axis (up/down) is physical by rule 6.
                 side === "right" &&
-                    "h-full w-80 rounded-s-none data-starting-style:slide-in-from-right data-ending-style:slide-out-to-right",
+                    "h-full w-80 rounded-r-none data-starting-style:slide-in-from-right data-ending-style:slide-out-to-right",
                 side === "left" &&
-                    "h-full w-80 rounded-e-none data-starting-style:slide-in-from-left data-ending-style:slide-out-to-left",
+                    "h-full w-80 rounded-l-none data-starting-style:slide-in-from-left data-ending-style:slide-out-to-left",
                 side === "up" &&
-                    "w-full max-h-[85vh] rounded-b-none data-starting-style:slide-in-from-top data-ending-style:slide-out-to-top",
+                    "w-full max-h-[85vh] rounded-t-none data-starting-style:slide-in-from-top data-ending-style:slide-out-to-top",
                 side === "down" &&
-                    "w-full max-h-[85vh] rounded-t-none data-starting-style:slide-in-from-bottom data-ending-style:slide-out-to-bottom",
+                    "w-full max-h-[85vh] rounded-b-none data-starting-style:slide-in-from-bottom data-ending-style:slide-out-to-bottom",
                 className as string,
             )}
             {...props}
