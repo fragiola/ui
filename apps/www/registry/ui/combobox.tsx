@@ -109,7 +109,7 @@ function ComboboxTrigger({
                 <Clickable.Button
                     variant="ghost"
                     shape="square"
-                    size="sm"
+                    size="xs"
                     aria-label="Show options"
                 />
             }

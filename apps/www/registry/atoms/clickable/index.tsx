@@ -62,6 +62,7 @@ const clickable = tv({
             icon: "bg-transparent text-palette-accent hover:bg-palette-soft",
         },
         size: {
+            xs: "h-4 px-2",
             sm: "h-8 px-3",
             md: "h-control px-4",
         },
