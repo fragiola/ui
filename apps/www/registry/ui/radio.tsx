@@ -36,8 +36,12 @@ function RadioRoot({
         <RadioPrimitive.Root
             data-slot="radio"
             className={cn(
-                choice.root(),
-                "size-4.5 rounded-full",
+                "field-control size-4 shrink-0 rounded-full border",
+                "border-palette-line bg-palette-soft",
+                "data-checked:bg-palette-ring",
+                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
+                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
+                "transition-colors",
                 className as string,
             )}
             {...props}
@@ -52,10 +56,13 @@ function RadioIndicator({
     return (
         <RadioPrimitive.Indicator
             data-slot="radio-indicator"
-            className={cn(choice.indicator(), className as string)}
+            className={cn(
+                "grid place-content-center w-full h-full",
+                className as string,
+            )}
             {...props}
         >
-            <span className="size-2 rounded-full bg-palette-contrast" />
+            <span className="size-2 rounded-full bg-palette-base" />
         </RadioPrimitive.Indicator>
     );
 }
