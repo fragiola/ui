@@ -24,7 +24,7 @@ const SURFACE_RING = [
 
 export default function FieldDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+        <div className="not-prose palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
             {/* palettes — one field per surface-ring palette; focus to see
                 the ring colour. Frames read neutral in both themes. */}
             <Row label="palettes (focus to see ring)">
