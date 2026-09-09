@@ -133,7 +133,7 @@ function ComboboxClear({
                 <Clickable.Button
                     variant="ghost"
                     shape="square"
-                    size="sm"
+                    size="xs"
                     aria-label="Clear"
                 />
             }
@@ -336,7 +336,7 @@ function ComboboxChipRemove({
                 <Clickable.Button
                     variant="ghost"
                     shape="square"
-                    size="sm"
+                    size="xs"
                     aria-label="Remove"
                 />
             }
