@@ -161,6 +161,16 @@ export default function ComboboxDemo() {
                         </Combobox.InputGroup>
                     </Combobox.Root>
                 </Field.Root>
+
+                <Field.Root invalid className="palette-surface-blue w-48">
+                    <Field.Label>Invalid</Field.Label>
+                    <Combobox.Root items={frameworks}>
+                        <Combobox.InputGroup>
+                            <Combobox.Input placeholder="Cannot search" />
+                            <Combobox.Trigger />
+                        </Combobox.InputGroup>
+                    </Combobox.Root>
+                </Field.Root>
             </Row>
         </div>
     );
