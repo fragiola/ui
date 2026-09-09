@@ -22,7 +22,15 @@ function CheckboxRoot({
     return (
         <CheckboxPrimitive.Root
             data-slot="checkbox"
-            className={cn(choice.root(), "size-4.5", className as string)}
+            className={cn(
+                "field-control size-4 shrink-0 rounded-sm border",
+                "border-palette-line bg-palette-soft",
+                "data-checked:bg-palette-ring data-checked:border-palette-line data-checked:text-palette-base",
+                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
+                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
+                "transition-colors",
+                className as string,
+            )}
             {...props}
         />
     );
@@ -35,7 +43,10 @@ function CheckboxIndicator({
     return (
         <CheckboxPrimitive.Indicator
             data-slot="checkbox-indicator"
-            className={cn(choice.indicator(), className as string)}
+            className={cn(
+                "grid place-content-center text-current",
+                className as string,
+            )}
             {...props}
         >
             <CheckIcon className="size-3.5" />
