@@ -77,15 +77,6 @@ export default function FieldDemo() {
                         </Field.Body>
                     </Field.Row>
                 </Field.Root>
-
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Required</Field.Label>
-                    <Field.Row>
-                        <Field.Body>
-                            <Input placeholder="Required" required />
-                        </Field.Body>
-                    </Field.Row>
-                </Field.Root>
             </Row>
         </div>
     );
