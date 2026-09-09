@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import React from "react";
+import { field } from "#/families/field";
 import { Combobox } from "#/ui/combobox";
 import { Field } from "#/ui/field";
 
@@ -122,23 +124,53 @@ export default function ComboboxDemo() {
             </Row>
 
             {/* multiselect — multiple selection with chips (palette
-                surface-blue) */}
+                surface-blue). In multiselect, Combobox.Chips IS the input
+                group: it holds the chips (via Combobox.Value) and the input
+                together. The input goes inside the Value render prop, after
+                the chips — not in a separate InputGroup. Each chip carries a
+                ChipRemove button. Items use string values (item.value); the
+                Combobox.Value render prop looks up the label from frameworks
+                so chips display the human-readable name. */}
             <Row label="multiselect">
                 <Field.Root className="palette-surface-blue w-56">
                     <Field.Label>Frameworks (multi)</Field.Label>
-                    <Combobox.Root multiple items={frameworks}>
-                        <Combobox.Chips />
-                        <Combobox.InputGroup>
-                            <Combobox.Input placeholder="Search…" />
+                    <Combobox.Root
+                        multiple
+                        items={frameworks}
+                        defaultValue={["react"]}
+                    >
+                        <Combobox.Chips
+                            className={`${field.row()} flex-row items-center gap-1.5 px-3 py-2`}
+                        >
+                            <Combobox.Value>
+                                {(values: string[]) => (
+                                    <React.Fragment>
+                                        {values.map((value) => {
+                                            const framework = frameworks.find(
+                                                (f) => f.value === value,
+                                            );
+                                            return (
+                                                <Combobox.Chip key={value}>
+                                                    {framework?.label ?? value}
+                                                    <Combobox.ChipRemove
+                                                        aria-label={`Remove ${framework?.label ?? value}`}
+                                                    />
+                                                </Combobox.Chip>
+                                            );
+                                        })}
+                                        <Combobox.Input placeholder="Search…" />
+                                    </React.Fragment>
+                                )}
+                            </Combobox.Value>
                             <Combobox.Trigger />
                             <Combobox.Clear />
-                        </Combobox.InputGroup>
+                        </Combobox.Chips>
                         <Combobox.Content>
                             <Combobox.List>
-                                {(item) => (
+                                {(item: { value: string; label: string }) => (
                                     <Combobox.Item
                                         key={item.value}
-                                        value={item}
+                                        value={item.value}
                                     >
                                         {item.label}
                                     </Combobox.Item>
