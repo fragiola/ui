@@ -59,7 +59,7 @@ export default function FieldDemo() {
                     <Field.Description>Helper text.</Field.Description>
                 </Field.Root>
 
-                <Field.Root invalid className="palette-surface-blue w-48">
+                <Field.Root invalid className="w-48">
                     <Field.Label>Invalid</Field.Label>
                     <Field.Row>
                         <Field.Body>
