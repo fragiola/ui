@@ -20,9 +20,12 @@ function SwitchRoot({
         <SwitchPrimitive.Root
             data-slot="switch"
             className={cn(
-                choice.root(),
-                "w-9 h-5 rounded-full",
-                "data-checked:bg-palette-base",
+                "field-control inline-flex shrink-0 items-center rounded-full border border-transparent",
+                "w-8 h-5 p-0.5",
+                "bg-palette-soft data-checked:bg-palette-ring",
+                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
+                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
+                "transition-colors",
                 className as string,
             )}
             {...props}
@@ -38,10 +41,7 @@ function SwitchThumb({
         <SwitchPrimitive.Thumb
             data-slot="switch-thumb"
             className={cn(
-                choice.control(),
-                "size-4 rounded-full bg-palette-soft shadow-sm",
-                "data-checked:translate-x-4 rtl:data-checked:-translate-x-4",
-                "transition-transform",
+                "block size-4 rounded-full bg-palette-ring transition-transform data-checked:translate-x-3 data-checked:bg-palette-base",
                 className as string,
             )}
             {...props}
