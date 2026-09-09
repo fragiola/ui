@@ -101,7 +101,7 @@ export default function InputDemo() {
                     label="Website"
                     description="Enter your full URL."
                     placeholder="example"
-                    addon="https://"
+                    addon={{ inline: { start: "https://" } }}
                     required
                 />
             </Row>

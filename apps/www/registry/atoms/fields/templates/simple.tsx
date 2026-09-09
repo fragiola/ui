@@ -4,8 +4,8 @@ import { Field } from "#/ui/field";
 import { Input } from "../input";
 
 // Input.Template.Simple — the tightest case. label, description, error,
-// required, inset (inside addon), addon (outside) — all legitimate by rule 2
-// (content/behaviour). Survives with 7 props.
+// required, inset (inside, start/end), addon (outside, four sides) — all
+// legitimate by rule 2 (content/behaviour). Survives with 7 props.
 //
 // The three rules:
 // 1. No style of its own — no class, tv(), or hardcoded className beyond
@@ -20,14 +20,26 @@ import { Input } from "../input";
 // className. Input props (value, onChange, name, placeholder, type, etc.)
 // are forwarded via ...props — they are behaviour, not template
 // configuration. If an eighth is needed, stop and record it.
+//
+// inset: { start, end } — inside the body, before/after the control. Both
+// sides can be filled at once (e.g. search icon + password toggle).
+//
+// addon: { inline: { start, end }, block: { start, end } } — outside the
+// body, as siblings inside the row. Maps to the four data-side values of
+// Field.Addon. Multiple sides can be filled at once; block addons use
+// order-first/order-last so DOM order only matters for inline addons
+// (inline-start before the body, inline-end after).
 
 type SimpleProps = Omit<React.ComponentProps<typeof Input>, "className"> & {
     label?: React.ReactNode;
     description?: React.ReactNode;
     error?: React.ReactNode;
     required?: boolean;
-    inset?: React.ReactNode;
-    addon?: React.ReactNode;
+    inset?: { start?: React.ReactNode; end?: React.ReactNode };
+    addon?: {
+        inline?: { start?: React.ReactNode; end?: React.ReactNode };
+        block?: { start?: React.ReactNode; end?: React.ReactNode };
+    };
     className?: string;
 };
 
@@ -50,14 +62,36 @@ function Simple({
                 </Field.Label>
             ) : null}
             <Field.Row>
+                {addon?.block?.start ? (
+                    <Field.Addon side="block-start">
+                        {addon.block.start}
+                    </Field.Addon>
+                ) : null}
+                {addon?.inline?.start ? (
+                    <Field.Addon side="inline-start">
+                        {addon.inline.start}
+                    </Field.Addon>
+                ) : null}
+
                 <Field.Body className={className as string}>
-                    {inset ? (
-                        <span className={field.inset()}>{inset}</span>
+                    {inset?.start ? (
+                        <span className={field.inset()}>{inset.start}</span>
                     ) : null}
                     <Input {...inputProps} required={required} />
+                    {inset?.end ? (
+                        <span className={field.inset()}>{inset.end}</span>
+                    ) : null}
                 </Field.Body>
-                {addon ? (
-                    <Field.Addon side="inline-end">{addon}</Field.Addon>
+
+                {addon?.inline?.end ? (
+                    <Field.Addon side="inline-end">
+                        {addon.inline.end}
+                    </Field.Addon>
+                ) : null}
+                {addon?.block?.end ? (
+                    <Field.Addon side="block-end">
+                        {addon.block.end}
+                    </Field.Addon>
                 ) : null}
             </Field.Row>
             {description ? (
