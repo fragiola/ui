@@ -9,7 +9,7 @@ description: "A small status indicator. One axis (variant: soft / solid / outlin
 
 ## No colour variant
 
-A destructive badge is `<Badge className="palette-danger">` — there is no `variant="destructive"` and no `tone` prop. The palette class overrides the six roles, so `bg-palette-soft` becomes the danger soft tint and `text-palette-contrast` becomes the danger contrast. This is what stops `destructive` from coming back as a hundred copies.
+A destructive badge is `<Badge className="palette-danger">` — there is no `variant="destructive"` and no `tone` prop. The palette class overrides the six roles, so `bg-palette-soft` becomes the danger soft tint and `text-palette-accent` becomes the danger accent — `soft` and `outline` paint text with `accent` (content on soft or on a foreign background), `solid` paints with `contrast` (content on a base you painted). This is what stops `destructive` from coming back as a hundred copies.
 
 ## Parts
 

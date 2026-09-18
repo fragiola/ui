@@ -13,6 +13,11 @@ import { cn } from "#/lib/cn";
 // The badge is a COMPONENT, not a style family — the zero-variant rule does
 // not apply. What does apply is that the variant axis is a fill strategy,
 // not a colour.
+//
+// Text role follows the contract: `contrast` is content on a background YOU
+// painted with base (solid); `accent` is content on soft or on a foreign
+// background (soft, outline). Using contrast on soft made the light theme
+// unreadable — white text on a near-white tint.
 
 const badge = tv({
     base: `
@@ -22,7 +27,7 @@ const badge = tv({
     `,
     variants: {
         variant: {
-            soft: "bg-palette-soft text-palette-contrast border-transparent",
+            soft: "bg-palette-soft text-palette-accent border-transparent",
             solid: "bg-palette-base text-palette-contrast border-transparent",
             outline: "bg-transparent text-palette-accent border-palette-line",
         },
