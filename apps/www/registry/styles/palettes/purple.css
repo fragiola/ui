@@ -3,7 +3,7 @@
 
 :root[data-theme="light"] .palette-purple {
     --palette-base: oklch(0.55 0.2 300);
-    --palette-soft: oklch(0.95 0.03 300);
+    --palette-soft: oklch(0.94 0.06 300);
     --palette-line: oklch(0.85 0.08 300);
     --palette-contrast: oklch(1 0 0);
     --palette-accent: oklch(0.45 0.18 300);

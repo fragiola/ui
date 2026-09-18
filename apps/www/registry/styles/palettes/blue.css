@@ -5,7 +5,7 @@
 
 :root[data-theme="light"] .palette-blue {
     --palette-base: oklch(0.55 0.2 250);
-    --palette-soft: oklch(0.95 0.03 250);
+    --palette-soft: oklch(0.94 0.06 250);
     --palette-line: oklch(0.85 0.08 250);
     --palette-contrast: oklch(1 0 0);
     --palette-accent: oklch(0.45 0.18 250);

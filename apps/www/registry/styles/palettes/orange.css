@@ -5,7 +5,7 @@
 
 :root[data-theme="light"] .palette-orange {
     --palette-base: oklch(0.68 0.17 55);
-    --palette-soft: oklch(0.95 0.05 70);
+    --palette-soft: oklch(0.94 0.08 70);
     --palette-line: oklch(0.85 0.12 70);
     --palette-contrast: oklch(0.2 0.05 55);
     --palette-accent: oklch(0.45 0.15 55);
