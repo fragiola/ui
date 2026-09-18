@@ -8,9 +8,14 @@ import { Accordion } from "#/ui/accordion";
 // palette. The accordion shows its real axes: open/closed items, multiple
 // vs single, and a disabled item. No palette showcasing — an accordion is
 // not "a blue accordion".
+//
+// The root carries a width. The preview centres its demo with flex, so a
+// widthless root shrinks to its closed triggers and then stretches to the
+// panel's paragraph on open — the whole demo jumped. Width comes from the
+// container, never from the item.
 export default function AccordionDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+        <div className="palette-surface flex w-full max-w-xl flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
             {/* Multiple open (default) — multiple={true} is the default */}
             <Row label="multiple open (default)">
                 <Accordion.Root>

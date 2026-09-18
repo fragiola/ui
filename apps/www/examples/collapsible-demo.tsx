@@ -7,9 +7,12 @@ import { Collapsible } from "#/ui/collapsible";
 // The floor is palette-surface. The collapsible shares the disclosure family
 // with the accordion — the trigger, panel and content read roles from the
 // floor. Shows: default closed, default open, and disabled.
+//
+// The root carries a width (see accordion-demo): a widthless root resizes
+// with the open panel and the demo jumps.
 export default function CollapsibleDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+        <div className="palette-surface flex w-full max-w-xl flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
             <Row label="default closed">
                 <Collapsible.Root>
                     <Collapsible.Trigger>
@@ -36,7 +39,7 @@ export default function CollapsibleDemo() {
                     <Collapsible.Panel>
                         <Collapsible.Content>
                             This section starts open. The chevron is already
-                            rotated because the trigger has
+                            rotated because the trigger has{" "}
                             <code>data-panel-open</code>.
                         </Collapsible.Content>
                     </Collapsible.Panel>
@@ -66,7 +69,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
             <span className="text-xs font-mono text-palette-accent/85">
                 {label}
             </span>
-            <div className="w-full max-w-md">{children}</div>
+            {children}
         </div>
     );
 }
