@@ -120,10 +120,17 @@ function DrawerPopup({
             className={cn(
                 layer.panel(),
                 "pointer-events-auto outline-none",
-                // The popup's own open/close: layer.panel already fades; the
-                // drawer adds a slide on the anchored edge via the primitive's
-                // transition markers.
-                "data-starting-style:animate-in data-ending-style:animate-out",
+                // The popup's own open/close: layer.panel already fades and
+                // declares the transition; the drawer adds a slide on the
+                // anchored edge via the primitive's transition markers, on
+                // the `translate` property so it composes with the swipe
+                // transform below. The easing is the drawer curve from Base
+                // UI's reference (an iOS-like decelerate); the exit duration
+                // scales with swipe strength so a flick closes faster, and
+                // the transition is off while the finger is down.
+                "ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform",
+                "data-swiping:duration-0 data-swiping:select-none",
+                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)]",
                 // sizing + radius per anchored edge. Radius is removed on the
                 // ANCHORED edge (the one touching the screen); the free edges
                 // keep it. left/right use PHYSICAL radius (rounded-r/l), not
@@ -133,13 +140,13 @@ function DrawerPopup({
                 // flip against the physical anchoring under RTL. The block
                 // axis (up/down) is physical by rule 6.
                 side === "right" &&
-                    "h-full w-80 rounded-r-none data-starting-style:slide-in-from-right data-ending-style:slide-out-to-right",
+                    "h-full w-80 rounded-r-none [transform:translateX(var(--drawer-swipe-movement-x))] data-starting-style:translate-x-full data-ending-style:translate-x-full",
                 side === "left" &&
-                    "h-full w-80 rounded-l-none data-starting-style:slide-in-from-left data-ending-style:slide-out-to-left",
+                    "h-full w-80 rounded-l-none [transform:translateX(var(--drawer-swipe-movement-x))] data-starting-style:-translate-x-full data-ending-style:-translate-x-full",
                 side === "up" &&
-                    "w-full max-h-[85vh] rounded-t-none data-starting-style:slide-in-from-top data-ending-style:slide-out-to-top",
+                    "w-full max-h-[85vh] rounded-t-none [transform:translateY(var(--drawer-swipe-movement-y))] data-starting-style:-translate-y-full data-ending-style:-translate-y-full",
                 side === "down" &&
-                    "w-full max-h-[85vh] rounded-b-none data-starting-style:slide-in-from-bottom data-ending-style:slide-out-to-bottom",
+                    "w-full max-h-[85vh] rounded-b-none [transform:translateY(var(--drawer-swipe-movement-y))] data-starting-style:translate-y-full data-ending-style:translate-y-full",
                 className as string,
             )}
             {...props}

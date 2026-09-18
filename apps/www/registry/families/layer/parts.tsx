@@ -74,7 +74,15 @@ export function createLayerParts(P: LayerNamespace) {
         return (
             <P.Popup
                 data-slot="layer-content"
-                className={cn(layer.panel(), className as string)}
+                className={cn(
+                    layer.panel(),
+                    // The centred layer's motion: the family fades, the
+                    // dialog adds a small scale so it settles into place
+                    // rather than blinking on. `scale` is its own property
+                    // in Tailwind v4, so it composes with any transform.
+                    "duration-200 data-starting-style:scale-95 data-ending-style:scale-95",
+                    className as string,
+                )}
                 {...props}
             >
                 {showClose ? (
