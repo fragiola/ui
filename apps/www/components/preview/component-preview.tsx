@@ -37,8 +37,12 @@ export async function ComponentPreview({ name }: ComponentPreviewProps) {
     return (
         <div className="my-6 rounded-md border border-palette-line overflow-hidden bg-palette-base">
             {/* Preview surface — no palette on the frame, the example
-                brings its own. */}
-            <div className="p-8 flex items-center justify-center min-h-32">
+                brings its own. `not-prose` opts the demo out of the docs
+                typography: DocsBody is `prose`, and prose gives every <img>
+                a 2em block margin and every <table> its own borders and
+                font size — the avatar image was sliding out of its circle
+                and the table was fighting two style systems at once. */}
+            <div className="not-prose p-8 flex items-center justify-center min-h-32">
                 <Demo />
             </div>
             {/* Collapsed-by-default code panel. <details> avoids a client
