@@ -20,8 +20,15 @@
 // The animated container. `overflow-hidden` clips the content during the
 // expand/collapse. Both accordion and collapsible panels emit
 // `data-starting-style` / `data-ending-style` (transition status) and
-// `data-open` / `data-closed` (open state). The animation uses the
-// transition markers for precise enter/leave.
+// measure their content into a CSS variable — `--accordion-panel-height`
+// or `--collapsible-panel-height`, one per primitive. The panel's height IS
+// that variable, and the transition markers pin it to 0 on either end, so
+// the panel slides open and closed instead of jumping (Base UI's reference
+// pattern). The markers live for one frame, which is why this is a CSS
+// transition and not a keyframe class (see layer.ts).
+//
+// One family, two variables: the height reads the accordion's variable with
+// the collapsible's as the fallback, so neither component has to wire it.
 //
 // ─── CONTENT ────────────────────────────────────────────────────────────────
 // The inner padded content. `p-4 pt-0` — the top padding is zero because the
@@ -51,8 +58,11 @@ const trigger = tv({
 const panel = tv({
     base: `
         overflow-hidden
-        data-starting-style:animate-in data-starting-style:fade-in-0
-        data-ending-style:animate-out data-ending-style:fade-out-0
+        h-(--accordion-panel-height,var(--collapsible-panel-height))
+        transition-[height,opacity] duration-200 ease-out
+        motion-reduce:transition-none
+        data-starting-style:h-0 data-starting-style:opacity-0
+        data-ending-style:h-0 data-ending-style:opacity-0
     `,
 });
 
