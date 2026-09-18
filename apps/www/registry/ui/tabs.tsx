@@ -121,10 +121,21 @@ function TabsPanel({
     return (
         <TabsPrimitive.Panel
             data-slot="tabs-panel"
+            // Enter only: the new panel fades in and slides a hair from the
+            // side the activated tab sits on (`data-activation-direction`,
+            // physical, matching the indicator's travel). No ending-style
+            // rule on purpose — with one, Base UI keeps the leaving panel
+            // mounted for the transition and the two panels stack for a
+            // frame. `data-starting-style` lives one frame, so this is a
+            // transition, not a keyframe class (see families/layer.ts).
             className={cn(
                 "flex flex-col gap-2 outline-none",
-                "data-[starting-style]:animate-in data-[starting-style]:fade-in-0",
-                "data-[ending-style]:animate-out data-[ending-style]:fade-out-0",
+                "transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none",
+                "data-starting-style:opacity-0",
+                "data-starting-style:data-[activation-direction=left]:-translate-x-2",
+                "data-starting-style:data-[activation-direction=right]:translate-x-2",
+                "data-starting-style:data-[activation-direction=up]:-translate-y-2",
+                "data-starting-style:data-[activation-direction=down]:translate-y-2",
                 className as string,
             )}
             {...props}
