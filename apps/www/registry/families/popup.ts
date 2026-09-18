@@ -60,24 +60,26 @@ const content = tv({
         rtl:data-[side=inline-start]:slide-in-from-left-2
         data-[side=inline-end]:slide-in-from-left-2
         rtl:data-[side=inline-end]:slide-in-from-right-2
-        duration-100
+        duration-150 ease-out
     `,
 });
 
 // tooltip — a transient text label. Inverted palette (accent as background,
 // base as text), no border, no shadow, compact padding, text-xs. Fade-only
-// animation (a tooltip does not zoom or slide — it appears in place).
-// `data-starting-style` / `data-ending-style` are the transition markers the
-// tooltip primitive emits; `data-open` / `data-closed` are also emitted but
-// the transition markers are more precise for a transient surface.
+// (a tooltip does not zoom or slide — it appears in place).
+//
+// `data-starting-style` / `data-ending-style` are TRANSITION markers (see
+// layer.ts): the attribute lives one frame, so it drives a CSS transition,
+// never a keyframe class. `data-instant` is set when the tooltip moves
+// between triggers inside the provider's delay window — no fade then.
 const tooltip = tv({
     base: `
         bg-palette-accent text-palette-base
         rounded-md
         max-w-72 px-2 py-1 text-xs
-        data-starting-style:animate-in data-starting-style:fade-in-0
-        data-ending-style:animate-out data-ending-style:fade-out-0
-        duration-100
+        transition-opacity duration-150 ease-out
+        motion-reduce:transition-none data-instant:transition-none
+        data-starting-style:opacity-0 data-ending-style:opacity-0
         z-50
     `,
 });
