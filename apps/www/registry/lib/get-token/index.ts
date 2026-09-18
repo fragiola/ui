@@ -1,5 +1,9 @@
 type GetThemeTokenOptionsBase<TFallback> = {
     fallbackReturn?: TFallback;
+    /** Element to read the token from. Defaults to documentElement. Palette
+     *  roles and chart tokens are declared on `.palette-*` elements — not on
+     *  <html> — so a scoped read has to pass the element in. */
+    from?: Element | null;
 };
 
 type GetThemeTokenOptionsFormatted<TFallback = undefined> =
@@ -28,11 +32,15 @@ export function getToken<TFallback>(
         | GetThemeTokenOptionsFormatted<TFallback>
         | GetThemeTokenOptionsRaw<TFallback> = {},
 ) {
-    const { fallbackReturn = undefined, formatToNumber = false } = options;
+    const {
+        fallbackReturn = undefined,
+        formatToNumber = false,
+        from = null,
+    } = options;
 
     if (typeof getComputedStyle === "undefined") return fallbackReturn;
 
-    const styles = getComputedStyle(document.documentElement);
+    const styles = getComputedStyle(from ?? document.documentElement);
     const rawValue = styles.getPropertyValue(token).trim();
 
     if (!rawValue) return fallbackReturn;
@@ -44,7 +52,10 @@ export function getToken<TFallback>(
     }
 
     if (rawValue.endsWith("rem")) {
-        const htmlFontSize = styles.getPropertyValue("font-size") || "16px";
+        const htmlFontSize =
+            getComputedStyle(document.documentElement).getPropertyValue(
+                "font-size",
+            ) || "16px";
         const baseFontSize = parseFloat(htmlFontSize);
 
         return parseFloat(rawValue) * baseFontSize;
