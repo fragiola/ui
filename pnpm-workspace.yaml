@@ -1,8 +1,10 @@
 packages:
   - "apps/*"
   - "packages/*"
+# Dependencies allowed to run install scripts. pnpm 11 refuses an ignored
+# build script in CI (ERR_PNPM_IGNORED_BUILDS), which is how the Docker
+# build failed while the placeholder string sat here. `allowBuilds` is the
+# pnpm 11 key; `onlyBuiltDependencies` was its predecessor.
 allowBuilds:
-  esbuild: set this to true or false
-onlyBuiltDependencies:
-  - esbuild
+  esbuild: true
 verifyDepsBeforeRun: false
