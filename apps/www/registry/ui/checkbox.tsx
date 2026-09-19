@@ -3,7 +3,6 @@
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
 import { CheckIcon } from "lucide-react";
 import type * as React from "react";
-import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
 // Checkbox — a checkable box. Uses the choice family's root (the box) and

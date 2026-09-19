@@ -3,7 +3,6 @@
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
 import type * as React from "react";
-import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
 // Radio — a checkable circle. Uses the choice family's root (the circle)

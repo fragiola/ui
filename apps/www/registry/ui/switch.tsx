@@ -2,7 +2,6 @@
 
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
 import type * as React from "react";
-import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
 // Switch — a toggle. Uses the choice family's root (the track) and control
