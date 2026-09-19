@@ -31,6 +31,12 @@ export const metadata: Metadata = {
 // which key off :root[data-theme="light"|"dark"]). Both must be emitted for
 // the same state, with no flash on first paint — next-themes handles the
 // no-flash script internally.
+//
+// Search is STATIC: the index is exported as a file by app/api/search
+// (see next.config.mjs), and the dialog loads it from there. `api` is the
+// file's URL, which has to carry the base path by hand — the dialog
+// fetches it directly, it is not a Next <Link>.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function RootLayout({
     children,
@@ -41,6 +47,12 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className="palette-surface flex min-h-screen flex-col">
                 <RootProvider
+                    search={{
+                        options: {
+                            type: "static",
+                            api: `${basePath}/api/search`,
+                        },
+                    }}
                     theme={{
                         attribute: ["class", "data-theme"],
                         defaultTheme: "light",
