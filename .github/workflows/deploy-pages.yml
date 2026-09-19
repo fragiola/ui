@@ -1,0 +1,65 @@
+# Deploy the docs site (apps/www) to GitHub Pages as a static export.
+#
+# One-time repository setup: Settings → Pages → Build and deployment →
+# Source: "GitHub Actions". Nothing else — no branch, no folder.
+#
+# The build is `pnpm --filter www build` = registry JSON + `next build`
+# with `output: "export"` (next.config.mjs), which writes apps/www/out.
+# configure-pages tells us the base path: "/ui" for fragiola.github.io/ui,
+# "" once a custom domain is set — so nothing here changes between the two.
+
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push supersedes a queued one but never
+# cancels a deploy already in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - run: pnpm --filter www build
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/www/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
