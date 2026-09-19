@@ -128,9 +128,10 @@ function toHex(color: string): string {
     context.clearRect(0, 0, 1, 1);
     context.fillStyle = color;
     context.fillRect(0, 0, 1, 1);
-    const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+    const pixel = context.getImageData(0, 0, 1, 1).data;
     // Alpha 0 means the colour did not parse (nothing was painted).
-    if (a === 0) return color;
-    const hex = (channel: number) => channel.toString(16).padStart(2, "0");
-    return `#${hex(r)}${hex(g)}${hex(b)}`;
+    if (pixel[3] === 0) return color;
+    const hex = (index: number) =>
+        (pixel[index] ?? 0).toString(16).padStart(2, "0");
+    return `#${hex(0)}${hex(1)}${hex(2)}`;
 }
