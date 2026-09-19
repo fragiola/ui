@@ -3,36 +3,42 @@ import { fileURLToPath } from "node:url";
 import { createMDX } from "fumadocs-mdx/next";
 
 // The workspace root, two levels up from apps/www. Named explicitly so the
-// standalone output traces the pnpm store at the root instead of guessing —
-// Next infers it from the lockfile, but a guess in a Dockerfile is a
-// silent-failure waiting to happen.
+// standalone output traces the pnpm store at the root instead of guessing.
 const workspaceRoot = path.join(
     path.dirname(fileURLToPath(import.meta.url)),
     "../..",
 );
 
+// ─── Deploy targets ──────────────────────────────────────────────────────────
+// The site is fully pre-renderable: MDX content, a landing page, and a search
+// index that is a JSON file. Nothing reads the request. So the default build
+// is a STATIC EXPORT (`out/`), which is what GitHub Pages serves.
+//
+//   NEXT_PUBLIC_BASE_PATH   "/ui" on a project page (fragiola.github.io/ui),
+//                           "" on a custom domain. The Pages workflow reads
+//                           it from actions/configure-pages, so it is never
+//                           hand-maintained. NEXT_PUBLIC_ so the client can
+//                           point the search dialog at the exported index.
+//   NEXT_OUTPUT_MODE        "standalone" builds the Node server for the
+//                           Dockerfile instead. Same code, same routes.
+//
+// What a static export rules out, and where it went:
+//   - `redirects()` here → `redirect()` in app/docs/[[...slug]]/page.tsx
+//   - `/api/search` on request → `staticGET`, exported as a file
+//   - dynamic params → every docs path comes from generateStaticParams
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const output =
+    process.env.NEXT_OUTPUT_MODE === "standalone" ? "standalone" : "export";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
-    // Standalone: `next build` emits a self-contained server under
-    // .next/standalone with only the traced node_modules. The Dockerfile
-    // copies that, .next/static and public/ — nothing else ships.
-    output: "standalone",
+    output,
     outputFileTracingRoot: workspaceRoot,
-    // /docs is the advertised entry point (header link, hero CTA), but there
-    // is no content/docs/index.mdx — source.generateParams() emits one path
-    // per MDX file and none of them is the root, so /docs itself 404s.
-    // Redirect it to the first page of the tree. Temporary (307) on purpose:
-    // if a real docs index lands later, a cached 308 would outlive it.
-    async redirects() {
-        return [
-            {
-                source: "/docs",
-                destination: "/docs/getting-started/introduction",
-                permanent: false,
-            },
-        ];
-    },
+    basePath,
+    // Every page is a directory with an index.html, so a static host
+    // resolves /docs/display/chart/ without any rewrite rule.
+    trailingSlash: true,
 };
 
 const withMDX = createMDX();

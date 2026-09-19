@@ -6,7 +6,7 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
 import { source } from "@/lib/source";
 
@@ -14,6 +14,15 @@ export default async function Page(props: {
     params: Promise<{ slug?: string[] }>;
 }) {
     const params = await props.params;
+    // /docs is the advertised entry point (header link, hero CTA), but there
+    // is no content/docs/index.mdx, so the root of the tree has no page.
+    // Send it to the first page. This used to be `redirects()` in
+    // next.config.mjs, which a static export cannot honour — here it
+    // renders as a redirect page at out/docs/index.html. `redirect()`
+    // prepends basePath itself (verified: adding it by hand doubled it).
+    if (!params.slug?.length) {
+        redirect("/docs/getting-started/introduction");
+    }
     const page = source.getPage(params.slug);
     if (!page) notFound();
 
@@ -35,7 +44,10 @@ export default async function Page(props: {
 }
 
 export async function generateStaticParams() {
-    return source.generateParams();
+    // The root (`/docs`) is not in the tree — source.generateParams() emits
+    // one entry per MDX file — but the export needs it listed to write the
+    // redirect page.
+    return [{ slug: [] }, ...source.generateParams()];
 }
 
 export async function generateMetadata(props: {
