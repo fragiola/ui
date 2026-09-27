@@ -28,19 +28,40 @@ Declare only direct dependencies. `dropdown-menu` will not restate `cn` or
 `tailwind-variants` because `menu` already pulls them; the graph resolves the
 rest, and restating is noise that goes stale.
 
+## Dependencies are namespaced
+
+Every `registryDependencies` entry is written `@fragiola/<name>`. The CLI
+resolves a bare name (`"cn"`) against its own default registry, never ours:
+it either fails, or — when shadcn has an item of the same name, like `field`
+— silently installs shadcn's file instead. The build rejects bare names; only
+`@namespace/name` or a full URL is accepted.
+
 ## `target`
 
-Items carry a `target` so files land in the right place:
-`~/components/ui/`, `~/components/families/`, `~/components/atoms/`,
-`~/lib/`, `~/hooks/`, `~/styles/palettes/`. The `~` prefix resolves to the
-project root; `@components/`, `@ui/`, `@lib/`, `@hooks/` resolve to the
-aliases in your `components.json`.
+Each file declares where it lands, using the placeholders the CLI resolves
+against the user's `components.json` aliases:
 
-## CSS install is idempotent
+| placeholder | used for |
+|---|---|
+| `@ui/` | `registry/ui/` |
+| `@components/` | `registry/atoms/`, `registry/families/` |
+| `@lib/` | `registry/lib/` |
+| `@hooks/` | `registry/hooks/` |
 
-`global.css` is touched by anything depending on `theme`, and each palette
-adds an `@import`. Installing a second component does **not** overwrite a
-`global.css` you have edited — only the missing `@import` is appended.
+Stylesheets use a relative target (`styles/…`), which the CLI places under
+`src/` when the project has one. `~/` is the project root, not the source
+root — in a project with `src/` it writes outside it — so the build rejects
+it.
+
+The placement must match the import rewrite in `scripts/build-registry.ts`
+(`#/atoms/` → `@/components/atoms/`, …): a file anywhere else installs
+"successfully" and breaks every import pointing at it.
+
+## CSS is not merged
+
+`global.css` and each palette are separate files. The CLI does not edit the
+project's CSS entry; the user imports them, and adding an item again does not
+overwrite a file they have edited.
 
 ## No versioning, therefore no update
 
@@ -52,8 +73,9 @@ pretending otherwise would be worse than saying it plainly.
 
 1. Add the source file under `registry/` at the right path.
 2. Add an entry to `registry.json` with `type`, `files` (with `path` and
-   `target`), `registryDependencies` (direct only), and `dependencies` (npm
-   packages).
-3. Run `pnpm registry:build` to emit `public/r/<name>.json`.
+   `target`), `registryDependencies` (direct only, as `@fragiola/<name>`),
+   and `dependencies` (npm packages).
+3. Run `pnpm registry:build` to emit `public/r/<name>.json`, then
+   `pnpm registry:smoke` to install every item with the real CLI.
 4. The guard tests run over `registry/**` — adding a family or palette means
    the tests are the check, not review.
