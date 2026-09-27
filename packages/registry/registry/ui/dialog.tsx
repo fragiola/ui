@@ -58,11 +58,14 @@ function DialogContent({
         // above the backdrop's z-40: `position: fixed` establishes a stacking
         // context, so without this the panel's own z-50 is confined inside the
         // wrapper and the backdrop paints over it. The drawer's Viewport does
-        // the same (z-50 over the backdrop's z-40).
+        // the same (z-50 over the backdrop's z-40). `relative` makes the panel
+        // the containing block of its close button (absolute top-4 end-4);
+        // without it the button anchors to this full-viewport wrapper and
+        // lands in the corner of the screen, outside the panel.
         <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-4">
             <parts.Content
                 data-slot="dialog-content"
-                className={cn("w-full max-w-lg", className as string)}
+                className={cn("relative w-full max-w-lg", className as string)}
                 {...props}
             />
         </div>
