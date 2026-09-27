@@ -12,14 +12,16 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.1, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
-//   project.json     contract version, frameworks, registry namespace ⇔ r/
-//   docs/            config.json ⇔ files, frontmatter, vocabulary and props,
-//                    code fences, links (pages, anchors, examples), `<Example
-//                    id>`, `<InstallCommand item>`
+//   project.json     contract version, frameworks, registry namespace ⇔ r/,
+//                    repository
+//   docs/            config.json ⇔ files (and collapsible sections),
+//                    frontmatter, vocabulary, props and nesting, code fences,
+//                    links (pages, anchors, examples, hero actions),
+//                    `<Example id>`, `<InstallCommand item>`
 //   examples.json    levels, themes
 //   embed/<fw>/      index.html, manifest.json: ids, levels, files, docs
 //                    links, registry items
@@ -28,6 +30,9 @@ import { parse as parseYaml } from "yaml";
 // `validateExport(dir)` reads an export from disk; `validate(input)` takes
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
+//
+// v1.1 is additive and keeps `"contract": 1` (CONTRACT.md, "Changes in
+// v1.1"), so CONTRACT stays 1 while the vocabulary is v1.1's.
 
 export const CONTRACT = 1;
 
@@ -41,6 +46,8 @@ export type ProjectJson = {
     frameworks: string[];
     defaultFramework: string;
     registry?: { namespace: string };
+    /** v1.1: the header and footer links. */
+    repository?: string;
 };
 
 type ConfigPage =
@@ -48,7 +55,14 @@ type ConfigPage =
     | { label: string; href: string; external: true };
 
 export type DocsConfig = {
-    sections: Array<{ label: string; framework?: string; pages: ConfigPage[] }>;
+    sections: Array<{
+        label: string;
+        framework?: string;
+        /** v1.1: a folder that folds; `defaultOpen` opens it on load. */
+        collapsible?: boolean;
+        defaultOpen?: boolean;
+        pages: ConfigPage[];
+    }>;
 };
 
 export type ExamplesJson = {
@@ -104,12 +118,14 @@ export type ExportInput = {
 
 // ─── The vocabulary (§3.4) ──────────────────────────────────────────────────
 
-type PropKind = "string" | "number" | "array";
+type PropKind = "string" | "number" | "boolean" | "array";
 type ComponentSpec = {
     required?: Record<string, PropKind>;
     optional?: Record<string, PropKind>;
-    enums?: Record<string, readonly string[]>;
+    enums?: Record<string, readonly (string | number)[]>;
     landingOnly?: boolean;
+    /** The only component this one may sit directly inside. */
+    parent?: string;
 };
 
 export const VOCABULARY: Record<string, ComponentSpec> = {
@@ -120,8 +136,9 @@ export const VOCABULARY: Record<string, ComponentSpec> = {
             theme: "string",
             height: "number",
             variant: "string",
+            label: "string",
         },
-        enums: { variant: ["inline", "bleed", "card"] },
+        enums: { variant: ["inline", "bleed", "card", "showcase"] },
     },
     Callout: {
         required: { type: "string" },
@@ -129,22 +146,53 @@ export const VOCABULARY: Record<string, ComponentSpec> = {
         enums: { type: ["info", "warn", "danger"] },
     },
     Tabs: { required: { items: "array" } },
-    Tab: { required: { value: "string" } },
+    Tab: { required: { value: "string" }, parent: "Tabs" },
     Steps: {},
-    Step: {},
+    Step: { parent: "Steps" },
     Cards: {},
     Card: {
         required: { title: "string", href: "string" },
         optional: { description: "string" },
+        parent: "Cards",
     },
     InstallCommand: { required: { item: "string" } },
     Framework: { required: { name: "string" } },
     Hero: {
         required: { title: "string" },
-        optional: { description: "string", actions: "array" },
+        optional: {
+            description: "string",
+            eyebrow: "string",
+            background: "string",
+            actions: "array",
+        },
+        enums: { background: ["none", "grid"] },
+        landingOnly: true,
+    },
+    Section: {
+        required: { title: "string" },
+        optional: { eyebrow: "string", description: "string" },
+        landingOnly: true,
+    },
+    Features: {
+        optional: { columns: "number", numbered: "boolean" },
+        enums: { columns: [2, 3, 4] },
+        landingOnly: true,
+    },
+    Feature: {
+        required: { title: "string" },
+        landingOnly: true,
+        parent: "Features",
+    },
+    Pills: {
+        required: { items: "array" },
+        optional: { strike: "boolean" },
         landingOnly: true,
     },
 };
+
+/** `Action` (§3.4): the buttons of a `<Hero>`. */
+const ACTION_VARIANTS = ["primary", "secondary", "ghost"];
+const ACTION_ICONS = ["arrow", "external"];
 
 const FRONTMATTER_KEYS = new Set(["title", "description", "layout"]);
 
@@ -326,6 +374,14 @@ export function validate(input: ExportInput): string[] {
             "project.json: registry.namespace is set but r/ is missing",
         );
     }
+    if (
+        project.repository !== undefined &&
+        !/^https:\/\/\S+$/.test(project.repository)
+    ) {
+        problems.push(
+            `project.json: repository "${project.repository}" is not an https:// URL`,
+        );
+    }
     const namespace = project.registry?.namespace;
     if (namespace !== undefined && !/^@[a-z0-9][a-z0-9-]*$/.test(namespace)) {
         problems.push(
@@ -475,6 +531,21 @@ export function validate(input: ExportInput): string[] {
                 `config.json: section "${section.label}" names framework "${section.framework}"`,
             );
         }
+        for (const key of ["collapsible", "defaultOpen"] as const) {
+            if (
+                section[key] !== undefined &&
+                typeof section[key] !== "boolean"
+            ) {
+                problems.push(
+                    `config.json: section "${section.label}" ${key} must be a boolean`,
+                );
+            }
+        }
+        if (section.defaultOpen !== undefined && !section.collapsible) {
+            problems.push(
+                `config.json: section "${section.label}" has defaultOpen but is not collapsible`,
+            );
+        }
         for (const page of section.pages ?? []) {
             if (!page.label) {
                 problems.push(
@@ -559,7 +630,12 @@ export function validate(input: ExportInput): string[] {
         const tree = page.tree;
         if (!tree) continue;
 
-        visit(tree, (node: Nodes) => {
+        // Parents, recorded on the way down: a component written on one line
+        // parses as inline, inside a paragraph, and its container is the
+        // paragraph's parent.
+        const parents = new WeakMap<Nodes, Nodes>();
+        visit(tree, (node: Nodes, _index, parent) => {
+            if (parent) parents.set(node, parent as Nodes);
             switch (node.type) {
                 case "mdxjsEsm":
                     problems.push(`${at(node)}: import/export is not allowed`);
@@ -607,13 +683,25 @@ export function validate(input: ExportInput): string[] {
                     return;
                 case "mdxJsxFlowElement":
                 case "mdxJsxTextElement":
-                    checkElement(node, pagePath, at(node));
+                    checkElement(
+                        node,
+                        parent?.type === "paragraph"
+                            ? parents.get(parent as Nodes)
+                            : (parent as Nodes | undefined),
+                        pagePath,
+                        at(node),
+                    );
                     return;
             }
         });
     }
 
-    function checkElement(node: JsxNode, pagePath: string, where: string) {
+    function checkElement(
+        node: JsxNode,
+        parent: Nodes | undefined,
+        pagePath: string,
+        where: string,
+    ) {
         const name = node.name;
         const spec = name ? VOCABULARY[name] : undefined;
         if (!name || !spec) {
@@ -624,6 +712,18 @@ export function validate(input: ExportInput): string[] {
         }
         if (spec.landingOnly && pagePath !== "index") {
             problems.push(`${where}: <${name}> belongs on the landing only`);
+        }
+        if (spec.parent) {
+            const parentName =
+                parent?.type === "mdxJsxFlowElement" ||
+                parent?.type === "mdxJsxTextElement"
+                    ? parent.name
+                    : null;
+            if (parentName !== spec.parent) {
+                problems.push(
+                    `${where}: <${name}> belongs inside <${spec.parent}>`,
+                );
+            }
         }
         const attributes = attributesOf(node, (p) =>
             problems.push(`${where}: <${name}> ${p}`),
@@ -648,7 +748,7 @@ export function validate(input: ExportInput): string[] {
                 continue;
             }
             const allowed = spec.enums?.[prop];
-            if (allowed && !allowed.includes(value as string)) {
+            if (allowed && !allowed.includes(value as string | number)) {
                 problems.push(
                     `${where}: <${name} ${prop}="${value}"> — one of ${allowed.join(", ")}`,
                 );
@@ -682,6 +782,11 @@ export function validate(input: ExportInput): string[] {
                         `${where}: <Example theme="${theme}"> is not in examples.json`,
                     );
                 }
+                if (props.has("label") && text("variant") !== "showcase") {
+                    problems.push(
+                        `${where}: <Example label> is only for variant="showcase"`,
+                    );
+                }
                 break;
             }
             case "InstallCommand": {
@@ -713,13 +818,14 @@ export function validate(input: ExportInput): string[] {
                     );
                 break;
             }
-            case "Tabs": {
+            case "Tabs":
+            case "Pills": {
                 const items = props.get("items");
                 if (
                     Array.isArray(items) &&
                     !items.every((i) => typeof i === "string")
                 ) {
-                    problems.push(`${where}: <Tabs items> must be strings`);
+                    problems.push(`${where}: <${name} items> must be strings`);
                 }
                 break;
             }
@@ -727,15 +833,46 @@ export function validate(input: ExportInput): string[] {
                 const actions = props.get("actions");
                 if (!Array.isArray(actions)) break;
                 for (const action of actions) {
-                    const { label, href } = (action ?? {}) as Record<
-                        string,
-                        unknown
-                    >;
+                    const { label, href, variant, icon, ...rest } = (action ??
+                        {}) as Record<string, unknown>;
                     if (typeof label !== "string" || typeof href !== "string") {
                         problems.push(
-                            `${where}: <Hero actions> are { label, href }`,
+                            `${where}: <Hero actions> are { label, href, variant?, icon? }`,
                         );
                         continue;
+                    }
+                    for (const key of Object.keys(rest)) {
+                        problems.push(
+                            `${where}: <Hero> action "${label}" has no "${key}"`,
+                        );
+                    }
+                    if (
+                        variant !== undefined &&
+                        !ACTION_VARIANTS.includes(variant as string)
+                    ) {
+                        problems.push(
+                            `${where}: <Hero> action "${label}" variant "${variant}" — one of ${ACTION_VARIANTS.join(", ")}`,
+                        );
+                    }
+                    if (
+                        icon !== undefined &&
+                        !ACTION_ICONS.includes(icon as string)
+                    ) {
+                        problems.push(
+                            `${where}: <Hero> action "${label}" icon "${icon}" — one of ${ACTION_ICONS.join(", ")}`,
+                        );
+                    }
+                    const token = label.match(/\{([^}]*)\}/g) ?? [];
+                    for (const t of token) {
+                        if (t !== "{examples}") {
+                            problems.push(
+                                `${where}: <Hero> action "${label}" — the only token is {examples}`,
+                            );
+                        } else if (allExampleIds.size === 0) {
+                            problems.push(
+                                `${where}: <Hero> action "${label}" counts examples, and there are none`,
+                            );
+                        }
                     }
                     const problem = linkProblem(href, pagePath);
                     if (problem)
