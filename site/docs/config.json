@@ -2,6 +2,7 @@
     "sections": [
         {
             "label": "Getting Started",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Introduction",
@@ -19,6 +20,7 @@
         },
         {
             "label": "Architecture",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Theming",
@@ -52,6 +54,7 @@
         },
         {
             "label": "Atoms",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Text",
@@ -65,6 +68,7 @@
         },
         {
             "label": "Fields",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Field",
@@ -90,6 +94,7 @@
         },
         {
             "label": "Menus",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Dropdown Menu",
@@ -103,6 +108,7 @@
         },
         {
             "label": "Overlays",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Dialog",
@@ -128,6 +134,7 @@
         },
         {
             "label": "Disclosure",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Accordion",
@@ -141,6 +148,7 @@
         },
         {
             "label": "Navigation",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Tabs",
@@ -162,6 +170,7 @@
         },
         {
             "label": "Display",
+            "collapsible": true,
             "pages": [
                 {
                     "label": "Badge",
