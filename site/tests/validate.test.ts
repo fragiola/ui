@@ -125,6 +125,8 @@ function fixture(): ExportInput {
             sections: [
                 {
                     label: "Atoms",
+                    collapsible: true,
+                    defaultOpen: true,
                     pages: [
                         { label: "Button", path: "atoms/button" },
                         {
@@ -137,10 +139,7 @@ function fixture(): ExportInput {
             ],
         },
         pages: new Map([
-            [
-                "index",
-                `---\ntitle: "UI"\ndescription: "Landing."\nlayout: "landing"\n---\n\n<Hero title="UI" actions={[{ label: "Docs", href: "/docs/atoms/button" }]} />\n\n<Example id="button" variant="bleed" />\n`,
-            ],
+            ["index", LANDING],
             [
                 "atoms/button",
                 `---\ntitle: "Button"\ndescription: "A button."\n---\n\n<InstallCommand item="button" />\n\n<Example id="button" />\n\n## Usage\n\nSee [usage](#usage), [the gallery](/examples/button) and [home](/).\n\n\`\`\`tsx title="button.tsx"\n<Button />\n\`\`\`\n\n<Callout type="warn" title="Note">Text.</Callout>\n\n<Cards>\n  <Card title="Usage" href="/docs/atoms/button#usage" />\n</Cards>\n`,
@@ -167,6 +166,49 @@ function fixture(): ExportInput {
         },
     };
 }
+
+// Every piece of the v1.1 landing vocabulary, once.
+const LANDING = `---
+title: "UI"
+description: "Landing."
+layout: "landing"
+---
+
+<Hero
+    eyebrow="Kicker"
+    title="UI"
+    background="grid"
+    actions={[
+        { label: "Docs", href: "/docs/atoms/button", variant: "primary", icon: "arrow" },
+        { label: "Browse {examples} examples", href: "/examples", variant: "ghost" },
+        { label: "GitHub", href: "https://github.com/fragiola/ui", icon: "external" },
+    ]}
+/>
+
+<Example id="button" variant="showcase" theme="dark" label="Two themes:" />
+
+<Section eyebrow="Why" title="Reasons" description="A lead.">
+    <Features numbered columns={3}>
+        <Feature title="One">
+            Body with **markdown**.
+        </Feature>
+        <Feature title="Two">Body.</Feature>
+    </Features>
+
+    <Pills items={["a", "b"]} />
+
+    <Pills items={["c"]} strike />
+</Section>
+
+<Example id="button" variant="bleed" />
+`;
+
+const landing = (body: string) => (i: ExportInput) => {
+    i.pages.set(
+        "index",
+        `---\ntitle: "UI"\ndescription: "D."\nlayout: "landing"\n---\n\n${body}\n`,
+    );
+};
 
 function withPage(input: ExportInput, page: string, body: string) {
     input.pages.set(
@@ -262,6 +304,107 @@ describe("validate", () => {
             "a Hero outside the landing",
             button('<Hero title="x" />'),
             /belongs on the landing only/,
+        ],
+        [
+            "a Section outside the landing",
+            button('<Section title="x" />'),
+            /<Section> belongs on the landing only/,
+        ],
+        [
+            "a Feature outside Features",
+            landing(
+                '<Section title="x"><Feature title="y">z</Feature></Section>',
+            ),
+            /<Feature> belongs inside <Features>/,
+        ],
+        [
+            "a Card outside Cards",
+            button('<Card title="x" href="/docs/atoms/button" />'),
+            /<Card> belongs inside <Cards>/,
+        ],
+        [
+            "a Features column count outside 2–4",
+            landing(
+                '<Features columns={5}><Feature title="y">z</Feature></Features>',
+            ),
+            /<Features columns="5"> — one of 2, 3, 4/,
+        ],
+        [
+            "numbered as a string",
+            landing(
+                '<Features numbered="yes"><Feature title="y">z</Feature></Features>',
+            ),
+            /<Features numbered> must be a boolean/,
+        ],
+        [
+            "Pills that are not strings",
+            landing("<Pills items={[1, 2]} />"),
+            /<Pills items> must be strings/,
+        ],
+        [
+            "a Hero background outside the enum",
+            landing('<Hero title="x" background="dots" />'),
+            /<Hero background="dots"> — one of none, grid/,
+        ],
+        [
+            "a Hero action variant outside the enum",
+            landing(
+                '<Hero title="x" actions={[{ label: "a", href: "/", variant: "solid" }]} />',
+            ),
+            /variant "solid" — one of primary, secondary, ghost/,
+        ],
+        [
+            "a Hero action icon outside the enum",
+            landing(
+                '<Hero title="x" actions={[{ label: "a", href: "/", icon: "plus" }]} />',
+            ),
+            /icon "plus" — one of arrow, external/,
+        ],
+        [
+            "a Hero action with an unknown key",
+            landing(
+                '<Hero title="x" actions={[{ label: "a", href: "/", target: "_blank" }]} />',
+            ),
+            /action "a" has no "target"/,
+        ],
+        [
+            "a Hero action label token other than {examples}",
+            landing(
+                '<Hero title="x" actions={[{ label: "{pages} pages", href: "/" }]} />',
+            ),
+            /the only token is \{examples\}/,
+        ],
+        [
+            "a Hero action to a missing page",
+            landing(
+                '<Hero title="x" actions={[{ label: "a", href: "/docs/nope" }]} />',
+            ),
+            /<Hero> action \/docs\/nope — no page/,
+        ],
+        [
+            "a label on an Example that is not a showcase",
+            button('<Example id="button" label="x" />'),
+            /<Example label> is only for variant="showcase"/,
+        ],
+        [
+            "an Example variant outside the enum",
+            button('<Example id="button" variant="hero" />'),
+            /one of inline, bleed, card, showcase/,
+        ],
+        [
+            "a repository that is not https",
+            (i) => {
+                i.project.repository = "git@github.com:fragiola/ui.git";
+            },
+            /repository "git@github.com:fragiola\/ui.git" is not an https:\/\/ URL/,
+        ],
+        [
+            "defaultOpen on a section that does not fold",
+            (i) => {
+                const section = i.config.sections[0];
+                if (section) section.collapsible = false;
+            },
+            /has defaultOpen but is not collapsible/,
         ],
         [
             "a computed prop",

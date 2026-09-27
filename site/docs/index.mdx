@@ -5,57 +5,81 @@ layout: "landing"
 ---
 
 <Hero
+    eyebrow="Base UI · Tailwind v4 · Copy & paste"
     title="Components that take the colour you give them."
     description="A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes — scope one to a page, a card, or a single button."
+    background="grid"
     actions={[
-        { label: "Read the documentation", href: "/docs/getting-started/introduction" },
-        { label: "How theming works", href: "/docs/architecture/theming" },
+        { label: "Read the documentation", href: "/docs/getting-started/introduction", variant: "primary", icon: "arrow" },
+        { label: "How theming works", href: "/docs/architecture/theming", variant: "secondary" },
     ]}
 />
 
-## Six palettes, one surface
+<Section
+    eyebrow="Why it exists"
+    title="Three problems, three decisions"
+    description="Fragiola starts from shadcn/ui — it reuses its registry format and its CLI, so installing a component is the command you already know. Three things about that baseline stopped scaling, and each one shaped a decision here."
+>
+    <Features numbered columns={3}>
+        <Feature title="Colour you can scope">
+            A single global token set makes one decision for the whole application: switching a theme redefines every surface at once, and there is no way to tint one region while the rest of the page stays neutral. Fragiola applies colour with a class, so a page, a card or one button can carry its own palette — and no component needs a colour variant to make it happen.
+        </Feature>
+        <Feature title="Styles shared, not pasted">
+            Components that share a visual skeleton should share the CSS that draws it. When each one keeps a private copy, the copies drift: one sibling loses its close animation, another gains a padding nobody chose, and a fix has to be applied as many times as it was pasted. Fragiola gives each skeleton one home — a style family — and every component that looks like it consumes that.
+        </Feature>
+        <Feature title="One component per idea">
+            The same wrapper written twice for two menus, several ways to write an input, a button re-wrapped for each context: every duplicate is another place the next change has to reach. Fragiola builds those families from one factory, so there is a single component per idea and a single place to change it.
+        </Feature>
+    </Features>
+</Section>
 
-One neutral floor, six palettes, one component. Nothing below is a variant: each button carries a `palette-*` class and reads the same six roles.
+<Section
+    eyebrow="The token system"
+    title="Six roles, any number of palettes"
+    description="A palette is six roles applied by class. Components read roles, never colours — so the same button is at home in any palette, and none of them needs a colour variant."
+>
+    <Features columns={3}>
+        <Feature title="base">
+            The colour of this palette — a background, or a fill.
+        </Feature>
+        <Feature title="soft">
+            A subtle background: an alert, a badge, a hover, a field's surface.
+        </Feature>
+        <Feature title="line">
+            Stroke.
+        </Feature>
+        <Feature title="contrast">
+            Content on base — the text on what you painted.
+        </Feature>
+        <Feature title="accent">
+            Content on a foreign background, or on soft.
+        </Feature>
+        <Feature title="ring">
+            The interaction highlight: focus, active. The only role drawn outside the element.
+        </Feature>
+    </Features>
 
-<Example id="clickable" variant="bleed" />
+    ### The number of palettes is free. The number of roles is not.
 
-## Three problems, three decisions
+    Six roles, every palette declaring all six. When something does not fit, the answer is another palette — never a seventh role. That is what keeps the contract closed while the colours keep coming.
 
-Fragiola starts from shadcn/ui — it reuses its registry format and its CLI, so installing a component is the command you already know. Three things about that baseline stopped scaling, and each one shaped a decision here.
+    And a palette is applied by class, so it is scoped to whatever subtree carries it: a page, a card, or one button on an otherwise neutral floor.
 
-<Cards>
-    <Card
-        title="Colour you can scope"
-        href="/docs/architecture/theming"
-        description="Colour is applied with a class, so a page, a card or one button can carry its own palette — and no component needs a colour variant to make it happen."
-    />
-    <Card
-        title="Styles shared, not pasted"
-        href="/docs/architecture/style-families"
-        description="Components that share a visual skeleton share the CSS that draws it: each skeleton has one home, a style family, and every component that looks like it consumes that."
-    />
-    <Card
-        title="One component per idea"
-        href="/docs/architecture/composition"
-        description="Families of components are built from one factory, so there is a single component per idea and a single place to change it."
-    />
-</Cards>
+    ```tsx
+    // The floor is neutral.
+    <div className="palette-surface bg-palette-base">
+        {/* The palette goes on the element. */}
+        <Clickable.Button className="palette-danger">
+            Delete
+        </Clickable.Button>
+    </div>
+    ```
+</Section>
 
-## Install a component
-
-Add the `@fragiola` registry to your `components.json`, then install with the shadcn CLI:
-
-<InstallCommand item="clickable" />
-
-<Cards>
-    <Card
-        title="Installation"
-        href="/docs/getting-started/installation"
-        description="Add the registry, install an item, and wire the CSS."
-    />
-    <Card
-        title="Examples"
-        href="/examples"
-        description="Every component, live, with its code and the command that installs it."
-    />
-</Cards>
+<Section
+    eyebrow="The demonstration"
+    title="Six palettes, one surface"
+    description="One neutral floor, six palettes, one component. Nothing below is a variant: each button carries a palette-* class and reads the same six roles."
+>
+    <Example id="palettes" variant="bleed" />
+</Section>

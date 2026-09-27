@@ -75,6 +75,24 @@ export const examples: Example[] = [
         height: 590,
         load: () => import("./clickable.tsx"),
     },
+    {
+        id: "palettes",
+        title: "Palettes",
+        description:
+            "Six palettes on one neutral floor: the same button in every variant, each one wearing its own palette-* class.",
+        level: "atoms",
+        order: 3,
+        features: [
+            "palette-surface",
+            "palette-blue",
+            "palette-danger",
+            "Clickable.Button",
+        ],
+        docs: "/docs/architecture/palettes",
+        layout: "flow",
+        height: 346,
+        load: () => import("./palettes.tsx"),
+    },
 
     // ─── Fields ─────────────────────────────────────────────────────────────
     {

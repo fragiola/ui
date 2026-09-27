@@ -10,4 +10,5 @@ export const PROJECT: ProjectJson = {
     frameworks: ["react"],
     defaultFramework: "react",
     registry: { namespace: "@fragiola" },
+    repository: "https://github.com/fragiola/ui",
 };
