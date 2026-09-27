@@ -1,0 +1,87 @@
+---
+title: "Installation"
+description: "Fragiola distributes through shadcn's registry format and CLI. There is no `@fragiola/ui` package to install — the CLI copies source files into your project, and you own them from that point on."
+---
+
+Fragiola distributes through shadcn's registry format and CLI. There is no
+`@fragiola/ui` package to install — the CLI copies source files into your
+project, and you own them from that point on.
+
+## Add the registry
+
+Add the `@fragiola` namespace to your `components.json`:
+
+```json
+{
+  "registries": {
+    "@fragiola": {
+      "url": "https://fragiola.com/r/{name}.json"
+    }
+  }
+}
+```
+
+For local development against a checkout of this repository, build the
+registry with `pnpm registry:build` — it writes `packages/registry/dist/r/` —
+and point at any static server rooted at `packages/registry/dist`:
+
+```json
+{
+  "registries": {
+    "@fragiola": {
+      "url": "http://localhost:3000/r/{name}.json"
+    }
+  }
+}
+```
+
+## Install an item
+
+```bash
+npx shadcn@latest add @fragiola/text
+```
+
+The CLI resolves the dependency graph recursively. Installing `text` pulls
+`cn`; installing a component that depends on `text` afterwards writes only the
+files that are missing. Every dependency resolves inside `@fragiola` — the CLI
+never reaches the default shadcn registry for a Fragiola item.
+
+## What you get
+
+Files land under your `components.json` aliases, so with the defaults they go
+to `src/` when the project has one and to the project root otherwise:
+
+| what | lands in | with default aliases and `src/` |
+|---|---|---|
+| components | your `ui` alias | `src/components/ui/` |
+| atoms and style families | your `components` alias | `src/components/atoms/`, `src/components/families/` |
+| `cn`, `get-token` | your `lib` alias | `src/lib/` |
+| hooks | your `hooks` alias | `src/hooks/` |
+| `global.css` and palettes | `styles/`, under `src/` when it exists | `src/styles/`, `src/styles/palettes/` |
+
+Imports inside the files are rewritten to your aliases, so they resolve
+wherever your aliases point.
+
+## Wire the CSS
+
+The CLI writes `styles/global.css` and each palette as a separate file; it
+does not edit your CSS entry. Import them once, after Tailwind — paths are
+relative to your entry, here a Next app's `src/app/globals.css`:
+
+```css
+@import "tailwindcss";
+@import "../styles/global.css";
+@import "../styles/palettes/surface.css";
+@import "../styles/palettes/raised.css";
+```
+
+Add a palette's `@import` when you install it. Adding an item again does not
+overwrite a file you have edited — the CLI asks first.
+
+## No versioning
+
+The registry format has no `version` field. Whoever installs keeps a frozen
+copy. That is inherent to copy-paste distribution, and it is accepted
+deliberately — pretending otherwise would be worse than saying it plainly. If
+it becomes a real problem, that is when a custom CLI would be worth building,
+not before.
