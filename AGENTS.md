@@ -56,7 +56,7 @@ fails AA (4.5:1) even on neutral surfaces (surface/light/base = 2.85:1). At 85%,
 `accent` clears AA on every neutral surface (surface + raised, base + soft) in
 both themes. Secondary text realistically appears only on neutral backgrounds;
 chromatic palettes use `contrast` for their text, not a muted variant. The
-contrast guard in `tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1
+contrast guard in `packages/registry/tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1
 over base and soft for every surface-tier palette, in both themes.
 
 Apply this value uniformly, including to placeholders.
@@ -71,4 +71,8 @@ Apply this value uniformly, including to placeholders.
 | `pnpm typecheck` | `pnpm -r typecheck` (TypeScript, no emit) |
 | `pnpm test` | `pnpm -r test` (guard tests) |
 | `pnpm build` | `pnpm -r build` (production build) |
-| `pnpm registry:build` | build the registry JSON files |
+| `pnpm registry:build` | build the registry JSON files (`packages/registry/dist/r`) |
+| `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
+| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract |
+| `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
+| `pnpm --filter examples-react check:embeds` | every example in a real iframe (needs `playwright install chromium`) |

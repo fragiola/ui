@@ -4,14 +4,19 @@ A copy-paste React component library built on [Base UI](https://base-ui.com) and
 
 ## Documentation
 
-Visit https://ui.fragiola.com to view the documentation.
+Visit https://fragiola.com/ui to view the documentation.
 
 ## Development
 
 ```bash
 pnpm install
-pnpm dev
+pnpm site:dev --base /ui --port 5174    # the examples, served for fragiola.com's dev server
+pnpm site:export --base /ui --out out   # what fragiola.com builds /ui from
 ```
+
+The documentation site itself lives in [fragiola/www](https://github.com/fragiola/www);
+this repository provides its pages (`site/docs`), its examples (`examples/react`)
+and the registry (`packages/registry`).
 
 Requires Node.js ≥ 24 and pnpm ≥ 11.
 
