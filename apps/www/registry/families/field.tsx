@@ -1,3 +1,9 @@
+// .tsx without JSX, on purpose: `ui/field.tsx` has the same basename, and
+// after installing, the shadcn CLI re-resolves `@/components/families/field`
+// by basename and prefers .tsx over .ts — every import of this family would
+// be rewritten to the component. With both .tsx, it falls back to the path
+// and picks this file. `pnpm registry:smoke` fails if that regresses.
+//
 // Family `field` — input control (root, choiceRoot, row, body, control,
 // addon, inset, label, description, error).
 // Origin: three ways of writing a field in shadcn (Input, Field, InputGroup)

@@ -354,9 +354,9 @@
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [
                 {
-                    "path": "registry/families/field.ts",
+                    "path": "registry/families/field.tsx",
                     "type": "registry:lib",
-                    "target": "@components/families/field.ts"
+                    "target": "@components/families/field.tsx"
                 },
                 {
                     "path": "registry/ui/field.tsx",
