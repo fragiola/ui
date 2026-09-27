@@ -77,6 +77,29 @@ function rewriteImports(source: string): string {
     return result;
 }
 
+// ─── Registry dependencies ──────────────────────────────────────────────────
+// The shadcn CLI resolves a bare name ("cn") against its own default registry,
+// so a bare dependency silently installs shadcn's file of the same name — or
+// fails when there is none. Only `@namespace/name` and full URLs are accepted;
+// dependencies inside our own namespace must exist in this registry.
+const NAMESPACE = "@fragiola";
+const NAMESPACED_DEPENDENCY = /^(@[a-zA-Z0-9][a-zA-Z0-9-_]*)\/(.+)$/;
+
+type Dependency =
+    | { kind: "local"; name: string }
+    | { kind: "external" }
+    | { kind: "bare" };
+
+function parseDependency(dep: string): Dependency {
+    if (URL.canParse(dep) && /^https?:\/\//.test(dep))
+        return { kind: "external" };
+    const [, namespace, name] = dep.match(NAMESPACED_DEPENDENCY) ?? [];
+    if (!namespace || !name) return { kind: "bare" };
+    return namespace === NAMESPACE
+        ? { kind: "local", name }
+        : { kind: "external" };
+}
+
 // ─── Build ──────────────────────────────────────────────────────────────────
 const ROOT = process.cwd();
 const REGISTRY_JSON = path.join(ROOT, "registry.json");
@@ -103,13 +126,39 @@ async function buildRegistry() {
         seen.add(item.name);
     }
 
-    // Check for dangling registryDependencies
+    // Check registryDependencies: namespaced or URL only, and no dangling
+    // references into our own namespace.
     const names = new Set(items.map((i) => i.name));
     for (const item of items) {
         for (const dep of item.registryDependencies ?? []) {
-            if (!names.has(dep)) {
+            const parsed = parseDependency(dep);
+            if (parsed.kind === "bare") {
+                console.error(
+                    `Item "${item.name}" depends on "${dep}" without a namespace. ` +
+                        `The shadcn CLI resolves a bare name against its own default ` +
+                        `registry, never ${NAMESPACE}. Write "${NAMESPACE}/${dep}".`,
+                );
+                process.exit(1);
+            }
+            if (parsed.kind === "local" && !names.has(parsed.name)) {
                 console.error(
                     `Item "${item.name}" depends on "${dep}" which is not in the registry.`,
+                );
+                process.exit(1);
+            }
+        }
+    }
+
+    // Check targets: `~/` is the project root, not the source root — in a
+    // project with `src/` it writes outside of it.
+    for (const item of items) {
+        for (const file of item.files ?? []) {
+            if (file.target?.startsWith("~/")) {
+                console.error(
+                    `Item "${item.name}": target "${file.target}" starts with "~/", ` +
+                        `which the shadcn CLI resolves to the project root. Use a ` +
+                        `placeholder (@ui/, @components/, @lib/, @hooks/) or a ` +
+                        `relative path, which lands under src/ when the project has one.`,
                 );
                 process.exit(1);
             }
@@ -188,7 +237,11 @@ async function buildItem(item: Item): Promise<Item> {
 function checkCycles(items: Item[]): void {
     const graph = new Map<string, string[]>();
     for (const item of items) {
-        graph.set(item.name, item.registryDependencies ?? []);
+        const local = (item.registryDependencies ?? []).flatMap((dep) => {
+            const parsed = parseDependency(dep);
+            return parsed.kind === "local" ? [parsed.name] : [];
+        });
+        graph.set(item.name, local);
     }
 
     const WHITE = 0,
