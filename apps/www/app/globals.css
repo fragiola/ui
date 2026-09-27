@@ -15,20 +15,20 @@
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
 
-@import "../registry/styles/global.css";
-@import "../registry/styles/palettes/surface.css";
-@import "../registry/styles/palettes/raised.css";
-@import "../registry/styles/palettes/danger.css";
-@import "../registry/styles/palettes/blue.css";
-@import "../registry/styles/palettes/green.css";
-@import "../registry/styles/palettes/orange.css";
-@import "../registry/styles/palettes/purple.css";
-@import "../registry/styles/palettes/rose.css";
-@import "../registry/styles/palettes/surface-blue.css";
-@import "../registry/styles/palettes/surface-purple.css";
-@import "../registry/styles/palettes/surface-green.css";
-@import "../registry/styles/palettes/surface-orange.css";
-@import "../registry/styles/palettes/surface-rose.css";
+@import "../../../packages/registry/registry/styles/global.css";
+@import "../../../packages/registry/registry/styles/palettes/surface.css";
+@import "../../../packages/registry/registry/styles/palettes/raised.css";
+@import "../../../packages/registry/registry/styles/palettes/danger.css";
+@import "../../../packages/registry/registry/styles/palettes/blue.css";
+@import "../../../packages/registry/registry/styles/palettes/green.css";
+@import "../../../packages/registry/registry/styles/palettes/orange.css";
+@import "../../../packages/registry/registry/styles/palettes/purple.css";
+@import "../../../packages/registry/registry/styles/palettes/rose.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-blue.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-purple.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-green.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-orange.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-rose.css";
 
 /* The fd → palette bridge. App-level CSS: does NOT go into
    registry/styles/global.css (a distributed registry item). Maps each
@@ -145,7 +145,7 @@
 }
 
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
-@source "../registry/**/*.{ts,tsx}";
+@source "../../../packages/registry/registry/**/*.{ts,tsx}";
 @source "../examples/**/*.{ts,tsx}";
 @source "../content/**/*.{md,mdx}";
 @source "../components/**/*.{ts,tsx}";

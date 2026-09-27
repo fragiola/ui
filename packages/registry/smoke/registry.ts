@@ -17,9 +17,9 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-const WWW = path.resolve(import.meta.dirname, "..");
-const PUBLIC_R = path.join(WWW, "public", "r");
-const SHADCN_BIN = path.join(WWW, "node_modules", ".bin", "shadcn");
+const PACKAGE = path.resolve(import.meta.dirname, "..");
+const BUILT_R = path.join(PACKAGE, "dist", "r");
+const SHADCN_BIN = path.join(PACKAGE, "node_modules", ".bin", "shadcn");
 const KEEP = process.argv.includes("--keep");
 
 type Framework = "next" | "vite";
@@ -60,7 +60,7 @@ function expectedPath(file: RegistryFile, srcRoot: string): string {
 }
 
 // ─── Servers ────────────────────────────────────────────────────────────────
-// The registry is served from public/r. Every other request goes through a
+// The registry is served from dist/r. Every other request goes through a
 // proxy (HTTP_PROXY/HTTPS_PROXY, honoured by the CLI's fetch) that records and
 // refuses it: the registry must install with no other host reachable.
 
@@ -82,7 +82,7 @@ function registryServer(missing: string[]): Server {
             return;
         }
         try {
-            const body = await readFile(path.join(PUBLIC_R, name));
+            const body = await readFile(path.join(BUILT_R, name));
             res.writeHead(200, { "content-type": "application/json" }).end(
                 body,
             );
@@ -313,7 +313,7 @@ function run(
 
 async function main() {
     const registry = JSON.parse(
-        await readFile(path.join(WWW, "registry.json"), "utf-8"),
+        await readFile(path.join(PACKAGE, "registry.json"), "utf-8"),
     ) as { items: RegistryItem[] };
     const items = registry.items;
     const npmDependencies = [
@@ -398,7 +398,7 @@ async function main() {
         for (const item of items) {
             const built = JSON.parse(
                 await readFile(
-                    path.join(PUBLIC_R, `${item.name}.json`),
+                    path.join(BUILT_R, `${item.name}.json`),
                     "utf-8",
                 ),
             ) as { files: Array<RegistryFile & { content: string }> };

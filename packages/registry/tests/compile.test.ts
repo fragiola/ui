@@ -3,7 +3,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { readPaletteNames } from "../../../packages/registry/tests/palette-utils";
+import { readPaletteNames } from "./palette-utils";
 
 // ─── Class compilation guard ────────────────────────────────────────────────
 // Rule 8: "Verify by compiling, not by reading." A class that does not exist
@@ -11,18 +11,11 @@ import { readPaletteNames } from "../../../packages/registry/tests/palette-utils
 // that every palette utility class used in the registry source files actually
 // generates a CSS rule.
 
-const ROOT = process.cwd();
-// The registry moved to packages/registry; the demos and the site still use
-// its classes through the same stylesheet stack, so it is compiled here too.
-const REGISTRY_DIR = path.resolve(ROOT, "../../packages/registry/registry");
-const EXAMPLES_DIR = path.join(ROOT, "examples");
-// App code is bound by the palette contract too (architecture.md §1: the site
-// is an instance of the contract), and it is not published — so nothing else
-// checks it. The landing page is the most palette-class-dense non-registry
-// code in the repository; unguarded, an invented decorative class would fail
-// silently (Rule 8).
-const APP_DIR = path.join(ROOT, "app");
-const COMPONENTS_DIR = path.join(ROOT, "components");
+const ROOT = path.resolve(import.meta.dirname, "..");
+const REGISTRY_DIR = path.join(ROOT, "registry");
+// The demos and the site code that use these classes live in the apps
+// (apps/www, examples/react), and each app compiles its own stylesheet in its
+// own guard. This one covers what ships: the registry sources.
 const TMP_DIR = path.join(ROOT, ".tmp-tailwind-test");
 const OUTPUT_CSS = path.join(TMP_DIR, "out.css");
 
@@ -90,10 +83,7 @@ beforeAll(async () => {
     const inputCss =
         importPaths.map((p) => `@import "${p}";`).join("\n") +
         `\n@source "${REGISTRY_DIR}/**/*.{ts,tsx}";` +
-        `\n@source "${EXAMPLES_DIR}/**/*.{ts,tsx}";` +
-        `\n@source "${APP_DIR}/**/*.{ts,tsx}";` +
-        `\n@source "${COMPONENTS_DIR}/**/*.{ts,tsx}";` +
-        `\n@source "${path.resolve(ROOT, "../../packages/registry/tests/fixtures")}/**/*.{ts,tsx}";\n`;
+        `\n@source "${path.join(ROOT, "tests", "fixtures")}/**/*.{ts,tsx}";\n`;
 
     const inputPath = path.join(TMP_DIR, "input.css");
     await writeFile(inputPath, inputCss);
@@ -157,20 +147,9 @@ describe("class compilation guard", () => {
     });
 
     it("every palette class used in source files compiles to a CSS rule", async () => {
-        const sourceFiles = await collectSourceFiles(REGISTRY_DIR);
-        // Also collect from the examples directory — it moved out of
-        // registry/ in Issue #34 and is the most class-dense tree.
-        const exampleFiles = await collectSourceFiles(EXAMPLES_DIR);
-        // …and from the app itself: routes and app-level components (the
-        // landing page, the docs chrome) paint through the same roles.
-        const appFiles = await collectSourceFiles(APP_DIR);
-        const componentFiles = await collectSourceFiles(COMPONENTS_DIR);
-        const usedClasses = await extractClasses([
-            ...sourceFiles,
-            ...exampleFiles,
-            ...appFiles,
-            ...componentFiles,
-        ]);
+        const usedClasses = await extractClasses(
+            await collectSourceFiles(REGISTRY_DIR),
+        );
 
         // Build a regex that skips plain palette class names (palette-X) for
         // every palette in the directory — those are plain CSS classes, not

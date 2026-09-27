@@ -34,7 +34,9 @@ WORKDIR /repo
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/www/package.json apps/www/
-# `--filter www...` installs www and its workspace dependencies only; the
+COPY packages/registry/package.json packages/registry/
+# `--filter www...` installs www and its workspace dependencies only (the
+# registry package, which the site imports its components from); the
 # root's devDependencies (Biome) are not needed to build. The store is a
 # BuildKit cache mount, so repeated builds re-link instead of re-download.
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \

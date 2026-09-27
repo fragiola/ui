@@ -1,6 +1,15 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { parseArgs } from "node:util";
 import { z } from "zod";
+
+// `node scripts/build-registry.ts [--out <dir>]` — validates registry.json and
+// writes one JSON file per item plus index.json. The output defaults to
+// dist/r; the apps pass their own (apps/www serves it from public/r, the site
+// export ships it as r/). A relative --out is resolved against the working
+// directory, so each caller names a path of its own.
+//
+// Runs with Node's own type stripping: erasable syntax only.
 
 // ─── Schema (mirrors shadcn's registry schema, closed type enum) ─────────────
 const registryItemTypeSchema = z.enum([
@@ -101,9 +110,12 @@ function parseDependency(dep: string): Dependency {
 }
 
 // ─── Build ──────────────────────────────────────────────────────────────────
-const ROOT = process.cwd();
+const ROOT = path.resolve(import.meta.dirname, "..");
 const REGISTRY_JSON = path.join(ROOT, "registry.json");
-const OUTPUT_DIR = path.join(ROOT, "public", "r");
+const { values } = parseArgs({ options: { out: { type: "string" } } });
+const OUTPUT_DIR = values.out
+    ? path.resolve(values.out)
+    : path.join(ROOT, "dist", "r");
 
 async function buildRegistry() {
     const raw = await readFile(REGISTRY_JSON, "utf-8");
@@ -205,7 +217,7 @@ async function buildRegistry() {
         "utf-8",
     );
     console.log(`  ✓ index (${items.length} items)`);
-    console.log(`\nRegistry built to ${path.relative(ROOT, OUTPUT_DIR)}/`);
+    console.log(`\nRegistry built to ${OUTPUT_DIR}`);
 }
 
 function stripContent(item: Item): Item {

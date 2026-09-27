@@ -23,10 +23,10 @@ import {
 //
 // The palette list is derived from the contents of registry/styles/palettes/ —
 // a new palette file is covered automatically. The agreement test below
-// asserts that globals.css, cn.ts, the compile fixture and registry.json all
-// agree with this directory, so no list can drift.
+// asserts that cn.ts, the compile fixture and registry.json agree with this
+// directory, so no list can drift.
 
-const ROOT = process.cwd();
+const ROOT = path.resolve(import.meta.dirname, "..");
 
 // Read the palette directory synchronously at module load time so the
 // `for` loops below can register a test per palette. vitest's `describe`/`it`
@@ -269,22 +269,12 @@ describe("palette contract guard", () => {
 
 // ─── Five-list agreement ────────────────────────────────────────────────────
 // The palette name list is hardcoded in five places. Missing one produces no
-// error. This test asserts that globals.css, cn.ts, the compile fixture and
-// registry.json all agree with the palettes directory — no list may drift.
+// error. This test asserts that cn.ts, the compile fixture and registry.json
+// agree with the palettes directory — no list may drift. The other two lists
+// are the stylesheets of the apps that consume the registry (apps/www
+// globals.css, examples/react styles.css); each app asserts its own.
 
 describe("five-list agreement", () => {
-    it("globals.css imports every palette file", async () => {
-        const css = await readFile(
-            path.join(ROOT, "app", "globals.css"),
-            "utf-8",
-        );
-        for (const p of paletteNames) {
-            expect(css, `globals.css does not import ${p}.css`).toContain(
-                `palettes/${p}.css`,
-            );
-        }
-    });
-
     it("cn.ts lists every palette in the tailwind-merge group", async () => {
         const cn = await readFile(
             path.join(ROOT, "registry", "lib", "cn.ts"),

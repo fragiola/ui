@@ -14,13 +14,13 @@ without `src/` — and fails if:
   another file with the same basename).
 
 ```bash
-pnpm registry:smoke            # from the repo root; builds public/r first
+pnpm registry:smoke            # from the repo root; builds dist/r first
 pnpm registry:smoke -- --keep  # keep the projects to inspect them
 ```
 
 ## How it works
 
-- `public/r` is served on `127.0.0.1`, and `components.json` points
+- `dist/r` is served on `127.0.0.1`, and `components.json` points
   `@fragiola` at it.
 - `HTTP_PROXY`/`HTTPS_PROXY` point at a local proxy that records and refuses
   every request, so nothing external is reachable and every attempt is

@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "#/*": ["./registry/*"]
+        },
+        "types": ["node"]
+    },
+    "include": ["registry", "scripts", "smoke", "tests", "vitest.config.ts"]
+}

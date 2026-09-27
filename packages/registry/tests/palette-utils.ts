@@ -3,12 +3,14 @@ import path from "node:path";
 
 // ─── Palette directory source of truth ──────────────────────────────────────
 // The palette list is derived from the contents of registry/styles/palettes/.
-// Every other list (globals.css imports, cn.ts class group, the compile-test
-// fixture, registry.json items) is asserted against this directory by
-// palette-contract.test.ts. A new palette file is covered automatically; a
+// Every other list (cn.ts class group, the compile-test fixture,
+// registry.json items) is asserted against this directory by
+// palette-contract.test.ts; the apps' stylesheets by their own tests. A new palette file is covered automatically; a
 // missing entry in any of the five hardcoded lists fails the agreement test.
 
-const ROOT = process.cwd();
+// Anchored to this package, not to the working directory: the apps that
+// consume the registry import these helpers from their own tests.
+const ROOT = path.resolve(import.meta.dirname, "..");
 export const PALETTES_DIR = path.join(ROOT, "registry", "styles", "palettes");
 
 export async function readPaletteNames(): Promise<string[]> {
