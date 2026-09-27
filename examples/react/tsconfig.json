@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "#/components/*": ["../../packages/registry/registry/*"],
+            "#/*": ["../../packages/registry/registry/*"]
+        },
+        "types": ["node", "vite/client"]
+    },
+    "include": [
+        "src",
+        "scripts",
+        "tests",
+        "../gallery.ts",
+        "vite.config.ts",
+        "vitest.config.ts"
+    ]
+}
