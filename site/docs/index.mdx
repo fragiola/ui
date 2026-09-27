@@ -1,0 +1,61 @@
+---
+title: "Fragiola UI"
+description: "A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes — scope one to a page, a card, or a single button."
+layout: "landing"
+---
+
+<Hero
+    title="Components that take the colour you give them."
+    description="A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes — scope one to a page, a card, or a single button."
+    actions={[
+        { label: "Read the documentation", href: "/docs/getting-started/introduction" },
+        { label: "How theming works", href: "/docs/architecture/theming" },
+    ]}
+/>
+
+## Six palettes, one surface
+
+One neutral floor, six palettes, one component. Nothing below is a variant: each button carries a `palette-*` class and reads the same six roles.
+
+<Example id="clickable" variant="bleed" />
+
+## Three problems, three decisions
+
+Fragiola starts from shadcn/ui — it reuses its registry format and its CLI, so installing a component is the command you already know. Three things about that baseline stopped scaling, and each one shaped a decision here.
+
+<Cards>
+    <Card
+        title="Colour you can scope"
+        href="/docs/architecture/theming"
+        description="Colour is applied with a class, so a page, a card or one button can carry its own palette — and no component needs a colour variant to make it happen."
+    />
+    <Card
+        title="Styles shared, not pasted"
+        href="/docs/architecture/style-families"
+        description="Components that share a visual skeleton share the CSS that draws it: each skeleton has one home, a style family, and every component that looks like it consumes that."
+    />
+    <Card
+        title="One component per idea"
+        href="/docs/architecture/composition"
+        description="Families of components are built from one factory, so there is a single component per idea and a single place to change it."
+    />
+</Cards>
+
+## Install a component
+
+Add the `@fragiola` registry to your `components.json`, then install with the shadcn CLI:
+
+<InstallCommand item="clickable" />
+
+<Cards>
+    <Card
+        title="Installation"
+        href="/docs/getting-started/installation"
+        description="Add the registry, install an item, and wire the CSS."
+    />
+    <Card
+        title="Examples"
+        href="/examples"
+        description="Every component, live, with its code and the command that installs it."
+    />
+</Cards>

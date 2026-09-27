@@ -1,0 +1,23 @@
+/* The registry's stylesheet stack, read in place from packages/registry —
+   the sources are the single copy: global.css (Tailwind and the role
+   tokens) and every palette. The order and the list match what a consumer
+   installs; tests/styles.test.ts keeps the list complete. */
+@import "../../../packages/registry/registry/styles/global.css";
+@import "../../../packages/registry/registry/styles/palettes/surface.css";
+@import "../../../packages/registry/registry/styles/palettes/raised.css";
+@import "../../../packages/registry/registry/styles/palettes/danger.css";
+@import "../../../packages/registry/registry/styles/palettes/blue.css";
+@import "../../../packages/registry/registry/styles/palettes/green.css";
+@import "../../../packages/registry/registry/styles/palettes/orange.css";
+@import "../../../packages/registry/registry/styles/palettes/purple.css";
+@import "../../../packages/registry/registry/styles/palettes/rose.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-blue.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-purple.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-green.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-orange.css";
+@import "../../../packages/registry/registry/styles/palettes/surface-rose.css";
+
+/* Tailwind scans this app on its own; the registry lives outside it.
+   Without this line every class the components use compiles to nothing —
+   silently, with no build error. tests/styles.test.ts fails if it goes. */
+@source "../../../packages/registry/registry";

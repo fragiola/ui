@@ -281,7 +281,7 @@ in the remaining surface:
   neutral backgrounds; chromatic palettes use `contrast` for their text.
   **Standardized** — including
   the placeholder, which used a different value in the POC. The contrast guard in
-  `tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
+  `packages/registry/tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
   for every surface-tier palette, in both themes.
 - **`sidebar`** carries its own token set upstream; it should map to its own palette.
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.

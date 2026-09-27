@@ -11,7 +11,9 @@
     },
     "workspaces": [
         "apps/*",
-        "packages/*"
+        "packages/*",
+        "examples/*",
+        "site"
     ],
     "packageManager": "pnpm@11.23.0",
     "engines": {
@@ -27,8 +29,10 @@
         "test": "pnpm -r test",
         "build": "pnpm -r build",
         "dev": "pnpm --filter www dev",
-        "registry:build": "pnpm --filter www registry:build",
-        "registry:smoke": "pnpm --filter www registry:smoke"
+        "registry:build": "pnpm --filter registry build",
+        "registry:smoke": "pnpm --filter registry smoke",
+        "site:export": "node site/scripts/export.ts",
+        "site:dev": "node site/scripts/dev.ts"
     },
     "devDependencies": {
         "@biomejs/biome": "2.5.10"

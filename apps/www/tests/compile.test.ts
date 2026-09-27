@@ -3,7 +3,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { readPaletteNames } from "./palette-utils";
+import { readPaletteNames } from "../../../packages/registry/tests/palette-utils";
 
 // ─── Class compilation guard ────────────────────────────────────────────────
 // Rule 8: "Verify by compiling, not by reading." A class that does not exist
@@ -12,7 +12,9 @@ import { readPaletteNames } from "./palette-utils";
 // generates a CSS rule.
 
 const ROOT = process.cwd();
-const REGISTRY_DIR = path.join(ROOT, "registry");
+// The registry moved to packages/registry; the demos and the site still use
+// its classes through the same stylesheet stack, so it is compiled here too.
+const REGISTRY_DIR = path.resolve(ROOT, "../../packages/registry/registry");
 const EXAMPLES_DIR = path.join(ROOT, "examples");
 // App code is bound by the palette contract too (architecture.md §1: the site
 // is an instance of the contract), and it is not published — so nothing else
@@ -91,13 +93,13 @@ beforeAll(async () => {
         `\n@source "${EXAMPLES_DIR}/**/*.{ts,tsx}";` +
         `\n@source "${APP_DIR}/**/*.{ts,tsx}";` +
         `\n@source "${COMPONENTS_DIR}/**/*.{ts,tsx}";` +
-        `\n@source "${path.join(ROOT, "tests", "fixtures")}/**/*.{ts,tsx}";\n`;
+        `\n@source "${path.resolve(ROOT, "../../packages/registry/tests/fixtures")}/**/*.{ts,tsx}";\n`;
 
     const inputPath = path.join(TMP_DIR, "input.css");
     await writeFile(inputPath, inputCss);
 
     execSync(
-        `npx @tailwindcss/cli --input "${inputPath}" --output "${OUTPUT_CSS}"`,
+        `pnpm exec tailwindcss --input "${inputPath}" --output "${OUTPUT_CSS}"`,
         { cwd: ROOT, stdio: "pipe" },
     );
 

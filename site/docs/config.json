@@ -1,0 +1,201 @@
+{
+    "sections": [
+        {
+            "label": "Getting Started",
+            "pages": [
+                {
+                    "label": "Introduction",
+                    "path": "getting-started/introduction"
+                },
+                {
+                    "label": "Installation",
+                    "path": "getting-started/installation"
+                },
+                {
+                    "label": "Registry",
+                    "path": "getting-started/registry"
+                }
+            ]
+        },
+        {
+            "label": "Architecture",
+            "pages": [
+                {
+                    "label": "Theming",
+                    "path": "architecture/theming"
+                },
+                {
+                    "label": "Palettes",
+                    "path": "architecture/palettes"
+                },
+                {
+                    "label": "Style families",
+                    "path": "architecture/style-families"
+                },
+                {
+                    "label": "Composition",
+                    "path": "architecture/composition"
+                },
+                {
+                    "label": "Dark mode",
+                    "path": "architecture/dark-mode"
+                },
+                {
+                    "label": "RTL",
+                    "path": "architecture/rtl"
+                },
+                {
+                    "label": "Density",
+                    "path": "architecture/density"
+                }
+            ]
+        },
+        {
+            "label": "Atoms",
+            "pages": [
+                {
+                    "label": "Text",
+                    "path": "atoms/text"
+                },
+                {
+                    "label": "Clickable",
+                    "path": "atoms/clickable"
+                }
+            ]
+        },
+        {
+            "label": "Fields",
+            "pages": [
+                {
+                    "label": "Field",
+                    "path": "fields/field"
+                },
+                {
+                    "label": "Input",
+                    "path": "fields/input"
+                },
+                {
+                    "label": "Choice Controls",
+                    "path": "fields/choice"
+                },
+                {
+                    "label": "Select",
+                    "path": "fields/select"
+                },
+                {
+                    "label": "Combobox",
+                    "path": "fields/combobox"
+                }
+            ]
+        },
+        {
+            "label": "Menus",
+            "pages": [
+                {
+                    "label": "Dropdown Menu",
+                    "path": "menus/dropdown-menu"
+                },
+                {
+                    "label": "Context Menu",
+                    "path": "menus/context-menu"
+                }
+            ]
+        },
+        {
+            "label": "Overlays",
+            "pages": [
+                {
+                    "label": "Dialog",
+                    "path": "overlays/dialog"
+                },
+                {
+                    "label": "Alert Dialog",
+                    "path": "overlays/alert-dialog"
+                },
+                {
+                    "label": "Drawer",
+                    "path": "overlays/drawer"
+                },
+                {
+                    "label": "Popover",
+                    "path": "overlays/popover"
+                },
+                {
+                    "label": "Tooltip",
+                    "path": "overlays/tooltip"
+                }
+            ]
+        },
+        {
+            "label": "Disclosure",
+            "pages": [
+                {
+                    "label": "Accordion",
+                    "path": "disclosure/accordion"
+                },
+                {
+                    "label": "Collapsible",
+                    "path": "disclosure/collapsible"
+                }
+            ]
+        },
+        {
+            "label": "Navigation",
+            "pages": [
+                {
+                    "label": "Tabs",
+                    "path": "navigation/tabs"
+                },
+                {
+                    "label": "Navigation Menu",
+                    "path": "navigation/navigation-menu"
+                },
+                {
+                    "label": "Pagination",
+                    "path": "navigation/pagination"
+                },
+                {
+                    "label": "Breadcrumb",
+                    "path": "navigation/breadcrumb"
+                }
+            ]
+        },
+        {
+            "label": "Display",
+            "pages": [
+                {
+                    "label": "Badge",
+                    "path": "display/badge"
+                },
+                {
+                    "label": "Table",
+                    "path": "display/table"
+                },
+                {
+                    "label": "Avatar",
+                    "path": "display/avatar"
+                },
+                {
+                    "label": "Skeleton",
+                    "path": "display/skeleton"
+                },
+                {
+                    "label": "Separator",
+                    "path": "display/separator"
+                },
+                {
+                    "label": "Progress",
+                    "path": "display/progress"
+                },
+                {
+                    "label": "Slider",
+                    "path": "display/slider"
+                },
+                {
+                    "label": "Chart",
+                    "path": "display/chart"
+                }
+            ]
+        }
+    ]
+}
