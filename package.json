@@ -10,7 +10,6 @@
         "url": "https://github.com/maurodesouza"
     },
     "workspaces": [
-        "apps/*",
         "packages/*",
         "examples/*",
         "site"
@@ -28,7 +27,6 @@
         "typecheck": "pnpm -r typecheck",
         "test": "pnpm -r test",
         "build": "pnpm -r build",
-        "dev": "pnpm --filter www dev",
         "registry:build": "pnpm --filter registry build",
         "registry:smoke": "pnpm --filter registry smoke",
         "site:export": "node site/scripts/export.ts",

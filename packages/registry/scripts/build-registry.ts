@@ -5,8 +5,7 @@ import { z } from "zod";
 
 // `node scripts/build-registry.ts [--out <dir>]` — validates registry.json and
 // writes one JSON file per item plus index.json. The output defaults to
-// dist/r; the apps pass their own (apps/www serves it from public/r, the site
-// export ships it as r/). A relative --out is resolved against the working
+// dist/r; callers pass their own (the site export ships it as r/). A relative --out is resolved against the working
 // directory, so each caller names a path of its own.
 //
 // Runs with Node's own type stripping: erasable syntax only.

@@ -1,5 +1,8 @@
 # Port Report — Epic #39: The Palette Goes on the Element
 
+> Historical record. Paths written `www/…` were in the old docs app, since
+> removed; the registry now lives in `packages/registry`.
+
 ## Summary
 
 Four issues, one Epic: the `surface-*` tier was redefined from "tinted surfaces"
@@ -65,12 +68,12 @@ The `ring` role is asserted to be chromatic (different from `surface`).
 
 ### Files modified
 
-- `apps/www/registry/styles/palettes/surface-{blue,purple,green,orange,rose}.css`
-- `apps/www/tests/palette-contract.test.ts` — new guard tests
-- `apps/www/tests/palette-utils.ts` — helpers for the new guards
-- `apps/www/registry.json` — registry metadata updated
-- `apps/www/content/docs/architecture/palettes.mdx` — docs updated
-- `apps/www/content/docs/architecture/theming.mdx` — docs updated
+- `www/registry/styles/palettes/surface-{blue,purple,green,orange,rose}.css`
+- `www/tests/palette-contract.test.ts` — new guard tests
+- `www/tests/palette-utils.ts` — helpers for the new guards
+- `www/registry.json` — registry metadata updated
+- `www/content/docs/architecture/palettes.mdx` — docs updated
+- `www/content/docs/architecture/theming.mdx` — docs updated
 - `docs/architecture.md` — stale "tinted surfaces" claims removed
 - `AGENTS.md` — stale contrast worst-case (4.58:1) updated
 
@@ -174,13 +177,13 @@ own.)
 ### Preview harness retired
 
 Deleted:
-- `apps/www/components/preview/palette-grid.tsx` — the `PaletteGrid` component
-- `apps/www/lib/palette-sets.ts` — the `CHROMATIC`, `SURFACES`, `ALL` constants
+- `www/components/preview/palette-grid.tsx` — the `PaletteGrid` component
+- `www/lib/palette-sets.ts` — the `CHROMATIC`, `SURFACES`, `ALL` constants
 
 Updated:
-- `apps/www/components/preview/index.ts` — removed `PaletteGrid` export
-- `apps/www/components/mdx.tsx` — removed `PaletteGrid` from MDX registry
-- `apps/www/tests/preview.test.ts` — removed "palette sets agreement" test
+- `www/components/preview/index.ts` — removed `PaletteGrid` export
+- `www/components/mdx.tsx` — removed `PaletteGrid` from MDX registry
+- `www/tests/preview.test.ts` — removed "palette sets agreement" test
   (the palette-contract test already asserts directory/set agreement); kept
   the example resolution guard
 

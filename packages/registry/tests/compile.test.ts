@@ -13,9 +13,8 @@ import { readPaletteNames } from "./palette-utils";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const REGISTRY_DIR = path.join(ROOT, "registry");
-// The demos and the site code that use these classes live in the apps
-// (apps/www, examples/react), and each app compiles its own stylesheet in its
-// own guard. This one covers what ships: the registry sources.
+// The demos that use these classes live in examples/react, which compiles its
+// own stylesheet in its own guard. This one covers what ships: the registry sources.
 const TMP_DIR = path.join(ROOT, ".tmp-tailwind-test");
 const OUTPUT_CSS = path.join(TMP_DIR, "out.css");
 
