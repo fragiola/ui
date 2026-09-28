@@ -267,14 +267,14 @@ describe("palette contract guard", () => {
     });
 });
 
-// ─── Five-list agreement ────────────────────────────────────────────────────
-// The palette name list is hardcoded in five places. Missing one produces no
+// ─── Four-list agreement ────────────────────────────────────────────────────
+// The palette name list is hardcoded in four places. Missing one produces no
 // error. This test asserts that cn.ts, the compile fixture and registry.json
-// agree with the palettes directory — no list may drift. The other two lists
-// are the stylesheets of the apps that consume the registry (apps/www
-// globals.css, examples/react styles.css); each app asserts its own.
+// agree with the palettes directory — no list may drift. The fourth list is
+// the stylesheet of the app that consumes the registry (examples/react
+// styles.css), which asserts its own.
 
-describe("five-list agreement", () => {
+describe("four-list agreement", () => {
     it("cn.ts lists every palette in the tailwind-merge group", async () => {
         const cn = await readFile(
             path.join(ROOT, "registry", "lib", "cn.ts"),
