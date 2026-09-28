@@ -1,0 +1,93 @@
+# CI: the same three jobs in every Fragiola project repo.
+#
+#   Checks            Biome, TypeScript, the unit tests and the build.
+#   Site export       fragiola.com builds /ui from `pnpm site:export` (contract v1.1,
+#                     fragiola/www CONTRACT.md), so a pull request that breaks the export — a
+#                     broken link, an unknown MDX component, a missing example — fails here
+#                     instead of in the site's deploy.
+#   Trigger www build after a push to main passes, asks fragiola/www to rebuild fragiola.com
+#                     (a repository_dispatch of type "project-updated"). It needs the
+#                     WWW_DISPATCH_TOKEN secret: a fine-grained token with Contents: read &
+#                     write on fragiola/www. Without the secret the step is skipped, not failed.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm check
+
+      - run: pnpm typecheck
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+  site-export:
+    name: Site export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Builds r/, the embed app and the pages, then validates the output
+      # against the contract; any violation exits non-zero.
+      - run: pnpm site:export --base /ui --out "$RUNNER_TEMP/site-export"
+
+      # Every example in a real iframe: ready/resize/theme messages, popups
+      # that fit their frame, no console errors.
+      - run: pnpm --filter examples-react exec playwright install --with-deps chromium
+      - run: pnpm --filter examples-react check:embeds
+
+  trigger-www-build:
+    name: Trigger www build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [checks, site-export]
+    runs-on: ubuntu-latest
+    env:
+      WWW_DISPATCH_TOKEN: ${{ secrets.WWW_DISPATCH_TOKEN }}
+    steps:
+      - name: Dispatch project-updated to fragiola/www
+        if: env.WWW_DISPATCH_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ env.WWW_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/fragiola/www/dispatches \
+            -f event_type=project-updated \
+            -f "client_payload[slug]=ui" \
+            -f "client_payload[sha]=$GITHUB_SHA"
