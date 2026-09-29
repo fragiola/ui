@@ -245,8 +245,8 @@ function NavigationMenuBackdrop({
             data-slot="navigation-menu-backdrop"
             className={cn(
                 "fixed inset-0 z-40 bg-scrim",
-                "data-[starting-style]:animate-in data-[starting-style]:fade-in-0",
-                "data-[ending-style]:animate-out data-[ending-style]:fade-out-0",
+                "data-open:animate-in data-open:fade-in-0",
+                "data-closed:animate-out data-closed:fade-out-0",
                 className as string,
             )}
             {...props}
