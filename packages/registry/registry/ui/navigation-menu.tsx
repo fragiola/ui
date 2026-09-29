@@ -209,8 +209,6 @@ function NavigationMenuViewport({
             data-slot="navigation-menu-viewport"
             className={cn(
                 "flex w-full origin-(--transform-origin) transition-[width,height] duration-200",
-                "data-[starting-style]:animate-in data-[starting-style]:fade-in-0",
-                "data-[ending-style]:animate-out data-[ending-style]:fade-out-0",
                 className as string,
             )}
             {...props}
