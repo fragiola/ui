@@ -10,6 +10,16 @@ Visit https://fragiola.com/ui to view the documentation.
 
 ```bash
 pnpm install
+pnpm dev                                # the playground: every component live, with hot reload
+```
+
+The playground (`apps/playground`) renders every example of the docs and every
+dev-only scenario against the registry sources, with a theme, direction and
+density toolbar and the source beside it. Nothing else needs to run.
+
+What fragiola.com consumes:
+
+```bash
 pnpm site:dev --base /ui --port 5174    # the examples, served for fragiola.com's dev server
 pnpm site:export --base /ui --out out   # what fragiola.com builds /ui from
 ```

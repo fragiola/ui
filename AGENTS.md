@@ -61,11 +61,32 @@ over base and soft for every surface-tier palette, in both themes.
 
 Apply this value uniformly, including to placeholders.
 
+## Playground
+
+`pnpm dev` serves `apps/playground`: the registry read in place, with hot reload,
+a theme / direction / density toolbar and the source beside the stage. It shows
+two things, which are not interchangeable:
+
+- **Examples** live in `examples/react/src/examples` and are listed in its
+  `index.ts`. They are public: the docs embed them (fragiola/www `CONTRACT.md`
+  §5), `site:export` ships them, and readers copy them verbatim.
+- **Scenarios** live in `apps/playground/src/scenarios/<level>/<id>.tsx`. They
+  are dev-only (edge cases, full variant matrices, animation comparisons) and
+  never shipped. A file is all it takes: `<level>` is a level of
+  `examples/gallery.ts`, `<id>` is kebab-case, and the module has **only a
+  default export** (anything else costs Fast Refresh);
+  `tests/scenarios.test.ts` enforces it.
+
+When a scenario becomes something readers should see, it becomes an example,
+with its entry in `examples/react/src/examples/index.ts`. A scenario is never
+linked from the docs.
+
 ## Verification commands
 
 | command | does |
 |---|---|
 | `pnpm install` | install dependencies |
+| `pnpm dev` | the playground (`apps/playground`): every example and scenario, live |
 | `pnpm check` | Biome lint + format + assist (non-mutating) |
 | `pnpm check:fix` | Biome check with auto-fix |
 | `pnpm typecheck` | `pnpm -r typecheck` (TypeScript, no emit) |
