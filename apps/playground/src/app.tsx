@@ -46,8 +46,12 @@ export function App() {
         return () => window.removeEventListener("popstate", restore);
     }, []);
 
+    // Choosing the item already shown adds no history entry.
     function navigate(next: View) {
-        window.history.pushState(null, "", toSearch(next));
+        const same =
+            next.item?.kind === view.item?.kind &&
+            next.item?.id === view.item?.id;
+        if (!same) window.history.pushState(null, "", toSearch(next));
         setView(next);
     }
 
