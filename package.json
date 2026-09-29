@@ -10,6 +10,7 @@
         "url": "https://github.com/maurodesouza"
     },
     "workspaces": [
+        "apps/*",
         "packages/*",
         "examples/*",
         "site"
@@ -20,6 +21,7 @@
         "pnpm": ">=11"
     },
     "scripts": {
+        "dev": "pnpm --filter playground dev",
         "format": "biome format --write",
         "lint": "biome lint",
         "check": "biome check",

@@ -2,6 +2,7 @@ import { lazy, StrictMode, Suspense, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { type Example, examples } from "./examples";
 import { announceReady } from "./messages";
+import { keepNavigationInPlace } from "./navigation";
 import { syncTheme } from "./theme";
 import "./styles.css";
 
@@ -12,10 +13,11 @@ import "./styles.css";
 // Without an id, a plain list of the ids: a convenience for local work,
 // never linked by the host.
 syncTheme();
-keepNavigationInPlace();
 
 const id = new URLSearchParams(window.location.search).get("id");
 const example = examples.find((e) => e.id === id);
+// The index keeps its own links.
+if (example) keepNavigationInPlace();
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root is missing from index.html");
@@ -92,23 +94,6 @@ function Index() {
             </ul>
         </main>
     );
-}
-
-// The examples link like real pages do (`?page=2`, `/docs`), because readers
-// copy them. Followed inside the frame, those links would replace the
-// example with a page that is not one — `?page=2` drops the `id`. Links that
-// open elsewhere (`target`) still work; the index keeps its own links.
-function keepNavigationInPlace() {
-    document.addEventListener("click", (event) => {
-        if (!example || event.defaultPrevented) return;
-        const link =
-            event.target instanceof Element
-                ? event.target.closest("a[href]")
-                : null;
-        if (link instanceof HTMLAnchorElement && !link.target) {
-            event.preventDefault();
-        }
-    });
 }
 
 // Built once, outside render — `lazy` must return the same component across

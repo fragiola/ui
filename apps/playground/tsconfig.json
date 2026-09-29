@@ -7,13 +7,5 @@
         },
         "types": ["node", "vite/client"]
     },
-    "include": [
-        "src",
-        "scripts",
-        "tests",
-        "../gallery.ts",
-        "vite.config.ts",
-        "vite.shared.ts",
-        "vitest.config.ts"
-    ]
+    "include": ["src", "tests", "vite.config.ts", "vitest.config.ts"]
 }

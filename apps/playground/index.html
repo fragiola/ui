@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fragiola UI — playground</title>
+        <script>
+            // Before first paint: the same mapping as applyView in
+            // src/view.ts, which owns the view afterwards. The theme list is
+            // injected from examples/gallery.ts at build time.
+            (() => {
+                const themes = __EXAMPLE_THEMES__;
+                const params = new URLSearchParams(location.search);
+                const name = params.get("theme");
+                const theme =
+                    themes.find((t) => t.name === name) ||
+                    themes.find((t) => t.scheme === "light");
+                const root = document.documentElement;
+                root.dataset.theme = theme.scheme;
+                root.dataset.exampleTheme = theme.name;
+                root.classList.toggle("dark", theme.scheme === "dark");
+                root.style.colorScheme = theme.scheme;
+                root.dir = params.get("dir") === "rtl" ? "rtl" : "ltr";
+                const density = params.get("density");
+                if (density === "compact" || density === "spacious") {
+                    root.dataset.density = density;
+                }
+            })();
+        </script>
+    </head>
+    <body class="palette-surface bg-palette-base text-palette-contrast">
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>
