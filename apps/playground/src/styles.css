@@ -1,0 +1,9 @@
+/* The registry's stylesheet stack is examples/react's: global.css, every
+   palette, and the `@source` that reaches the registry. Imported, not
+   re-listed — one list, kept complete by that app's guard. */
+@import "../../../examples/react/src/styles.css";
+
+/* The examples render here but live outside this app, which Tailwind scans
+   on its own. Without this line their classes compile to nothing, silently.
+   tests/styles.test.ts fails if it goes. */
+@source "../../../examples/react/src/examples";
