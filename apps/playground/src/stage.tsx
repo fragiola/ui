@@ -11,14 +11,31 @@ import { ErrorBoundary } from "./error-boundary";
 // remounts: one per entry, made on first show.
 const components = new Map<string, LazyExoticComponent<ComponentType>>();
 
+// Entries whose module failed to load. The browser keeps a failed module
+// import for good — a new `lazy` would fetch the same URL and fail again —
+// so recovering from one is a page reload.
+const failedLoads = new Set<string>();
+
+function key(entry: Entry) {
+    return `${entry.kind}:${entry.id}`;
+}
+
 function component(entry: Entry) {
-    const key = `${entry.kind}:${entry.id}`;
-    let Component = components.get(key);
+    let Component = components.get(key(entry));
     if (!Component) {
-        Component = lazy(entry.load);
-        components.set(key, Component);
+        Component = lazy(() =>
+            entry.load().catch((error: unknown) => {
+                failedLoads.add(key(entry));
+                throw error;
+            }),
+        );
+        components.set(key(entry), Component);
     }
     return Component;
+}
+
+function recover(entry: Entry) {
+    if (failedLoads.has(key(entry))) window.location.reload();
 }
 
 // The embed app's stage (examples/react/src/main.tsx): padded, centred on
@@ -30,7 +47,10 @@ export function Stage({ entry }: { entry: Entry }) {
     return (
         <div className="p-8">
             <div className="flex justify-center">
-                <ErrorBoundary name={entry.title}>
+                <ErrorBoundary
+                    name={entry.title}
+                    onReset={() => recover(entry)}
+                >
                     <Suspense>
                         <Demo />
                     </Suspense>

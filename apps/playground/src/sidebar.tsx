@@ -11,7 +11,11 @@ type SidebarProps = {
 };
 
 // Every section (examples, scenarios) grouped by the docs' levels. Entries
-// are real links — the URL is the state — whose clicks the shell handles.
+// are real links — the URL is the state — whose plain clicks the shell
+// handles; a modified click (new tab, new window) is left to the browser.
+// `target="_self"` says where they open, which is what exempts them from
+// keepNavigationInPlace, the guard that keeps examples' links from
+// navigating.
 export function Sidebar({
     sections,
     current,
@@ -52,6 +56,7 @@ export function Sidebar({
                                         <li key={entry.id}>
                                             <Clickable.Link
                                                 href={hrefFor(item)}
+                                                target="_self"
                                                 aria-current={
                                                     active ? "page" : undefined
                                                 }
@@ -59,6 +64,15 @@ export function Sidebar({
                                                 size="sm"
                                                 className="w-full justify-start aria-[current=page]:bg-palette-soft aria-[current=page]:text-palette-contrast"
                                                 onClick={(event) => {
+                                                    if (
+                                                        event.button !== 0 ||
+                                                        event.metaKey ||
+                                                        event.ctrlKey ||
+                                                        event.shiftKey ||
+                                                        event.altKey
+                                                    ) {
+                                                        return;
+                                                    }
                                                     event.preventDefault();
                                                     onSelect(item);
                                                 }}

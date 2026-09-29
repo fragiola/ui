@@ -1,12 +1,13 @@
 import { Component, type ReactNode } from "react";
 import { Clickable } from "#/components/atoms/clickable";
 
-type Props = { name: string; children: ReactNode };
+type Props = { name: string; onReset: () => void; children: ReactNode };
 type State = { error: Error | null };
 
 // A component that throws takes down the stage, not the shell: the error
 // shows where the component would, and the next hot update (the fix, most
-// likely) or a retry renders it again.
+// likely) or a retry renders it again. `onReset` runs first — the stage
+// reloads the page there when the module itself failed to load.
 export class ErrorBoundary extends Component<Props, State> {
     state: State = { error: null };
 
@@ -25,7 +26,9 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     reset = () => {
-        if (this.state.error) this.setState({ error: null });
+        if (!this.state.error) return;
+        this.props.onReset();
+        this.setState({ error: null });
     };
 
     render() {
