@@ -183,4 +183,94 @@ describe("class compilation guard", () => {
             `Classes used in source but not compiled: ${missing.join(", ")}`,
         ).toEqual([]);
     });
+
+    // The test above only sees palette utilities. This one sees every class a
+    // registry source writes — in className, cn(), tv() or anywhere else — so
+    // a radius the theme reset (`rounded-xl`), a misspelt variant or an
+    // arbitrary value Tailwind cannot parse fails here instead of rendering
+    // nothing. A string literal is treated as a class list when at least one
+    // of its tokens compiles (plain words — "Sidebar", a data-slot value —
+    // compile to nothing and are left alone); then every token must.
+    it("every class written in a registry source compiles", async () => {
+        const compiled = compiledClassNames(compiledCss);
+        const missing: string[] = [];
+        for (const file of await collectSourceFiles(REGISTRY_DIR)) {
+            if (!/\.tsx?$/.test(file)) continue;
+            for (const token of await writtenClassTokens(file, compiled)) {
+                if (isMarkerClass(token) || compiled.has(token)) continue;
+                missing.push(`${path.relative(REGISTRY_DIR, file)}: ${token}`);
+            }
+        }
+        expect(
+            missing,
+            `written but not compiled:\n${missing.join("\n")}`,
+        ).toEqual([]);
+    });
+
+    // A named group, peer or container compiles under ANY name —
+    // `@2xl/sidbar:flex` is valid CSS that matches nothing. So every name a
+    // variant reads must be declared somewhere in the registry.
+    it("every named group, peer and container a variant reads is declared", async () => {
+        const declared = new Set<string>();
+        const read: Array<{ file: string; name: string }> = [];
+        for (const file of await collectSourceFiles(REGISTRY_DIR)) {
+            if (!/\.tsx?$/.test(file)) continue;
+            const content = await readFile(file, "utf-8");
+            for (const [, kind, name] of content.matchAll(
+                /(?<![\w-])(group|peer|@container)\/([\w-]+)/g,
+            )) {
+                declared.add(`${kind === "@container" ? "@" : kind}/${name}`);
+            }
+            for (const [, kind, name] of content.matchAll(
+                /(?<![\w-])(group|peer|@)[\w-]*(?:\[\S*?\])?\/([\w-]+):/g,
+            )) {
+                read.push({
+                    file: path.relative(REGISTRY_DIR, file),
+                    name: `${kind}/${name}`,
+                });
+            }
+        }
+        const undeclared = read
+            .filter(({ name }) => !declared.has(name))
+            .map(({ file, name }) => `${file}: ${name}`);
+        expect(
+            undeclared,
+            `read but never declared:\n${undeclared.join("\n")}`,
+        ).toEqual([]);
+    });
 });
+
+// Class names in compiled CSS, unescaped (`.hover\:bg-x` → `hover:bg-x`).
+function compiledClassNames(css: string): Set<string> {
+    return new Set(
+        [...css.matchAll(/\.((?:\\.|[\w-])+)/g)].map(([, name]) =>
+            (name ?? "").replace(/\\(.)/g, "$1"),
+        ),
+    );
+}
+
+// `group` / `peer` (named or not) only mark an element for other classes'
+// variants; they generate no CSS of their own.
+function isMarkerClass(token: string): boolean {
+    return /^(group|peer)(\/[\w-]+)?$/.test(token);
+}
+
+async function writtenClassTokens(
+    file: string,
+    compiled: Set<string>,
+): Promise<string[]> {
+    const source = (await readFile(file, "utf-8"))
+        .split("\n")
+        .filter((line) => !/^\s*(import\b|\/\/)/.test(line))
+        .join("\n");
+    const tokens: string[] = [];
+    for (const [, double, template] of source.matchAll(
+        /"([^"\n]*)"|`([^`]*)`/g,
+    )) {
+        const literal = double ?? template ?? "";
+        if (literal.includes("${")) continue;
+        const words = literal.split(/\s+/).filter(Boolean);
+        if (words.some((word) => compiled.has(word))) tokens.push(...words);
+    }
+    return tokens;
+}
