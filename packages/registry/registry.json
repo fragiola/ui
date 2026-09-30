@@ -897,7 +897,7 @@
             "name": "sidebar",
             "type": "registry:ui",
             "title": "Sidebar",
-            "description": "The app shell's navigation column, recombined rather than rebuilt: menu items and labels from the menu family's navigation members, Clickable for the trigger and actions, Badge, Skeleton, Separator, a Field + Input for search, Tooltips in icon mode and a Drawer on mobile. Layout is relative to the Provider's wrapper (a size container), not the viewport — sticky, with a 42rem mobile threshold — so it behaves the same full-page, in an iframe or in a stage. palette-raised by default; any palette class swaps it. No built-in persistence: defaultOpen + controlled open/onOpenChange.",
+            "description": "The app shell's navigation column, recombined rather than rebuilt: menu items and labels from the menu family's navigation members, Clickable for the trigger and actions, Badge, Skeleton, Separator, a Field + Input for search, Tooltips in icon mode and a Drawer on mobile. Layout is relative to the Provider's wrapper (a size container), not the viewport — sticky, with a 42rem mobile threshold — so it behaves the same full-page, in an iframe or in a stage. palette-raised by default; any surface-tier palette class swaps it. No built-in persistence: defaultOpen + controlled open/onOpenChange.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",

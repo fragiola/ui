@@ -49,9 +49,15 @@ import { Tooltip } from "#/ui/tooltip";
 // `palette-raised` by default — shadcn's `--sidebar` is `raised` in both
 // themes, so there is no `palette-sidebar`: the number of palettes is free,
 // but a palette that duplicates another is not a new one. The class sits on
-// the element that also takes `className`, so `className="palette-blue"`
+// the element that also takes `className`, so `className="palette-surface-blue"`
 // replaces it (cn merges palettes as one group). The same `className` reaches
 // the mobile Drawer popup, which is portalled and would not inherit it.
+//
+// Swap it for a SURFACE-tier palette (surface, raised, surface-*). The items
+// are the menu family's, whose resting text is secondary text
+// (`accent/85`), guaranteed readable on neutral surfaces only — the same
+// limit a dropdown menu has. A chromatic palette paints the column but not
+// legible items.
 //
 // ─── LAYOUT IS RELATIVE TO THE PROVIDER, NOT TO THE VIEWPORT ────────────────
 // The Provider's wrapper is a size container (`@container/sidebar`). Desktop
@@ -786,7 +792,11 @@ function SidebarMenuSkeleton({
     ...props
 }: React.ComponentProps<"div"> & { showIcon?: boolean }) {
     const id = React.useId();
-    const seed = [...id].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    // A string hash, so neighbouring ids (":r1:", ":r2:") land far apart.
+    const seed = [...id].reduce(
+        (hash, char) => (hash * 31 + char.charCodeAt(0)) % 9973,
+        7,
+    );
     const width = `${50 + (seed % 41)}%`;
 
     return (
