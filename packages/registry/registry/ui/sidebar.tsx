@@ -88,10 +88,6 @@ import { Tooltip } from "#/ui/tooltip";
 // resolved against the reading direction Base UI reads (DirectionProvider).
 
 const SIDEBAR_WIDTH = "16rem";
-// The icon rail holds a size-8 button in a p-2 group — spacing units, so the
-// rail is too: 3rem at the default density, and it follows compact and
-// spacious (architecture §4) instead of clipping their buttons.
-const SIDEBAR_WIDTH_ICON = "calc(var(--spacing) * 12)";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 // Below this wrapper width the sidebar is a Drawer. Must equal Tailwind's
 // `--container-2xl`, the `@2xl/sidebar:` used in the classes below.
@@ -255,7 +251,6 @@ function SidebarProvider({
                     style={
                         {
                             "--sidebar-width": SIDEBAR_WIDTH,
-                            "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
                             ...style,
                         } as React.CSSProperties
                     }
@@ -291,7 +286,7 @@ function SidebarProvider({
 // The widths read two custom properties set per variant: `--sidebar-gutter`
 // (the p-2 around a floating or inset panel) and `--sidebar-frame` (the
 // border the panel's content loses: one edge for `sidebar`, two for
-// `floating`), so an icon rail is always exactly `--sidebar-width-icon` of
+// `floating`), so an icon rail is always exactly `--sidebar-rail` of
 // content, whatever the variant.
 
 function SidebarRoot({
@@ -397,7 +392,14 @@ function SidebarRoot({
                     "sticky top-0 z-10 h-svh max-h-full shrink-0 self-start",
                     "w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none",
                     "data-[collapsible=offcanvas]:w-0",
-                    "data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+2*var(--sidebar-gutter)+var(--sidebar-frame))]",
+                    // The icon rail holds a size-8 button in a p-2 group —
+                    // spacing units, so the rail is too: 3rem at the default
+                    // density, and it follows compact and spacious (§4)
+                    // instead of clipping their buttons. Resolved HERE, not
+                    // on the Provider, so density set on the Root itself
+                    // counts; `--sidebar-width-icon` still overrides it.
+                    "[--sidebar-rail:var(--sidebar-width-icon,calc(var(--spacing)*12))]",
+                    "data-[collapsible=icon]:w-[calc(var(--sidebar-rail)+2*var(--sidebar-gutter)+var(--sidebar-frame))]",
                     variant === "sidebar" &&
                         "[--sidebar-frame:1px] [--sidebar-gutter:0px]",
                     variant === "floating" &&
