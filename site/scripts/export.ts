@@ -5,10 +5,14 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { LEVELS, type Scheme, THEMES } from "../../examples/gallery.ts";
 import { PROJECT } from "./project.ts";
-import { CONTRACT, type ProjectJson, validateExport } from "./validate.ts";
+import {
+    CONTRACT_REVISION,
+    type ProjectJson,
+    validateExport,
+} from "./validate.ts";
 
 // `pnpm site:export --base /<slug> --out <dir>` — the site export, contract
-// v1 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
+// v1.2 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
 // provides:
 //
 //   <out>/project.json      who this project is
@@ -140,7 +144,9 @@ await writeFile(
 // ─── Validate ───────────────────────────────────────────────────────────────
 const problems = await validateExport(out);
 if (problems.length > 0) {
-    console.error(`\nsite:export — ${problems.length} problem(s):`);
+    console.error(
+        `\nsite:export — ${problems.length} problem(s) against the site export contract v${CONTRACT_REVISION}:`,
+    );
     for (const problem of problems) console.error(`  ✗ ${problem}`);
     process.exit(1);
 }
@@ -155,5 +161,5 @@ const items = JSON.parse(
     await readFile(path.join(out, "r/index.json"), "utf-8"),
 ) as { items: unknown[] };
 console.log(
-    `\nsite:export → ${out}\n  base ${base || "/"} · ${pages.length} pages · ${manifest.examples.length} examples · ${items.items.length} registry items · valid (contract v${CONTRACT})`,
+    `\nsite:export → ${out}\n  base ${base || "/"} · ${pages.length} pages · ${manifest.examples.length} examples · ${items.items.length} registry items · valid (contract v${CONTRACT_REVISION})`,
 );

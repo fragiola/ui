@@ -10,31 +10,41 @@ import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { parse as parseYaml } from "yaml";
+import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1.1, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.2, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
 //   project.json     contract version, frameworks, registry namespace ⇔ r/,
-//                    repository
+//                    repository, description length, keywords
 //   docs/            config.json ⇔ files (and collapsible sections),
-//                    frontmatter, vocabulary, props and nesting, code fences,
-//                    links (pages, anchors, examples, hero actions),
-//                    `<Example id>`, `<InstallCommand item>`
+//                    frontmatter (and its lengths, the landing's title),
+//                    vocabulary, props and nesting, code fences, links
+//                    (pages, anchors, examples, hero actions), `<Example id>`,
+//                    `<InstallCommand item>`, structure (no `#`, no skipped
+//                    heading level, one `<Hero>`, image alt text)
 //   examples.json    levels, themes
-//   embed/<fw>/      index.html, manifest.json: ids, levels, files, docs
-//                    links, registry items
+//   embed/<fw>/      index.html, noindex on every HTML file, manifest.json:
+//                    ids, levels, files, docs links, registry items
 //   r/               index ⇔ files, namespaced dependencies, duplicates
 //
 // `validateExport(dir)` reads an export from disk; `validate(input)` takes
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
 //
-// v1.1 is additive and keeps `"contract": 1` (CONTRACT.md, "Changes in
-// v1.1"), so CONTRACT stays 1 while the vocabulary is v1.1's.
+// v1.1 and v1.2 keep `"contract": 1` (CONTRACT.md, "Changes in v1.2"), so
+// CONTRACT stays 1 while the rules are v1.2's: CONTRACT_REVISION.
 
 export const CONTRACT = 1;
+export const CONTRACT_REVISION = "1.2";
+
+/** v1.2: the lengths of titles, descriptions and keywords (§2, §3.2). */
+export const LIMITS = {
+    title: 60,
+    description: { min: 50, max: 160 },
+    keywords: { min: 1, max: 8, length: 40 },
+} as const;
 
 // ─── Shapes ─────────────────────────────────────────────────────────────────
 
@@ -103,14 +113,25 @@ export type RegistryItem = { name: string; registryDependencies?: string[] };
 
 export type ExportInput = {
     project: ProjectJson;
+    /**
+     * project.json as written, to give its problems a line; by default the
+     * project as site:export writes it (4-space JSON).
+     */
+    projectSource?: string;
     config: DocsConfig;
     /** Page path (file path without `.mdx`, `/`-separated) → source. */
     pages: Map<string, string>;
     /** Anything under docs/ that is neither a page nor config.json. */
     strayDocs: string[];
     examples: ExamplesJson;
-    /** Framework → its embed app: whether index.html exists, its manifest. */
-    embeds: Map<string, { hasIndex: boolean; manifest: Manifest | null }>;
+    /**
+     * Framework → its embed app: every HTML file (its path under
+     * embed/<fw>/ → its source), its manifest.
+     */
+    embeds: Map<
+        string,
+        { html: Map<string, string>; manifest: Manifest | null }
+    >;
     /** Present when the export has r/: the index and every item file. */
     registry: {
         index: RegistryItem[];
@@ -204,15 +225,36 @@ const parser = unified().use(remarkParse).use(remarkMdx).use(remarkGfm);
 
 type Page = {
     frontmatter: Record<string, unknown> | null;
+    /** The line of each top-level frontmatter field, in the file. */
+    fields: Map<string, number>;
     tree: Root | null;
     /** Lines taken by the frontmatter, to report body positions in the file. */
     offset: number;
     error?: string;
 };
 
+/** The line of each top-level key of a frontmatter block, in the file. */
+function fieldLines(yaml: string): Map<string, number> {
+    const lines = new Map<string, number>();
+    const lineCounter = new LineCounter();
+    const contents = parseDocument(yaml, { lineCounter }).contents as {
+        items?: { key?: { value?: unknown; range?: number[] } }[];
+    } | null;
+    for (const pair of contents?.items ?? []) {
+        const offset = pair.key?.range?.[0];
+        if (typeof pair.key?.value !== "string" || offset === undefined) {
+            continue;
+        }
+        // + 1: the block starts under its opening `---`
+        lines.set(pair.key.value, lineCounter.linePos(offset).line + 1);
+    }
+    return lines;
+}
+
 function parsePage(source: string): Page {
     const match = source.match(/^---\n([\s\S]*?)\n---\n/);
     let frontmatter: Record<string, unknown> | null = null;
+    let fields = new Map<string, number>();
     let offset = 0;
     let body = source;
     if (match) {
@@ -223,9 +265,11 @@ function parsePage(source: string): Page {
             if (parsed && typeof parsed === "object") {
                 frontmatter = parsed as Record<string, unknown>;
             }
+            fields = fieldLines(match[1] ?? "");
         } catch (error) {
             return {
                 frontmatter: null,
+                fields,
                 tree: null,
                 offset,
                 error: `frontmatter is not YAML (${(error as Error).message})`,
@@ -233,15 +277,67 @@ function parsePage(source: string): Page {
         }
     }
     try {
-        return { frontmatter, tree: parser.parse(body) as Root, offset };
+        return {
+            frontmatter,
+            fields,
+            tree: parser.parse(body) as Root,
+            offset,
+        };
     } catch (error) {
         return {
             frontmatter,
+            fields,
             tree: null,
             offset,
             error: `not valid MDX (${(error as Error).message})`,
         };
     }
+}
+
+// ─── v1.2: search and sharing ───────────────────────────────────────────────
+
+/** A length in characters: Unicode code points, as the contract counts them. */
+const length = (text: string) => [...text].length;
+
+/** Why a description is not 50–160 characters long, or null when it is. */
+function descriptionLength(text: string): string | null {
+    const { min, max } = LIMITS.description;
+    const n = length(text);
+    return n < min || n > max
+        ? `description is ${n} characters: ${min}–${max}`
+        : null;
+}
+
+/**
+ * The heading level `www` renders for a component (§3.4): `<Hero>` the h1, a
+ * `<Section>`'s title an h2, a `<Feature>`'s title one level below its
+ * section (h3, or h2 outside one).
+ */
+function renderedLevel(name: string, ancestors: string[]): number | null {
+    switch (name) {
+        case "Hero":
+            return 1;
+        case "Section":
+            return 2;
+        case "Feature":
+            return ancestors.includes("Section") ? 3 : 2;
+        default:
+            return null;
+    }
+}
+
+/** `<meta name="robots" content="noindex">`, in any attribute order and quoting. */
+function isNoindex(tag: string): boolean {
+    return (
+        /\bname\s*=\s*(["']?)robots\1(?=[\s/>])/i.test(tag) &&
+        /\bcontent\s*=\s*(["'])[^"']*\bnoindex\b[^"']*\1/i.test(tag)
+    );
+}
+
+/** The line of the first `"key":` in a JSON text, if any. */
+function lineOfKey(text: string, key: string): number | null {
+    const index = text.indexOf(`"${key}":`);
+    return index === -1 ? null : text.slice(0, index).split("\n").length;
 }
 
 /** Heading anchors, as Fumadocs generates them (github-slugger over text). */
@@ -389,6 +485,61 @@ export function validate(input: ExportInput): string[] {
         problems.push(
             `project.json: registry.namespace "${namespace}" is not @name`,
         );
+    }
+    // v1.2 (§2): the description's length, the keywords.
+    const projectSource =
+        input.projectSource ?? `${JSON.stringify(project, null, 4)}\n`;
+    const projectAt = (key: string) => {
+        const line = lineOfKey(projectSource, key);
+        return line === null ? "project.json" : `project.json:${line}`;
+    };
+    const wrongDescription =
+        typeof project.description === "string" && project.description
+            ? descriptionLength(project.description)
+            : null;
+    if (wrongDescription) {
+        problems.push(`${projectAt("description")}: ${wrongDescription} (§2)`);
+    }
+    if (project.keywords !== undefined) {
+        const where = projectAt("keywords");
+        const { keywords } = project;
+        const { min, max } = LIMITS.keywords;
+        if (
+            !Array.isArray(keywords) ||
+            keywords.length < min ||
+            keywords.length > max
+        ) {
+            problems.push(
+                `${where}: keywords must list ${min}–${max} topics (§2)`,
+            );
+        } else {
+            const seen = new Set<string>();
+            for (const keyword of keywords as unknown[]) {
+                if (
+                    typeof keyword !== "string" ||
+                    !keyword ||
+                    keyword.trim() !== keyword
+                ) {
+                    problems.push(
+                        `${where}: keywords: ${JSON.stringify(keyword)} is not a topic: a non-empty string, no surrounding spaces (§2)`,
+                    );
+                    continue;
+                }
+                const topic = `${where}: keywords: "${keyword}"`;
+                if (keyword !== keyword.toLowerCase()) {
+                    problems.push(`${topic} is not lowercase (§2)`);
+                }
+                if (length(keyword) > LIMITS.keywords.length) {
+                    problems.push(
+                        `${topic} is ${length(keyword)} characters: at most ${LIMITS.keywords.length} (§2)`,
+                    );
+                }
+                if (seen.has(keyword)) {
+                    problems.push(`${topic} is listed twice (§2)`);
+                }
+                seen.add(keyword);
+            }
+        }
     }
 
     // r/
@@ -628,17 +779,50 @@ export function validate(input: ExportInput): string[] {
             if (pagePath !== "index" && fm.layout !== undefined) {
                 problems.push(`${file}: layout is only for index.mdx`);
             }
+            checkSearchFields(pagePath, page);
         }
         const tree = page.tree;
         if (!tree) continue;
+
+        // v1.2 (§3.4): the page's outline as www renders it, in document
+        // order, under the page's h1 (its title; the landing's <Hero>).
+        const landing = pagePath === "index";
+        let previous = 1;
+        let heroes = 0;
 
         // Parents, recorded on the way down: a component written on one line
         // parses as inline, inside a paragraph, and its container is the
         // paragraph's parent.
         const parents = new WeakMap<Nodes, Nodes>();
+        /** Every enclosing component, nearest first. */
+        const ancestorsOf = (node: Nodes) => {
+            const names: string[] = [];
+            for (let up = parents.get(node); up; up = parents.get(up)) {
+                if (
+                    (up.type === "mdxJsxFlowElement" ||
+                        up.type === "mdxJsxTextElement") &&
+                    up.name
+                ) {
+                    names.push(up.name);
+                }
+            }
+            return names;
+        };
         visit(tree, (node: Nodes, _index, parent) => {
             if (parent) parents.set(node, parent as Nodes);
             switch (node.type) {
+                case "heading":
+                    if (node.depth === 1) {
+                        problems.push(
+                            `${at(node)}: a Markdown # heading: the page's h1 is ${landing ? "its <Hero>'s title" : "its frontmatter title"} (§3.4)`,
+                        );
+                    } else if (node.depth > previous + 1) {
+                        problems.push(
+                            `${at(node)}: a ${"#".repeat(node.depth)} heading after an h${previous}: headings do not skip a level (§3.4)`,
+                        );
+                    }
+                    previous = node.depth;
+                    return;
                 case "mdxjsEsm":
                     problems.push(`${at(node)}: import/export is not allowed`);
                     return;
@@ -677,14 +861,29 @@ export function validate(input: ExportInput): string[] {
                     return;
                 }
                 case "image":
-                    if (!EXTERNAL.test(node.url)) {
+                case "imageReference":
+                    if (node.type === "image" && !EXTERNAL.test(node.url)) {
                         problems.push(
                             `${at(node)}: image ${node.url} must be absolute`,
                         );
                     }
+                    if (!node.alt?.trim()) {
+                        problems.push(
+                            `${at(node)}: an image needs alt text: ![what it shows](…) (§3.4)`,
+                        );
+                    }
                     return;
                 case "mdxJsxFlowElement":
-                case "mdxJsxTextElement":
+                case "mdxJsxTextElement": {
+                    if (node.name === "Hero" && ++heroes > 1 && landing) {
+                        problems.push(
+                            `${at(node)}: a second <Hero>: the landing has exactly one, its only h1 (§3.4)`,
+                        );
+                    }
+                    const level = node.name
+                        ? renderedLevel(node.name, ancestorsOf(node))
+                        : null;
+                    if (level !== null) previous = level;
                     checkElement(
                         node,
                         parent?.type === "paragraph"
@@ -694,8 +893,51 @@ export function validate(input: ExportInput): string[] {
                         at(node),
                     );
                     return;
+                }
             }
         });
+        if (landing && heroes === 0) {
+            problems.push(
+                `${file}:1: the landing has no <Hero>: its title is the landing's h1 (§3.4)`,
+            );
+        }
+    }
+
+    /** The frontmatter's lengths, and the landing's title (v1.2, §3.2). */
+    function checkSearchFields(pagePath: string, page: Page) {
+        const file = `docs/${pagePath}.mdx`;
+        const at = (key: string) => `${file}:${page.fields.get(key) ?? 1}`;
+        const { title, description } = page.frontmatter ?? {};
+        if (typeof title === "string" && length(title) > LIMITS.title) {
+            problems.push(
+                `${at("title")}: frontmatter: title is ${length(title)} characters: at most ${LIMITS.title} (§3.2)`,
+            );
+        }
+        const wrong =
+            typeof description === "string" && description
+                ? descriptionLength(description)
+                : null;
+        if (wrong) {
+            problems.push(`${at("description")}: frontmatter: ${wrong} (§3.2)`);
+        }
+        if (
+            pagePath !== "index" ||
+            typeof title !== "string" ||
+            !title ||
+            typeof project.title !== "string" ||
+            !project.title
+        ) {
+            return;
+        }
+        if (!title.includes(project.title)) {
+            problems.push(
+                `${at("title")}: frontmatter: the landing's title "${title}" is its <title>: it contains the project's title "${project.title}" (§3.2)`,
+            );
+        } else if (title.trim() === project.title) {
+            problems.push(
+                `${at("title")}: frontmatter: the landing's title is its <title>: say what ${project.title} is, not only its name ("${project.title} — …") (§3.2)`,
+            );
+        }
     }
 
     function checkElement(
@@ -890,7 +1132,7 @@ export function validate(input: ExportInput): string[] {
     // embed/<fw>/ and manifests
     for (const framework of project.frameworks ?? []) {
         const embed = embeds.get(framework);
-        if (!embed?.hasIndex)
+        if (!embed?.html.has("index.html"))
             problems.push(`embed/${framework}/index.html is missing`);
         if (!embed?.manifest) {
             problems.push(`embed/${framework}/manifest.json is missing`);
@@ -957,6 +1199,23 @@ export function validate(input: ExportInput): string[] {
                 );
         }
     }
+    // v1.2 (§5.1): every HTML file of an embed app stays out of search.
+    for (const [framework, embed] of embeds) {
+        for (const [name, html] of embed.html) {
+            if (
+                [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
+                    isNoindex(tag),
+                )
+            ) {
+                continue;
+            }
+            const head = /<head\b/i.exec(html);
+            const file = `embed/${framework}/${name}`;
+            problems.push(
+                `${head ? `${file}:${html.slice(0, head.index).split("\n").length}` : file}: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)`,
+            );
+        }
+    }
     for (const framework of embeds.keys()) {
         if (!project.frameworks?.includes(framework)) {
             problems.push(
@@ -994,6 +1253,9 @@ export async function validateExport(dir: string): Promise<string[]> {
         problems,
         "project.json",
     );
+    const projectSource = project
+        ? await readFile(path.join(dir, "project.json"), "utf-8")
+        : undefined;
     const config = await readJsonOr<DocsConfig>(
         path.join(dir, "docs", "config.json"),
         problems,
@@ -1030,17 +1292,27 @@ export async function validateExport(dir: string): Promise<string[]> {
         }
     }
 
-    const embeds = new Map<
-        string,
-        { hasIndex: boolean; manifest: Manifest | null }
-    >();
+    const embeds: ExportInput["embeds"] = new Map();
     const embedDir = path.join(dir, "embed");
     for (const framework of existsSync(embedDir)
         ? await readdir(embedDir)
         : []) {
-        const manifestFile = path.join(embedDir, framework, "manifest.json");
+        const appDir = path.join(embedDir, framework);
+        const manifestFile = path.join(appDir, "manifest.json");
+        const html = new Map<string, string>();
+        for (const entry of await readdir(appDir, {
+            recursive: true,
+            withFileTypes: true,
+        })) {
+            if (!entry.isFile() || !entry.name.endsWith(".html")) continue;
+            const file = path.join(entry.parentPath, entry.name);
+            html.set(
+                path.relative(appDir, file).split(path.sep).join("/"),
+                await readFile(file, "utf-8"),
+            );
+        }
         embeds.set(framework, {
-            hasIndex: existsSync(path.join(embedDir, framework, "index.html")),
+            html,
             manifest: existsSync(manifestFile)
                 ? await readJsonOr<Manifest>(
                       manifestFile,
@@ -1076,6 +1348,7 @@ export async function validateExport(dir: string): Promise<string[]> {
         ...problems,
         ...validate({
             project,
+            projectSource,
             config,
             pages,
             strayDocs,

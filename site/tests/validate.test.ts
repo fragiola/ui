@@ -75,7 +75,27 @@ describe("site/docs", () => {
                 levels: [...LEVELS],
                 themes: THEMES.map((t) => ({ ...t })),
             },
-            embeds: new Map([["react", { hasIndex: true, manifest }]]),
+            // the app's HTML as vite takes it: what lands in embed/react/
+            embeds: new Map([
+                [
+                    "react",
+                    {
+                        html: new Map([
+                            [
+                                "index.html",
+                                await readFile(
+                                    path.join(
+                                        ROOT,
+                                        "examples/react/index.html",
+                                    ),
+                                    "utf-8",
+                                ),
+                            ],
+                        ]),
+                        manifest,
+                    },
+                ],
+            ]),
             registry: {
                 index: registryJson.items,
                 items: new Map(registryJson.items.map((i) => [i.name, i])),
@@ -99,6 +119,21 @@ describe("site/docs", () => {
 
 // ─── The validator ──────────────────────────────────────────────────────────
 // A minimal valid export, then one violation at a time.
+
+/** A description of 50–160 characters (v1.2, §3.2). */
+const DESCRIPTION =
+    "A description long enough to be a page's lead and its meta description.";
+
+/** The embed app's page, noindex (v1.2, §5.1). */
+const EMBED_HTML = `<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="noindex" />
+    </head>
+    <body></body>
+</html>
+`;
 
 function fixture(): ExportInput {
     const manifest: Manifest = {
@@ -142,7 +177,7 @@ function fixture(): ExportInput {
             ["index", LANDING],
             [
                 "atoms/button",
-                `---\ntitle: "Button"\ndescription: "A button."\n---\n\n<InstallCommand item="button" />\n\n<Example id="button" />\n\n## Usage\n\nSee [usage](#usage), [the gallery](/examples/button) and [home](/).\n\n\`\`\`tsx title="button.tsx"\n<Button />\n\`\`\`\n\n<Callout type="warn" title="Note">Text.</Callout>\n\n<Cards>\n  <Card title="Usage" href="/docs/atoms/button#usage" />\n</Cards>\n`,
+                `---\ntitle: "Button"\ndescription: "${DESCRIPTION}"\n---\n\n<InstallCommand item="button" />\n\n<Example id="button" />\n\n## Usage\n\nSee [usage](#usage), [the gallery](/examples/button) and [home](/).\n\n\`\`\`tsx title="button.tsx"\n<Button />\n\`\`\`\n\n<Callout type="warn" title="Note">Text.</Callout>\n\n<Cards>\n  <Card title="Usage" href="/docs/atoms/button#usage" />\n</Cards>\n`,
             ],
         ]),
         strayDocs: [],
@@ -153,7 +188,12 @@ function fixture(): ExportInput {
                 { name: "dark", title: "Dark", scheme: "dark" },
             ],
         },
-        embeds: new Map([["react", { hasIndex: true, manifest }]]),
+        embeds: new Map([
+            [
+                "react",
+                { html: new Map([["index.html", EMBED_HTML]]), manifest },
+            ],
+        ]),
         registry: {
             index: [{ name: "button" }, { name: "cn" }],
             items: new Map([
@@ -169,8 +209,8 @@ function fixture(): ExportInput {
 
 // Every piece of the v1.1 landing vocabulary, once.
 const LANDING = `---
-title: "UI"
-description: "Landing."
+title: "Fragiola UI — the fixture's landing"
+description: "${DESCRIPTION}"
 layout: "landing"
 ---
 
@@ -206,14 +246,14 @@ layout: "landing"
 const landing = (body: string) => (i: ExportInput) => {
     i.pages.set(
         "index",
-        `---\ntitle: "UI"\ndescription: "D."\nlayout: "landing"\n---\n\n${body}\n`,
+        `---\ntitle: "Fragiola UI — a landing"\ndescription: "${DESCRIPTION}"\nlayout: "landing"\n---\n\n${body}\n`,
     );
 };
 
 function withPage(input: ExportInput, page: string, body: string) {
     input.pages.set(
         page,
-        `---\ntitle: "T"\ndescription: "D."\n---\n\n${body}\n`,
+        `---\ntitle: "T"\ndescription: "${DESCRIPTION}"\n---\n\n${body}\n`,
     );
     return input;
 }
@@ -436,7 +476,7 @@ describe("validate", () => {
             (i) => {
                 i.pages.set(
                     "index",
-                    `---\ntitle: "UI"\ndescription: "D."\n---\n\nHi.\n`,
+                    `---\ntitle: "Fragiola UI — a landing"\ndescription: "${DESCRIPTION}"\n---\n\nHi.\n`,
                 );
             },
             /the landing needs layout: "landing"/,
@@ -542,5 +582,276 @@ describe("validate", () => {
             problems.some((p) => expected.test(p)),
             problems.join("\n"),
         ).toBe(true);
+    });
+});
+
+// ─── v1.2: search and sharing ───────────────────────────────────────────────
+// www's messages, word for word, at the line www reports them.
+
+describe("validate (v1.2)", () => {
+    // withPage(): the frontmatter is lines 1–4, the body starts on line 6.
+    const page =
+        (frontmatter: string, body = "Text.") =>
+        (i: ExportInput) => {
+            i.pages.set(
+                "atoms/button",
+                `---\n${frontmatter}\n---\n\n${body}\n`,
+            );
+        };
+    const landingWith =
+        (title: string, body = '<Hero title="Fragiola UI" />') =>
+        (i: ExportInput) => {
+            i.pages.set(
+                "index",
+                `---\ntitle: "${title}"\ndescription: "${DESCRIPTION}"\nlayout: "landing"\n---\n\n${body}\n`,
+            );
+        };
+    const keywords = (list: unknown) => (i: ExportInput) => {
+        i.project.keywords = list as string[];
+    };
+    const html = (files: Record<string, string>) => (i: ExportInput) => {
+        const embed = i.embeds.get("react");
+        if (embed) embed.html = new Map(Object.entries(files));
+    };
+    // JSON.stringify(PROJECT, null, 4): "description" is line 5, "keywords"
+    // comes last.
+    const keywordsLine = (i: ExportInput) =>
+        JSON.stringify(i.project, null, 4)
+            .split("\n")
+            .findIndex((line) => line.includes('"keywords":')) + 1;
+
+    const cases: Array<
+        [
+            string,
+            (i: ExportInput) => void,
+            string | ((i: ExportInput) => string),
+        ]
+    > = [
+        [
+            "a project description under 50 characters",
+            (i) => {
+                i.project.description = "Too short.";
+            },
+            "project.json:5: description is 10 characters: 50–160 (§2)",
+        ],
+        [
+            "a project description over 160 characters",
+            (i) => {
+                i.project.description = "x".repeat(161);
+            },
+            "project.json:5: description is 161 characters: 50–160 (§2)",
+        ],
+        [
+            "no keywords in the list",
+            keywords([]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords must list 1–8 topics (§2)`,
+        ],
+        [
+            "more than 8 keywords",
+            keywords(["a", "b", "c", "d", "e", "f", "g", "h", "i"]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords must list 1–8 topics (§2)`,
+        ],
+        [
+            "keywords that are not a list",
+            keywords("react"),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords must list 1–8 topics (§2)`,
+        ],
+        [
+            "a keyword with surrounding spaces",
+            keywords([" react"]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: " react" is not a topic: a non-empty string, no surrounding spaces (§2)`,
+        ],
+        [
+            "a keyword that is not a string",
+            keywords([42]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: 42 is not a topic: a non-empty string, no surrounding spaces (§2)`,
+        ],
+        [
+            "an empty keyword",
+            keywords([""]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: "" is not a topic: a non-empty string, no surrounding spaces (§2)`,
+        ],
+        [
+            "a keyword that is not lowercase",
+            keywords(["Base UI"]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: "Base UI" is not lowercase (§2)`,
+        ],
+        [
+            "a keyword over 40 characters",
+            keywords(["a".repeat(41)]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: "${"a".repeat(41)}" is 41 characters: at most 40 (§2)`,
+        ],
+        [
+            "a keyword listed twice",
+            keywords(["react", "react"]),
+            (i) =>
+                `project.json:${keywordsLine(i)}: keywords: "react" is listed twice (§2)`,
+        ],
+        [
+            "a title over 60 characters",
+            page(`title: "${"T".repeat(61)}"\ndescription: "${DESCRIPTION}"`),
+            "docs/atoms/button.mdx:2: frontmatter: title is 61 characters: at most 60 (§3.2)",
+        ],
+        [
+            "a description under 50 characters",
+            page(`title: "Button"\ndescription: "A button."`),
+            "docs/atoms/button.mdx:3: frontmatter: description is 9 characters: 50–160 (§3.2)",
+        ],
+        [
+            "a description over 160 characters, at its own line",
+            page(
+                `description: "${"d".repeat(161)}"\nlayout_hint: 1\ntitle: "Button"`,
+            ),
+            "docs/atoms/button.mdx:2: frontmatter: description is 161 characters: 50–160 (§3.2)",
+        ],
+        [
+            "a landing title without the project's title",
+            landingWith("Components on Base UI"),
+            `docs/index.mdx:2: frontmatter: the landing's title "Components on Base UI" is its <title>: it contains the project's title "Fragiola UI" (§3.2)`,
+        ],
+        [
+            "a landing title that is only the project's title",
+            landingWith("Fragiola UI"),
+            `docs/index.mdx:2: frontmatter: the landing's title is its <title>: say what Fragiola UI is, not only its name ("Fragiola UI — …") (§3.2)`,
+        ],
+        [
+            "a landing with no <Hero>",
+            landingWith("Fragiola UI — a landing", "Just prose."),
+            "docs/index.mdx:1: the landing has no <Hero>: its title is the landing's h1 (§3.4)",
+        ],
+        [
+            "a second <Hero>",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="One" />\n\n<Hero title="Two" />',
+            ),
+            "docs/index.mdx:9: a second <Hero>: the landing has exactly one, its only h1 (§3.4)",
+        ],
+        [
+            "a Markdown # on a page",
+            button("# Button"),
+            "docs/atoms/button.mdx:6: a Markdown # heading: the page's h1 is its frontmatter title (§3.4)",
+        ],
+        [
+            "a Markdown # on the landing",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="Fragiola UI" />\n\n# Again',
+            ),
+            "docs/index.mdx:9: a Markdown # heading: the page's h1 is its <Hero>'s title (§3.4)",
+        ],
+        [
+            "a ### right under the title",
+            button("### Usage"),
+            "docs/atoms/button.mdx:6: a ### heading after an h1: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a #### after a ##",
+            button("## Usage\n\n#### Detail"),
+            "docs/atoms/button.mdx:8: a #### heading after an h2: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a #### inside a <Section> (an h2)",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="Fragiola UI" />\n\n<Section title="Why">\n\n#### Deep\n\n</Section>',
+            ),
+            "docs/index.mdx:11: a #### heading after an h2: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a #### after a <Feature> outside a <Section> (an h2)",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="Fragiola UI" />\n\n<Features>\n    <Feature title="One">Body.</Feature>\n</Features>\n\n#### Deep',
+            ),
+            "docs/index.mdx:13: a #### heading after an h2: headings do not skip a level (§3.4)",
+        ],
+        [
+            "an image without alt text",
+            button("![](https://fragiola.com/x.png)"),
+            "docs/atoms/button.mdx:6: an image needs alt text: ![what it shows](…) (§3.4)",
+        ],
+        [
+            "a reference image with blank alt text",
+            button("![ ][shot]\n\n[shot]: https://fragiola.com/x.png"),
+            "docs/atoms/button.mdx:6: an image needs alt text: ![what it shows](…) (§3.4)",
+        ],
+        [
+            "an embed index.html without noindex",
+            html({
+                "index.html":
+                    '<!doctype html>\n<html>\n    <head>\n        <meta name="robots" content="index" />\n    </head>\n</html>\n',
+            }),
+            'embed/react/index.html:3: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)',
+        ],
+        [
+            "any other embed HTML file without noindex",
+            html({
+                "index.html": EMBED_HTML,
+                "popout/window.html": "<p>no head</p>\n",
+            }),
+            'embed/react/popout/window.html: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)',
+        ],
+    ];
+
+    it.each(cases)("rejects %s", (_, mutate, expected) => {
+        const input = fixture();
+        mutate(input);
+        const problems = validate(input);
+        const message =
+            typeof expected === "string" ? expected : expected(input);
+        expect(problems, problems.join("\n")).toContain(message);
+    });
+
+    const accepted: Array<[string, (i: ExportInput) => void]> = [
+        [
+            "lengths counted in code points, not UTF-16 units",
+            (i) => {
+                // 100 code points, 200 UTF-16 units
+                i.project.description = "🍓".repeat(100);
+                withPage(i, "atoms/button", "## Usage");
+                const button = i.pages.get("atoms/button") ?? "";
+                i.pages.set(
+                    "atoms/button",
+                    button.replace('title: "T"', `title: "${"é".repeat(60)}"`),
+                );
+            },
+        ],
+        [
+            "keywords that are 1–8 unique lowercase topics",
+            keywords(["react components", "design system", "base ui"]),
+        ],
+        [
+            "a heading one level below a <Section> and a <Feature>",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="Fragiola UI" />\n\n<Section title="Why">\n\n### Reason\n\n<Features>\n    <Feature title="One">\n\n#### Detail\n\n    </Feature>\n</Features>\n\n</Section>\n\n## After',
+            ),
+        ],
+        [
+            "a heading that climbs back up any number of levels",
+            button("## Usage\n\n### Detail\n\n#### More\n\n## Next"),
+        ],
+        [
+            "noindex in any attribute order and quoting",
+            html({
+                "index.html":
+                    "<html><head><meta content='nofollow, noindex' name=robots></head></html>",
+            }),
+        ],
+    ];
+
+    it.each(accepted)("accepts %s", (_, mutate) => {
+        const input = fixture();
+        mutate(input);
+        expect(validate(input)).toEqual([]);
     });
 });
