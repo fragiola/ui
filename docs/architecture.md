@@ -118,7 +118,7 @@ consumed by all of them.
 
 ```
 popup       the floating box       dropdown, context, select, combobox, popover, tooltip
-menu        the option list        dropdown, context, select, combobox
+menu        the option list        dropdown, context, select, combobox, sidebar
 field       the input control      input, textarea, select trigger
 layer       backdrop + panel       dialog, alert-dialog, drawer
 disclosure  expand/collapse        accordion, collapsible
@@ -126,6 +126,11 @@ disclosure  expand/collapse        accordion, collapsible
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
 A new component is a recombination.
+
+The sidebar is the largest one so far: its items are `menu`'s navigation members
+(`navItem`, `navSubItem`), the same row as a dropdown item but lit by hover and
+`data-active` instead of focus. Everything else in it is `Clickable`, `Badge`, `Skeleton`,
+`Separator`, `Field`, `Tooltip` and `Drawer`, and it adds no stylesheet and no token.
 
 ### Families are shared `tv()`, with zero variants
 
@@ -229,6 +234,11 @@ a custom property:
 utility exists, use the `rtl:` variant — including for directional icons, which are
 easy to forget.
 
+**A component may own a container threshold, never a viewport breakpoint.** The
+sidebar decides between its column and its Drawer from its Provider's width (42rem,
+`@2xl`), not the window's. Breakpoints stay the application's decision, and the
+component behaves the same full-page, in an iframe or in any box it is put in.
+
 ---
 
 ## 5. Distribution: shadcn's registry format
@@ -283,7 +293,12 @@ in the remaining surface:
   the placeholder, which used a different value in the POC. The contrast guard in
   `packages/registry/tests/palette-contract.test.ts` asserts accent@85% ≥ 4.5:1 over base and soft
   for every surface-tier palette, in both themes.
-- **`sidebar`** carries its own token set upstream; it should map to its own palette.
+- **`sidebar`** — settled in Epic #60. Upstream carries 8 `--sidebar-*` tokens; here it
+  maps to the existing `palette-raised`, which is what shadcn's `--sidebar` is in both
+  themes. No palette was added: the number of palettes is free, but a palette that
+  duplicates another is not a new one. Its palette swaps are surface-tier only, for
+  the reason above: its items' resting text is secondary text. See
+  `docs/port-report-epic-60.md`.
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.
 - **`command`** brings a third state vocabulary, which joins the `highlighted`
   variant.

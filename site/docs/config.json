@@ -165,6 +165,10 @@
                 {
                     "label": "Breadcrumb",
                     "path": "navigation/breadcrumb"
+                },
+                {
+                    "label": "Sidebar",
+                    "path": "navigation/sidebar"
                 }
             ]
         },

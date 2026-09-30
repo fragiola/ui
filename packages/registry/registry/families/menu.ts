@@ -1,6 +1,7 @@
 // Family `menu` — the option list (item, selectableItem, label, separator,
-// group, shortcut, sub-trigger, item-indicator).
-// Origin: ~12 parts repeated across dropdown/context/menubar/select/combobox.
+// group, shortcut, sub-trigger, item-indicator, navItem, navSubItem).
+// Origin: ~12 parts repeated across dropdown/context/menubar/select/combobox,
+// and the same list rebuilt a third time by shadcn's sidebar.
 //
 // Decisions in docs/architecture.md §2 (orthogonal families), style families
 // (tv with zero variants), state normalization (highlighted), and palette
@@ -31,21 +32,50 @@
 // string and were merged into `selectableItem`. The sub-trigger extends
 // `item` (no indicator) — there is no selectable sub-trigger.
 //
+// ─── NAVIGATION MEMBERS ─────────────────────────────────────────────────────
+// A sidebar's menu is the same list — the same row, icon, text, radius and
+// secondary colour at rest — pointing at pages instead of commands. It gets
+// named members (`navItem`, `navSubItem`), not a variant and not a `nav`
+// family: what differs is only how an item is lit.
+//
+//   popup list   `highlighted:` — :focus / [data-highlighted] /
+//                [data-selected]. Focus follows the pointer inside a menu, so
+//                focus IS the lit item.
+//   navigation   `hover:`, `data-active:` (the current page) and a
+//                `focus-visible:` ring. A clicked link keeps focus after the
+//                click; lit by `:focus` it would stay lit until blurred, a
+//                second "current page" that is not the current page.
+//
+// So both extend a private `itemSkeleton` (the shared row) instead of the nav
+// members extending `item` and cancelling its `highlighted:`. The split
+// leaves `item`'s classes exactly as they were — tests/menu.test.ts pins
+// them. `outline-none` stays on `item` only: it sets the outline style to
+// none, which would swallow the nav members' focus-visible ring.
+//
 // Namespace object: a single `menu` export with all members.
 
 import { tv } from "tailwind-variants";
 
-// item is the central member. selectableItem and subTrigger derive from it
-// via extend.
-const item = tv({
+// The row every item of the family shares — popup or navigation. Not a
+// member: it has no way of being lit, so on its own it is not an item.
+const itemSkeleton = tv({
     base: `
-        relative flex cursor-default items-center gap-2 rounded-md py-1.5 text-sm
-        px-1.5 outline-none select-none
-        text-palette-accent/85 highlighted:bg-palette-soft highlighted:text-palette-contrast
+        relative flex items-center gap-2 rounded-md text-sm select-none
+        text-palette-accent/85
         data-disabled:pointer-events-none data-disabled:opacity-50
         data-inset:ps-7
         [&_svg:not([class*='size-'])]:size-4
         [&_svg]:pointer-events-none [&_svg]:shrink-0
+    `,
+});
+
+// item is the central member of the popup lists. selectableItem and
+// subTrigger derive from it via extend.
+const item = tv({
+    extend: itemSkeleton,
+    base: `
+        cursor-default py-1.5 px-1.5 outline-none
+        highlighted:bg-palette-soft highlighted:text-palette-contrast
     `,
 });
 
@@ -84,6 +114,39 @@ const itemIndicator = tv({
     base: "pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center",
 });
 
+// navItem — an item of a navigation list (Sidebar.MenuButton). Lit by hover,
+// by `data-active` (the current page, which also takes the label weight) and
+// by an open MENU it triggers (a team switcher is a navigation item that
+// opens a menu). Base UI marks any trigger with `data-popup-open`, a
+// tooltip's included — lit by that alone, an icon would look current while
+// its tooltip shows — so it takes `aria-haspopup` as well, which menus set
+// and tooltips do not. Full
+// width, fixed height, the label truncates. `disabled` / `aria-disabled`
+// because a button or a link is disabled natively, not through Base UI's
+// `data-disabled`.
+const navItem = tv({
+    extend: itemSkeleton,
+    base: `
+        h-8 w-full overflow-hidden px-2 text-start
+        hover:bg-palette-soft hover:text-palette-contrast
+        data-active:bg-palette-soft data-active:font-medium data-active:text-palette-contrast
+        [&[data-popup-open][aria-haspopup]]:bg-palette-soft
+        [&[data-popup-open][aria-haspopup]]:text-palette-contrast
+        focus-visible:outline-2 focus-visible:outline-palette-ring
+        disabled:pointer-events-none disabled:opacity-50
+        aria-disabled:pointer-events-none aria-disabled:opacity-50
+        transition-[width,height,padding]
+        [&>span:last-child]:truncate
+    `,
+});
+
+// navSubItem — an item one level down (Sidebar.MenuSubButton). The same
+// item, a step shorter.
+const navSubItem = tv({
+    extend: navItem,
+    base: "h-7",
+});
+
 export const menu = {
     item,
     selectableItem,
@@ -92,4 +155,6 @@ export const menu = {
     shortcut,
     subTrigger,
     itemIndicator,
+    navItem,
+    navSubItem,
 };

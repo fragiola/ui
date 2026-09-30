@@ -33,12 +33,29 @@ function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
     return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
-function TooltipContent({ className, ...props }: TooltipPrimitive.Popup.Props) {
+// Content takes the positioner's placement props, as Popover and the menus'
+// Content do. The sidebar's icon rail is why: its tooltips go on the
+// inline-end side, beside the icon, not above it over the next one.
+function TooltipContent({
+    className,
+    align,
+    alignOffset,
+    side,
+    sideOffset = 4,
+    ...props
+}: TooltipPrimitive.Popup.Props &
+    Pick<
+        TooltipPrimitive.Positioner.Props,
+        "align" | "alignOffset" | "side" | "sideOffset"
+    >) {
     return (
         <TooltipPrimitive.Portal>
             <TooltipPrimitive.Positioner
                 className="z-50 outline-none"
-                sideOffset={4}
+                align={align}
+                alignOffset={alignOffset}
+                side={side}
+                sideOffset={sideOffset}
             >
                 <TooltipPrimitive.Popup
                     data-slot="tooltip-content"
