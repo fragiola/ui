@@ -597,6 +597,9 @@ describe("validate", () => {
 // ─── v1.2: search and sharing ───────────────────────────────────────────────
 // www's messages, word for word, at the line www reports them.
 
+/** 52 characters as written, 48 as read: code marks are not characters. */
+const CODE_48 = `\`one\` and \`two\` ${"x".repeat(36)}`;
+
 describe("validate (v1.2)", () => {
     // withPage(): the frontmatter is lines 1–4, the body starts on line 6.
     const page =
@@ -802,6 +805,48 @@ describe("validate (v1.2)", () => {
             'embed/react/index.html:3: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)',
         ],
         [
+            "a description of 52 characters, 48 once its code marks are dropped",
+            page(`title: "Button"\ndescription: "${CODE_48}"`),
+            "docs/atoms/button.mdx:3: frontmatter: description is 48 characters: 50–160 (§3.2)",
+        ],
+        [
+            "a project description of 48 characters once its code marks are dropped",
+            (i) => {
+                i.project.description = CODE_48;
+            },
+            "project.json:5: description is 48 characters: 50–160 (§2)",
+        ],
+        [
+            "a <Card> right under the page's title (an h1)",
+            button(
+                '<Cards>\n    <Card title="Usage" href="/docs/atoms/button" />\n</Cards>',
+            ),
+            "docs/atoms/button.mdx:7: a <Card> (an h3) after an h1: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a <Card> first thing after the <Hero>",
+            landingWith(
+                "Fragiola UI — a landing",
+                '<Hero title="Fragiola UI" />\n\n<Cards>\n    <Card title="Docs" href="/docs/atoms/button" />\n</Cards>',
+            ),
+            "docs/index.mdx:10: a <Card> (an h3) after an h1: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a ##### after a <Card> (an h3)",
+            button(
+                '## Usage\n\n<Cards>\n    <Card title="Usage" href="/docs/atoms/button" />\n</Cards>\n\n##### Deep',
+            ),
+            "docs/atoms/button.mdx:12: a ##### heading after an h3: headings do not skip a level (§3.4)",
+        ],
+        [
+            "a robots meta that is inside an HTML comment",
+            html({
+                "index.html":
+                    '<!doctype html>\n<html>\n    <head>\n        <!-- <meta name="robots" content="noindex" /> -->\n    </head>\n</html>\n',
+            }),
+            'embed/react/index.html:3: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)',
+        ],
+        [
             "any other embed HTML file without noindex",
             html({
                 "index.html": EMBED_HTML,
@@ -848,6 +893,33 @@ describe("validate (v1.2)", () => {
         [
             "a heading that climbs back up any number of levels",
             button("## Usage\n\n### Detail\n\n#### More\n\n## Next"),
+        ],
+        [
+            "a description of 50 characters once its code marks are dropped",
+            page(
+                `title: "Button"\ndescription: "\`on\` ${"x".repeat(47)}"`,
+                "## Usage",
+            ),
+        ],
+        [
+            "a #### after a <Card> (an h3)",
+            button(
+                '## Usage\n\n<Cards>\n    <Card title="Usage" href="/docs/atoms/button" />\n</Cards>\n\n#### Detail',
+            ),
+        ],
+        [
+            "an unquoted noindex",
+            html({
+                "index.html":
+                    "<html><head><meta name=robots content=noindex></head></html>",
+            }),
+        ],
+        [
+            "a comment just above the robots meta",
+            html({
+                "index.html":
+                    '<html>\n<head>\n<!-- not a page -->\n<meta name="robots" content="noindex" />\n</head>\n</html>\n',
+            }),
         ],
         [
             "noindex in any attribute order and quoting",

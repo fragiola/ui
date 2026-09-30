@@ -299,10 +299,13 @@ function parsePage(source: string): Page {
 /** A length in characters: Unicode code points, as the contract counts them. */
 const length = (text: string) => [...text].length;
 
-/** Why a description is not 50–160 characters long, or null when it is. */
+/**
+ * Why a description is not 50–160 characters long, or null when it is. It is
+ * counted as the reader sees it: inline code marks are not characters.
+ */
 function descriptionLength(text: string): string | null {
     const { min, max } = LIMITS.description;
-    const n = length(text);
+    const n = length(text.replace(/`([^`]*)`/g, "$1"));
     return n < min || n > max
         ? `description is ${n} characters: ${min}–${max}`
         : null;
@@ -311,7 +314,7 @@ function descriptionLength(text: string): string | null {
 /**
  * The heading level `www` renders for a component (§3.4): `<Hero>` the h1, a
  * `<Section>`'s title an h2, a `<Feature>`'s title one level below its
- * section (h3, or h2 outside one).
+ * section (h3, or h2 outside one), a `<Card>`'s title an h3 wherever it is.
  */
 function renderedLevel(name: string, ancestors: string[]): number | null {
     switch (name) {
@@ -321,6 +324,8 @@ function renderedLevel(name: string, ancestors: string[]): number | null {
             return 2;
         case "Feature":
             return ancestors.includes("Section") ? 3 : 2;
+        case "Card":
+            return 3;
         default:
             return null;
     }
@@ -330,7 +335,9 @@ function renderedLevel(name: string, ancestors: string[]): number | null {
 function isNoindex(tag: string): boolean {
     return (
         /\bname\s*=\s*(["']?)robots\1(?=[\s/>])/i.test(tag) &&
-        /\bcontent\s*=\s*(["'])[^"']*\bnoindex\b[^"']*\1/i.test(tag)
+        /\bcontent\s*=\s*(?:(["'])[^"']*\bnoindex\b[^"']*\1|noindex(?=[\s/>]))/i.test(
+            tag,
+        )
     );
 }
 
@@ -883,6 +890,15 @@ export function validate(input: ExportInput): string[] {
                     const level = node.name
                         ? renderedLevel(node.name, ancestorsOf(node))
                         : null;
+                    if (
+                        node.name === "Card" &&
+                        level !== null &&
+                        level > previous + 1
+                    ) {
+                        problems.push(
+                            `${at(node)}: a <Card> (an h${level}) after an h${previous}: headings do not skip a level (§3.4)`,
+                        );
+                    }
                     if (level !== null) previous = level;
                     checkElement(
                         node,
@@ -1201,7 +1217,12 @@ export function validate(input: ExportInput): string[] {
     }
     // v1.2 (§5.1): every HTML file of an embed app stays out of search.
     for (const [framework, embed] of embeds) {
-        for (const [name, html] of embed.html) {
+        for (const [name, source] of embed.html) {
+            // a meta inside a comment does not count; a comment keeps its
+            // newlines so lines stay the file's
+            const html = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+                comment.replace(/[^\n]/g, ""),
+            );
             if (
                 [...html.matchAll(/<meta\b[^>]*>/gi)].some(([tag]) =>
                     isNoindex(tag),
