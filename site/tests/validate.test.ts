@@ -1,4 +1,12 @@
-import { readdir, readFile } from "node:fs/promises";
+import {
+    mkdir,
+    mkdtemp,
+    readdir,
+    readFile,
+    rm,
+    writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { LEVELS, THEMES } from "../../examples/gallery.ts";
@@ -8,6 +16,7 @@ import {
     type ExportInput,
     type Manifest,
     validate,
+    validateExport,
 } from "../scripts/validate.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
@@ -853,5 +862,64 @@ describe("validate (v1.2)", () => {
         const input = fixture();
         mutate(input);
         expect(validate(input)).toEqual([]);
+    });
+});
+
+// ─── From disk ──────────────────────────────────────────────────────────────
+// validateExport reads every HTML file under embed/<fw>/, however deep.
+
+/** Writes the fixture as site:export lays it out on disk (§2). */
+async function writeExport(dir: string, input: ExportInput) {
+    const write = async (file: string, text: string) => {
+        await mkdir(path.dirname(path.join(dir, file)), { recursive: true });
+        await writeFile(path.join(dir, file), text);
+    };
+    const json = (value: unknown) => `${JSON.stringify(value, null, 4)}\n`;
+    await write("project.json", json(input.project));
+    await write("docs/config.json", json(input.config));
+    for (const [page, source] of input.pages) {
+        await write(`docs/${page}.mdx`, source);
+    }
+    await write("examples.json", json(input.examples));
+    for (const [framework, embed] of input.embeds) {
+        for (const [file, html] of embed.html) {
+            await write(`embed/${framework}/${file}`, html);
+        }
+        await write(`embed/${framework}/manifest.json`, json(embed.manifest));
+    }
+    if (input.registry) {
+        await write("r/index.json", json({ items: input.registry.index }));
+        for (const [name, item] of input.registry.items) {
+            await write(`r/${name}.json`, json(item));
+        }
+    }
+}
+
+describe("validateExport", () => {
+    it("checks noindex in nested embed HTML files", async () => {
+        const dir = await mkdtemp(path.join(tmpdir(), "ui-site-export-"));
+        try {
+            const input = fixture();
+            await writeExport(dir, input);
+            expect(await validateExport(dir)).toEqual([]);
+
+            const popout = path.join(dir, "embed/react/popout/window.html");
+            await mkdir(path.dirname(popout), { recursive: true });
+            await writeFile(
+                popout,
+                "<!doctype html>\n<html>\n    <head>\n        <title>Popout</title>\n    </head>\n</html>\n",
+            );
+            expect(await validateExport(dir)).toEqual([
+                'embed/react/popout/window.html:3: needs <meta name="robots" content="noindex">: an example is not a page for search engines (§5.1)',
+            ]);
+
+            await writeFile(
+                popout,
+                '<!doctype html>\n<html>\n    <head>\n        <meta name="robots" content="noindex" />\n    </head>\n</html>\n',
+            );
+            expect(await validateExport(dir)).toEqual([]);
+        } finally {
+            await rm(dir, { recursive: true, force: true });
+        }
     });
 });
