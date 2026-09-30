@@ -287,7 +287,7 @@
             "name": "menu",
             "type": "registry:lib",
             "title": "menu family + parts factory",
-            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator. Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select and combobox.",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select, combobox and sidebar.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -897,7 +897,7 @@
             "name": "sidebar",
             "type": "registry:ui",
             "title": "Sidebar",
-            "description": "The app shell's navigation column, recombined from existing pieces rather than rebuilt: a Drawer on mobile, Tooltips in icon mode, Clickable for the trigger. Layout is relative to the Provider's wrapper (a size container), not the viewport — sticky, with a 42rem mobile threshold — so it behaves the same full-page, in an iframe or in a stage. palette-raised by default; any palette class swaps it. No built-in persistence: defaultOpen + controlled open/onOpenChange.",
+            "description": "The app shell's navigation column, recombined rather than rebuilt: menu items and labels from the menu family's navigation members, Clickable for the trigger and actions, Badge, Skeleton, Separator, a Field + Input for search, Tooltips in icon mode and a Drawer on mobile. Layout is relative to the Provider's wrapper (a size container), not the viewport — sticky, with a 42rem mobile threshold — so it behaves the same full-page, in an iframe or in a stage. palette-raised by default; any palette class swaps it. No built-in persistence: defaultOpen + controlled open/onOpenChange.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -905,9 +905,19 @@
                 "@fragiola/palette-surface",
                 "@fragiola/clickable",
                 "@fragiola/drawer",
-                "@fragiola/tooltip"
+                "@fragiola/tooltip",
+                "@fragiola/menu",
+                "@fragiola/badge",
+                "@fragiola/field",
+                "@fragiola/input",
+                "@fragiola/separator",
+                "@fragiola/skeleton"
             ],
-            "dependencies": ["@base-ui/react", "lucide-react"],
+            "dependencies": [
+                "@base-ui/react",
+                "lucide-react",
+                "tailwind-variants"
+            ],
             "files": [
                 {
                     "path": "registry/ui/sidebar.tsx",

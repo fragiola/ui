@@ -1,11 +1,19 @@
 "use client";
 
 import { useDirection } from "@base-ui/react/direction-provider";
+import { useRender } from "@base-ui/react/use-render";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
+import { tv, type VariantProps } from "tailwind-variants";
+import { Badge } from "#/atoms/badge";
 import { Clickable } from "#/atoms/clickable";
+import { Input } from "#/atoms/fields";
+import { menu } from "#/families/menu";
 import { cn } from "#/lib/cn";
 import { Drawer } from "#/ui/drawer";
+import { Field } from "#/ui/field";
+import { Separator } from "#/ui/separator";
+import { Skeleton } from "#/ui/skeleton";
 import { Tooltip } from "#/ui/tooltip";
 
 // Sidebar — the app shell's navigation column. Base UI has no sidebar
@@ -15,6 +23,27 @@ import { Tooltip } from "#/ui/tooltip";
 // from families that already exist. shadcn's sidebar rebuilds a menu item, a
 // label, an icon button and a sub-list from scratch (28 `.cn-sidebar-*`
 // classes, 8 `--sidebar-*` tokens); here each part points at the piece it is.
+//
+// ─── EVERY PART POINTS AT SOMETHING ─────────────────────────────────────────
+//   MenuButton / MenuSubButton   menu.navItem / menu.navSubItem (the family's
+//                                navigation members) through useRender
+//   GroupLabel                   menu.label
+//   Trigger, GroupAction,        Clickable.Button (icon fill, square form)
+//   MenuAction
+//   MenuBadge                    Badge
+//   MenuSkeleton                 Skeleton
+//   Separator                    Separator
+//   Input                        Field row + Input (the row is the body)
+//   mobile                       Drawer
+//   icon-mode tooltips           Tooltip
+// What is left here is structure: the layout, the collapse modes, and where
+// each borrowed piece sits in the column.
+//
+// ─── ICON MODE WITHOUT !important ───────────────────────────────────────────
+// shadcn squares its buttons with `size-8! p-2!` and `p-0!` because its size
+// variants are `@apply`-ed classes defined later in the stylesheet. Here they
+// are plain utilities: `group-data-[collapsible=icon]/sidebar:size-8` is a
+// variant utility, which Tailwind emits after `h-12`, so it wins on its own.
 //
 // ─── PALETTE ────────────────────────────────────────────────────────────────
 // `palette-raised` by default — shadcn's `--sidebar` is `raised` in both
@@ -446,12 +475,424 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     );
 }
 
+// ─── Header, Footer, Content ────────────────────────────────────────────────
+// Structure only. Content is the part that scrolls; in icon mode it clips,
+// so a label mid-collapse cannot open a scrollbar.
+
+function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="sidebar-header"
+            className={cn("flex flex-col gap-2 p-2", className as string)}
+            {...props}
+        />
+    );
+}
+
+function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="sidebar-footer"
+            className={cn("flex flex-col gap-2 p-2", className as string)}
+            {...props}
+        />
+    );
+}
+
+function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="sidebar-content"
+            className={cn(
+                "flex min-h-0 flex-1 flex-col gap-2 overflow-auto",
+                "group-data-[collapsible=icon]/sidebar:overflow-hidden",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+// ─── Separator ──────────────────────────────────────────────────────────────
+// The Separator, inset to the groups' padding. The inset is a wrapper's
+// padding, not a margin on the Separator: a horizontal Separator is
+// `w-full`, and `w-full` plus a margin overflows the column.
+
+function SidebarSeparator(props: React.ComponentProps<typeof Separator>) {
+    return (
+        <div data-slot="sidebar-separator" className="px-2">
+            <Separator {...props} />
+        </div>
+    );
+}
+
+// ─── Input ──────────────────────────────────────────────────────────────────
+// A field, not a restyled input. The row is the body — border, surface,
+// height, focus ring (rule 3) — so `className` lands on the row; the rest are
+// the input's props. It keeps the field's own height (h-control) rather than
+// shadcn's h-8: a sidebar search lines up with every other field. A field
+// cannot fit an icon rail, so in icon mode it steps aside like the labels.
+
+function SidebarInput({
+    className,
+    ...props
+}: React.ComponentProps<typeof Input>) {
+    return (
+        <Field.Row
+            data-slot="sidebar-input"
+            className={cn(
+                "group-data-[collapsible=icon]/sidebar:hidden",
+                className as string,
+            )}
+        >
+            <Field.Body>
+                <Input {...props} />
+            </Field.Body>
+        </Field.Row>
+    );
+}
+
+// ─── Group ──────────────────────────────────────────────────────────────────
+
+function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="sidebar-group"
+            className={cn(
+                "relative flex w-full min-w-0 flex-col p-2",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+// The menu family's label. Polymorphic, because a collapsible group makes it
+// the trigger. In icon mode it folds up and fades rather than vanishing, so
+// the icons below slide into place.
+function SidebarGroupLabel({
+    className,
+    render,
+    ...props
+}: useRender.ComponentProps<"div">) {
+    return useRender({
+        defaultTagName: "div",
+        render,
+        props: {
+            ...props,
+            className: cn(
+                menu.label(),
+                "flex h-8 shrink-0 items-center gap-2 rounded-md",
+                "focus-visible:outline-2 focus-visible:outline-palette-ring",
+                "[&>svg]:size-4 [&>svg]:shrink-0",
+                "transition-[margin,opacity] duration-200 ease-linear motion-reduce:transition-none",
+                "group-data-[collapsible=icon]/sidebar:-mt-8 group-data-[collapsible=icon]/sidebar:opacity-0",
+                className as string,
+            ),
+        },
+        state: { slot: "sidebar-group-label" },
+    });
+}
+
+// Clickable's icon button, at a 20px measure (Clickable has no 20px size; a
+// local measure is not a new size). Its hit area grows past its box where
+// there is no pointer precision — outside the desktop container.
+function SidebarGroupAction({
+    className,
+    ...props
+}: React.ComponentProps<typeof Clickable.Button>) {
+    return (
+        <Clickable.Button
+            data-slot="sidebar-group-action"
+            variant="icon"
+            shape="square"
+            size="xs"
+            className={cn(
+                "absolute end-3 top-3.5 size-5",
+                "after:absolute after:-inset-2 @2xl/sidebar:after:hidden",
+                "group-data-[collapsible=icon]/sidebar:hidden",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+function SidebarGroupContent({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="sidebar-group-content"
+            className={cn("w-full text-sm", className as string)}
+            {...props}
+        />
+    );
+}
+
+// ─── Menu ───────────────────────────────────────────────────────────────────
+
+function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
+    return (
+        <ul
+            data-slot="sidebar-menu"
+            className={cn(
+                "flex w-full min-w-0 flex-col gap-1",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
+    return (
+        <li
+            data-slot="sidebar-menu-item"
+            className={cn("group/menu-item relative", className as string)}
+            {...props}
+        />
+    );
+}
+
+// MenuButton — `menu.navItem` plus the two axes shadcn's button has. They are
+// component axes (as Clickable's are), not family variants: `size` is
+// measure, `variant` is fill strategy, neither is colour. The family member
+// stays single. The button makes room at its end when its item holds an
+// action or a badge, and squares itself in icon mode.
+const menuButton = tv({
+    extend: menu.navItem,
+    base: `
+        peer/menu-button
+        group-has-[[data-slot=sidebar-menu-action]]/menu-item:pe-8
+        group-has-[[data-slot=sidebar-menu-badge]]/menu-item:pe-8
+        group-data-[collapsible=icon]/sidebar:size-8
+        group-data-[collapsible=icon]/sidebar:px-2
+    `,
+    variants: {
+        variant: {
+            ghost: "",
+            outline: "border border-palette-line",
+        },
+        size: {
+            sm: "h-7 text-xs",
+            md: "",
+            lg: "h-12 group-data-[collapsible=icon]/sidebar:px-0",
+        },
+    },
+    defaultVariants: { variant: "ghost", size: "md" },
+});
+
+function SidebarMenuButton({
+    render,
+    isActive = false,
+    variant,
+    size = "md",
+    tooltip,
+    className,
+    ...props
+}: useRender.ComponentProps<"button"> &
+    VariantProps<typeof menuButton> & {
+        /** The current page: `data-active`, lit and weighted. */
+        isActive?: boolean;
+        /** Shown beside the icon while the sidebar is collapsed to icons. */
+        tooltip?: string | React.ComponentProps<typeof Tooltip.Content>;
+    }) {
+    const { isMobile, state } = useSidebar();
+    const button = useRender({
+        defaultTagName: "button",
+        render: tooltip ? <Tooltip.Trigger render={render} /> : render,
+        props: {
+            ...props,
+            className: cn(menuButton({ variant, size }), className as string),
+        },
+        state: { slot: "sidebar-menu-button", size, active: isActive },
+    });
+
+    if (!tooltip) return button;
+
+    const content =
+        typeof tooltip === "string" ? { children: tooltip } : tooltip;
+    return (
+        <Tooltip.Root disabled={state !== "collapsed" || isMobile}>
+            {button}
+            <Tooltip.Content side="inline-end" align="center" {...content} />
+        </Tooltip.Root>
+    );
+}
+
+// The end-side slot of a menu item — an action or a badge — sits at a fixed
+// offset from the item's top, per button size, not centred: an item that
+// holds an open sub-menu is taller than its button.
+const endSlot = `
+    absolute end-1 top-1.5
+    peer-data-[size=sm]/menu-button:top-1
+    peer-data-[size=lg]/menu-button:top-3.5
+    group-data-[collapsible=icon]/sidebar:hidden
+`;
+
+function SidebarMenuAction({
+    className,
+    showOnHover = false,
+    ...props
+}: React.ComponentProps<typeof Clickable.Button> & {
+    /** Hidden until the item is hovered or focused, on desktop. */
+    showOnHover?: boolean;
+}) {
+    return (
+        <Clickable.Button
+            data-slot="sidebar-menu-action"
+            variant="icon"
+            shape="square"
+            size="xs"
+            className={cn(
+                endSlot,
+                "size-5 peer-hover/menu-button:text-palette-contrast",
+                "after:absolute after:-inset-2 @2xl/sidebar:after:hidden",
+                showOnHover &&
+                    "@2xl/sidebar:opacity-0 group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 aria-expanded:opacity-100 data-popup-open:opacity-100",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+// Badge, as it is — a counter is a badge.
+function SidebarMenuBadge({
+    className,
+    ...props
+}: React.ComponentProps<typeof Badge>) {
+    return (
+        <Badge
+            data-slot="sidebar-menu-badge"
+            className={cn(
+                endSlot,
+                "pointer-events-none tabular-nums select-none",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+// Skeleton rows. The text width varies between 50% and 90% so a loading list
+// does not read as a grid — derived from useId, not Math.random, so the
+// server and the client agree on it.
+function SidebarMenuSkeleton({
+    className,
+    showIcon = false,
+    ...props
+}: React.ComponentProps<"div"> & { showIcon?: boolean }) {
+    const id = React.useId();
+    const seed = [...id].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const width = `${50 + (seed % 41)}%`;
+
+    return (
+        <div
+            data-slot="sidebar-menu-skeleton"
+            className={cn(
+                "flex h-8 items-center gap-2 rounded-md px-2",
+                className as string,
+            )}
+            {...props}
+        >
+            {showIcon ? <Skeleton className="size-4" /> : null}
+            <Skeleton
+                className="h-4 max-w-(--skeleton-width) flex-1"
+                style={{ "--skeleton-width": width } as React.CSSProperties}
+            />
+        </div>
+    );
+}
+
+// ─── Sub-menu ───────────────────────────────────────────────────────────────
+// One level down: a line on the inline-start side (it flips under RTL) and
+// the family's navSubItem. Hidden in icon mode — an icon rail has no depth.
+
+function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
+    return (
+        <ul
+            data-slot="sidebar-menu-sub"
+            className={cn(
+                "mx-3.5 flex min-w-0 flex-col gap-1 border-s border-palette-line px-2.5 py-0.5",
+                "group-data-[collapsible=icon]/sidebar:hidden",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+function SidebarMenuSubItem({
+    className,
+    ...props
+}: React.ComponentProps<"li">) {
+    return (
+        <li
+            data-slot="sidebar-menu-sub-item"
+            className={cn("group/menu-sub-item relative", className as string)}
+            {...props}
+        />
+    );
+}
+
+const menuSubButton = tv({
+    extend: menu.navSubItem,
+    base: "min-w-0 group-data-[collapsible=icon]/sidebar:hidden",
+    variants: {
+        size: { sm: "text-xs", md: "text-sm" },
+    },
+    defaultVariants: { size: "md" },
+});
+
+function SidebarMenuSubButton({
+    render,
+    size = "md",
+    isActive = false,
+    className,
+    ...props
+}: useRender.ComponentProps<"a"> &
+    VariantProps<typeof menuSubButton> & {
+        /** The current page: `data-active`, lit and weighted. */
+        isActive?: boolean;
+    }) {
+    return useRender({
+        defaultTagName: "a",
+        render,
+        props: {
+            ...props,
+            className: cn(menuSubButton({ size }), className as string),
+        },
+        state: { slot: "sidebar-menu-sub-button", size, active: isActive },
+    });
+}
+
 export const Sidebar = {
     Provider: SidebarProvider,
     Root: SidebarRoot,
     Trigger: SidebarTrigger,
     Rail: SidebarRail,
     Inset: SidebarInset,
+    Header: SidebarHeader,
+    Footer: SidebarFooter,
+    Content: SidebarContent,
+    Separator: SidebarSeparator,
+    Input: SidebarInput,
+    Group: SidebarGroup,
+    GroupLabel: SidebarGroupLabel,
+    GroupAction: SidebarGroupAction,
+    GroupContent: SidebarGroupContent,
+    Menu: SidebarMenu,
+    MenuItem: SidebarMenuItem,
+    MenuButton: SidebarMenuButton,
+    MenuAction: SidebarMenuAction,
+    MenuBadge: SidebarMenuBadge,
+    MenuSkeleton: SidebarMenuSkeleton,
+    MenuSub: SidebarMenuSub,
+    MenuSubItem: SidebarMenuSubItem,
+    MenuSubButton: SidebarMenuSubButton,
 };
 
 export { useSidebar };
