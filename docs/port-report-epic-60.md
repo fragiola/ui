@@ -103,6 +103,10 @@ which `focus-visible:outline-2` then reads, so it would swallow the nav ring.
   hit-testing.
 - **Ctrl/⌘+B while typing.** It is ignored in fields and editable regions, where it
   belongs to the field.
+- **The icon rail follows density.** shadcn's `3rem` is a fixed length, but the rail
+  holds a `size-8` button in a `p-2` group, both in spacing units. Under `spacious` the
+  button outgrew the rail. The rail is now `calc(var(--spacing) * 12)`: 3rem at the
+  default density, and the button stays centred in `compact` and `spacious`.
 
 ## Negative results and trade-offs
 

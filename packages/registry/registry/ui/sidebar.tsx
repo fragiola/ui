@@ -88,7 +88,10 @@ import { Tooltip } from "#/ui/tooltip";
 // resolved against the reading direction Base UI reads (DirectionProvider).
 
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_ICON = "3rem";
+// The icon rail holds a size-8 button in a p-2 group — spacing units, so the
+// rail is too: 3rem at the default density, and it follows compact and
+// spacious (architecture §4) instead of clipping their buttons.
+const SIDEBAR_WIDTH_ICON = "calc(var(--spacing) * 12)";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 // Below this wrapper width the sidebar is a Drawer. Must equal Tailwind's
 // `--container-2xl`, the `@2xl/sidebar:` used in the classes below.
