@@ -413,6 +413,28 @@ export const examples: Example[] = [
         height: 300,
         load: () => import("./breadcrumb.tsx"),
     },
+    {
+        id: "sidebar",
+        title: "Sidebar",
+        description:
+            "An app shell: a team switcher and a user menu, search, groups with actions and badges, a collapsible sub-menu, and the page beside it. It collapses to icons with tooltips.",
+        level: "navigation",
+        order: 5,
+        features: [
+            "Sidebar.MenuButton",
+            "Sidebar.MenuAction",
+            "Sidebar.MenuBadge",
+            "Sidebar.MenuSub",
+            "Sidebar.Input",
+            "Sidebar.Trigger",
+            "Sidebar.Rail",
+            "collapsible icon",
+        ],
+        docs: "/docs/navigation/sidebar",
+        layout: "fill",
+        height: 640,
+        load: () => import("./sidebar.tsx"),
+    },
 
     // ─── Display ────────────────────────────────────────────────────────────
     {
