@@ -1,6 +1,6 @@
 ---
 title: "Breadcrumb"
-description: "A navigation trail. Uses a semantic `<nav>` with an ordered list. The last item is the current page (aria-current), not a link. Separators are chevrons on the inline axis, RTL-aware."
+description: "A navigation trail: a semantic `<nav>` with an ordered list, where the last item is the current page (aria-current), not a link."
 ---
 
 <InstallCommand item="breadcrumb" />
@@ -9,7 +9,7 @@ description: "A navigation trail. Uses a semantic `<nav>` with an ordered list. 
 
 ## Composition, not variation
 
-The breadcrumb has no variants — visual differences (separator type, truncation) are composition. Pass any element as the separator's child (a chevron, a slash, a dot). Use `Breadcrumb.Ellipsis` for collapsed items. Use `render` on `Breadcrumb.Link` to stitch a router link.
+The breadcrumb has no variants — visual differences (separator type, truncation) are composition. Separators are chevrons on the inline axis by default, RTL-aware; pass any element as the separator's child (a chevron, a slash, a dot). Use `Breadcrumb.Ellipsis` for collapsed items. Use `render` on `Breadcrumb.Link` to stitch a router link.
 
 ## Parts
 

@@ -1,6 +1,6 @@
 ---
 title: "Text"
-description: "The primitive every other component points at through `render`. It is what stops a dialog title, a field label and a menu label from each growing their own typography class — seventeen title classes is exactly the duplication this project exists to remove."
+description: "The typography primitive other components wear through `render`, so a dialog title, a field label and a menu label never grow their own class."
 ---
 
 <InstallCommand item="text" />
@@ -15,7 +15,7 @@ A component part that needs a heading does not declare one — it wears `Text.He
 <DialogPrimitive.Title render={<Text.Heading as="h2" />} {...props} />
 ```
 
-`Dialog.Title`, `Field.Label` and `Menu.Label` all resolve to a `Text` member this way. If any of them grows its own typography class, the composition rule has been broken.
+`Dialog.Title`, `Field.Label` and `Menu.Label` all resolve to a `Text` member this way. If any of them grows its own typography class, the composition rule has been broken. Seventeen title classes is exactly the duplication this project exists to remove.
 
 ## Secondary text
 
