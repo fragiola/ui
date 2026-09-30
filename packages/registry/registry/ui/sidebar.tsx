@@ -65,7 +65,9 @@ import { Tooltip } from "#/ui/tooltip";
 // is `sticky` inside the wrapper instead of `fixed` to the viewport. A shell
 // behaves the same full-page, in a docs iframe and in a playground stage;
 // shadcn's `fixed` + viewport media query leaves the stage and picks the
-// wrong mode in a narrow frame.
+// wrong mode in a narrow frame. Its height is the viewport's (`h-svh`, the
+// usual scrollport); a host shorter than the viewport, or a column under a
+// fixed header, sets it through `className`.
 //
 // First paint is decided by CSS alone (`hidden @2xl/sidebar:block`), so there
 // is no server/client flash. The ResizeObserver below only decides whether
@@ -92,6 +94,10 @@ const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 // `--container-2xl`, the `@2xl/sidebar:` used in the classes below.
 const SIDEBAR_MOBILE_THRESHOLD_REM = 42;
 
+type Side = "start" | "end";
+type Variant = "sidebar" | "floating" | "inset";
+type Collapsible = "offcanvas" | "icon" | "none";
+
 type SidebarContextProps = {
     state: "expanded" | "collapsed";
     open: boolean;
@@ -103,6 +109,13 @@ type SidebarContextProps = {
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
+
+// What the Root was given, for the parts inside it. The Provider's `state`
+// flips whatever the Root's mode; only an icon-mode Root turns labels into
+// tooltips.
+const SidebarRootContext = React.createContext<{ collapsible: Collapsible }>({
+    collapsible: "offcanvas",
+});
 
 function useSidebar() {
     const context = React.useContext(SidebarContext);
@@ -162,16 +175,16 @@ function SidebarProvider({
     // Internal state, overridden by `open` / `onOpenChange` when controlled.
     const [_open, _setOpen] = React.useState(defaultOpen);
     const open = openProp ?? _open;
+    // Uncontrolled keeps its own state even when it reports changes: a
+    // Provider with `defaultOpen` + `onOpenChange` (the cookie recipe) must
+    // still toggle.
     const setOpen = React.useCallback(
         (value: boolean | ((value: boolean) => boolean)) => {
             const openState = typeof value === "function" ? value(open) : value;
-            if (setOpenProp) {
-                setOpenProp(openState);
-            } else {
-                _setOpen(openState);
-            }
+            if (openProp === undefined) _setOpen(openState);
+            setOpenProp?.(openState);
         },
-        [setOpenProp, open],
+        [setOpenProp, openProp, open],
     );
 
     const toggleSidebar = React.useCallback(() => {
@@ -181,7 +194,19 @@ function SidebarProvider({
     }, [isMobile, setOpen]);
 
     React.useEffect(() => {
+        // Not while typing: in a field, Ctrl/⌘+B belongs to the field (bold
+        // in a rich-text editor), and a handler that already took the key
+        // wins.
         const handleKeyDown = (event: KeyboardEvent) => {
+            const target = event.target as Element | null;
+            if (
+                event.defaultPrevented ||
+                target?.closest?.(
+                    "input, textarea, select, [contenteditable]:not([contenteditable='false'])",
+                )
+            ) {
+                return;
+            }
             if (
                 event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
                 (event.metaKey || event.ctrlKey)
@@ -266,10 +291,6 @@ function SidebarProvider({
 // `floating`), so an icon rail is always exactly `--sidebar-width-icon` of
 // content, whatever the variant.
 
-type Side = "start" | "end";
-type Variant = "sidebar" | "floating" | "inset";
-type Collapsible = "offcanvas" | "icon" | "none";
-
 function SidebarRoot({
     side = "start",
     variant = "sidebar",
@@ -285,20 +306,24 @@ function SidebarRoot({
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
     const direction = useDirection();
 
+    const root = React.useMemo(() => ({ collapsible }), [collapsible]);
+
     if (collapsible === "none") {
         return (
-            <div
-                data-slot="sidebar"
-                data-variant={variant}
-                data-side={side}
-                className={cn(
-                    "palette-raised flex h-full w-(--sidebar-width) flex-col bg-palette-base text-palette-contrast",
-                    className as string,
-                )}
-                {...props}
-            >
-                {children}
-            </div>
+            <SidebarRootContext.Provider value={root}>
+                <div
+                    data-slot="sidebar"
+                    data-variant={variant}
+                    data-side={side}
+                    className={cn(
+                        "palette-raised flex h-full w-(--sidebar-width) flex-col bg-palette-base text-palette-contrast",
+                        className as string,
+                    )}
+                    {...props}
+                >
+                    {children}
+                </div>
+            </SidebarRootContext.Provider>
         );
     }
 
@@ -306,94 +331,119 @@ function SidebarRoot({
         // The Drawer's side is physical; `start` is the left edge only in LTR.
         const edge =
             (side === "start") === (direction === "ltr") ? "left" : "right";
+        // Only the palette crosses into the portalled popup. The rest of
+        // `className` places the desktop column (`top-12 h-[…]` under a
+        // header) and would misplace the Drawer.
+        const palette = (className as string | undefined)
+            ?.split(/\s+/)
+            .filter((name) => name.startsWith("palette-"));
         return (
-            <Drawer.Root
-                open={openMobile}
-                onOpenChange={setOpenMobile}
-                swipeDirection={edge}
-            >
-                <Drawer.Portal>
-                    <Drawer.Backdrop />
-                    <Drawer.Viewport side={edge}>
-                        <Drawer.Popup
-                            side={edge}
-                            data-slot="sidebar"
-                            data-mobile="true"
-                            className={cn(
-                                "palette-raised w-72 text-palette-contrast",
-                                className as string,
-                            )}
-                            {...props}
-                        >
-                            <Drawer.Content
-                                showClose={false}
-                                className="h-full"
+            <SidebarRootContext.Provider value={root}>
+                <Drawer.Root
+                    open={openMobile}
+                    onOpenChange={setOpenMobile}
+                    swipeDirection={edge}
+                >
+                    <Drawer.Portal>
+                        <Drawer.Backdrop />
+                        <Drawer.Viewport side={edge}>
+                            <Drawer.Popup
+                                side={edge}
+                                data-slot="sidebar"
+                                data-mobile="true"
+                                className={cn(
+                                    "palette-raised w-72 text-palette-contrast",
+                                    palette,
+                                )}
+                                {...props}
                             >
-                                <Drawer.Title className="sr-only">
-                                    Sidebar
-                                </Drawer.Title>
-                                <Drawer.Description className="sr-only">
-                                    Displays the mobile sidebar.
-                                </Drawer.Description>
-                                {children}
-                            </Drawer.Content>
-                        </Drawer.Popup>
-                    </Drawer.Viewport>
-                </Drawer.Portal>
-            </Drawer.Root>
+                                <Drawer.Content
+                                    showClose={false}
+                                    className="h-full"
+                                >
+                                    <Drawer.Title className="sr-only">
+                                        Sidebar
+                                    </Drawer.Title>
+                                    <Drawer.Description className="sr-only">
+                                        Displays the mobile sidebar.
+                                    </Drawer.Description>
+                                    {children}
+                                </Drawer.Content>
+                            </Drawer.Popup>
+                        </Drawer.Viewport>
+                    </Drawer.Portal>
+                </Drawer.Root>
+            </SidebarRootContext.Provider>
         );
     }
 
     return (
-        <div
-            data-slot="sidebar"
-            data-state={state}
-            data-collapsible={state === "collapsed" ? collapsible : ""}
-            data-variant={variant}
-            data-side={side}
-            className={cn(
-                "palette-raised group/sidebar text-palette-contrast",
-                "hidden @2xl/sidebar:block",
-                "sticky top-0 h-svh max-h-full shrink-0 self-start",
-                "w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none",
-                "data-[collapsible=offcanvas]:w-0",
-                "data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+2*var(--sidebar-gutter)+var(--sidebar-frame))]",
-                variant === "sidebar" &&
-                    "[--sidebar-frame:1px] [--sidebar-gutter:0px]",
-                variant === "floating" &&
-                    "[--sidebar-frame:2px] [--sidebar-gutter:calc(var(--spacing)*2)]",
-                variant === "inset" &&
-                    "[--sidebar-frame:0px] [--sidebar-gutter:calc(var(--spacing)*2)]",
-                className as string,
-            )}
-            {...props}
-        >
+        <SidebarRootContext.Provider value={root}>
             <div
-                data-slot="sidebar-container"
+                data-slot="sidebar"
+                data-state={state}
+                data-collapsible={state === "collapsed" ? collapsible : ""}
+                data-variant={variant}
+                data-side={side}
                 className={cn(
-                    "flex size-full overflow-x-clip p-(--sidebar-gutter)",
-                    // The inner panel is anchored to the edge away from the
-                    // sidebar's side, so it leaves by the side it lives on.
-                    side === "start" ? "justify-end" : "justify-start",
+                    "palette-raised group/sidebar text-palette-contrast",
+                    "hidden @2xl/sidebar:block",
+                    // z-10: sticky makes a stacking context, and the Inset after
+                    // it is positioned — without it the Inset paints over the
+                    // part of the Rail that straddles the edge.
+                    "sticky top-0 z-10 h-svh max-h-full shrink-0 self-start",
+                    "w-(--sidebar-width) transition-[width] duration-200 ease-linear motion-reduce:transition-none",
+                    "data-[collapsible=offcanvas]:w-0",
+                    "data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+2*var(--sidebar-gutter)+var(--sidebar-frame))]",
+                    variant === "sidebar" &&
+                        "[--sidebar-frame:1px] [--sidebar-gutter:0px]",
+                    variant === "floating" &&
+                        "[--sidebar-frame:2px] [--sidebar-gutter:calc(var(--spacing)*2)]",
+                    variant === "inset" &&
+                        "[--sidebar-frame:0px] [--sidebar-gutter:calc(var(--spacing)*2)]",
+                    className as string,
                 )}
+                {...props}
             >
                 <div
-                    data-slot="sidebar-inner"
+                    data-slot="sidebar-container"
                     className={cn(
-                        "flex h-full w-full min-w-0 flex-col bg-palette-base",
-                        collapsible === "offcanvas" &&
-                            "w-[calc(var(--sidebar-width)-2*var(--sidebar-gutter))] shrink-0",
-                        variant === "sidebar" && "border-palette-line",
-                        variant === "sidebar" && side === "start" && "border-e",
-                        variant === "sidebar" && side === "end" && "border-s",
-                        variant === "floating" &&
-                            "rounded-lg border border-palette-line shadow-sm",
+                        "flex size-full overflow-x-clip p-(--sidebar-gutter)",
+                        // Off canvas is out of reach, not only out of sight:
+                        // `invisible` takes it out of the tab order and the
+                        // accessibility tree, once the slide has finished
+                        // (visibility transitions discretely). Not `inert`:
+                        // the Rail renders in here and must stay clickable,
+                        // and only visibility can be restored by a descendant.
+                        "transition-[visibility] duration-200 motion-reduce:transition-none",
+                        "group-data-[collapsible=offcanvas]/sidebar:invisible",
+                        // The inner panel is anchored to the edge away from the
+                        // sidebar's side, so it leaves by the side it lives on.
+                        side === "start" ? "justify-end" : "justify-start",
                     )}
                 >
-                    {children}
+                    <div
+                        data-slot="sidebar-inner"
+                        className={cn(
+                            "flex h-full w-full min-w-0 flex-col bg-palette-base",
+                            collapsible === "offcanvas" &&
+                                "w-[calc(var(--sidebar-width)-2*var(--sidebar-gutter))] shrink-0",
+                            variant === "sidebar" && "border-palette-line",
+                            variant === "sidebar" &&
+                                side === "start" &&
+                                "border-e",
+                            variant === "sidebar" &&
+                                side === "end" &&
+                                "border-s",
+                            variant === "floating" &&
+                                "rounded-lg border border-palette-line shadow-sm",
+                        )}
+                    >
+                        {children}
+                    </div>
                 </div>
             </div>
-        </div>
+        </SidebarRootContext.Provider>
     );
 }
 
@@ -431,6 +481,8 @@ function SidebarTrigger({
 // sidebar is off canvas the rail moves fully onto the page, at the edge the
 // sidebar comes back from. The cursor is `ew-resize` in every state — a
 // per-side, per-state, per-direction matrix of w/e cursors bought nothing.
+// It exists only on the desktop column (the one Root with `data-state`): a
+// Drawer or a `collapsible="none"` column has no edge to drag.
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
     const { toggleSidebar } = useSidebar();
@@ -444,7 +496,8 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
             onClick={toggleSidebar}
             title="Toggle Sidebar"
             className={cn(
-                "absolute inset-y-0 z-20 w-4 cursor-ew-resize outline-none",
+                "visible absolute inset-y-0 z-20 hidden w-4 cursor-ew-resize outline-none",
+                "group-data-[state]/sidebar:block",
                 "after:absolute after:inset-y-0 after:inset-x-[7px] after:transition-colors hover:after:bg-palette-line",
                 "group-data-[side=start]/sidebar:-end-2 group-data-[side=end]/sidebar:-start-2",
                 "group-data-[collapsible=offcanvas]/sidebar:group-data-[side=start]/sidebar:-end-4",
@@ -706,6 +759,7 @@ function SidebarMenuButton({
         tooltip?: string | React.ComponentProps<typeof Tooltip.Content>;
     }) {
     const { isMobile, state } = useSidebar();
+    const { collapsible } = React.useContext(SidebarRootContext);
     const button = useRender({
         defaultTagName: "button",
         render: tooltip ? <Tooltip.Trigger render={render} /> : render,
@@ -721,7 +775,11 @@ function SidebarMenuButton({
     const content =
         typeof tooltip === "string" ? { children: tooltip } : tooltip;
     return (
-        <Tooltip.Root disabled={state !== "collapsed" || isMobile}>
+        <Tooltip.Root
+            disabled={
+                collapsible !== "icon" || state !== "collapsed" || isMobile
+            }
+        >
             {button}
             <Tooltip.Content side="inline-end" align="center" {...content} />
         </Tooltip.Root>
@@ -850,9 +908,9 @@ function SidebarMenuSubItem({
 
 const menuSubButton = tv({
     extend: menu.navSubItem,
-    base: "min-w-0 group-data-[collapsible=icon]/sidebar:hidden",
+    base: "min-w-0",
     variants: {
-        size: { sm: "text-xs", md: "text-sm" },
+        size: { sm: "text-xs", md: "" },
     },
     defaultVariants: { size: "md" },
 });

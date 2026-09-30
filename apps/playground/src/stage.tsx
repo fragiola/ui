@@ -41,9 +41,11 @@ function recover(entry: Entry) {
 // The embed app's stage (examples/react/src/main.tsx): a `flow` entry is
 // padded, centred on the inline axis, at the top on the block axis — popups
 // open below their trigger, so the spare height belongs there. A `fill` entry
-// (an app shell) takes the whole stage, edge to edge. What renders here
-// renders as the docs show it. The App keys the stage by entry, so switching
-// remounts.
+// (an app shell) takes the whole stage, edge to edge — with one difference
+// from the docs' frame: a shell sized to the viewport (`svh`) is sized to the
+// window here, a toolbar taller than the stage, so it scrolls by that much.
+// What renders here otherwise renders as the docs show it. The App keys the
+// stage by entry, so switching remounts.
 export function Stage({ entry }: { entry: Entry }) {
     const Demo = component(entry);
     const demo = (

@@ -47,7 +47,7 @@ A Provider in a fixed-height box takes the box's height, and the column stops th
 
 ## Collapse modes and variants
 
-`collapsible` is `offcanvas` (the column slides away), `icon` (it narrows to an icon rail, where labels, badges, actions, sub-menus and the search field step aside and each `MenuButton`'s `tooltip` appears) or `none` (always shown, never a Drawer). `variant` is `sidebar` (flush, with an edge line), `floating` (a card with a gutter) or `inset` (the page becomes a card on the sidebar's floor).
+`collapsible` is `offcanvas` (the column slides away, and what it holds leaves the tab order and the accessibility tree), `icon` (it narrows to an icon rail, where labels, badges, actions, sub-menus and the search field step aside and each `MenuButton`'s `tooltip` appears) or `none` (always shown, never a Drawer). `variant` is `sidebar` (flush, with an edge line), `floating` (a card with a gutter) or `inset` (the page becomes a card on the sidebar's floor).
 
 ## Palette
 
@@ -116,7 +116,7 @@ The styled `Collapsible.Root` and `Collapsible.Trigger` are not used here. They 
 
 ## Keyboard
 
-`Ctrl+B` (`⌘+B` on macOS) toggles the sidebar, as in shadcn. It shadows "bold" in a rich-text editor on the same page. The `Rail` is out of the tab order; the `Trigger` is the keyboard path.
+`Ctrl+B` (`⌘+B` on macOS) toggles the sidebar, as in shadcn, except while focus is in a field, a select or an editable region (where it is the field's: bold, in a rich-text editor) or when another handler has already taken the key. Every Provider on the page listens. The `Rail` is out of the tab order; the `Trigger` is the keyboard path.
 
 ## Parts
 
