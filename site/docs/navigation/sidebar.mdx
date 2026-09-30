@@ -1,0 +1,139 @@
+---
+title: "Sidebar"
+description: "An app shell's navigation column, recombined from the menu family, Clickable, Badge, Tooltip and Drawer instead of rebuilt from scratch."
+---
+
+<InstallCommand item="sidebar" />
+
+<Example id="sidebar" />
+
+## Composition
+
+shadcn's sidebar rebuilds a menu item, a group label, an icon button and a sub-list of its own: 28 `.cn-sidebar-*` classes (111 lines in each of its 8 styles), 8 `--sidebar-*` tokens, and 3 `!important`s to square its buttons in icon mode. Here every part points at a piece the library already has, and the sidebar adds no stylesheet, no token and no `!important`. The only new style is two named members on the `menu` family.
+
+| Part | Source |
+|---|---|
+| `MenuButton` / `MenuSubButton` | `menu.navItem` / `menu.navSubItem` through `useRender` |
+| `GroupLabel` | `menu.label` |
+| `Trigger` / `GroupAction` / `MenuAction` | `Clickable.Button` (icon fill, square form) |
+| `MenuBadge` | `Badge` |
+| `MenuSkeleton` | `Skeleton` |
+| `Separator` | `Separator` |
+| `Input` | a `Field` row + `Input` |
+| icon-mode tooltips | `Tooltip`, on the inline-end side |
+| mobile | `Drawer` |
+
+A navigation item is the menu family's row pointing at pages instead of commands. The only difference is how it is lit. A dropdown item is lit by focus, which follows the pointer inside a menu. A navigation item is lit by hover, by `isActive` (the current page, `data-active`) and by a focus-visible ring: a clicked link keeps focus, and lit by focus it would read as a second current page. So the two share a skeleton and differ in one line, rather than the sidebar owning a second item.
+
+## Layout model
+
+The sidebar is laid out against its Provider, not the viewport. The Provider's wrapper is a size container: below **42rem** of wrapper width (Tailwind's `@2xl`) the sidebar becomes a `Drawer` behind the `Trigger`, and above it, the column is shown. The desktop column is `sticky` inside the wrapper, not `fixed` to the viewport.
+
+It behaves the same full-page, in an iframe (this page's example is one) and in any box you put it in. The container variant decides the first paint, so a server-rendered page shows the right mode before JavaScript runs.
+
+`sticky` needs nothing between the Provider and the scrolling element to clip with `overflow: hidden` (use `overflow: clip`). The column is `h-svh` tall, which fits a page that scrolls the viewport. If the sidebar sits under a fixed header, or the box that scrolls is not the viewport, give the Root its height through `className`:
+
+```tsx
+<Sidebar.Root className="top-12 h-[calc(100svh-3rem)]">
+```
+
+A Provider in a fixed-height box takes the box's height, and the column stops there:
+
+```tsx
+<div className="h-96">
+    <Sidebar.Provider className="h-full min-h-0">…</Sidebar.Provider>
+</div>
+```
+
+## Collapse modes and variants
+
+`collapsible` is `offcanvas` (the column slides away), `icon` (it narrows to an icon rail, where labels, badges, actions, sub-menus and the search field step aside and each `MenuButton`'s `tooltip` appears) or `none` (always shown, never a Drawer). `variant` is `sidebar` (flush, with an edge line), `floating` (a card with a gutter) or `inset` (the page becomes a card on the sidebar's floor).
+
+## Palette
+
+The sidebar is `palette-raised`; the page beside it (`Sidebar.Inset`) is `palette-surface`. To swap the sidebar's palette, put a surface-tier palette class on the Root. It reaches the mobile Drawer too, which is portalled and would not inherit it:
+
+```tsx
+<Sidebar.Root className="palette-surface-blue">
+```
+
+Use a surface-tier palette (`surface`, `raised`, `surface-*`), not a chromatic one. The items are the menu family's, whose resting text is secondary text (`accent` at 85%), guaranteed readable on neutral surfaces only, the same limit a dropdown menu has. With `variant="inset"`, the floor around the page card is the Provider's palette: pass the same class to the Provider.
+
+## Persistence
+
+The sidebar stores nothing: no cookie, no storage. It takes `defaultOpen`, or `open` and `onOpenChange` to be controlled, and the app persists where its stack reads the value back. With a server that renders the first paint, a cookie:
+
+```tsx
+// On the server: read the cookie into the first render.
+const defaultOpen = cookies().get("sidebar_state")?.value !== "false";
+
+// In the client component: write it back on every change.
+<Sidebar.Provider
+    defaultOpen={defaultOpen}
+    onOpenChange={(open) => {
+        document.cookie = `sidebar_state=${open}; path=/; max-age=604800`;
+    }}
+>
+```
+
+Without one, `localStorage`:
+
+```tsx
+const [open, setOpen] = useState(
+    () => localStorage.getItem("sidebar_state") !== "false",
+);
+useEffect(() => localStorage.setItem("sidebar_state", String(open)), [open]);
+
+<Sidebar.Provider open={open} onOpenChange={setOpen}>
+```
+
+`onOpenChange` fires for the desktop column only. The mobile Drawer's state is separate and is not meant to persist.
+
+## Collapsible groups and sub-menus
+
+Base UI's `Collapsible` gives the behaviour, the sidebar part is its trigger through `render`, and `Collapsible.Panel` brings the height animation:
+
+```tsx
+import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
+
+<CollapsiblePrimitive.Root defaultOpen render={<Sidebar.MenuItem />}>
+    <CollapsiblePrimitive.Trigger render={<Sidebar.MenuButton />}>
+        <BookOpenIcon />
+        <span>Documentation</span>
+        <ChevronRightIcon className="ms-auto transition-transform rtl:-scale-x-100 in-data-panel-open:rotate-90 rtl:in-data-panel-open:-rotate-90" />
+    </CollapsiblePrimitive.Trigger>
+    <Collapsible.Panel>
+        <Sidebar.MenuSub>…</Sidebar.MenuSub>
+    </Collapsible.Panel>
+</CollapsiblePrimitive.Root>
+```
+
+The styled `Collapsible.Root` and `Collapsible.Trigger` are not used here. They draw a bordered disclosure row, and the `MenuButton` already is the row, so wearing them would mean cancelling their classes. A collapsible group works the same way with `Sidebar.GroupLabel` as the trigger.
+
+## RTL
+
+`side` is `start` or `end`, not `left` or `right`: a `start` sidebar is on the right in Arabic, its Drawer opens from the right, its edge line, sub-menu line, badges and actions all flip, and icon-mode tooltips open on the inline-end side. The Drawer reads the direction from Base UI's `DirectionProvider`.
+
+## Keyboard
+
+`Ctrl+B` (`⌘+B` on macOS) toggles the sidebar, as in shadcn. It shadows "bold" in a rich-text editor on the same page. The `Rail` is out of the tab order; the `Trigger` is the keyboard path.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Provider` | state, the shortcut, the size-container wrapper |
+| `Root` | the sticky column (desktop) or `Drawer` (mobile) |
+| `Trigger` | `Clickable.Button` + `PanelLeftIcon` |
+| `Rail` | a hit area on the column's inner edge |
+| `Inset` | the page, `palette-surface` |
+| `Header` / `Content` / `Footer` / `Group` / `GroupContent` | layout |
+| `GroupLabel` | `menu.label` |
+| `GroupAction` / `MenuAction` | `Clickable.Button` |
+| `Menu` / `MenuItem` / `MenuSub` / `MenuSubItem` | `ul` / `li` |
+| `MenuButton` / `MenuSubButton` | `menu.navItem` / `menu.navSubItem` |
+| `MenuBadge` | `Badge` |
+| `MenuSkeleton` | `Skeleton` |
+| `Separator` | `Separator` |
+| `Input` | `Field` row + `Input` |
+| `useSidebar()` | `state`, `open`, `setOpen`, `openMobile`, `setOpenMobile`, `isMobile`, `toggleSidebar` |
