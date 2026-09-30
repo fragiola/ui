@@ -1,3 +1,10 @@
+import {
+    FileIcon,
+    HomeIcon,
+    InboxIcon,
+    PlusIcon,
+    SettingsIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { Clickable } from "#/components/atoms/clickable";
 import { Sidebar } from "#/components/ui/sidebar";
@@ -27,12 +34,7 @@ export default function SidebarModes() {
                 variant={variant}
                 side={side}
             >
-                <div className="flex flex-col gap-2 p-4 text-sm">
-                    <span className="font-medium">Sidebar</span>
-                    <span className="text-palette-accent/85">
-                        {collapsible} · {variant} · {side}
-                    </span>
-                </div>
+                <Nav label={`${collapsible} · ${variant} · ${side}`} />
                 <Sidebar.Rail />
             </Sidebar.Root>
             {side === "start" ? <Page /> : null}
@@ -66,6 +68,68 @@ export default function SidebarModes() {
                 {shell}
             </div>
         </div>
+    );
+}
+
+function Nav({ label }: { label: string }) {
+    return (
+        <>
+            <Sidebar.Header>
+                <Sidebar.Input placeholder="Search" aria-label="Search" />
+            </Sidebar.Header>
+            <Sidebar.Content>
+                <Sidebar.Group>
+                    <Sidebar.GroupLabel>{label}</Sidebar.GroupLabel>
+                    <Sidebar.GroupAction aria-label="Add">
+                        <PlusIcon />
+                    </Sidebar.GroupAction>
+                    <Sidebar.Menu>
+                        <Sidebar.MenuItem>
+                            <Sidebar.MenuButton isActive tooltip="Home">
+                                <HomeIcon />
+                                <span>Home</span>
+                            </Sidebar.MenuButton>
+                        </Sidebar.MenuItem>
+                        <Sidebar.MenuItem>
+                            <Sidebar.MenuButton tooltip="Inbox">
+                                <InboxIcon />
+                                <span>Inbox</span>
+                            </Sidebar.MenuButton>
+                            <Sidebar.MenuBadge>3</Sidebar.MenuBadge>
+                        </Sidebar.MenuItem>
+                        <Sidebar.MenuItem>
+                            <Sidebar.MenuButton tooltip="Files">
+                                <FileIcon />
+                                <span>Files</span>
+                            </Sidebar.MenuButton>
+                            <Sidebar.MenuSub>
+                                <Sidebar.MenuSubItem>
+                                    <Sidebar.MenuSubButton href="#a" isActive>
+                                        <span>Recent</span>
+                                    </Sidebar.MenuSubButton>
+                                </Sidebar.MenuSubItem>
+                                <Sidebar.MenuSubItem>
+                                    <Sidebar.MenuSubButton href="#b">
+                                        <span>Shared</span>
+                                    </Sidebar.MenuSubButton>
+                                </Sidebar.MenuSubItem>
+                            </Sidebar.MenuSub>
+                        </Sidebar.MenuItem>
+                    </Sidebar.Menu>
+                </Sidebar.Group>
+            </Sidebar.Content>
+            <Sidebar.Separator />
+            <Sidebar.Footer>
+                <Sidebar.Menu>
+                    <Sidebar.MenuItem>
+                        <Sidebar.MenuButton tooltip="Settings">
+                            <SettingsIcon />
+                            <span>Settings</span>
+                        </Sidebar.MenuButton>
+                    </Sidebar.MenuItem>
+                </Sidebar.Menu>
+            </Sidebar.Footer>
+        </>
     );
 }
 
