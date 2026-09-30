@@ -892,6 +892,29 @@
                     "target": "@ui/separator.tsx"
                 }
             ]
+        },
+        {
+            "name": "sidebar",
+            "type": "registry:ui",
+            "title": "Sidebar",
+            "description": "The app shell's navigation column, recombined from existing pieces rather than rebuilt: a Drawer on mobile, Tooltips in icon mode, Clickable for the trigger. Layout is relative to the Provider's wrapper (a size container), not the viewport — sticky, with a 42rem mobile threshold — so it behaves the same full-page, in an iframe or in a stage. palette-raised by default; any palette class swaps it. No built-in persistence: defaultOpen + controlled open/onOpenChange.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/palette-raised",
+                "@fragiola/palette-surface",
+                "@fragiola/clickable",
+                "@fragiola/drawer",
+                "@fragiola/tooltip"
+            ],
+            "dependencies": ["@base-ui/react", "lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/sidebar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/sidebar.tsx"
+                }
+            ]
         }
     ]
 }
