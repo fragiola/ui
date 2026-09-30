@@ -38,24 +38,25 @@ function recover(entry: Entry) {
     if (failedLoads.has(key(entry))) window.location.reload();
 }
 
-// The embed app's stage (examples/react/src/main.tsx): padded, centred on
-// the inline axis, at the top on the block axis — popups open below their
-// trigger, so the spare height belongs there. What renders here renders as
-// the docs show it. The App keys the stage by entry, so switching remounts.
+// The embed app's stage (examples/react/src/main.tsx): a `flow` entry is
+// padded, centred on the inline axis, at the top on the block axis — popups
+// open below their trigger, so the spare height belongs there. A `fill` entry
+// (an app shell) takes the whole stage, edge to edge. What renders here
+// renders as the docs show it. The App keys the stage by entry, so switching
+// remounts.
 export function Stage({ entry }: { entry: Entry }) {
     const Demo = component(entry);
+    const demo = (
+        <ErrorBoundary name={entry.title} onReset={() => recover(entry)}>
+            <Suspense>
+                <Demo />
+            </Suspense>
+        </ErrorBoundary>
+    );
+    if (entry.layout === "fill") return <div className="h-full">{demo}</div>;
     return (
         <div className="p-8">
-            <div className="flex justify-center">
-                <ErrorBoundary
-                    name={entry.title}
-                    onReset={() => recover(entry)}
-                >
-                    <Suspense>
-                        <Demo />
-                    </Suspense>
-                </ErrorBoundary>
-            </div>
+            <div className="flex justify-center">{demo}</div>
         </div>
     );
 }

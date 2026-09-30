@@ -17,6 +17,9 @@ export type Entry = {
     title: string;
     level: LevelId;
     load: () => Promise<{ default: ComponentType }>;
+    /** How the stage frames it: `fill` takes the whole stage (an app shell),
+     * `flow` is padded and centred. Scenarios flow. */
+    layout: "fill" | "flow";
     /** Where the file lives, from the repository root. */
     file: string;
     /** The file, verbatim — what the source panel shows. */
@@ -59,6 +62,7 @@ const exampleEntries: Entry[] = [...examples]
         title: example.title,
         level: example.level,
         load: example.load,
+        layout: example.layout,
         ...exampleSource(example.id),
     }));
 
@@ -105,6 +109,7 @@ const scenarioEntries: Entry[] = Object.entries(scenarioModules)
                 title: scenarioTitle(path.id),
                 level: path.level,
                 load,
+                layout: "flow" as const,
                 file: repositoryPath(key),
                 source,
             },

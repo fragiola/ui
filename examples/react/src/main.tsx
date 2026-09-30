@@ -28,19 +28,27 @@ createRoot(root).render(
     </StrictMode>,
 );
 
-// The stage pads the example and centres it on the inline axis, as the docs
-// preview did. On the block axis it sits at the top: a frame taller than
+// The stage pads a `flow` example and centres it on the inline axis, as the
+// docs preview did. On the block axis it sits at the top: a frame taller than
 // the example is one whose floor makes room for a popup, and popups open
 // below their trigger — the spare height belongs there, not split above and
 // below. The content box is what `resize` measures.
+//
+// A `fill` example (an app shell) fills the frame edge to edge: the frame's
+// height is fixed (contract §5.3), and the whole frame is the example's —
+// padding would only take width from it.
 function Stage({ example }: { example: Example }) {
     const Demo = lazyExamples.get(example.id);
     const stage = useRef<HTMLElement>(null);
     const content = useRef<HTMLDivElement>(null);
     if (!Demo) return null;
+    const fill = example.layout === "fill";
     return (
-        <main ref={stage} className="p-8">
-            <div ref={content} className="flex justify-center">
+        <main ref={stage} className={fill ? "h-svh" : "p-8"}>
+            <div
+                ref={content}
+                className={fill ? "h-full" : "flex justify-center"}
+            >
                 <Suspense>
                     <Demo />
                     <Ready

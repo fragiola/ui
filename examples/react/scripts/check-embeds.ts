@@ -15,7 +15,7 @@ import { THEMES } from "../../gallery.ts";
 // asks of it (§5):
 //
 //   - `ready` exactly once, before any `resize`; at least one `resize` for a
-//     `flow` example, none for `fill`
+//     `flow` example (and a content height from it), none for `fill`
 //   - `?theme=` applied before the example renders; missing or unknown →
 //     the first light theme; a `theme` message applied without a reload
 //   - no console error, no page error, no request outside the base (except
@@ -48,6 +48,9 @@ const { values, positionals } = parseArgs({
 const WIDTH = Number(values.width);
 // A frame tall enough that every popup opens where it wants to.
 const ROOM = 1400;
+// Where the floor search starts for a `fill` example, which has no content
+// height to start from: its frame IS its height.
+const FILL_FROM = 240;
 
 // How each overlay example opens its popups. `click` finds every trigger in
 // the stage (`aria-haspopup`, a combobox, a navigation trigger), opens it,
@@ -64,6 +67,10 @@ const OVERLAYS: Record<string, Opener> = {
     popover: "click",
     tooltip: "hover",
     "navigation-menu": "click",
+    // The team switcher, the user menu and each project's actions. Its own
+    // Trigger opens nothing on desktop (it collapses the column); it comes
+    // last in the markup, so every menu is checked expanded first.
+    sidebar: "click",
 };
 
 type ManifestExample = {
@@ -415,8 +422,15 @@ for (const example of selected) {
         if (example.layout === "flow" && resizes.length === 0) say("no resize");
         if (example.layout === "fill" && resizes.length > 0)
             say("resize on fill");
+        // A `fill` example sends no resize, so it has no content height: the
+        // frame's height is the manifest's, by contract.
         const height = await contentHeight(page);
-        if (height < 50) say(`content height ${height}px`);
+        if (example.layout === "flow" && height < 50)
+            say(`content height ${height}px`);
+        const content =
+            example.layout === "fill"
+                ? "fills the frame"
+                : `content ${height}px`;
 
         // Theme: light from the URL, dark from a message, no reload between.
         const light = await theme(frame);
@@ -511,7 +525,8 @@ for (const example of selected) {
 
             if (values.floors) {
                 let fits = 0;
-                for (let h = height; h < ROOM; h += 20) {
+                const from = example.layout === "fill" ? FILL_FROM : height;
+                for (let h = from; h < ROOM; h += 20) {
                     const g = await open(page, example.id, h, {
                         theme: "light",
                     });
@@ -522,12 +537,12 @@ for (const example of selected) {
                     }
                 }
                 floors.push(
-                    `${example.id.padEnd(16)} content ${height}px, popups fit from ${fits || `>${ROOM}`}px (manifest ${example.height})`,
+                    `${example.id.padEnd(16)} ${content}, popups fit from ${fits || `>${ROOM}`}px (manifest ${example.height})`,
                 );
             }
         } else if (values.floors) {
             floors.push(
-                `${example.id.padEnd(16)} content ${height}px (manifest ${example.height})`,
+                `${example.id.padEnd(16)} ${content} (manifest ${example.height})`,
             );
         }
     } catch (error) {
