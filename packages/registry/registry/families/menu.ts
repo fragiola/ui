@@ -116,8 +116,11 @@ const itemIndicator = tv({
 
 // navItem — an item of a navigation list (Sidebar.MenuButton). Lit by hover,
 // by `data-active` (the current page, which also takes the label weight) and
-// by an open popup it triggers (`data-popup-open`, the sub-trigger's
-// vocabulary: a team switcher is a navigation item that opens a menu). Full
+// by an open MENU it triggers (a team switcher is a navigation item that
+// opens a menu). Base UI marks any trigger with `data-popup-open`, a
+// tooltip's included — lit by that alone, an icon would look current while
+// its tooltip shows — so it takes `aria-haspopup` as well, which menus set
+// and tooltips do not. Full
 // width, fixed height, the label truncates. `disabled` / `aria-disabled`
 // because a button or a link is disabled natively, not through Base UI's
 // `data-disabled`.
@@ -127,7 +130,8 @@ const navItem = tv({
         h-8 w-full overflow-hidden px-2 text-start
         hover:bg-palette-soft hover:text-palette-contrast
         data-active:bg-palette-soft data-active:font-medium data-active:text-palette-contrast
-        data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast
+        [&[data-popup-open][aria-haspopup]]:bg-palette-soft
+        [&[data-popup-open][aria-haspopup]]:text-palette-contrast
         focus-visible:outline-2 focus-visible:outline-palette-ring
         disabled:pointer-events-none disabled:opacity-50
         aria-disabled:pointer-events-none aria-disabled:opacity-50
