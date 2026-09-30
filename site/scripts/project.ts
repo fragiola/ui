@@ -11,4 +11,13 @@ export const PROJECT: ProjectJson = {
     defaultFramework: "react",
     registry: { namespace: "@fragiola" },
     repository: "https://github.com/fragiola/ui",
+    // v1.2: topics for the landing's structured data only, never shown.
+    keywords: [
+        "react components",
+        "design system",
+        "shadcn registry",
+        "base ui",
+        "tailwind css",
+        "theming",
+    ],
 };

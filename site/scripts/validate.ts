@@ -48,6 +48,8 @@ export type ProjectJson = {
     registry?: { namespace: string };
     /** v1.1: the header and footer links. */
     repository?: string;
+    /** v1.2: topics for the project's structured data only. */
+    keywords?: string[];
 };
 
 type ConfigPage =
