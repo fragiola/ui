@@ -1,7 +1,7 @@
 # CI: the same three jobs in every Fragiola project repo.
 #
 #   Checks            Biome, TypeScript, the unit tests and the build.
-#   Site export       fragiola.com builds /ui from `pnpm site:export` (contract v1.1,
+#   Site export       fragiola.com builds /ui from `pnpm site:export` (contract v1.2,
 #                     fragiola/www CONTRACT.md), so a pull request that breaks the export — a
 #                     broken link, an unknown MDX component, a missing example — fails here
 #                     instead of in the site's deploy.

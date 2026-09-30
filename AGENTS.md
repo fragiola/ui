@@ -94,6 +94,6 @@ linked from the docs.
 | `pnpm build` | `pnpm -r build` (production build) |
 | `pnpm registry:build` | build the registry JSON files (`packages/registry/dist/r`) |
 | `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
-| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract |
+| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.2, fragiola/www `CONTRACT.md`) |
 | `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
 | `pnpm --filter examples-react check:embeds` | every example in a real iframe (needs `playwright install chromium`) |
