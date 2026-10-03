@@ -9,12 +9,17 @@
 // The one exception is `~/public/`: static files a page fetches by URL, which
 // Vite and Next serve from the project root's public/ — with or without
 // src/. Dockable's popout host page (popout.html) is one. The prefix is
-// exact: `~/public-x/` or `~/src/public/` is still refused.
+// exact — `~/public-x/` or `~/src/public/` is still refused — and the path
+// may not climb back out of it (`~/public/../components/x.tsx`).
 const ROOT_PUBLIC = "~/public/";
 
 export function rootTargetRefused(target: string | undefined): boolean {
     if (!target?.startsWith("~/")) return false;
-    return !(
-        target.startsWith(ROOT_PUBLIC) && target.length > ROOT_PUBLIC.length
+    if (!target.startsWith(ROOT_PUBLIC)) return true;
+    const rest = target.slice(ROOT_PUBLIC.length);
+    return (
+        rest.length === 0 ||
+        rest.includes("\\") ||
+        rest.split("/").some((segment) => segment === ".." || segment === ".")
     );
 }

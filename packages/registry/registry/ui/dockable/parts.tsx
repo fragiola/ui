@@ -35,7 +35,7 @@ import {
     SquareArrowOutUpRightIcon,
     XIcon,
 } from "lucide-react";
-import type * as React from "react";
+import * as React from "react";
 import { Clickable } from "#/atoms/clickable";
 import { iconSize } from "#/atoms/icon";
 import { dock } from "#/families/dock";
@@ -77,16 +77,39 @@ function withClass<State>(
     return cn(base, className);
 }
 
+// The palette class the root wears, for the popout windows: in a window's
+// document the root is not an ancestor, so the window's floor repeats it.
+const RootPaletteContext = React.createContext<string | undefined>(undefined);
+
+// The popout host page the item installs lands in the project root's
+// public/, served at `/popout.html`. The package's own default is relative
+// to the page ("popout.html"), which a nested route would resolve to a 404.
+// Under a base path, pass `popoutURL` (Vite: `${import.meta.env.BASE_URL}
+// popout.html`).
 function Root<T extends DockableTypes = AnyTypes>({
     className,
+    popoutURL = "/popout.html",
+    children,
     ...props
 }: RootProps<T>) {
+    const palette =
+        typeof className === "string"
+            ? className
+                  .split(/\s+/)
+                  .filter((name) => name.startsWith("palette-"))
+                  .join(" ") || undefined
+            : undefined;
     return (
         <DockablePrimitive.Root
             data-slot="dockable"
             className={withClass(dock.root(), className)}
+            popoutURL={popoutURL}
             {...props}
-        />
+        >
+            <RootPaletteContext.Provider value={palette}>
+                {children}
+            </RootPaletteContext.Provider>
+        </DockablePrimitive.Root>
     );
 }
 
@@ -271,14 +294,17 @@ function BorderContent<T extends DockableTypes = AnyTypes>({
     );
 }
 
+// A window's floor wears the root's palette class (a string className on
+// Root), so a re-tinted layout keeps its colours when a tab pops out.
 function Popout<T extends DockableTypes = AnyTypes>({
     className,
     ...props
 }: PopoutProps<T>) {
+    const palette = React.useContext(RootPaletteContext);
     return (
         <DockablePrimitive.Popout
             data-slot="dockable-popout"
-            className={withClass(dock.popoutRoot(), className)}
+            className={withClass(cn(dock.popoutRoot(), palette), className)}
             {...props}
         />
     );

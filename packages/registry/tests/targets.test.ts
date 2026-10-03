@@ -30,6 +30,10 @@ describe("registry file targets", () => {
             "~/publicpopout.html",
             "~/public/",
             "~/popout.html",
+            "~/public/../components/ui/x.tsx",
+            "~/public/a/../../src/x.tsx",
+            "~/public/./popout.html",
+            "~/public/..\\components\\x.tsx",
         ]) {
             expect(rootTargetRefused(target), target).toBe(true);
         }
