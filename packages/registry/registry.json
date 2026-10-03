@@ -925,6 +925,35 @@
                     "target": "@ui/sidebar.tsx"
                 }
             ]
+        },
+        {
+            "name": "dockable",
+            "type": "registry:ui",
+            "title": "Dockable",
+            "description": "A docking layout — tabs, splitters, drag and drop, borders and popout windows — from @fragiola/dockable-react, styled by the dock family. The first special component: the package's primitives under the same names, each wearing its dock member, painted from one palette on the root (palette-surface by default). No tokens of its own; the model API is imported from the package.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/palette-surface"
+            ],
+            "dependencies": ["@fragiola/dockable-react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/dock.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/dock.ts"
+                },
+                {
+                    "path": "registry/ui/dockable/parts.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/dockable/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/dockable.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/dockable.tsx"
+                }
+            ]
         }
     ]
 }
