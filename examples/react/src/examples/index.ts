@@ -564,4 +564,46 @@ export const examples: Example[] = [
         height: 1090,
         load: () => import("./chart.tsx"),
     },
+    // ─── Special ────────────────────────────────────────────────────────────
+    {
+        id: "dockable",
+        title: "Dockable",
+        description:
+            "A docking layout in one line: Template.Simple renders the model's tabsets, splitters and borders. Drag, resize, close, maximize, overflow and pop out.",
+        level: "special",
+        order: 1,
+        features: [
+            "Dockable.Template.Simple",
+            "createModel",
+            "drag and drop",
+            "TabOverflowMenu",
+            "MaximizeTrigger",
+            "PopoutTrigger",
+            "overlay border",
+        ],
+        docs: "/docs/special/dockable",
+        layout: "fill",
+        height: 560,
+        load: () => import("./dockable.tsx"),
+    },
+    {
+        id: "dockable-custom-template",
+        title: "Dockable: your own template",
+        description:
+            "An editor's workbench written once from the same parts — tab icons, a border of tool panels, no maximize — and used as a one-liner, as Template.Simple is.",
+        level: "special",
+        order: 2,
+        features: [
+            "Dockable.Root",
+            "Dockable.Borders",
+            "Dockable.TabSet",
+            "Dockable.TabClose",
+            "Dockable.TabOverflowMenu",
+            "template",
+        ],
+        docs: "/docs/special/dockable",
+        layout: "fill",
+        height: 520,
+        load: () => import("./dockable-custom-template.tsx"),
+    },
 ];

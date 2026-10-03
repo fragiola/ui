@@ -395,7 +395,7 @@ function MaximizeTrigger<T extends DockableTypes = AnyTypes>({
     if (!allowed) return null;
     return (
         <Clickable.Button
-            data-slot="dockable-maximize-trigger"
+            data-slot="dockable-maximize-button"
             variant="icon"
             size="sm"
             shape="square"
@@ -431,7 +431,7 @@ function PopoutTrigger<T extends DockableTypes = AnyTypes>({
 }: PopoutTriggerProps<T>) {
     return (
         <DockablePrimitive.PopoutTrigger<T>
-            data-slot="dockable-popout-trigger"
+            data-slot="dockable-popout-button"
             render={
                 render ??
                 ((button, state) => (

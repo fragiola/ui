@@ -1,0 +1,117 @@
+---
+title: "Dockable"
+description: "A docking layout with tabs, splitters, drag and drop, borders and popout windows: Dockable's primitives styled by the dock family, plus a ready template."
+---
+
+<InstallCommand item="dockable" />
+
+<Example id="dockable" />
+
+## What it installs
+
+[Dockable](https://fragiola.com/dockable) is a headless docking layout: a JSON model of rows, tabsets and tabs, and React primitives that render it with no look of their own. The item adds `@fragiola/dockable-react` to your dependencies and writes the styled layer over it:
+
+- `components/ui/dockable.tsx`: one export, `Dockable`, with the package's primitives under the same names (`Dockable.Root`, `Dockable.TabSet`, `Dockable.Tab`…), each wearing its member of the `dock` family, plus `Dockable.Template.Simple`;
+- `components/families/dock.ts`: the family;
+- `public/popout.html`: the host page of popout windows, at your project's root.
+
+It is the first of the special components: a styled layer and one template over a published package, installed with one command.
+
+## The model
+
+The model is the package's, imported from it: a JSON layout, created once and passed to the layout. Each tab names a component and carries its data, typed by a registry you declare:
+
+```tsx
+import { createModel, type LayoutJson } from "@fragiola/dockable-react";
+
+type Types = { tabs: { note: { text: string } } };
+
+const json: LayoutJson<Types> = {
+    version: 1,
+    root: {
+        type: "row",
+        children: [
+            { type: "tabset", children: [{ component: "note", label: "Notes", data: { text: "…" } }] },
+            { type: "tabset", children: [{ component: "note", label: "Ideas", data: { text: "…" } }] },
+        ],
+    },
+};
+
+const [model] = useState(() => createModel<Types>(json));
+```
+
+Every change is a named command (`model.run("tab.close", { tabId })`), and every rule — a tab that may not close, a middleware veto — is the model's. Saving and restoring, commands, middleware and the full JSON format are in [Dockable's documentation](https://fragiola.com/dockable).
+
+## Template.Simple
+
+`Dockable.Template.Simple` renders the whole layout from the model and a tab's content:
+
+```tsx
+<Dockable.Template.Simple model={model} className="h-full">
+    {(tab) => <p>{tab.data.text}</p>}
+</Dockable.Template.Simple>
+```
+
+It assembles the rows and tabsets, the splitters, every tab's panel, the drop indicator, the borders the model declares and the popout windows. Each tabset's header has its tabs, with a close button on every tab that may close, the overflow menu, a popout button and maximize. Each button renders only while the model allows its command, so a pinned tab, a tab with `enableClose: false` or a vetoed command shows no button instead of one that does nothing.
+
+It takes three props: `model`, the function child (a tab's content, where `tab.data` narrows on `tab.component`) and `className`, which goes to the root. Everything else is forwarded to `Dockable.Root`: `popoutURL`, `keyMap`, `realtimeResize`, `supportsPopout`, `onExternalDrag`… The root needs a size: give it one through `className` or its container.
+
+## Your own template
+
+Template.Simple is one layout. When yours differs, write it once from the same parts and use it as a one-liner, as Template.Simple is used. This one is an editor's workbench with an icon on every tab, a start border of tool panels, and no maximize or popout:
+
+<Example id="dockable-custom-template" />
+
+A template is only parts: no class of its own, so a palette, a density and a direction reach it as they reach Template.Simple. Template.Simple follows the same rules as the other templates in the library: no style of its own, no appearance props, one `className` to the main piece, and at most seven props.
+
+## Composition
+
+| Part | Source |
+|---|---|
+| `Root`, `TabSet`, `TabList`, `Tab`, `Panel`, `Splitter`, `DropIndicator`, `EdgeIndicator`, `Border`, `BorderContent`, `Popout` | the package's primitive + its `dock` member |
+| `Row`, `Borders` | the package's primitive; they default their splitters and border panels to the styled ones |
+| `TabSetHeader`, `TabSetActions`, `TabLabel` | a `div` or `span` + its `dock` member |
+| `TabClose`, `MaximizeTrigger`, `PopoutTrigger`, `TabOverflowTrigger` | `Clickable.Button` (icon or ghost fill) |
+| `TabOverflowMenu` | `DropdownMenu` with `TabOverflowTrigger` as its trigger |
+
+The package's primitives emit their state as `data-*` attributes (`data-selected`, `data-active`, `data-dragging`, `data-drop-kind`…) and the family reads them with Tailwind's data variants: no React state in the styles. Dockable's own example themes size the layout with about 25 `--dk-*` tokens; none comes here. Sizes come from Tailwind's scale, the radius from the radius tokens, and the header is `h-control`.
+
+## Palette
+
+The whole layout paints from one palette, the root's: `palette-surface` by default. A palette class on the root re-tints every part, and one on a single tabset only that tabset. Tabsets stand apart from the floor by their line and their radius, not by a second palette, so a surface-ring palette on the root also colours the marker under the active tabset's selected tab, the focus rings, the splitters' highlight and the drop outline:
+
+```tsx
+<Dockable.Template.Simple model={model} className="h-full palette-surface-blue">
+```
+
+Use a surface-tier palette (`surface`, `raised`, `surface-*`): resting tabs are secondary text, readable on neutral surfaces only, the same limit the menu family has.
+
+## Density and RTL
+
+Density reaches every gap, padding and tab through `--spacing`. The header stays at the control height in every density: docking a tab to the layout's edge needs a header of about 30px or more.
+
+The layout is logical. Under `dir="rtl"` rows run from the right, the start border moves to the right side, and the arrow keys follow the direction.
+
+## Popouts
+
+The popout button moves the selected tab into a native browser window, and in the window the same button docks it back. The content keeps its state: it is moved, not re-rendered. The window loads `public/popout.html`, which the item installs at your project's root and the root requests at `/popout.html`. Under a base path, pass your own:
+
+```tsx
+<Dockable.Template.Simple model={model} popoutURL={`${import.meta.env.BASE_URL}popout.html`}>
+```
+
+Allow it per tab (`enablePopout: true`) or for every tab (`defaults: { tab: { enablePopout: true } }`). Template.Simple turns on `popoutMirrorRoot`, which copies the `<html>` and `<body>` attributes into each window and keeps them in sync: the theme (`data-theme`) follows into open windows. A window's floor repeats the root's palette class.
+
+<Callout type="info">
+Inside a popout window a tabset's strip keeps every tab and scrolls instead of hiding them behind the overflow menu. The menu is a `DropdownMenu`, whose popup opens in the main window's document. Pass `overflow` to `Dockable.TabList` to choose either way.
+</Callout>
+
+## Keyboard
+
+Tabs follow the APG tabs pattern with manual activation: the arrow keys move between tabs (mirrored in RTL), Enter or Space selects, and Enter on the selected tab moves focus into its panel. Ctrl+Delete closes the focused tab; the close button stays out of the tab order. A focused splitter resizes with the arrow keys. Escape closes an open overlay border. The bindings are the package's `keyMap`, merged through the root's `keyMap` prop.
+
+## Parts
+
+`Template.Simple`, `Root`, `Row`, `Splitter`, `TabSet`, `TabSetHeader`, `TabList`, `Tab`, `TabLabel`, `TabClose`, `TabOverflowTrigger`, `TabOverflowMenu`, `TabSetActions`, `MaximizeTrigger`, `PopoutTrigger`, `TabSetContent`, `Panels`, `Panel`, `DropIndicator`, `EdgeIndicator`, `Borders`, `Border`, `BorderContent`, `Popout`, `DragGroup`, `DragSource`, `DropZone`.
+
+Every part forwards `render`, `ref`, its handlers and the rest of its props to the primitive, and keeps a `className` given as a string or as a function of the part's state.
