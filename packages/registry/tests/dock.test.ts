@@ -122,4 +122,18 @@ describe("dock family", () => {
             expect(tabs).toContain(`data-active:${state}`);
         }
     });
+
+    it("leaves Template.Simple with no style of its own", async () => {
+        // The template rules: nothing beyond the parts — no tv(), no class
+        // literal, no family member. The one className goes to Root.
+        const source = await readFile(
+            path.join(REGISTRY, "ui/dockable/templates/simple.tsx"),
+            "utf-8",
+        );
+        const code = source.replace(/^\s*\/\/.*$/gm, "");
+        expect(code).not.toMatch(/\btv\(/);
+        expect(code).not.toMatch(/className="/);
+        expect(code).not.toMatch(/#\/families\//);
+        expect(code.match(/className=\{/g)).toEqual(["className={"]);
+    });
 });

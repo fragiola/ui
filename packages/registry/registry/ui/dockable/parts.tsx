@@ -4,6 +4,7 @@ import {
     type AnyTypes,
     type BorderContentProps,
     type BorderProps,
+    type BordersProps,
     Dockable as DockablePrimitive,
     type DockableTypes,
     type DropIndicatorProps,
@@ -530,9 +531,20 @@ function TabOverflowMenu<T extends DockableTypes = AnyTypes>({
     );
 }
 
-// Structural or behavioural only — no look to add: the panel layer, the
-// border frame, and the drag and drop helpers the app gives its own look.
-const { Panels, Borders, DragGroup, DragSource, DropZone } = DockablePrimitive;
+// The frame that places the borders around the main layout: structural, it
+// only defaults each border's panel area to the styled one.
+function Borders<T extends DockableTypes = AnyTypes>({
+    renderContent = (border) => <BorderContent node={border} />,
+    ...props
+}: BordersProps<T>) {
+    return (
+        <DockablePrimitive.Borders renderContent={renderContent} {...props} />
+    );
+}
+
+// Structural or behavioural only — no look to add: the panel layer and the
+// drag and drop helpers the app gives its own look.
+const { Panels, DragGroup, DragSource, DropZone } = DockablePrimitive;
 
 export {
     Border,

@@ -54,9 +54,6 @@ export default function DockableBorders() {
             <Dockable.Root model={model} className="size-full">
                 <Dockable.Borders<Types>
                     renderBar={(border) => <Bar node={border} />}
-                    renderContent={(border) => (
-                        <Dockable.BorderContent node={border} />
-                    )}
                 >
                     <Dockable.Row<Types>>{renderNode}</Dockable.Row>
                 </Dockable.Borders>

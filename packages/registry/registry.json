@@ -930,7 +930,7 @@
             "name": "dockable",
             "type": "registry:ui",
             "title": "Dockable",
-            "description": "A docking layout — tabs, splitters, drag and drop, borders and popout windows — from @fragiola/dockable-react, styled by the dock family. The first special component: the package's primitives under the same names, each wearing its dock member, plus what the package leaves to the app (a tab's close button, maximize, the overflow menu on DropdownMenu, the popout trigger on Clickable), each shown only while the model allows its command. Painted from one palette on the root (palette-surface by default); no tokens of its own. Ships the popout host page at public/popout.html. The model API is imported from the package.",
+            "description": "A docking layout — tabs, splitters, drag and drop, borders and popout windows — from @fragiola/dockable-react, styled by the dock family. The first special component: the package's primitives under the same names, each wearing its dock member, plus what the package leaves to the app (a tab's close button, maximize, the overflow menu on DropdownMenu, the popout trigger on Clickable), each shown only while the model allows its command. Painted from one palette on the root (palette-surface by default); no tokens of its own. Ships the popout host page at public/popout.html. Dockable.Template.Simple renders the whole layout from a model and a tab's content. The model API is imported from the package.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -954,6 +954,16 @@
                     "path": "registry/ui/dockable/parts.tsx",
                     "type": "registry:ui",
                     "target": "@ui/dockable/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/dockable/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "@ui/dockable/templates/index.ts"
+                },
+                {
+                    "path": "registry/ui/dockable/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/dockable/templates/simple.tsx"
                 },
                 {
                     "path": "registry/ui/dockable.tsx",

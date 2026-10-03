@@ -28,6 +28,7 @@ import {
     TabSetContent,
     TabSetHeader,
 } from "./dockable/parts";
+import { Template } from "./dockable/templates";
 
 // Dockable — a docking layout (tabs, splitters, drag and drop, borders,
 // popout windows) from @fragiola/dockable-react, styled by the `dock`
@@ -43,10 +44,14 @@ import {
 //   import { createModel } from "@fragiola/dockable-react";
 //   const [model] = useState(() => createModel<Types>(json));
 //
+// Dockable.Template.Simple renders the whole layout from a model and a
+// tab's content; the parts are there for the layout that outgrows it.
+//
 // See the parts for what each one adds, and families/dock.ts for why it
 // looks the way it does.
 
 export const Dockable = {
+    Template,
     Root,
     Row,
     Splitter,
