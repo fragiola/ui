@@ -9,16 +9,22 @@ import {
     DropIndicator,
     DropZone,
     EdgeIndicator,
+    MaximizeTrigger,
     Panel,
     Panels,
     Popout,
+    PopoutTrigger,
     Root,
     Row,
     Splitter,
     Tab,
+    TabClose,
     TabLabel,
     TabList,
+    TabOverflowMenu,
+    TabOverflowTrigger,
     TabSet,
+    TabSetActions,
     TabSetContent,
     TabSetHeader,
 } from "./dockable/parts";
@@ -29,8 +35,10 @@ import {
 // package, installed with one command.
 //
 // One export, `Dockable`: the package's primitives under the same names,
-// each wearing its `dock` member, plus the pieces a tabset header needs
-// (TabSetHeader, TabLabel). The model is the package's:
+// each wearing its `dock` member, plus the pieces a tabset header needs that
+// the package leaves to the app (TabSetHeader, TabLabel, TabClose,
+// TabSetActions, MaximizeTrigger, TabOverflowMenu). The model is the
+// package's:
 //
 //   import { createModel } from "@fragiola/dockable-react";
 //   const [model] = useState(() => createModel<Types>(json));
@@ -47,6 +55,12 @@ export const Dockable = {
     TabList,
     Tab,
     TabLabel,
+    TabClose,
+    TabOverflowTrigger,
+    TabOverflowMenu,
+    TabSetActions,
+    MaximizeTrigger,
+    PopoutTrigger,
     TabSetContent,
     Panels,
     Panel,

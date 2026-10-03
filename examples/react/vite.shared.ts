@@ -15,6 +15,11 @@ export const REGISTRY = path.resolve(
     "../../packages/registry/registry",
 );
 
+// Static files a registry item ships to the project root's public/ (the
+// `~/public/` target): Dockable's popout host page. Served from the registry
+// in place, as a reader's project serves its copy.
+export const REGISTRY_PUBLIC = path.join(REGISTRY, "public");
+
 export const registryResolve = {
     alias: [
         { find: /^#\/components\//, replacement: `${REGISTRY}/` },

@@ -8,25 +8,54 @@ import {
     type DockableTypes,
     type DropIndicatorProps,
     type EdgeIndicatorProps,
+    MAIN_LAYOUT,
     type PanelProps,
     type PopoutProps,
+    type PopoutTriggerProps,
     type RootProps,
     type RowProps,
     type SplitterProps,
+    type TabContainer,
     type TabListProps,
+    type TabOf,
+    type TabOverflowTriggerProps,
     type TabProps,
     type TabSetContentProps,
     type TabSetProps,
+    type TabsetNode,
+    useDockable,
+    useModelState,
+    useTabOverflow,
 } from "@fragiola/dockable-react";
+import {
+    ArrowDownToLineIcon,
+    ChevronDownIcon,
+    Maximize2Icon,
+    Minimize2Icon,
+    SquareArrowOutUpRightIcon,
+    XIcon,
+} from "lucide-react";
 import type * as React from "react";
+import { Clickable } from "#/atoms/clickable";
+import { iconSize } from "#/atoms/icon";
 import { dock } from "#/families/dock";
 import { cn } from "#/lib/cn";
+import { DropdownMenu } from "#/ui/dropdown-menu";
 
 // Dockable's parts, styled. Behaviour, accessibility, measurement and drag
 // and drop come from @fragiola/dockable-react; appearance comes from the
 // `dock` family. Each part wraps the primitive of the same name and only adds
 // its member's classes — `render`, `ref`, handlers and the rest pass through
 // untouched, and the generic registry type (`Dockable.Row<Types>`) is kept.
+//
+// The pieces the package leaves to the app — a tab's close button, the
+// tabset's maximize button, the overflow menu — are parts here too, built on
+// Clickable and DropdownMenu. Each asks the model before it renders
+// (`model.can`) and acts through a command (`model.run`), so a middleware
+// veto or a pinned tab hides the button instead of leaving one that does
+// nothing. They read the model with `useModelState`, which re-renders them
+// when the answer changes. Their accessible names are English defaults; a
+// consumer's `aria-label` wins.
 //
 // The model API (createModel, commands, types) is not re-exported: it is
 // imported from the package, the single source for it.
@@ -119,14 +148,24 @@ function TabSetHeader({ className, ...props }: React.ComponentProps<"div">) {
     );
 }
 
+// In a popout window the strip keeps every tab and scrolls (`overflow`
+// defaults to false there): the overflow menu is a DropdownMenu, whose
+// popup portals into the main document's body — it would open in the other
+// window. In the main layout Dockable manages overflow, as by default. An
+// explicit `overflow` wins either way.
 function TabList<T extends DockableTypes = AnyTypes>({
     className,
+    overflow,
     ...props
 }: TabListProps<T>) {
+    const { layoutId } = useDockable<T>();
+    const managed = overflow ?? layoutId === MAIN_LAYOUT;
+    const strip = managed ? dock.tabList() : dock.scrollingTabList();
     return (
         <DockablePrimitive.TabList
             data-slot="dockable-tab-list"
-            className={withClass(dock.tabList(), className)}
+            className={withClass(strip, className)}
+            overflow={managed}
             {...props}
         />
     );
@@ -245,6 +284,226 @@ function Popout<T extends DockableTypes = AnyTypes>({
     );
 }
 
+// The header's buttons, after the tab list and the overflow trigger.
+function TabSetActions({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="dockable-tabset-actions"
+            className={cn(dock.actions(), className)}
+            {...props}
+        />
+    );
+}
+
+type ActionProps = Omit<
+    React.ComponentProps<typeof Clickable.Button>,
+    "variant" | "size" | "shape"
+>;
+
+// A tab's close button, rendered only while `tab.close` would apply (the
+// tab's enableClose, not pinned, no veto). The tab stays the tab stop —
+// Ctrl+Delete closes it from the keyboard (Dockable's keyMap) — so the
+// button is out of the tab sequence, and a press on it neither selects the
+// tab nor activates its tabset.
+function TabClose<T extends DockableTypes = AnyTypes>({
+    node,
+    className,
+    children,
+    onClick,
+    onPointerDown,
+    ...props
+}: ActionProps & { node: TabOf<T> }) {
+    const { model } = useDockable<T>();
+    const closeable = useModelState<T, boolean>((_, current) =>
+        current.can("tab.close", { tabId: node.id }),
+    );
+    if (!closeable) return null;
+    return (
+        <Clickable.Button
+            data-slot="dockable-tab-close"
+            variant="icon"
+            size="xs"
+            shape="square"
+            tabIndex={-1}
+            aria-label={`Close ${node.label}`}
+            className={cn(dock.tabAction(), className as string)}
+            {...props}
+            onPointerDown={(event) => {
+                event.stopPropagation();
+                onPointerDown?.(event);
+            }}
+            onClick={(event) => {
+                event.stopPropagation();
+                onClick?.(event);
+                if (!event.defaultPrevented) {
+                    model.run("tab.close", { tabId: node.id });
+                }
+            }}
+        >
+            {children ?? <XIcon className={iconSize.buttonSm} />}
+        </Clickable.Button>
+    );
+}
+
+// Maximizes the tabset, or restores the layout when it is the maximized one
+// — a toggle (`aria-pressed`), so its name stays the same. Rendered only
+// while the model allows the change (a tabset alone in its layout cannot
+// maximize).
+function MaximizeTrigger<T extends DockableTypes = AnyTypes>({
+    node,
+    children,
+    onClick,
+    ...props
+}: ActionProps & { node: TabsetNode<T> }) {
+    const { model } = useDockable<T>();
+    const maximized = useModelState<T, boolean>((_, current) =>
+        current.is("tabset-maximized", { tabsetId: node.id }),
+    );
+    const allowed = useModelState<T, boolean>((_, current) =>
+        current.can("tabset.maximize", {
+            tabsetId: node.id,
+            value: !current.is("tabset-maximized", { tabsetId: node.id }),
+        }),
+    );
+    if (!allowed) return null;
+    return (
+        <Clickable.Button
+            data-slot="dockable-maximize-trigger"
+            variant="icon"
+            size="sm"
+            shape="square"
+            aria-label="Maximize"
+            aria-pressed={maximized}
+            {...props}
+            onClick={(event) => {
+                onClick?.(event);
+                if (!event.defaultPrevented) {
+                    model.run("tabset.maximize", {
+                        tabsetId: node.id,
+                        value: !maximized,
+                    });
+                }
+            }}
+        >
+            {children ??
+                (maximized ? (
+                    <Minimize2Icon className={iconSize.buttonSm} />
+                ) : (
+                    <Maximize2Icon className={iconSize.buttonSm} />
+                ))}
+        </Clickable.Button>
+    );
+}
+
+// Pops the selected tab out into a window and, in a window, docks it back.
+// The primitive renders nothing when neither is possible; here it renders a
+// Clickable whose name and icon follow its mode.
+function PopoutTrigger<T extends DockableTypes = AnyTypes>({
+    render,
+    ...props
+}: PopoutTriggerProps<T>) {
+    return (
+        <DockablePrimitive.PopoutTrigger<T>
+            data-slot="dockable-popout-trigger"
+            render={
+                render ??
+                ((button, state) => (
+                    <Clickable.Button
+                        variant="icon"
+                        size="sm"
+                        shape="square"
+                        {...button}
+                        aria-label={
+                            button["aria-label"] ??
+                            (state.mode === "dock" ? "Dock back" : "Pop out")
+                        }
+                    >
+                        {button.children ??
+                            (state.mode === "dock" ? (
+                                <ArrowDownToLineIcon
+                                    className={iconSize.buttonSm}
+                                />
+                            ) : (
+                                <SquareArrowOutUpRightIcon
+                                    className={iconSize.buttonSm}
+                                />
+                            ))}
+                    </Clickable.Button>
+                ))
+            }
+            {...props}
+        />
+    );
+}
+
+// The button that lists the tabs that do not fit. The primitive renders it
+// only while tabs are hidden and reserves its width in the strip; it shows
+// how many.
+function TabOverflowTrigger<T extends DockableTypes = AnyTypes>({
+    render,
+    ...props
+}: TabOverflowTriggerProps<T>) {
+    return (
+        <DockablePrimitive.TabOverflowTrigger<T>
+            data-slot="dockable-tab-overflow-trigger"
+            render={
+                render ??
+                ((button, state) => (
+                    <Clickable.Button
+                        variant="ghost"
+                        size="sm"
+                        {...button}
+                        aria-label={
+                            button["aria-label"] ??
+                            `${state.hiddenTabs.length} more tabs`
+                        }
+                    >
+                        {button.children ?? (
+                            <>
+                                {state.hiddenTabs.length}
+                                <ChevronDownIcon
+                                    className={iconSize.buttonSm}
+                                />
+                            </>
+                        )}
+                    </Clickable.Button>
+                ))
+            }
+            {...props}
+        />
+    );
+}
+
+// The overflow trigger as a DropdownMenu of the hidden tabs, of a tabset or
+// a border (`node`). Choosing one runs `tab.select`, which brings it into the
+// strip.
+function TabOverflowMenu<T extends DockableTypes = AnyTypes>({
+    node,
+    ...props
+}: Omit<TabOverflowTriggerProps<T>, "render"> & { node: TabContainer<T> }) {
+    const { model } = useDockable<T>();
+    const { hiddenTabs } = useTabOverflow(node);
+    return (
+        <DropdownMenu.Root>
+            <DropdownMenu.Trigger
+                render={<TabOverflowTrigger<T> {...props} />}
+            />
+            <DropdownMenu.Content align="end">
+                {hiddenTabs.map((tab) => (
+                    <DropdownMenu.Item
+                        key={tab.id}
+                        onClick={() =>
+                            model.run("tab.select", { tabId: tab.id })
+                        }
+                    >
+                        <span className={dock.tabLabel()}>{tab.label}</span>
+                    </DropdownMenu.Item>
+                ))}
+            </DropdownMenu.Content>
+        </DropdownMenu.Root>
+    );
+}
+
 // Structural or behavioural only — no look to add: the panel layer, the
 // border frame, and the drag and drop helpers the app gives its own look.
 const { Panels, Borders, DragGroup, DragSource, DropZone } = DockablePrimitive;
@@ -258,16 +517,22 @@ export {
     DropIndicator,
     DropZone,
     EdgeIndicator,
+    MaximizeTrigger,
     Panel,
     Panels,
     Popout,
+    PopoutTrigger,
     Root,
     Row,
     Splitter,
     Tab,
+    TabClose,
     TabLabel,
     TabList,
+    TabOverflowMenu,
+    TabOverflowTrigger,
     TabSet,
+    TabSetActions,
     TabSetContent,
     TabSetHeader,
 };

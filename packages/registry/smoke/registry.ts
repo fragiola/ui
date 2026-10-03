@@ -44,19 +44,26 @@ type RegistryItem = {
 // (`src/` or the project root). This mirrors ALIAS_REPLACEMENTS in
 // scripts/build-registry.ts — the emitted imports point here, so a file
 // anywhere else is a broken install even if the CLI reports success.
-const EXPECTED_DIRS: Array<{ from: string; to: string }> = [
+//
+// `public/` is the exception: static files a page fetches by URL (Dockable's
+// popout.html) land in the project ROOT's public/, which Vite and Next serve
+// with or without src/ — the `~/public/` target scripts/targets.ts allows.
+const EXPECTED_DIRS: Array<{ from: string; to: string; root?: true }> = [
     { from: "registry/atoms/", to: "components/atoms/" },
     { from: "registry/families/", to: "components/families/" },
     { from: "registry/ui/", to: "components/ui/" },
     { from: "registry/lib/", to: "lib/" },
     { from: "registry/hooks/", to: "hooks/" },
     { from: "registry/styles/", to: "styles/" },
+    { from: "registry/public/", to: "public/", root: true },
 ];
 
 function expectedPath(file: RegistryFile, srcRoot: string): string {
     const dir = EXPECTED_DIRS.find(({ from }) => file.path.startsWith(from));
     if (!dir) throw new Error(`No expected location for ${file.path}`);
-    return srcRoot + dir.to + file.path.slice(dir.from.length);
+    return (
+        (dir.root ? "" : srcRoot) + dir.to + file.path.slice(dir.from.length)
+    );
 }
 
 // ─── Servers ────────────────────────────────────────────────────────────────

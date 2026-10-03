@@ -67,7 +67,7 @@ describe("dock family", () => {
     it("turns border tabs through the border's named group only", () => {
         // A Row carries `data-orientation` too, and a tabset's tabs sit
         // inside rows: an unscoped orientation rule on a tab would turn them.
-        for (const name of ["tab", "tabList"] as const) {
+        for (const name of ["tab", "tabList", "scrollingTabList"] as const) {
             const unscoped = classes(dock[name]).filter((c) =>
                 /(?:^|:)(?:in-|group-)?data-\[orientation/.test(
                     c.replace(/group-data-\[[^\]]+\]\/border:/g, ""),
@@ -76,6 +76,13 @@ describe("dock family", () => {
             expect(unscoped, name).toEqual([]);
         }
         expect(classes(dock.border)).toContain("group/border");
+    });
+
+    it("clips the managed strip, scrolls the one that keeps every tab", () => {
+        // `overflow-hidden` on the scrolling strip would clip what it keeps.
+        expect(classes(dock.tabList)).toContain("overflow-hidden");
+        expect(classes(dock.scrollingTabList)).not.toContain("overflow-hidden");
+        expect(classes(dock.scrollingTabList)).toContain("overflow-x-auto");
     });
 
     it("stacks splitters, indicators and an overlay border in order", () => {

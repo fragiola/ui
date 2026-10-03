@@ -1,4 +1,4 @@
-// Family `dock` — the docking layout (root, row, tabset, header, tab list, tab,
+// Family `dock` — the docking layout (root, row, tabset, header, tab list, scrolling tab list, tab,
 // tab label, tab marker, tab action, actions, panel, splitter, drop and edge
 // indicators, border strip, border content, popout root).
 // Consumer: ui/dockable (the styled layer over @fragiola/dockable-react).
@@ -95,18 +95,31 @@ const header = tv({
     base: "flex h-control shrink-0 items-center border-b border-palette-line",
 });
 
-// The tab strip. `overflow-hidden` clips a tab the engine is about to hide;
-// the engine reserves the overflow trigger's width beside it. In a side
-// border it is a column.
-const tabList = tv({
+// The tab strip's row, shared by both strips below. Not a member: it says
+// nothing about what happens to the tabs that do not fit. In a side border
+// it is a column.
+const tabListSkeleton = tv({
     base: `
-        flex min-w-0 flex-1 items-center gap-1 self-stretch overflow-hidden
-        px-1 py-0.5
+        flex min-w-0 flex-1 items-center gap-1 self-stretch px-1 py-0.5
         group-data-[orientation=vertical]/border:min-h-0
         group-data-[orientation=vertical]/border:flex-col
         group-data-[orientation=vertical]/border:px-0.5
         group-data-[orientation=vertical]/border:py-1
     `,
+});
+
+// The strip when Dockable manages overflow (the default): the engine hides
+// the tabs that do not fit, the overflow trigger lists them, and
+// `overflow-hidden` clips a tab the engine is about to hide.
+const tabList = tv({ extend: tabListSkeleton, base: "overflow-hidden" });
+
+// The strip that keeps every tab (`overflow={false}`) and scrolls them
+// instead, with no scrollbar in a header this short: the wheel, a trackpad
+// and the arrow keys (focus scrolls a tab into view) reach them. It is what a
+// popout window gets (see ui/dockable/parts.tsx, TabList).
+const scrollingTabList = tv({
+    extend: tabListSkeleton,
+    base: "overflow-x-auto overflow-y-hidden [scrollbar-width:none]",
 });
 
 // The values of ui/tabs.tsx's tab (see the header), lit by Dockable's state.
@@ -170,10 +183,12 @@ const panel = tv({
 
 // The bar between two children of a row, or beside a border's panel. The
 // engine measures its thickness; the visible line is its `::after`, centred
-// with auto margins on the inline axis, so it needs no RTL flip.
+// with auto margins on the inline axis, so it needs no RTL flip. Between
+// tabsets it is a transparent gap; inside an overlay border it floats over
+// the layout, so it takes the floor's fill.
 const splitter = tv({
     base: `
-        relative z-10 shrink-0 outline-none
+        relative z-10 shrink-0 outline-none in-data-overlay:bg-palette-base
         after:absolute after:rounded-full after:transition-colors
         hover:after:bg-palette-ring/40 focus-visible:after:bg-palette-ring
         data-dragging:after:bg-palette-ring
@@ -221,11 +236,14 @@ const border = tv({
 });
 
 // Where a border's panel opens. Docked, it sits beside the layout and needs
-// nothing; overlaid, it floats over the layout's edge.
+// nothing; overlaid, it floats over the layout's edge. It stays transparent:
+// the engine positions the tab's panel UNDER it and lets presses through its
+// empty area (`pointer-events: none`) — a fill here would hide the panel. It
+// carries the line on the layout's side, the shadow, and the stacking that
+// keeps its splitter above the tabsets.
 const borderContent = tv({
     base: `
-        data-overlay:z-30 data-overlay:border-palette-line
-        data-overlay:bg-palette-base data-overlay:shadow-lg
+        data-overlay:z-30 data-overlay:border-palette-line data-overlay:shadow-lg
         data-overlay:data-[location=start]:border-e
         data-overlay:data-[location=end]:border-s
         data-overlay:data-[location=top]:border-b
@@ -243,6 +261,7 @@ export const dock = {
     tabset,
     header,
     tabList,
+    scrollingTabList,
     tab,
     tabLabel,
     tabMarker,

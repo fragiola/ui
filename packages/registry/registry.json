@@ -930,13 +930,20 @@
             "name": "dockable",
             "type": "registry:ui",
             "title": "Dockable",
-            "description": "A docking layout — tabs, splitters, drag and drop, borders and popout windows — from @fragiola/dockable-react, styled by the dock family. The first special component: the package's primitives under the same names, each wearing its dock member, painted from one palette on the root (palette-surface by default). No tokens of its own; the model API is imported from the package.",
+            "description": "A docking layout — tabs, splitters, drag and drop, borders and popout windows — from @fragiola/dockable-react, styled by the dock family. The first special component: the package's primitives under the same names, each wearing its dock member, plus what the package leaves to the app (a tab's close button, maximize, the overflow menu on DropdownMenu, the popout trigger on Clickable), each shown only while the model allows its command. Painted from one palette on the root (palette-surface by default); no tokens of its own. Ships the popout host page at public/popout.html. The model API is imported from the package.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
-                "@fragiola/palette-surface"
+                "@fragiola/palette-surface",
+                "@fragiola/clickable",
+                "@fragiola/icon-size",
+                "@fragiola/dropdown-menu"
             ],
-            "dependencies": ["@fragiola/dockable-react", "tailwind-variants"],
+            "dependencies": [
+                "@fragiola/dockable-react",
+                "lucide-react",
+                "tailwind-variants"
+            ],
             "files": [
                 {
                     "path": "registry/families/dock.ts",
@@ -952,6 +959,11 @@
                     "path": "registry/ui/dockable.tsx",
                     "type": "registry:ui",
                     "target": "@ui/dockable.tsx"
+                },
+                {
+                    "path": "registry/public/popout.html",
+                    "type": "registry:file",
+                    "target": "~/public/popout.html"
                 }
             ]
         }
