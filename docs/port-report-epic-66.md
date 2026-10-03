@@ -122,6 +122,12 @@ tabs sit inside rows. A test checks that no unscoped orientation rule reaches a 
 - **A popout window's floor needs the root's palette again**, because the root is not its
   ancestor in the window's document. The styled root passes its palette class down
   through context, and `Popout` repeats it.
+- **A fixed header clipped spacious tabs.** The header was `h-control` while the tab was
+  `h-8`, which follows `--spacing`. Under a spacious density the tab outgrew the header,
+  was clipped, and its marker fell below the strip. Under a compact one the marker
+  floated above the line. Now the header has a floor (`min-h-control`, which edge
+  docking needs) and the tab fills its strip (`self-stretch`, at least `h-8`). Found by
+  the final review.
 - **`check:embeds` clicks every `[data-slot$="-trigger"]`.** In this repo a `-trigger`
   slot opens a popup. The popout and maximize buttons open none (one opens a window, the
   other maximizes a tabset and hides the rest), so their slots end in `-button`.

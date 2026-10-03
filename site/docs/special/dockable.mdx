@@ -90,7 +90,7 @@ To tint a single tabset, give the class to the `TabSet` and to its tabs' `Panel`
 
 ## Density and RTL
 
-Density reaches every gap, padding and tab through `--spacing`. The header stays at the control height in every density: docking a tab to the layout's edge needs a header of about 30px or more.
+Density reaches every gap, padding and tab through `--spacing`. The header is never shorter than the control height, whatever the density: docking a tab to the layout's edge needs a header of about 30px or more. Under a spacious density the tabs grow and the header grows with them.
 
 The layout is logical. Under `dir="rtl"` rows run from the right, the start border moves to the right side, and the arrow keys follow the direction.
 

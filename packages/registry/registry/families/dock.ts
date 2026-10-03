@@ -12,7 +12,7 @@
 // ─── ONE PALETTE, NO TOKENS ─────────────────────────────────────────────────
 // Dockable's own example themes shape the layout with ~25 `--dk-*` tokens.
 // None comes here: sizes come from Tailwind's scale, the radius from the
-// radius tokens, the header from `h-control`. The whole layout paints from
+// radius tokens, the header's floor from `h-control`. The whole layout paints from
 // ONE palette — the one on the root (`palette-surface` by default) — so a
 // palette class on the root re-tints every part. A tab's panel is portalled
 // into the root (so its content survives a move), not into its tabset: a
@@ -36,7 +36,7 @@
 // ─── TABS ───────────────────────────────────────────────────────────────────
 // `tab` takes the values of ui/tabs.tsx's tab — rounded-md, text-sm,
 // font-medium, secondary text at rest, a soft fill and contrast text when
-// current, the ring outline on focus-visible — at `h-8`, the height of a
+// current, the ring outline on focus-visible — at least `h-8`, the height of a
 // `size="sm"` Clickable, so a tab and the header's buttons line up. It is not
 // extracted into a shared member: the two read different state (`data-active`
 // there, `data-selected` here, plus a drag), and tabs.tsx is not a family.
@@ -55,9 +55,13 @@
 // line (`-bottom-0.5`, the tab list's `py-0.5`), at any density.
 //
 // ─── HEIGHTS AND EDGE DOCKING ───────────────────────────────────────────────
-// The header is `h-control`, a token that does not follow density: Dockable
-// docks to a layout edge from a band that needs a header of ~30px or more,
-// and a compact `--spacing` would take a spacing-scale header below that.
+// The header's floor is `min-h-control`, a token that does not follow
+// density: Dockable docks to a layout edge from a band that needs a header of
+// ~30px or more, and a compact `--spacing` would take a spacing-scale header
+// below that. Above the floor it grows with its content: a tab fills its
+// strip (`self-stretch`, at least `h-8`), so under a spacious density the
+// tabs grow, the header with them, and the marker stays on the line — a fixed
+// header would clip both. A border strip has the same floor across.
 //
 // ─── STACKING ───────────────────────────────────────────────────────────────
 // Panels are portalled into the root after the tabsets: splitters are `z-10`
@@ -96,7 +100,7 @@ const tabset = tv({
 // The bar above a tabset's content: its tab list, the overflow trigger and
 // the actions. The line is the one the tab marker sits on.
 const header = tv({
-    base: "flex h-control shrink-0 items-center border-b border-palette-line",
+    base: "flex min-h-control shrink-0 items-center border-b border-palette-line",
 });
 
 // The tab strip's row, shared by both strips below. Not a member: it says
@@ -131,7 +135,7 @@ const scrollingTabList = tv({
 // (`data-tab-direction=up`) turns half a turn more.
 const tab = tv({
     base: `
-        group/tab relative flex h-8 max-w-60 shrink-0 cursor-pointer select-none
+        group/tab relative flex min-h-8 max-w-60 shrink-0 self-stretch cursor-pointer select-none
         items-center gap-1.5 rounded-md px-2.5 text-sm font-medium
         text-palette-accent/85 transition-colors
         hover:bg-palette-soft hover:text-palette-contrast
@@ -140,9 +144,8 @@ const tab = tv({
         data-dragging:opacity-50
         [&_svg:not([class*='size-'])]:size-3.5
         [&_svg]:pointer-events-none [&_svg]:shrink-0
-        group-data-[orientation=vertical]/border:h-auto
         group-data-[orientation=vertical]/border:max-h-60
-        group-data-[orientation=vertical]/border:w-8
+        group-data-[orientation=vertical]/border:min-w-8
         group-data-[orientation=vertical]/border:px-0
         group-data-[orientation=vertical]/border:py-2.5
         group-data-[orientation=vertical]/border:[writing-mode:vertical-rl]
@@ -228,14 +231,14 @@ const edgeIndicator = tv({
     `,
 });
 
-// A border's strip: as thick as the header (`--height-control`), on the
+// A border's strip: at least as thick as the header (`--height-control`), on the
 // floor, with a line on the layout's side. The named group its list and
 // tabs read (see the header).
 const border = tv({
     base: `
         group/border shrink-0 border-palette-line bg-palette-base
-        data-[orientation=vertical]:w-(--height-control)
-        data-[orientation=horizontal]:h-control
+        data-[orientation=vertical]:min-w-(--height-control)
+        data-[orientation=horizontal]:min-h-control
         data-[location=start]:border-e data-[location=end]:border-s
         data-[location=top]:border-b data-[location=bottom]:border-t
         data-drop-target:bg-palette-soft

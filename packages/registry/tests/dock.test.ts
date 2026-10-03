@@ -52,16 +52,22 @@ describe("dock family", () => {
         expect(classes(dock.row)).toEqual(["data-root:m-1.5"]);
     });
 
-    it("keeps the header at the control height, whatever the density", () => {
-        // Edge docking needs a header of ~30px or more; `h-control` is a
-        // token, not the spacing scale a compact density shrinks.
-        expect(classes(dock.header)).toContain("h-control");
+    it("floors the header at the control height and lets tabs fill it", () => {
+        // Edge docking needs a header of ~30px or more; `min-h-control` is a
+        // token, not the spacing scale a compact density shrinks. A fixed
+        // height would clip the tabs a spacious density grows: the tab
+        // fills its strip instead, so the marker stays on the header's line.
+        expect(classes(dock.header)).toContain("min-h-control");
+        expect(classes(dock.header)).not.toContain("h-control");
         expect(classes(dock.border)).toContain(
-            "data-[orientation=vertical]:w-(--height-control)",
+            "data-[orientation=vertical]:min-w-(--height-control)",
         );
         expect(classes(dock.border)).toContain(
-            "data-[orientation=horizontal]:h-control",
+            "data-[orientation=horizontal]:min-h-control",
         );
+        expect(classes(dock.tab)).toContain("self-stretch");
+        expect(classes(dock.tab)).toContain("min-h-8");
+        expect(classes(dock.tab)).not.toContain("h-8");
     });
 
     it("turns border tabs through the border's named group only", () => {
