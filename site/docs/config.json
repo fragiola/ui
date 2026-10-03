@@ -209,6 +209,16 @@
                     "path": "display/chart"
                 }
             ]
+        },
+        {
+            "label": "Special",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Dockable",
+                    "path": "special/dockable"
+                }
+            ]
         }
     ]
 }

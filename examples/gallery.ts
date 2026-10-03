@@ -31,6 +31,7 @@ export const LEVELS = [
     { id: "disclosure", title: "Disclosure" },
     { id: "navigation", title: "Navigation" },
     { id: "display", title: "Display" },
+    { id: "special", title: "Special" },
 ] as const satisfies readonly Level[];
 
 export type LevelId = (typeof LEVELS)[number]["id"];

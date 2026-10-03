@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import {
     exampleThemes,
+    REGISTRY_PUBLIC,
     registryResolve,
 } from "../../examples/react/vite.shared.ts";
 
@@ -13,6 +14,7 @@ import {
 export default defineConfig({
     plugins: [react(), tailwindcss(), exampleThemes()],
     resolve: registryResolve,
+    publicDir: REGISTRY_PUBLIC,
     build: {
         // ECharts is the chart example's own chunk (~1.1 MB), fetched only
         // when that example is shown.

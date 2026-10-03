@@ -12,4 +12,11 @@ allowBuilds:
   # Pulled in by @tailwindcss/cli for --watch; its prebuilt binaries ship as
   # optional dependencies, so the fallback build script is not needed.
   "@parcel/watcher": false
+# pnpm 11 holds back a version younger than its minimum release age (a
+# supply-chain guard). Dockable is this organisation's own package, published
+# the day the dockable item landed (Epic #66); exact versions, so the guard
+# still covers anything else.
+minimumReleaseAgeExclude:
+  - '@fragiola/dockable-react@0.1.0'
+  - '@fragiola/dockable@0.1.0'
 verifyDepsBeforeRun: false

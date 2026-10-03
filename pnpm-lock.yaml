@@ -17,6 +17,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/dockable-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       lucide-react:
         specifier: ^1.34.0
         version: 1.34.0(react@19.2.8)
@@ -63,6 +66,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/dockable-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       echarts:
         specifier: ^6.1.0
         version: 6.1.0
@@ -118,6 +124,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/dockable-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -613,6 +622,15 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fragiola/dockable-react@0.1.0':
+    resolution: {integrity: sha512-vVKu6jvXXd9e+GrY6nJC6a1r4HpH1ZiYXFcaNhVejpoTJbsi6cpLic5GMfNrd6DY6l/nj/I3bSD49Yy0GilpTg==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@fragiola/dockable@0.1.0':
+    resolution: {integrity: sha512-nxBBDkjikcO1ZAv2KAVKZkEDT/HVrARYxybk7GSAyGyifgfXB9lLAXXP7lVfKGMWUeSmLQKpV2GcUuXNVGcIfg==}
 
   '@hono/node-server@2.1.1':
     resolution: {integrity: sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg==}
@@ -3299,6 +3317,14 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fragiola/dockable-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@fragiola/dockable': 0.1.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@fragiola/dockable@0.1.0': {}
 
   '@hono/node-server@2.1.1(hono@4.13.9)':
     dependencies:

@@ -71,6 +71,9 @@ const OVERLAYS: Record<string, Opener> = {
     // Trigger opens nothing on desktop (it collapses the column); it comes
     // last in the markup, so every menu is checked expanded first.
     sidebar: "click",
+    // The overflow menu of the narrow tabset (a DropdownMenu); the other
+    // header buttons open no popup.
+    dockable: "click",
 };
 
 type ManifestExample = {

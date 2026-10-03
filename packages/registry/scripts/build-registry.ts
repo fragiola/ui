@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
+import { rootTargetRefused } from "./targets.ts";
 
 // `node scripts/build-registry.ts [--out <dir>]` — validates registry.json and
 // writes one JSON file per item plus index.json. The output defaults to
@@ -161,15 +162,17 @@ async function buildRegistry() {
     }
 
     // Check targets: `~/` is the project root, not the source root — in a
-    // project with `src/` it writes outside of it.
+    // project with `src/` it writes outside of it. Only `~/public/` may
+    // (see scripts/targets.ts).
     for (const item of items) {
         for (const file of item.files ?? []) {
-            if (file.target?.startsWith("~/")) {
+            if (rootTargetRefused(file.target)) {
                 console.error(
                     `Item "${item.name}": target "${file.target}" starts with "~/", ` +
                         `which the shadcn CLI resolves to the project root. Use a ` +
                         `placeholder (@ui/, @components/, @lib/, @hooks/) or a ` +
-                        `relative path, which lands under src/ when the project has one.`,
+                        `relative path, which lands under src/ when the project has one. ` +
+                        `Only static files under ~/public/ may target the root.`,
                 );
                 process.exit(1);
             }
