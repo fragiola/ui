@@ -78,13 +78,15 @@ The package's primitives emit their state as `data-*` attributes (`data-selected
 
 ## Palette
 
-The whole layout paints from one palette, the root's: `palette-surface` by default. A palette class on the root re-tints every part, and one on a single tabset only that tabset. Tabsets stand apart from the floor by their line and their radius, not by a second palette, so a surface-ring palette on the root also colours the marker under the active tabset's selected tab, the focus rings, the splitters' highlight and the drop outline:
+The whole layout paints from one palette, the root's: `palette-surface` by default. A palette class on the root re-tints every part. Tabsets stand apart from the floor by their line and their radius, not by a second palette, so a surface-ring palette on the root also colours the marker under the active tabset's selected tab, the focus rings, the splitters' highlight and the drop outline:
 
 ```tsx
 <Dockable.Template.Simple model={model} className="h-full palette-surface-blue">
 ```
 
 Use a surface-tier palette (`surface`, `raised`, `surface-*`): resting tabs are secondary text, readable on neutral surfaces only, the same limit the menu family has.
+
+To tint a single tabset, give the class to the `TabSet` and to its tabs' `Panel`s. A panel is not rendered inside its tabset: it lives in the root and the engine positions it over the tabset, so its content keeps its state when the tab moves to another tabset or another window.
 
 ## Density and RTL
 

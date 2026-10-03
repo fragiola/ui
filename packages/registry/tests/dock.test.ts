@@ -92,7 +92,13 @@ describe("dock family", () => {
                     .find((c) => /^(?:data-overlay:)?z-\d+$/.test(c))
                     ?.replace(/^.*z-/, ""),
             );
-        expect(z(dock.splitter)).toBeLessThan(z(dock.dropIndicator));
+        const borderPanel = Number(
+            classes(dock.panel)
+                .find((c) => c.startsWith("data-[layout-path^='/border/']:z-"))
+                ?.replace(/^.*z-/, ""),
+        );
+        expect(z(dock.splitter)).toBeLessThan(borderPanel);
+        expect(borderPanel).toBeLessThan(z(dock.dropIndicator));
         expect(z(dock.dropIndicator)).toBe(z(dock.edgeIndicator));
         expect(z(dock.dropIndicator)).toBeLessThan(z(dock.borderContent));
     });

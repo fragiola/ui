@@ -14,8 +14,10 @@
 // None comes here: sizes come from Tailwind's scale, the radius from the
 // radius tokens, the header from `h-control`. The whole layout paints from
 // ONE palette — the one on the root (`palette-surface` by default) — so a
-// palette class on the root re-tints every part, and one on a tabset only
-// that tabset. Tabsets are told apart from the floor by their line and their
+// palette class on the root re-tints every part. A tab's panel is portalled
+// into the root (so its content survives a move), not into its tabset: a
+// palette class on one tabset reaches its header, and its panels need the
+// same class. Tabsets are told apart from the floor by their line and their
 // radius, never by a second palette: a hardcoded `palette-raised` on the
 // tabset would redeclare `ring` and swallow a `surface-*` ring swap on the
 // root, and the ring is what marks the active tabset.
@@ -59,8 +61,10 @@
 //
 // ─── STACKING ───────────────────────────────────────────────────────────────
 // Panels are portalled into the root after the tabsets: splitters are `z-10`
-// so their grab area stays above the panels' edges, the indicators `z-20`
-// above the panels, and an overlay border's content `z-30` above both.
+// so their grab area stays above the panels' edges, a border's panels `z-15`
+// above the splitters (an overlay border's panel covers the layout's edge,
+// splitters included), the indicators `z-20` above every panel, and an
+// overlay border's content `z-30` — its own splitter — above all.
 //
 // Namespace object: a single `dock` export with all members.
 
@@ -173,11 +177,14 @@ const actions = tv({
 });
 
 // A tab's content. The engine positions it over the tabset's content area,
-// inside the tabset's border: it repeats the tabset's inner bottom radius.
+// inside the tabset's border: it repeats the tabset's inner bottom radius. A
+// border's panel (its layout path starts `/border/`, the package's stable
+// selector) stacks above the splitters (see the header).
 const panel = tv({
     base: `
         rounded-b-[calc(var(--radius-md)-1px)] bg-palette-base
         text-palette-contrast
+        data-[layout-path^='/border/']:z-15
     `,
 });
 
