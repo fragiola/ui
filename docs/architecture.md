@@ -122,6 +122,7 @@ menu        the option list        dropdown, context, select, combobox, sidebar
 field       the input control      input, textarea, select trigger
 layer       backdrop + panel       dialog, alert-dialog, drawer
 disclosure  expand/collapse        accordion, collapsible
+dock        the docking layout     dockable
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -131,6 +132,17 @@ The sidebar is the largest one so far: its items are `menu`'s navigation members
 (`navItem`, `navSubItem`), the same row as a dropdown item but lit by hover and
 `data-active` instead of focus. Everything else in it is `Clickable`, `Badge`, `Skeleton`,
 `Separator`, `Field`, `Tooltip` and `Drawer`, and it adds no stylesheet and no token.
+
+`dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
+one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
+reading the package's `data-*` state with Tailwind's data variants. It paints the
+whole layout from **one** palette, the root's, so a palette class on the root
+re-tints every part: tabsets stand apart from the floor by their line and radius,
+never by a second palette, which would redeclare `ring` and swallow a surface-ring
+swap. It has no tokens: Dockable's own examples size the layout with ~25 `--dk-*`
+custom properties, and here the spacing scale, the radius tokens and `h-control`
+do it. Its tab takes the values of `tabs`' tab without sharing a member — the two
+read different state — and a test pins the shared values on both sides.
 
 ### Families are shared `tv()`, with zero variants
 
@@ -161,6 +173,11 @@ written once. Normalize in CSS, in one place:
 
 A new library is one more selector here. This is cheaper than a React translation
 layer per component.
+
+The rule is for state that means *the same thing* across libraries. Dockable's states
+(`data-selected`, `data-active` on the tabset, `data-dragging`, `data-drop-kind`) are
+its own, read by one family, so `dock` reads them directly and the theme gains no
+variant.
 
 ---
 
@@ -204,6 +221,21 @@ This is what collapses three ways of writing an input into one. shadcn needs a s
 border-less input because its `Input` carries a border, which would double inside a
 group. With the body owned by the frame, a new control — numeric, multi-select, color
 picker — is only its own middle.
+
+### Templates: a composition, not a component
+
+A component with many parts ships one **template**: the parts assembled into the
+common case, so a page does not re-assemble them every time —
+`Input.Template.Simple`, and `Dockable.Template.Simple` (the whole docking layout
+from a model and a tab's content). The rules are the same for both:
+
+1. no style of its own — nothing beyond the parts and their family members;
+2. no appearance props;
+3. one `className`, to the main piece — the palette channel;
+4. at most seven props, flat (no `*Props` bags); behaviour props are forwarded.
+
+A layout that outgrows the template copies it and edits the parts. Other templates
+are examples to copy, never registry code: the registry ships one per component.
 
 ### One export per component
 
@@ -262,11 +294,30 @@ Fragiola today.
 `popup`, and what makes installing `context-menu` afterwards write **one file**. The
 style deduplication holds at distribution, not just in source.
 
-The cost: their `type` is a closed enum, so families and palettes publish as
-`registry:lib`. The label is lost, the behavior is not. And the format has **no
+The cost: their `type` is a closed enum, so families publish as `registry:lib` and
+palettes as `registry:file`. The label is lost, the behavior is not. And the format has **no
 versioning, therefore no update** — whoever installs keeps a frozen copy. That is
 inherent to copy-paste distribution; if it becomes a real problem, that is when to
 consider our own CLI, not before.
+
+### Special components
+
+Some components are too large to port into copy-paste source: a docking layout, a
+data grid, a scheduler. They are published packages, and the registry item ships
+**the styled layer over the package**: the package goes into `dependencies`, the
+item writes the parts (dressed by a family) and one template. Dockable is the
+first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`).
+The model, the commands and the behaviour stay the package's and are imported from
+it; the layer re-exports none of them. In the docs and the gallery they share one
+section, **Special**.
+
+**Files at the project root.** Code never targets `~/` (the project root): in a
+project with `src/` it would land outside `src/`, where its own `@/` imports do not
+look. The one exception is `~/public/` — static files a page fetches by URL, which
+Vite and Next serve from the root's `public/` with or without `src/`. Dockable's
+popout host page is one. The build refuses every other `~/` target and any `..`
+in the path (`scripts/targets.ts`), and the smoke expects the file at the root in
+all four scaffolds.
 
 ---
 
@@ -302,6 +353,13 @@ in the remaining surface:
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.
 - **`command`** brings a third state vocabulary, which joins the `highlighted`
   variant.
+- **`dockable`** — settled in Epic #66, the first special component (§5): the `dock`
+  family, the styled parts, `Template.Simple`, no token and no palette added. One
+  limit is open: the overflow menu is a `DropdownMenu`, whose popup portals into the
+  main document, so inside a popout window it would open in the other window. A
+  window's tab strip keeps every tab and scrolls instead. Restoring the menu there
+  needs a portal `container` on the `menu` family's Content — a public API change,
+  not taken. See `docs/port-report-epic-66.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
