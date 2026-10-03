@@ -132,7 +132,10 @@ const scrollingTabList = tv({
 
 // The values of ui/tabs.tsx's tab (see the header), lit by Dockable's state.
 // In a side border it turns: a start border reading upwards
-// (`data-tab-direction=up`) turns half a turn more.
+// (`data-tab-direction=up`) turns half a turn more. Turned, the text's inline
+// axis is vertical, and `px`/`py` are logical (padding-inline/-block): the
+// inline padding is the room above and below the label, the block padding
+// the room beside it — not the other way round.
 const tab = tv({
     base: `
         group/tab relative flex min-h-8 max-w-60 shrink-0 self-stretch cursor-pointer select-none
@@ -146,8 +149,8 @@ const tab = tv({
         [&_svg]:pointer-events-none [&_svg]:shrink-0
         group-data-[orientation=vertical]/border:max-h-60
         group-data-[orientation=vertical]/border:min-w-8
-        group-data-[orientation=vertical]/border:px-0
-        group-data-[orientation=vertical]/border:py-2.5
+        group-data-[orientation=vertical]/border:px-3
+        group-data-[orientation=vertical]/border:py-0
         group-data-[orientation=vertical]/border:[writing-mode:vertical-rl]
         group-data-[tab-direction=up]/border:rotate-180
     `,
