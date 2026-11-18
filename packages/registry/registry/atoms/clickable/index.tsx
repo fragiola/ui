@@ -31,7 +31,7 @@ import { cn } from "#/lib/cn";
 // itself.
 //
 // Icon sizing follows the button's size automatically, with an escape hatch:
-// `[&_svg:not([class*='size-'])]:size-4`. The `:not()` is what lets an
+// `[&_svg:not([class*='size-'])]:size-icon`. The `:not()` is what lets an
 // explicit override win without `!important`.
 //
 // `disabled` is a `tv` variant driven from the DOM prop, so a `<button>` and a
@@ -46,10 +46,10 @@ import { cn } from "#/lib/cn";
 
 const clickable = tv({
     base: `
-        inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md
+        inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control
         text-sm font-medium transition-colors
         focus-visible:outline-2 focus-visible:outline-palette-ring
-        [&_svg:not([class*='size-'])]:size-4
+        [&_svg:not([class*='size-'])]:size-icon
     `,
     variants: {
         variant: {

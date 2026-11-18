@@ -41,7 +41,7 @@ const root = tv({
         bg-palette-soft text-palette-contrast
         field-focus:outline-2 field-focus:outline-palette-ring
         data-disabled:cursor-not-allowed data-disabled:opacity-50
-        [&_svg:not([class*='size-'])]:size-3.5
+        [&_svg:not([class*='size-'])]:size-icon-sm
     `,
 });
 

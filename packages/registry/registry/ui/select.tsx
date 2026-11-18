@@ -57,7 +57,7 @@ function SelectTrigger({
             {...props}
         >
             {children}
-            <ChevronDownIcon className="size-4 text-palette-accent/85" />
+            <ChevronDownIcon className="size-icon text-palette-accent/85" />
         </SelectPrimitive.Trigger>
     );
 }

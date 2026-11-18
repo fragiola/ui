@@ -81,7 +81,7 @@ function NavigationMenuTrigger({
         <NavigationMenuPrimitive.Trigger
             data-slot="navigation-menu-trigger"
             className={cn(
-                "relative cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
+                "relative cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-control px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
                 "highlighted:bg-palette-soft highlighted:text-palette-contrast",
                 "data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast",
                 "focus-visible:outline-2 focus-visible:outline-palette-ring",
@@ -91,7 +91,7 @@ function NavigationMenuTrigger({
         >
             {children}
             <ChevronDownIcon
-                className="size-4 text-palette-accent/85 transition-transform duration-200 data-popup-open:rotate-180"
+                className="size-icon text-palette-accent/85 transition-transform duration-200 data-popup-open:rotate-180"
                 data-slot="navigation-menu-icon"
             />
         </NavigationMenuPrimitive.Trigger>
@@ -246,7 +246,7 @@ function NavigationMenuBackdrop({
             className={cn(
                 "fixed inset-0 z-40 bg-scrim",
                 "data-open:animate-in data-open:fade-in-0",
-                "data-closed:animate-out data-closed:fade-out-0",
+                "data-closed:animate-out data-closed:fade-out-0 duration-150",
                 className as string,
             )}
             {...props}

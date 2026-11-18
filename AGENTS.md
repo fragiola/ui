@@ -44,6 +44,11 @@ These are deliberately tight. Do not "fix" them.
 8. **Verify by compiling, not by reading.** A class that does not exist fails
    silently: no build error, no type error, no visible crash — it simply does
    nothing. This was the dominant failure mode in the POC.
+9. **A design axis only sets tokens, and its tokens reach utilities as `var()`.**
+   Spacing, radius, typography, elevation and motion are `data-*` attributes
+   (architecture §4). No component gets a variant or a prop for one. A token
+   an axis changes must compile to `var()` or to an expression over an axis
+   variable, never to an inlined value. `tests/design-axes.test.ts` pins it.
 
 ## Secondary text
 
@@ -64,7 +69,7 @@ Apply this value uniformly, including to placeholders.
 ## Playground
 
 `pnpm dev` serves `apps/playground`: the registry read in place, with hot reload,
-a theme / direction / density toolbar and the source beside the stage. It shows
+a theme / direction / design-axes toolbar and the source beside the stage. It shows
 two things, which are not interchangeable:
 
 - **Examples** live in `examples/react/src/examples` and are listed in its

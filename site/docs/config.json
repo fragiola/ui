@@ -47,8 +47,8 @@
                     "path": "architecture/rtl"
                 },
                 {
-                    "label": "Density",
-                    "path": "architecture/density"
+                    "label": "Design axes",
+                    "path": "architecture/design-axes"
                 }
             ]
         },

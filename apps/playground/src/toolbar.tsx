@@ -1,7 +1,8 @@
 import { Clickable } from "#/components/atoms/clickable";
 import { LEVELS, THEMES } from "../../../examples/gallery.ts";
+import { AXES, AXIS_NAMES, type AxisName } from "./axes";
 import type { Entry } from "./catalog";
-import { DENSITIES, DIRECTIONS, type View } from "./view";
+import { DIRECTIONS, type View } from "./view";
 
 type ToolbarProps = {
     view: View;
@@ -10,11 +11,8 @@ type ToolbarProps = {
 };
 
 const DIRECTION_LABELS = { ltr: "LTR", rtl: "RTL" } as const;
-const DENSITY_LABELS = {
-    default: "Default",
-    compact: "Compact",
-    spacious: "Spacious",
-} as const;
+// "snug" → "Snug": a level's label is its name.
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function Toolbar({ view, entry, onChange }: ToolbarProps) {
     const level = LEVELS.find((l) => l.id === entry?.level);
@@ -45,15 +43,23 @@ export function Toolbar({ view, entry, onChange }: ToolbarProps) {
                 value={view.dir}
                 onChange={(dir) => onChange({ ...view, dir })}
             />
-            <Choice
-                label="Density"
-                options={DENSITIES.map((d) => ({
-                    value: d,
-                    label: DENSITY_LABELS[d],
-                }))}
-                value={view.density}
-                onChange={(density) => onChange({ ...view, density })}
-            />
+            {AXIS_NAMES.map((name: AxisName) => (
+                <Choice<string>
+                    key={name}
+                    label={AXES[name].label}
+                    options={AXES[name].levels.map((level) => ({
+                        value: level,
+                        label: capitalize(level),
+                    }))}
+                    value={view.axes[name]}
+                    onChange={(level) =>
+                        onChange({
+                            ...view,
+                            axes: { ...view.axes, [name]: level },
+                        })
+                    }
+                />
+            ))}
             <Clickable.Button
                 variant="outline"
                 size="sm"

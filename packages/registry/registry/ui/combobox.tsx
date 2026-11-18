@@ -116,7 +116,7 @@ function ComboboxTrigger({
             className={cn(className as string)}
             {...props}
         >
-            <ChevronDownIcon className="size-4 text-palette-accent/85" />
+            <ChevronDownIcon className="size-icon text-palette-accent/85" />
         </ComboboxPrimitive.Trigger>
     );
 }
@@ -140,7 +140,7 @@ function ComboboxClear({
             className={cn(className as string)}
             {...props}
         >
-            <XIcon className="size-4" />
+            <XIcon className="size-icon" />
         </ComboboxPrimitive.Clear>
     );
 }
@@ -343,7 +343,7 @@ function ComboboxChipRemove({
             className={cn(className as string)}
             {...props}
         >
-            <XIcon className="size-3" />
+            <XIcon className="size-icon-xs" />
         </ComboboxPrimitive.ChipRemove>
     );
 }

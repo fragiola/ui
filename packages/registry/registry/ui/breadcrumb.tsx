@@ -98,7 +98,7 @@ function BreadcrumbSeparator({
             data-slot="breadcrumb-separator"
             aria-hidden="true"
             className={cn(
-                "inline-flex items-center text-palette-accent/60 [&_svg]:size-3.5",
+                "inline-flex items-center text-palette-accent/60 [&_svg]:size-icon-sm",
                 className as string,
             )}
             {...props}
@@ -120,7 +120,7 @@ function BreadcrumbEllipsis({
             )}
             {...props}
         >
-            <MoreHorizontalIcon className="size-4" />
+            <MoreHorizontalIcon className="size-icon" />
             <span className="sr-only">More</span>
         </span>
     );

@@ -28,7 +28,7 @@ export function App() {
     }, [entry]);
 
     // Choosing an item is a navigation: back returns to the previous item.
-    // Theme, direction, density and the panel are settings: they stay as
+    // Theme, direction, the design axes and the panel are settings: they stay as
     // they are through back and forward, and only rewrite the current URL.
     useEffect(() => {
         const search = toSearch(view);

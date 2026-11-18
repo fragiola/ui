@@ -254,12 +254,79 @@ a second scale means two live systems. Odd values from a design use arbitrary va
 
 Radius and control height **are** design-system decisions and stay as tokens.
 
-Density is swappable per subtree, because Tailwind v4's numeric scale is `calc()` over
-a custom property:
+### Five design axes, set per subtree
 
-```css
-[data-density="compact"] { --spacing: 0.2rem; }
-```
+Spacing, radius, typography, elevation and motion are **axes**: a `data-*` attribute
+on any element, inherited by its subtree, with a few named levels. The default level
+is the absence of the attribute and keeps the values the library had before the axes.
+
+| axis | attribute | levels | token |
+|---|---|---|---|
+| spacing | `data-density` | compact, snug, default, comfortable, spacious | `--spacing` (and `h-control`, 9 steps of it) |
+| radius | `data-radius` | flat, subtle, default, rounded, full | `--radius-sm/md/lg/control/pill` |
+| typography | `data-text` | small, default, large | `--text-scale` (every `text-*`, and the icon sizes) |
+| elevation | `data-elevation` | flat, subtle, default, raised | `--elevation-*` (behind `--shadow-*`) |
+| motion | `data-motion` | none, fast, default, expressive | `--motion-scale` (every duration) |
+
+This is the answer to shadcn's styles (`style-vega.css`, `style-lyra.css`, ...): eight
+files of about 1,800 lines, each redefining every component's `cn-*` classes. Each one
+bundles spacing, radius, type and focus, and is chosen at install time. Here an axis
+**only sets tokens**. A component has no variant, prop or class for any axis (rule 4),
+and the axes change independently, at runtime, per subtree. The values of every level
+are pinned in `packages/registry/tests/design-axes.test.ts`, and the user-facing page
+is `site/docs/architecture/design-axes.mdx`.
+
+**The runtime-token rule.** A token an axis changes must reach its utility as `var()`.
+An inlined value cannot be overridden in a subtree, so the axis would silently do
+nothing (rule 8: verify by compiling). Tailwind 4.3 inlines more than it seems, so
+`global.css` uses three forms:
+
+- **A plain `@theme` token.** Radius uses it: Tailwind emits it on `:root` and
+  `rounded-*` reads `var(--radius-*)`. Under `@theme inline`, `rounded-md` compiled to
+  `border-radius: 8px`.
+- **An `@theme inline` token whose value is an expression over an axis variable.** The
+  expression is inlined, so it is computed **where the utility is used**. `h-control`
+  is `calc(var(--spacing) * 9)`, `text-sm` is `calc(0.875rem * var(--text-scale, 1))`
+  and `duration-200` is `calc(200ms * var(--motion-scale, 1))`; Tailwind's
+  `--transition-duration-*` namespace overrides the numeric `duration-*` classes. The
+  same expression declared as a custom property on `:root` would be computed once, on
+  `:root`, and inherited as a fixed length, so a nested level would never reach it.
+  That is also why radius levels set literal values instead of deriving `sm`/`lg` from
+  one base.
+- **An indirection for shadows.** Tailwind always inlines a shadow's value (it rewrites
+  the colours to inject `--tw-shadow-color`), so `--shadow-md` is `var(--elevation-md)`
+  and the levels set `--elevation-*`. The cost is that `shadow-<color>` no longer tints
+  these shadows; the registry uses none.
+
+**Radius roles.** A corner picks the member for its role:
+
+- `rounded-sm`, `rounded-md` and `rounded-lg` are the scale. Their existing uses were
+  kept as they were, so the default renders unchanged.
+- `rounded-control` is a standalone control (Clickable, the field box, a navigation
+  trigger). It is a pill at `full`.
+- `rounded-pill` is a pill by style (Badge, Switch and its thumb, the drawer handle). It
+  is square at `flat`.
+- `rounded-full` is an intrinsic circle (avatar, radio, slider thumb, track). It never
+  changes.
+
+The field box caps `--radius-control` at half the control height, so a textarea never
+becomes a stadium. Nested radii have a floor at zero. Dockable's header keeps a fixed
+`2.25rem` floor instead of `min-h-control`, because edge docking needs about 30px at any
+density.
+
+**Icons follow the text axis**, not spacing. The `--size-icon*` tokens (`size-icon-xs`,
+`size-icon-sm`, `size-icon` and `size-icon-lg`, equal to `size-3`, `size-3.5`, `size-4`
+and `size-6` at the default) scale with `--text-scale`. The `--size-*` namespace
+generates only `size-*`, never `p-`, `gap-` or `w-`. `cn.ts` registers them, and the
+`control` and `pill` radii, with tailwind-merge.
+
+**Motion.** `none` makes every transition and enter/exit animation instant (Base UI
+unmounts on the next frame), and `prefers-reduced-motion: reduce` forces `none`
+whatever the attribute says. An element animated by tw-animate-css carries a
+`duration-*` so its animation scales too (tw-animate reads `--tw-duration`).
+
+**Portals.** An axis set on a subtree does not reach popups portalled to `<body>`.
+Setting it on `<html>` covers everything, as the playground does.
 
 **RTL is an MVP goal.** Logical properties on the inline axis (`ps`/`pe`,
 `border-s`/`border-e`, `start`/`end`); the block axis stays physical. Where no logical

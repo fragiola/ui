@@ -130,7 +130,7 @@ function DrawerPopup({
                 // the transition is off while the finger is down.
                 "ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform",
                 "data-swiping:duration-0 data-swiping:select-none",
-                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms)]",
+                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms*var(--motion-scale,1))]",
                 // sizing + radius per anchored edge. Radius is removed on the
                 // ANCHORED edge (the one touching the screen); the free edges
                 // keep it. left/right use PHYSICAL radius (rounded-r/l), not
@@ -161,7 +161,7 @@ function DrawerHandle({ className, ...props }: React.ComponentProps<"div">) {
             data-slot="drawer-handle"
             aria-hidden
             className={cn(
-                "mx-auto mt-3 mb-2 h-1.5 w-10 shrink-0 rounded-full bg-palette-line",
+                "mx-auto mt-3 mb-2 h-1.5 w-10 shrink-0 rounded-pill bg-palette-line",
                 className as string,
             )}
             {...props}
