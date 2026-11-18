@@ -86,6 +86,17 @@ When a scenario becomes something readers should see, it becomes an example,
 with its entry in `examples/react/src/examples/index.ts`. A scenario is never
 linked from the docs.
 
+**A modal example covers the site's page.** On fragiola.com a Dialog, an
+AlertDialog or a Drawer opened in an example (the Sidebar's mobile Drawer too)
+is promoted over the whole page, not kept inside the example's frame
+(fragiola/www `CONTRACT.md` v1.3 §5.4). `examples/react/src/host/overlay-promotion.ts`
+holds the trigger's click until the frame covers the site's viewport, pins the
+stage where it was, and lets the frame go back once the exit animation has
+ended. It keys off the registry's `data-slot` names, so neither the components
+nor the examples know about it. Popups that are not modal (menus, popovers,
+selects, tooltips) still open inside the frame: their example's `height` floor
+gives them room. `check:embeds` checks both.
+
 ## Verification commands
 
 | command | does |
@@ -99,6 +110,6 @@ linked from the docs.
 | `pnpm build` | `pnpm -r build` (production build) |
 | `pnpm registry:build` | build the registry JSON files (`packages/registry/dist/r`) |
 | `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
-| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.2, fragiola/www `CONTRACT.md`) |
+| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.3, fragiola/www `CONTRACT.md`) |
 | `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
-| `pnpm --filter examples-react check:embeds` | every example in a real iframe (needs `playwright install chromium`) |
+| `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium`) |

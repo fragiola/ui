@@ -21,7 +21,10 @@ import type { LevelId } from "../../../gallery.ts";
 // wider frames only add room), plus a margin: `check:embeds --floors`
 // measures them. The rest are the content's own height in a 1024px frame,
 // so the frame neither jumps when the first `resize` arrives nor keeps
-// blank space in a wide one.
+// blank space in a wide one. The modal examples (dialog, alert dialog,
+// drawer) are among the rest: on fragiola.com their popups cover the page,
+// the frame promoted over it (contract v1.3 §5.4, src/host/), so the frame
+// keeps no room for them.
 export type Example = {
     id: string;
     title: string;
@@ -237,7 +240,7 @@ export const examples: Example[] = [
         features: ["Dialog.Content", "Dialog.Body", "Dialog.Footer", "layer"],
         docs: "/docs/overlays/dialog",
         layout: "flow",
-        height: 500,
+        height: 258,
         load: () => import("./dialog.tsx"),
     },
     {
@@ -255,7 +258,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/overlays/alert-dialog",
         layout: "flow",
-        height: 300,
+        height: 258,
         load: () => import("./alert-dialog.tsx"),
     },
     {
@@ -273,7 +276,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/overlays/drawer",
         layout: "flow",
-        height: 380,
+        height: 342,
         load: () => import("./drawer.tsx"),
     },
     {

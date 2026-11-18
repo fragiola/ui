@@ -1,6 +1,7 @@
 import { lazy, StrictMode, Suspense, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { type Example, examples } from "./examples";
+import { promoteOverlays } from "./host/overlay-promotion";
 import { announceReady } from "./messages";
 import { keepNavigationInPlace } from "./navigation";
 import { syncTheme } from "./theme";
@@ -18,6 +19,8 @@ const id = new URLSearchParams(window.location.search).get("id");
 const example = examples.find((e) => e.id === id);
 // The index keeps its own links.
 if (example) keepNavigationInPlace();
+// A modal overlay covers the site's page, not the frame (contract §5.4).
+if (example) promoteOverlays(example.id);
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root is missing from index.html");
@@ -37,6 +40,9 @@ createRoot(root).render(
 // A `fill` example (an app shell) fills the frame edge to edge: the frame's
 // height is fixed (contract §5.3), and the whole frame is the example's —
 // padding would only take width from it.
+//
+// `data-stage` is what overlay promotion pins in place while the frame
+// covers the site's viewport (src/host/overlay-promotion.ts).
 function Stage({ example }: { example: Example }) {
     const Demo = lazyExamples.get(example.id);
     const stage = useRef<HTMLElement>(null);
@@ -44,7 +50,7 @@ function Stage({ example }: { example: Example }) {
     if (!Demo) return null;
     const fill = example.layout === "fill";
     return (
-        <main ref={stage} className={fill ? "h-svh" : "p-8"}>
+        <main ref={stage} data-stage="" className={fill ? "h-svh" : "p-8"}>
             <div
                 ref={content}
                 className={fill ? "h-full" : "flex justify-center"}
