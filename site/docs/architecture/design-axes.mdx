@@ -1,0 +1,139 @@
+---
+title: "Design axes"
+description: "Spacing, radius, typography, elevation and motion: five independent data attributes that reshape every component in a subtree, with no variant."
+---
+
+Five **design axes** change how the whole library looks: spacing, radius,
+typography, elevation and motion. Each axis is a `data-*` attribute that you
+set on any element. Its descendants inherit the level you choose, the same way
+they inherit a palette.
+
+```tsx
+<html data-density="compact" data-radius="flat" data-elevation="flat">
+```
+
+An axis only changes tokens. No component has a variant, a prop or a class for
+it: a button, a field or a dialog reads the same tokens at every level.
+
+| axis | attribute | levels |
+|---|---|---|
+| Spacing | `data-density` | `compact`, `snug`, **default**, `comfortable`, `spacious` |
+| Radius | `data-radius` | `flat`, `subtle`, **default**, `rounded`, `full` |
+| Typography | `data-text` | `small`, **default**, `large` |
+| Elevation | `data-elevation` | `flat`, `subtle`, **default**, `raised` |
+| Motion | `data-motion` | `none`, `fast`, **default**, `expressive` |
+
+The default level of an axis is the absence of its attribute. To return a
+subtree to the default, remove the attribute; there is no `"default"` value.
+
+## Independent and nested
+
+The axes are independent. A dense, square, flat dashboard and a spacious,
+rounded settings page are two combinations of the same components. The axes
+also nest: a compact toolbar can sit inside a spacious page, and the toolbar
+follows its own level.
+
+```tsx
+<main data-density="spacious" data-radius="rounded">
+    <nav data-density="compact">…</nav>
+</main>
+```
+
+## Spacing
+
+Spacing sets `--spacing`, the unit of Tailwind's numeric scale. Every `p-*`,
+`gap-*`, `m-*` and numeric size follows it, and so does the control height
+(`h-control`, nine steps of `--spacing`).
+
+| level | `--spacing` |
+|---|---|
+| `compact` | `0.2rem` |
+| `snug` | `0.225rem` |
+| default | `0.25rem` |
+| `comfortable` | `0.275rem` |
+| `spacious` | `0.3rem` |
+
+## Radius
+
+Radius sets the corner tokens. Each corner in the library uses the member that
+matches its role:
+
+- `rounded-sm`, `rounded-md` and `rounded-lg` are the scale: small marks
+  (checkbox), items and blocks, and containers (popup, dialog).
+- `rounded-control` is a standalone control: a button, a field or a navigation
+  trigger.
+- `rounded-pill` is a shape that is a pill by style: a badge, a switch or the
+  drawer handle.
+- `rounded-full` is an intrinsic circle, such as an avatar, a radio, a slider
+  thumb or a track. It never changes.
+
+| level | sm | md | lg | control | pill |
+|---|---|---|---|---|---|
+| `flat` | 0 | 0 | 0 | 0 | 0 |
+| `subtle` | 2px | 4px | 8px | 4px | 4px |
+| default | 4px | 8px | 16px | 8px | pill |
+| `rounded` | 6px | 12px | 20px | 12px | pill |
+| `full` | 8px | 16px | 24px | pill | pill |
+
+At `full`, buttons become pills and containers stay capped at 24px. A field is
+capped at half the control height, so a one-line field is a pill, and a
+textarea keeps round corners instead of turning into a stadium.
+
+## Typography
+
+Typography scales every `text-*` size by `--text-scale`. Line heights keep
+Tailwind's ratios, so they follow the size.
+
+| level | `--text-scale` | `text-sm` |
+|---|---|---|
+| `small` | `0.875` | 12.25px |
+| default | `1` | 14px |
+| `large` | `1.125` | 15.75px |
+
+**Icons follow the text, not the spacing.** An icon sits beside a label, so it
+keeps its proportion to the label. The icon sizes (`size-icon-xs`,
+`size-icon-sm`, `size-icon`, `size-icon-lg`) scale with `data-text`, and
+`data-density` leaves them alone. An explicit `size-*` on an icon still
+overrides the default of its context.
+
+## Elevation
+
+Elevation sets the shadows. At `flat` there are no shadows, and every layer
+(popup, dialog, tabset) is told apart by its border. `subtle` moves each
+shadow one step down Tailwind's scale, and `raised` moves it one step up.
+
+## Motion
+
+Motion multiplies every duration: transitions, the enter and exit animations
+of popups, dialogs and drawers, the skeleton pulse and the progress bar.
+
+| level | multiplier |
+|---|---|
+| `none` | 0, so everything is instant |
+| `fast` | 0.5 |
+| default | 1 |
+| `expressive` | 1.5 |
+
+**Reduced motion always wins.** When the user's system asks for reduced
+motion, the level is `none`, whatever `data-motion` says.
+
+## Popups and portals
+
+Popups, dialogs and drawers render in a portal under `<body>`, outside the
+subtree that opened them. An axis set on a subtree does not reach them. To
+make the whole interface follow an axis, set it on `<html>`.
+
+## Switching
+
+There is no built-in control for the axes. To try a level, set the attribute
+on `<html>` from your browser's devtools. To let people choose, wire your own
+control that sets the attribute and persists the choice, the way `next-themes`
+does for `data-theme`.
+
+## Compared with shadcn/ui
+
+shadcn/ui offers several styles, each a stylesheet that redefines every
+component's classes. A style bundles spacing, radius, type and focus
+together, and you choose it when you install. In Fragiola the five axes are
+separate, change at runtime and apply per subtree, and each component is
+written once.

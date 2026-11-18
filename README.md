@@ -15,7 +15,8 @@ pnpm dev                                # the playground: every component live, 
 
 The playground (`apps/playground`) renders every example of the docs and every
 dev-only scenario against the registry sources, with a theme, direction and
-density toolbar and the source beside it. Nothing else needs to run.
+design-axes toolbar (density, radius, text, elevation, motion) and the source
+beside it. Nothing else needs to run.
 
 What fragiola.com consumes:
 
