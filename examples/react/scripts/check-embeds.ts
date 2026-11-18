@@ -127,11 +127,128 @@ frame.src = src.href;
 </script>
 </body></html>`;
 
+// The v1.3 host (contract §5.4), as fragiola.com's frame does it: `host`
+// after `ready`; on `overlay` open, `promote` with where the frame is and
+// the viewport it is about to fill; on `armed` (or after 500 ms) the frame
+// goes to the top layer at the viewport's size and `promoted` follows, in
+// the same task; on `overlay` closed it goes back. The frame sits below and
+// beside a spacer so `rect` is not the origin. Every animation frame,
+// `window.samples` records the frame's box, the stage content's box in the
+// page and every modal popup's box in the page.
+const HOST_V13 = `<!doctype html>
+<html><head><style>
+#frame { display:block; position:static; inset:auto; margin:0; padding:0; border:0;
+         overflow:visible; background:transparent; opacity:0; }
+</style></head>
+<body style="margin:0">
+<div style="height:120px"></div>
+<div id="wrapper" style="margin-left:40px">
+<iframe id="frame" popover="manual"></iframe>
+</div>
+<script>
+const params = new URLSearchParams(location.search);
+const frame = document.getElementById("frame");
+const wrapper = document.getElementById("wrapper");
+const floor = Number(params.get("floor"));
+const width = params.get("width") + "px";
+// the wrapper is the frame's inline box, as on the site
+wrapper.style.width = width;
+window.messages = [];
+window.samples = [];
+let height = floor;
+let phase = "inline";
+let pending = null;
+let timer;
+const inline = () => {
+    frame.style.position = "";
+    frame.style.top = frame.style.left = "";
+    frame.style.width = width;
+    frame.style.height = height + "px";
+};
+inline();
+frame.style.colorScheme = params.get("scheme") || "light";
+const post = (m) => frame.contentWindow.postMessage(m, location.origin);
+const measure = () => {
+    const box = wrapper.getBoundingClientRect();
+    const root = document.documentElement;
+    return {
+        rect: { x: box.left, y: box.top, width: box.width, height: frame.getBoundingClientRect().height },
+        viewport: { width: root.clientWidth, height: root.clientHeight },
+    };
+};
+const promote = () => {
+    if (phase !== "arming") return;
+    clearTimeout(timer);
+    phase = "promoted";
+    frame.style.position = "fixed";
+    frame.style.top = frame.style.left = "0px";
+    frame.style.width = pending.viewport.width + "px";
+    frame.style.height = pending.viewport.height + "px";
+    frame.showPopover();
+    post({ type: "fragiola:example:promoted", ...pending });
+};
+addEventListener("message", (event) => {
+    if (event.source !== frame.contentWindow) return;
+    const data = event.data;
+    window.messages.push(data);
+    if (data.type === "fragiola:example:ready") {
+        frame.style.opacity = "1";
+        post({ type: "fragiola:example:host", overlay: true });
+    } else if (data.type === "fragiola:example:resize") {
+        height = Math.max(floor, data.height);
+        if (phase === "inline") frame.style.height = height + "px";
+    } else if (data.type === "fragiola:example:overlay" && data.open === true) {
+        if (phase !== "inline") return;
+        phase = "arming";
+        pending = measure();
+        post({ type: "fragiola:example:promote", ...pending });
+        timer = setTimeout(promote, 500);
+    } else if (data.type === "fragiola:example:armed") {
+        promote();
+    } else if (data.type === "fragiola:example:overlay" && data.open === false) {
+        clearTimeout(timer);
+        if (phase === "promoted") frame.hidePopover();
+        phase = "inline";
+        inline();
+    }
+});
+const MODAL = '[data-slot="dialog-portal"], [data-slot="alert-dialog-portal"], [data-slot="drawer-portal"]';
+const POPUP = '[role="dialog"], [role="alertdialog"]';
+const sample = () => {
+    const doc = frame.contentDocument;
+    const f = frame.getBoundingClientRect();
+    const content = doc && doc.querySelector("[data-stage] > div");
+    const c = content && content.getBoundingClientRect();
+    const popups = doc ? [...doc.querySelectorAll(MODAL)].flatMap((portal) =>
+        [...portal.querySelectorAll(POPUP)].map((p) => {
+            const b = p.getBoundingClientRect();
+            return { x: f.x + b.x, y: f.y + b.y, width: b.width, height: b.height };
+        })) : [];
+    window.samples.push({
+        promoted: frame.matches(":popover-open"),
+        frame: { x: f.x, y: f.y, width: f.width, height: f.height },
+        content: c && { x: f.x + c.x, y: f.y + c.y, width: c.width, height: c.height },
+        popups,
+    });
+    requestAnimationFrame(sample);
+};
+const src = new URL("${BASE}index.html", location.href);
+src.searchParams.set("id", params.get("id"));
+if (params.has("theme")) src.searchParams.set("theme", params.get("theme"));
+frame.src = src.href;
+requestAnimationFrame(sample);
+</script>
+</body></html>`;
+
 const outside: string[] = [];
 const server = createServer(async (req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");
     if (url.pathname === "/host.html") {
         res.writeHead(200, { "content-type": "text/html" }).end(HOST);
+        return;
+    }
+    if (url.pathname === "/host-v13.html") {
+        res.writeHead(200, { "content-type": "text/html" }).end(HOST_V13);
         return;
     }
     if (url.pathname.startsWith(BASE)) {
@@ -555,6 +672,220 @@ for (const example of selected) {
     await page.close();
     console.log(
         `${problems.some((p) => p.startsWith(`${example.id}:`)) ? "✗" : "✓"} ${example.id}`,
+    );
+}
+
+// ─── Overlay promotion (v1.3 §5.4) ──────────────────────────────────────────
+//
+// Each modal trigger, opened and closed in the v1.3 host (HOST_V13), every
+// animation frame sampled:
+//
+//   - while a modal popup exists, the frame is promoted and covers the page's
+//     viewport — so no frame of the opening or the exit animation plays in
+//     the inline frame (nothing cut, nothing moved mid-animation)
+//   - the stage content never moves on the page (±1px), before, during and
+//     after
+//   - the messages: `overlay` open, `armed`, then `overlay` closed only
+//     once the popup is gone; the frame back in place after it
+//   - the popup is placed in the page's viewport: a dialog centred, a drawer
+//     against an edge
+//
+// The sidebar is checked narrow (its drawer) and wide, where its trigger
+// collapses the column and must promote nothing.
+type Box = { x: number; y: number; width: number; height: number };
+type Sample = {
+    promoted: boolean;
+    frame: Box;
+    content?: Box;
+    popups: Box[];
+};
+const MODALS: Record<string, { width?: number; slot: string }> = {
+    dialog: { slot: "dialog-trigger" },
+    "alert-dialog": { slot: "alert-dialog-trigger" },
+    drawer: { slot: "drawer-trigger" },
+    sidebar: { width: 400, slot: "sidebar-trigger" },
+};
+const PAGE = { width: 1200, height: 900 };
+const near = (a: number, b: number, by = 1) => Math.abs(a - b) <= by;
+
+async function openV13(page: Page, id: string, floor: number, width: number) {
+    const query = new URLSearchParams({
+        id,
+        floor: String(floor),
+        width: String(width),
+        theme: "light",
+    });
+    await page.goto(`${origin}/host-v13.html?${query}`);
+    await page.waitForFunction(
+        () =>
+            (window as unknown as { messages: Message[] }).messages.some(
+                (m) => m.type === "fragiola:example:ready",
+            ),
+        undefined,
+        { timeout: 15000 },
+    );
+    const frame = page.frames().find((f) => f !== page.mainFrame());
+    if (!frame) throw new Error(`${id}: no frame`);
+    await page.waitForTimeout(400);
+    return frame;
+}
+
+const samplesOf = (page: Page): Promise<Sample[]> =>
+    page.evaluate(() => (window as unknown as { samples: Sample[] }).samples);
+const resetSamples = (page: Page) =>
+    page.evaluate(() => {
+        (window as unknown as { samples: Sample[] }).samples = [];
+        (window as unknown as { messages: Message[] }).messages = [];
+    });
+
+const promotionChecked = selected.filter((e) => e.id in MODALS);
+for (const example of promotionChecked) {
+    const modal = MODALS[example.id];
+    if (!modal) continue;
+    const say = (problem: string) =>
+        problems.push(`${example.id} (promotion): ${problem}`);
+    const page = await browser.newPage({ viewport: PAGE });
+    page.on("pageerror", (error) => say(`page error: ${error.message}`));
+    try {
+        const width = modal.width ?? WIDTH;
+        const frame = await openV13(page, example.id, example.height, width);
+        const triggers = frame.locator(`main [data-slot="${modal.slot}"]`);
+        const count = await triggers.count();
+        if (count === 0) say("no modal trigger");
+        for (let i = 0; i < count; i++) {
+            const label = `trigger ${i + 1}`;
+            await resetSamples(page);
+            await page.waitForTimeout(100);
+            const before = (await samplesOf(page)).at(-1)?.content;
+            await triggers.nth(i).click();
+            await frame
+                .locator('[role="dialog"], [role="alertdialog"]')
+                .first()
+                .waitFor({ state: "visible", timeout: 3000 });
+            await page.waitForTimeout(700);
+            const opened = await samplesOf(page);
+            const last = opened.at(-1);
+            const popup = last?.popups[0];
+            if (!popup) {
+                say(`${label}: no popup measured`);
+                continue;
+            }
+            const centred =
+                near(popup.x + popup.width / 2, PAGE.width / 2, 2) &&
+                near(popup.y + popup.height / 2, PAGE.height / 2, 2);
+            const atEdge =
+                near(popup.x, 0) ||
+                near(popup.y, 0) ||
+                near(popup.x + popup.width, PAGE.width) ||
+                near(popup.y + popup.height, PAGE.height);
+            if (example.id === "dialog" || example.id === "alert-dialog") {
+                if (!centred) say(`${label}: popup not centred in the page`);
+            } else if (!atEdge) {
+                say(`${label}: drawer not against an edge of the page`);
+            }
+            await page.keyboard.press("Escape");
+            await page
+                .waitForFunction(
+                    () =>
+                        (
+                            window as unknown as { messages: Message[] }
+                        ).messages.some(
+                            (m) =>
+                                m.type === "fragiola:example:overlay" &&
+                                (m as { open?: boolean }).open === false,
+                        ),
+                    undefined,
+                    { timeout: 3000 },
+                )
+                .catch(() => say(`${label}: no overlay closed message`));
+            await page.waitForTimeout(200);
+            const samples = await samplesOf(page);
+            const types = (await messagesOf(page)).map((m) =>
+                m.type === "fragiola:example:overlay"
+                    ? `overlay:${(m as { open?: boolean }).open}`
+                    : m.type.replace("fragiola:example:", ""),
+            );
+            const order = types.filter((t) => t !== "resize").join(" → ");
+            if (order !== "overlay:true → armed → overlay:false") {
+                say(`${label}: messages ${order}`);
+            }
+            const covering = (b: Box) =>
+                near(b.x, 0) &&
+                near(b.y, 0) &&
+                near(b.width, PAGE.width) &&
+                near(b.height, PAGE.height);
+            const unpromoted = samples.filter(
+                (x) =>
+                    x.popups.length > 0 && !(x.promoted && covering(x.frame)),
+            ).length;
+            if (unpromoted) {
+                say(
+                    `${label}: ${unpromoted} frame(s) painted a popup outside a promoted frame`,
+                );
+            }
+            if (before) {
+                const moved = samples.filter(
+                    (x) =>
+                        x.content &&
+                        !(
+                            near(x.content.x, before.x) &&
+                            near(x.content.y, before.y) &&
+                            near(x.content.width, before.width)
+                        ),
+                ).length;
+                if (moved) {
+                    const first = samples.find(
+                        (x) =>
+                            x.content &&
+                            !(
+                                near(x.content.x, before.x) &&
+                                near(x.content.y, before.y) &&
+                                near(x.content.width, before.width)
+                            ),
+                    );
+                    say(
+                        `${label}: the example moved in ${moved} frame(s): ${JSON.stringify(before)} → ${JSON.stringify(first?.content)}${first?.promoted ? " (promoted)" : ""}`,
+                    );
+                }
+            }
+            const focused = await triggers
+                .nth(i)
+                .evaluate((trigger) => trigger === document.activeElement);
+            if (!focused) say(`${label}: focus did not return to the trigger`);
+            const end = samples.at(-1);
+            if (!end || end.promoted)
+                say(`${label}: still promoted after closing`);
+            else if (!near(end.frame.x, 40) || !near(end.frame.y, 120)) {
+                say(`${label}: the frame did not go back in place`);
+            }
+        }
+        if (example.id === "sidebar") {
+            // Wide, the trigger collapses the column: nothing to promote.
+            const wide = await openV13(page, example.id, example.height, WIDTH);
+            await resetSamples(page);
+            await wide
+                .locator(`main [data-slot="${modal.slot}"]`)
+                .first()
+                .click();
+            await page.waitForTimeout(500);
+            const messages = (await messagesOf(page)).filter(
+                (m) => m.type !== "fragiola:example:resize",
+            );
+            if (messages.length) {
+                say(
+                    `wide: the trigger sent ${messages.map((m) => m.type).join(", ")}`,
+                );
+            }
+            if ((await samplesOf(page)).some((x) => x.promoted)) {
+                say("wide: the frame was promoted");
+            }
+        }
+    } catch (error) {
+        say(error instanceof Error ? error.message : String(error));
+    }
+    await page.close();
+    console.log(
+        `${problems.some((p) => p.startsWith(`${example.id} (promotion):`)) ? "✗" : "✓"} ${example.id} (promotion)`,
     );
 }
 
