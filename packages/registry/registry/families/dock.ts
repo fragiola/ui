@@ -188,7 +188,7 @@ const actions = tv({
 // selector) stacks above the splitters (see the header).
 const panel = tv({
     base: `
-        rounded-b-[calc(var(--radius-md)-1px)] bg-palette-base
+        rounded-b-[max(0px,calc(var(--radius-md)-1px))] bg-palette-base
         text-palette-contrast
         data-[layout-path^='/border/']:z-15
     `,

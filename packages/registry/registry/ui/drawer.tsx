@@ -161,7 +161,7 @@ function DrawerHandle({ className, ...props }: React.ComponentProps<"div">) {
             data-slot="drawer-handle"
             aria-hidden
             className={cn(
-                "mx-auto mt-3 mb-2 h-1.5 w-10 shrink-0 rounded-full bg-palette-line",
+                "mx-auto mt-3 mb-2 h-1.5 w-10 shrink-0 rounded-pill bg-palette-line",
                 className as string,
             )}
             {...props}

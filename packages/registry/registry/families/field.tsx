@@ -73,10 +73,18 @@ const choiceRoot = tv({
 // sides — without an orientation prop, without an extra nesting level.
 // min-h-control lives on the body (the control's area), not here: with a
 // block addon on top, the row is already taller from the content.
+//
+// Radius: `--radius-control`, capped at half the control height (4.5 steps
+// of `--spacing`, h-control being 9). At `data-radius="full"` a one-line field
+// is a pill, and a textarea or a field with a block addon keeps round corners
+// instead of turning into a stadium. `--field-radius` is declared here, on
+// the box, so the addons and insets inside derive their inner radius from it
+// (minus the 2px gap, never below zero).
 const row = tv({
     base: `
         flex w-full min-w-0 flex-wrap items-stretch overflow-hidden
-        rounded-md border border-palette-line bg-palette-soft
+        [--field-radius:min(var(--radius-control),calc(var(--spacing)*4.5))]
+        rounded-(--field-radius) border border-palette-line bg-palette-soft
         text-sm text-palette-accent/85
         field-focus:outline-2 field-focus:outline-palette-ring
         group-data-disabled/field:cursor-not-allowed
@@ -149,7 +157,7 @@ const addon = tv({
         data-[side=inline-end]:border-s
         data-[side=block-start]:basis-full data-[side=block-start]:order-first data-[side=block-start]:border-b
         data-[side=block-end]:basis-full data-[side=block-end]:order-last data-[side=block-end]:border-t
-        [&>kbd]:rounded-[calc(var(--radius-md)-2px)] [&>button]:rounded-[calc(var(--radius-md)-2px)]
+        [&>kbd]:rounded-[max(0px,calc(var(--field-radius)-2px))] [&>button]:rounded-[max(0px,calc(var(--field-radius)-2px))]
         [&_svg:not([class*='size-'])]:size-4
     `,
 });
@@ -166,7 +174,7 @@ const inset = tv({
     base: `
         flex shrink-0 items-center justify-center gap-2 text-palette-accent/85
         first:ps-3 last:pe-3
-        [&>kbd]:rounded-[calc(var(--radius-md)-2px)] [&>button]:rounded-[calc(var(--radius-md)-2px)]
+        [&>kbd]:rounded-[max(0px,calc(var(--field-radius)-2px))] [&>button]:rounded-[max(0px,calc(var(--field-radius)-2px))]
         [&_svg:not([class*='size-'])]:size-4
     `,
 });

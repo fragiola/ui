@@ -8,8 +8,14 @@ import { extendTailwindMerge } from "tailwind-merge";
 // correct merge behaviour is that adding a palette means adding it here too.
 // A test asserts this list agrees with the palettes directory — see
 // tests/palette-contract.test.ts.
+//
+// The radius theme is extended with the design-axis members (global.css): without
+// it, `cn("rounded-sm", "rounded-pill")` keeps both instead of the last one.
 const customTwMerge = extendTailwindMerge<"palette">({
     extend: {
+        theme: {
+            radius: ["control", "pill"],
+        },
         classGroups: {
             palette: [
                 {
