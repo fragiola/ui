@@ -7,7 +7,8 @@
         <script>
             // Before first paint: the same mapping as applyView in
             // src/view.ts, which owns the view afterwards. The theme list is
-            // injected from examples/gallery.ts at build time.
+            // injected from examples/gallery.ts and the design axes from
+            // src/axes.ts at build time.
             (() => {
                 const themes = __EXAMPLE_THEMES__;
                 const params = new URLSearchParams(location.search);
@@ -21,9 +22,12 @@
                 root.classList.toggle("dark", theme.scheme === "dark");
                 root.style.colorScheme = theme.scheme;
                 root.dir = params.get("dir") === "rtl" ? "rtl" : "ltr";
-                const density = params.get("density");
-                if (density === "compact" || density === "spacious") {
-                    root.dataset.density = density;
+                const axes = __DESIGN_AXES__;
+                for (const name of Object.keys(axes)) {
+                    const level = params.get(name);
+                    if (level !== "default" && axes[name].levels.includes(level)) {
+                        root.dataset[name] = level;
+                    }
                 }
             })();
         </script>
