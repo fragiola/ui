@@ -52,18 +52,19 @@ describe("dock family", () => {
         expect(classes(dock.row)).toEqual(["data-root:m-1.5"]);
     });
 
-    it("floors the header at the control height and lets tabs fill it", () => {
-        // Edge docking needs a header of ~30px or more; `min-h-control` is a
-        // token, not the spacing scale a compact density shrinks. A fixed
-        // height would clip the tabs a spacious density grows: the tab
-        // fills its strip instead, so the marker stays on the header's line.
-        expect(classes(dock.header)).toContain("min-h-control");
-        expect(classes(dock.header)).not.toContain("h-control");
+    it("floors the header at a fixed 2.25rem and lets tabs fill it", () => {
+        // Edge docking needs a header of ~30px or more. `h-control` follows
+        // the spacing axis (a compact density takes it below that), so the
+        // floor is the default control height, fixed. A fixed height would
+        // clip the tabs a spacious density grows: the tab fills its strip
+        // instead, so the marker stays on the header's line.
+        expect(classes(dock.header)).toContain("min-h-[2.25rem]");
+        expect(classes(dock.header)).not.toContain("min-h-control");
         expect(classes(dock.border)).toContain(
-            "data-[orientation=vertical]:min-w-(--height-control)",
+            "data-[orientation=vertical]:min-w-[2.25rem]",
         );
         expect(classes(dock.border)).toContain(
-            "data-[orientation=horizontal]:min-h-control",
+            "data-[orientation=horizontal]:min-h-[2.25rem]",
         );
         expect(classes(dock.tab)).toContain("self-stretch");
         expect(classes(dock.tab)).toContain("min-h-8");

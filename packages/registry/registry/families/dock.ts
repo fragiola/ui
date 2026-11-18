@@ -55,10 +55,10 @@
 // line (`-bottom-0.5`, the tab list's `py-0.5`), at any density.
 //
 // ─── HEIGHTS AND EDGE DOCKING ───────────────────────────────────────────────
-// The header's floor is `min-h-control`, a token that does not follow
-// density: Dockable docks to a layout edge from a band that needs a header of
-// ~30px or more, and a compact `--spacing` would take a spacing-scale header
-// below that. Above the floor it grows with its content: a tab fills its
+// The header's floor is a fixed `2.25rem` (the default control height), not
+// `min-h-control`: Dockable docks to a layout edge from a band that needs a
+// header of ~30px or more, and `h-control` follows the spacing axis, so a
+// compact density would take it below that. Above the floor it grows with its content: a tab fills its
 // strip (`self-stretch`, at least `h-8`), so under a spacious density the
 // tabs grow, the header with them, and the marker stays on the line — a fixed
 // header would clip both. A border strip has the same floor across.
@@ -100,7 +100,7 @@ const tabset = tv({
 // The bar above a tabset's content: its tab list, the overflow trigger and
 // the actions. The line is the one the tab marker sits on.
 const header = tv({
-    base: "flex min-h-control shrink-0 items-center border-b border-palette-line",
+    base: "flex min-h-[2.25rem] shrink-0 items-center border-b border-palette-line",
 });
 
 // The tab strip's row, shared by both strips below. Not a member: it says
@@ -240,8 +240,8 @@ const edgeIndicator = tv({
 const border = tv({
     base: `
         group/border shrink-0 border-palette-line bg-palette-base
-        data-[orientation=vertical]:min-w-(--height-control)
-        data-[orientation=horizontal]:min-h-control
+        data-[orientation=vertical]:min-w-[2.25rem]
+        data-[orientation=horizontal]:min-h-[2.25rem]
         data-[location=start]:border-e data-[location=end]:border-s
         data-[location=top]:border-b data-[location=bottom]:border-t
         data-drop-target:bg-palette-soft
