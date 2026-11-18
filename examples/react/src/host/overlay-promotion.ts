@@ -132,11 +132,32 @@ export function promoteOverlays(id: string) {
     let settling = false;
     let armed: HTMLStyleElement | undefined;
 
+    /** the viewport the rule was armed for */
+    let armedFor: PromotionGeometry["viewport"] | undefined;
+
     const arm = (geometry: PromotionGeometry) => {
         armed ??= document.head.appendChild(document.createElement("style"));
         armed.dataset.armed = "";
         armed.textContent = armedRule(geometry);
+        armedFor = geometry.viewport;
     };
+
+    // Back in place, the rule no longer matches; it is dropped as soon as
+    // the frame leaves the promoted size, so an inline frame that later
+    // happens to have that very size (a fullscreen stage) is never pinned
+    // to a stale `rect`. The resize event runs in the same rendering update
+    // as the new size, after the media query stopped matching: invisible.
+    window.addEventListener("resize", () => {
+        if (!armed || !armedFor || asked) return;
+        if (
+            window.innerWidth === armedFor.width &&
+            window.innerHeight === armedFor.height
+        ) {
+            return;
+        }
+        armed.textContent = "";
+        armedFor = undefined;
+    });
 
     const close = () => {
         if (!asked) return;

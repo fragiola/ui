@@ -853,6 +853,12 @@ for (const example of promotionChecked) {
                 .nth(i)
                 .evaluate((trigger) => trigger === document.activeElement);
             if (!focused) say(`${label}: focus did not return to the trigger`);
+            const stale = await frame.evaluate(
+                () =>
+                    document.querySelector("style[data-armed]")?.textContent ??
+                    "",
+            );
+            if (stale) say(`${label}: the armed rule outlived the promotion`);
             const end = samples.at(-1);
             if (!end || end.promoted)
                 say(`${label}: still promoted after closing`);
