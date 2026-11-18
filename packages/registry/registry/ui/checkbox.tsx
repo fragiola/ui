@@ -48,7 +48,7 @@ function CheckboxIndicator({
             )}
             {...props}
         >
-            <CheckIcon className="size-3.5" />
+            <CheckIcon className="size-icon-sm" />
         </CheckboxPrimitive.Indicator>
     );
 }

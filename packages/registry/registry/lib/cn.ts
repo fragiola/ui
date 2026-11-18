@@ -16,7 +16,10 @@ const customTwMerge = extendTailwindMerge<"palette">({
         theme: {
             radius: ["control", "pill"],
         },
+        // The icon sizes (global.css `--size-icon*`): `cn("size-icon", "size-6")`
+        // keeps only `size-6`.
         classGroups: {
+            size: [{ size: ["icon", "icon-xs", "icon-sm", "icon-lg"] }],
             palette: [
                 {
                     palette: [

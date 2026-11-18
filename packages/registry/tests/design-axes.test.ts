@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
@@ -52,6 +52,39 @@ const AXES: Record<string, Axis> = {
             full: radius("8px", "16px", "24px", "9999px", "9999px"),
         },
     },
+    typography: {
+        attribute: "data-text",
+        defaults: { "--text-scale": "1" },
+        levels: {
+            small: { "--text-scale": "0.875" },
+            large: { "--text-scale": "1.125" },
+        },
+    },
+};
+
+// Tailwind's type scale, in rem, scaled by the typography axis.
+const TEXT_SIZES: Record<string, string> = {
+    xs: "0.75rem",
+    sm: "0.875rem",
+    base: "1rem",
+    lg: "1.125rem",
+    xl: "1.25rem",
+    "2xl": "1.5rem",
+    "3xl": "1.875rem",
+    "4xl": "2.25rem",
+    "5xl": "3rem",
+    "6xl": "3.75rem",
+    "7xl": "4.5rem",
+    "8xl": "6rem",
+    "9xl": "8rem",
+};
+
+// Icon sizes follow text, not spacing: size-3, -3.5, -4 and -6 at the default.
+const ICON_SIZES: Record<string, string> = {
+    "size-icon-xs": "0.75rem",
+    "size-icon-sm": "0.875rem",
+    "size-icon": "1rem",
+    "size-icon-lg": "1.5rem",
 };
 
 // Utility → the declaration it must compile to.
@@ -63,6 +96,19 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
     "rounded-pill": ["border-radius", "var(--radius-pill)"],
     "rounded-full": ["border-radius", "var(--radius-full)"],
     "h-control": ["height", "calc(var(--spacing) * 9)"],
+    ...Object.fromEntries(
+        // The sizes the registry writes (an unused one compiles to nothing).
+        ["xs", "sm", "lg", "xl", "2xl"].map((size) => [
+            `text-${size}`,
+            ["font-size", `calc(${TEXT_SIZES[size]} * var(--text-scale, 1))`],
+        ]),
+    ),
+    ...Object.fromEntries(
+        Object.entries(ICON_SIZES).map(([name, rem]) => [
+            name,
+            ["width", `calc(${rem} * var(--text-scale, 1))`],
+        ]),
+    ),
 };
 
 function radius(
@@ -79,6 +125,16 @@ function radius(
         "--radius-control": control,
         "--radius-pill": pill,
     };
+}
+
+async function sourceFiles(dir: string): Promise<string[]> {
+    const files: string[] = [];
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) files.push(...(await sourceFiles(full)));
+        else if (/\.tsx?$/.test(entry.name)) files.push(full);
+    }
+    return files;
 }
 
 let css = "";
@@ -128,7 +184,11 @@ function declarations(selector: string): Tokens {
 
 describe("design axes", () => {
     it("the default level is the tokens on :root", () => {
-        const root = declarations(":root, :host");
+        // Tailwind's theme layer, and the axes' own variables.
+        const root = {
+            ...declarations(":root, :host"),
+            ...declarations(":root"),
+        };
         for (const axis of Object.values(AXES)) {
             for (const [token, value] of Object.entries(axis.defaults)) {
                 expect(root[token], `${token} on :root`).toBe(value);
@@ -164,6 +224,26 @@ describe("design axes", () => {
             .filter(([, , value]) => !/var\(|^0$/.test((value ?? "").trim()))
             .map(([, name, value]) => `${name}: ${value}`);
         expect(inlined).toEqual([]);
+    });
+
+    it("no icon default in the registry is spacing-based", async () => {
+        const spacingIcons: string[] = [];
+        for (const file of await sourceFiles(REGISTRY_DIR)) {
+            const content = await readFile(file, "utf-8");
+            for (const [token] of content.matchAll(
+                /\[&[^\s]*svg[^\s]*\]:size-[\d.]+(?![\w-])/g,
+            )) {
+                spacingIcons.push(
+                    `${path.relative(REGISTRY_DIR, file)}: ${token}`,
+                );
+            }
+        }
+        expect(spacingIcons).toEqual([]);
+    });
+
+    it("cn() resolves the icon sizes against size-*", () => {
+        expect(cn("size-icon", "size-6")).toBe("size-6");
+        expect(cn("size-4", "size-icon-sm")).toBe("size-icon-sm");
     });
 
     it("cn() resolves the radius members against the scale", () => {

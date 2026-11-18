@@ -29,7 +29,7 @@ const ITEM = [
     "data-disabled:pointer-events-none",
     "data-disabled:opacity-50",
     "data-inset:ps-7",
-    "[&_svg:not([class*='size-'])]:size-4",
+    "[&_svg:not([class*='size-'])]:size-icon",
     "[&_svg]:pointer-events-none",
     "[&_svg]:shrink-0",
 ];

@@ -91,7 +91,7 @@ function NavigationMenuTrigger({
         >
             {children}
             <ChevronDownIcon
-                className="size-4 text-palette-accent/85 transition-transform duration-200 data-popup-open:rotate-180"
+                className="size-icon text-palette-accent/85 transition-transform duration-200 data-popup-open:rotate-180"
                 data-slot="navigation-menu-icon"
             />
         </NavigationMenuPrimitive.Trigger>

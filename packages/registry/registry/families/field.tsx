@@ -158,7 +158,7 @@ const addon = tv({
         data-[side=block-start]:basis-full data-[side=block-start]:order-first data-[side=block-start]:border-b
         data-[side=block-end]:basis-full data-[side=block-end]:order-last data-[side=block-end]:border-t
         [&>kbd]:rounded-[max(0px,calc(var(--field-radius)-2px))] [&>button]:rounded-[max(0px,calc(var(--field-radius)-2px))]
-        [&_svg:not([class*='size-'])]:size-4
+        [&_svg:not([class*='size-'])]:size-icon
     `,
 });
 
@@ -175,7 +175,7 @@ const inset = tv({
         flex shrink-0 items-center justify-center gap-2 text-palette-accent/85
         first:ps-3 last:pe-3
         [&>kbd]:rounded-[max(0px,calc(var(--field-radius)-2px))] [&>button]:rounded-[max(0px,calc(var(--field-radius)-2px))]
-        [&_svg:not([class*='size-'])]:size-4
+        [&_svg:not([class*='size-'])]:size-icon
     `,
 });
 

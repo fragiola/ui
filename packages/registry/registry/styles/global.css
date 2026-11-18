@@ -101,7 +101,38 @@
        laptop/desktop) had ZERO uses, and a device name on a min-width lies:
        `tablet:` fires on desktop too.
 
-       Whoever wants another scale overrides Tailwind's defaults. */
+       Whoever wants another scale overrides Tailwind's defaults.
+
+       The type scale is Tailwind's, times `--text-scale` (the typography
+       axis, `data-text`). Each size is an expression INLINED into its
+       utility, so it is computed where `text-*` is used and a subtree's
+       `data-text` reaches it. Line heights stay Tailwind's ratios, so they
+       follow the size. At `--text-scale: 1` every size is Tailwind's. */
+    --text-xs: calc(0.75rem * var(--text-scale, 1));
+    --text-sm: calc(0.875rem * var(--text-scale, 1));
+    --text-base: calc(1rem * var(--text-scale, 1));
+    --text-lg: calc(1.125rem * var(--text-scale, 1));
+    --text-xl: calc(1.25rem * var(--text-scale, 1));
+    --text-2xl: calc(1.5rem * var(--text-scale, 1));
+    --text-3xl: calc(1.875rem * var(--text-scale, 1));
+    --text-4xl: calc(2.25rem * var(--text-scale, 1));
+    --text-5xl: calc(3rem * var(--text-scale, 1));
+    --text-6xl: calc(3.75rem * var(--text-scale, 1));
+    --text-7xl: calc(4.5rem * var(--text-scale, 1));
+    --text-8xl: calc(6rem * var(--text-scale, 1));
+    --text-9xl: calc(8rem * var(--text-scale, 1));
+
+    /* Icon sizes. Icons follow the TEXT axis, not spacing: an icon sits
+       beside a label, so it keeps its proportion to the text whatever the
+       density. A `size-4` would be `--spacing`-based and shrink in a compact
+       subtree next to text that did not. The `--size-*` namespace generates
+       only `size-*` utilities (never p-/gap-/w-), and the names keep the
+       `size-` prefix the `[&_svg:not([class*='size-'])]` defaults look for.
+       At `--text-scale: 1` they equal size-3, size-3.5, size-4 and size-6. */
+    --size-icon-xs: calc(0.75rem * var(--text-scale, 1));
+    --size-icon-sm: calc(0.875rem * var(--text-scale, 1));
+    --size-icon: calc(1rem * var(--text-scale, 1));
+    --size-icon-lg: calc(1.5rem * var(--text-scale, 1));
 
     /* Control height. Was --spacing-control-height, removed for living in the
        spacing namespace (it generated p-control-height, gap-control-height).
@@ -167,6 +198,12 @@
     --radius-full: 9999px;
 }
 
+/* The axes' own variables, at their default. An axis variable is read by
+   the expressions above, so a level only sets it. */
+:root {
+    --text-scale: 1;
+}
+
 /* Spacing — `data-density`. `--spacing` drives every numeric spacing utility
    and `h-control`. */
 [data-density="compact"] {
@@ -220,6 +257,15 @@
     --radius-lg: 24px;
     --radius-control: 9999px;
     --radius-pill: 9999px;
+}
+
+/* Typography — `data-text`. Scales every `text-*` size and the icon sizes. */
+[data-text="small"] {
+    --text-scale: 0.875;
+}
+
+[data-text="large"] {
+    --text-scale: 1.125;
 }
 
 /* Hover direction per theme: hover darkens in light, lightens in dark.

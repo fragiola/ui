@@ -145,7 +145,7 @@ const tab = tv({
         focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-palette-ring
         data-selected:bg-palette-soft data-selected:text-palette-contrast
         data-dragging:opacity-50
-        [&_svg:not([class*='size-'])]:size-3.5
+        [&_svg:not([class*='size-'])]:size-icon-sm
         [&_svg]:pointer-events-none [&_svg]:shrink-0
         group-data-[orientation=vertical]/border:max-h-60
         group-data-[orientation=vertical]/border:min-w-8

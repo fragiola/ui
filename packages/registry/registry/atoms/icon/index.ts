@@ -6,11 +6,11 @@
 //
 // ─── IN MOST CASES YOU DO NOT NEED THIS ───────────────────────────────────────
 // Each context already defines the icon size via CSS, through
-// `[&_svg:not([class*='size-'])]:size-N`:
+// `[&_svg:not([class*='size-'])]:size-icon*`:
 //
-//   <Clickable.Button size="sm"><XIcon /></Clickable.Button>   → size-3.5, alone
-//   <Field.Addon><SearchIcon /></Field.Addon>                   → size-4, alone
-//   <DropdownMenu.Item><CopyIcon /></DropdownMenu.Item>         → size-4, alone
+//   <Clickable.Button><XIcon /></Clickable.Button>              → size-icon, alone
+//   <Field.Addon><SearchIcon /></Field.Addon>                   → size-icon, alone
+//   <DropdownMenu.Item><CopyIcon /></DropdownMenu.Item>         → size-icon, alone
 //
 // The `:not([class*='size-'])` makes the default apply only when nobody
 // specified a size — so passing a size class still works as an override.
@@ -18,26 +18,33 @@
 // Use this object when you need the EXPLICIT size: a loose icon outside a
 // known context, or when you deliberately want to escape the default.
 //
+// ─── WHY THE TEXT AXIS ────────────────────────────────────────────────────────
+// `size-icon-xs` / `-sm` / `size-icon` / `-lg` (global.css) are 0.75, 0.875, 1
+// and 1.5rem times `--text-scale`: icons follow `data-text`, not
+// `data-density`. An icon sits beside a label and keeps its proportion to it;
+// a spacing-based `size-4` would shrink in a compact subtree next to text
+// that did not.
+//
 // ─── WHY A CLASS AND NOT A NUMBER ─────────────────────────────────────────────
-// `size-4` instead of `16`: a number requires inline `width`/`height` or a
+// `size-icon` instead of `16`: a number requires inline `width`/`height` or a
 // prop that each icon library names differently, and it does not go through
 // tailwind-merge — so `cn(iconSize.addon, "size-6")` would not resolve the
-// conflict. As a class, the override works and the value still comes from
-// Tailwind's scale.
+// conflict. As a class, the override works (cn.ts registers the `icon` sizes
+// with tailwind-merge) and the value still comes from a token.
 
 export const iconSize = {
     /** Inside a field addon or inset. */
-    addon: "size-4",
+    addon: "size-icon",
     /** Inside a `size="md"` button (the default). */
-    button: "size-4",
+    button: "size-icon",
     /** Inside a `size="sm"` button. */
-    buttonSm: "size-3.5",
+    buttonSm: "size-icon-sm",
     /** Menu item, dropdown, select, combobox. */
-    menuItem: "size-4",
+    menuItem: "size-icon",
     /** Check/radio indicator inside a menu item. */
-    indicator: "size-4",
+    indicator: "size-icon",
     /** A loose icon in a content block — empty state, alert. */
-    standalone: "size-6",
+    standalone: "size-icon-lg",
 } as const;
 
 export type IconSize = keyof typeof iconSize;

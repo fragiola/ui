@@ -108,7 +108,7 @@ function PaginationPrevious({
             aria-label="Go to previous page"
             {...props}
         >
-            <ChevronLeftIcon className="size-4 rtl:rotate-180" />
+            <ChevronLeftIcon className="size-icon rtl:rotate-180" />
             {children}
         </Clickable.Link>
     );
@@ -129,7 +129,7 @@ function PaginationNext({
             {...props}
         >
             {children}
-            <ChevronRightIcon className="size-4 rtl:rotate-180" />
+            <ChevronRightIcon className="size-icon rtl:rotate-180" />
         </Clickable.Link>
     );
 }
@@ -150,7 +150,7 @@ function PaginationEllipsis({
             )}
             {...props}
         >
-            <MoreHorizontalIcon className="size-4" />
+            <MoreHorizontalIcon className="size-icon" />
             <span className="sr-only">More pages</span>
         </span>
     );
