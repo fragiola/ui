@@ -52,6 +52,55 @@ const AXES: Record<string, Axis> = {
             full: radius("8px", "16px", "24px", "9999px", "9999px"),
         },
     },
+    elevation: {
+        attribute: "data-elevation",
+        defaults: {
+            "--elevation-sm":
+                "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+            "--elevation-md":
+                "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+            "--elevation-lg":
+                "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        },
+        levels: {
+            flat: elevation(
+                "0 0 #0000",
+                "0 0 #0000",
+                "0 0 #0000",
+                "0 0 #0000",
+                "0 0 #0000",
+                "0 0 #0000",
+                "0 0 #0000",
+            ),
+            subtle: elevation(
+                "0 0 #0000",
+                "0 1px rgb(0 0 0 / 0.05)",
+                "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+                "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+                "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+                "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+                "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+            ),
+            raised: elevation(
+                "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+                "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+                "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+                "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+                "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+                "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                "0 35px 60px -15px rgb(0 0 0 / 0.3)",
+            ),
+        },
+    },
+    motion: {
+        attribute: "data-motion",
+        defaults: { "--motion-scale": "1" },
+        levels: {
+            none: { "--motion-scale": "0" },
+            fast: { "--motion-scale": "0.5" },
+            expressive: { "--motion-scale": "1.5" },
+        },
+    },
     typography: {
         attribute: "data-text",
         defaults: { "--text-scale": "1" },
@@ -103,6 +152,29 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
             ["font-size", `calc(${TEXT_SIZES[size]} * var(--text-scale, 1))`],
         ]),
     ),
+    "shadow-sm": ["--tw-shadow", "var(--elevation-sm)"],
+    "shadow-md": ["--tw-shadow", "var(--elevation-md)"],
+    "shadow-lg": ["--tw-shadow", "var(--elevation-lg)"],
+    "transition-colors": [
+        "transition-duration",
+        "var(--tw-duration, calc(300ms * var(--motion-scale, 1)))",
+    ],
+    "duration-150": [
+        "transition-duration",
+        "calc(150ms * var(--motion-scale, 1))",
+    ],
+    "duration-200": [
+        "transition-duration",
+        "calc(200ms * var(--motion-scale, 1))",
+    ],
+    "duration-300": [
+        "transition-duration",
+        "calc(300ms * var(--motion-scale, 1))",
+    ],
+    "animate-pulse": [
+        "animation",
+        "pulse calc(2s * var(--motion-scale, 1))\n        cubic-bezier(0.4, 0, 0.6, 1) infinite",
+    ],
     ...Object.fromEntries(
         Object.entries(ICON_SIZES).map(([name, rem]) => [
             name,
@@ -110,6 +182,26 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
         ]),
     ),
 };
+
+function elevation(
+    xxs: string,
+    xs: string,
+    sm: string,
+    md: string,
+    lg: string,
+    xl: string,
+    xxl: string,
+): Tokens {
+    return {
+        "--elevation-2xs": xxs,
+        "--elevation-xs": xs,
+        "--elevation-sm": sm,
+        "--elevation-md": md,
+        "--elevation-lg": lg,
+        "--elevation-xl": xl,
+        "--elevation-2xl": xxl,
+    };
+}
 
 function radius(
     sm: string,
@@ -239,6 +331,62 @@ describe("design axes", () => {
             }
         }
         expect(spacingIcons).toEqual([]);
+    });
+
+    it("no shadow or duration utility the registry compiles is inlined", () => {
+        const inlined = [
+            ...[
+                ...css.matchAll(
+                    /\.(shadow-[\w-]+)\s*\{\s*--tw-shadow:\s*([^;]+);/g,
+                ),
+            ]
+                .filter(
+                    ([, , value]) => !/^var\(--elevation-/.test(value ?? ""),
+                )
+                .map(([, name, value]) => `${name}: ${value}`),
+            ...[
+                ...css.matchAll(
+                    /\.(duration-\d+)\s*\{\s*--tw-duration:\s*([^;]+);/g,
+                ),
+            ]
+                // duration-0 is zero at every level.
+                .filter(
+                    ([, name, value]) =>
+                        name !== "duration-0" &&
+                        !/--motion-scale/.test(value ?? ""),
+                )
+                .map(([, name, value]) => `${name}: ${value}`),
+        ];
+        expect(inlined).toEqual([]);
+    });
+
+    it("every animation and arbitrary duration the registry writes follows motion", () => {
+        const animations = [...css.matchAll(/^\s*animation:\s*([^;]+);/gm)].map(
+            ([, value]) => value ?? "",
+        );
+        expect(animations.length).toBeGreaterThan(0);
+        for (const value of animations) {
+            // tw-animate-css's enter/exit read --tw-duration (a duration-* class).
+            if (/^(enter|exit) var\(--tw-animation-duration/.test(value))
+                continue;
+            if (value === "none") continue;
+            expect(value, value).toMatch(/--motion-scale/);
+        }
+        const arbitrary = [...css.matchAll(/--tw-duration:\s*(calc\([^;]+);/g)]
+            .map(([, value]) => value ?? "")
+            .filter((value) => !/--motion-scale/.test(value));
+        expect(arbitrary).toEqual([]);
+    });
+
+    it("reduced motion forces --motion-scale: 0 over every level", () => {
+        const media = css.match(
+            /@media \(prefers-reduced-motion: reduce\)\s*\{\s*:root,\s*\[data-motion\]\s*\{\s*--motion-scale:\s*0;/,
+        );
+        expect(media).not.toBeNull();
+        // Later than the levels, at the same specificity.
+        expect(
+            css.indexOf("prefers-reduced-motion: reduce) {\n  :root"),
+        ).toBeGreaterThan(css.indexOf('[data-motion="expressive"]'));
     });
 
     it("cn() resolves the icon sizes against size-*", () => {

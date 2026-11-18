@@ -40,7 +40,7 @@ function AvatarImage({
             data-slot="avatar-image"
             className={cn(
                 "aspect-square size-full object-cover",
-                "data-[starting-style]:animate-in data-[starting-style]:fade-in-0",
+                "data-[starting-style]:animate-in data-[starting-style]:fade-in-0 duration-150",
                 className as string,
             )}
             {...props}

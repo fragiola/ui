@@ -24,7 +24,38 @@
 );
 
 @theme inline {
-    --default-transition-duration: 300ms;
+    /* Motion (the `data-motion` axis). Every duration is Tailwind's times
+       `--motion-scale`, inlined into the utility so a subtree's level reaches
+       it: `transition-*` without a duration, every `duration-*` the scale
+       names, and the animations the registry runs. tw-animate-css's
+       `animate-in`/`animate-out` read `--tw-duration`, so a `duration-*` on
+       the same element scales them too. At `--motion-scale: 1` every value is
+       the one it replaces. */
+    --default-transition-duration: calc(300ms * var(--motion-scale, 1));
+    --transition-duration-75: calc(75ms * var(--motion-scale, 1));
+    --transition-duration-100: calc(100ms * var(--motion-scale, 1));
+    --transition-duration-150: calc(150ms * var(--motion-scale, 1));
+    --transition-duration-200: calc(200ms * var(--motion-scale, 1));
+    --transition-duration-300: calc(300ms * var(--motion-scale, 1));
+    --transition-duration-500: calc(500ms * var(--motion-scale, 1));
+    --transition-duration-700: calc(700ms * var(--motion-scale, 1));
+    --transition-duration-1000: calc(1000ms * var(--motion-scale, 1));
+    --animate-pulse: pulse calc(2s * var(--motion-scale, 1))
+        cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    /* Elevation (the `data-elevation` axis). Tailwind INLINES a shadow's
+       value into its utility (it rewrites the colours to inject
+       `--tw-shadow-color`), so `--shadow-*` cannot be overridden per subtree
+       as is. Each one points to an `--elevation-*` variable instead, set by
+       the levels below. The cost: `shadow-<color>` no longer tints these
+       shadows — the registry uses none. */
+    --shadow-2xs: var(--elevation-2xs);
+    --shadow-xs: var(--elevation-xs);
+    --shadow-sm: var(--elevation-sm);
+    --shadow-md: var(--elevation-md);
+    --shadow-lg: var(--elevation-lg);
+    --shadow-xl: var(--elevation-xl);
+    --shadow-2xl: var(--elevation-2xl);
 
     --color-*: initial;
 
@@ -150,9 +181,11 @@
     /* Progress indeterminate animation. The segment (1/3 width) slides across
        the rail. `inset-inline-start` is a logical property, so the slide
        direction inverts under RTL automatically — no separate keyframe, no
-       `rtl:` variant. `motion-reduce:` on the indicator disables it. */
-    --animate-progress-indeterminate: progress-indeterminate 1.5s ease-in-out
-        infinite;
+       `rtl:` variant. `motion-reduce:` on the indicator disables it. It
+       follows the motion axis: slower when expressive, and a zero duration
+       at `none`, which shows the static segment as `animate-none` does. */
+    --animate-progress-indeterminate: progress-indeterminate
+        calc(1.5s * var(--motion-scale, 1)) ease-in-out infinite;
 }
 
 @keyframes progress-indeterminate {
@@ -202,6 +235,18 @@
    the expressions above, so a level only sets it. */
 :root {
     --text-scale: 1;
+    --motion-scale: 1;
+    --elevation-2xs: 0 1px rgb(0 0 0 / 0.05);
+    --elevation-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-sm:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-xl:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --elevation-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 }
 
 /* Spacing — `data-density`. `--spacing` drives every numeric spacing utility
@@ -266,6 +311,73 @@
 
 [data-text="large"] {
     --text-scale: 1.125;
+}
+
+/* Elevation — `data-elevation`. `flat` drops every shadow: a layer is told
+   apart by its `line` border, which every popup, dialog and tabset has.
+   `subtle` and `raised` move each shadow one step down or up Tailwind's
+   scale. */
+[data-elevation="flat"] {
+    --elevation-2xs: 0 0 #0000;
+    --elevation-xs: 0 0 #0000;
+    --elevation-sm: 0 0 #0000;
+    --elevation-md: 0 0 #0000;
+    --elevation-lg: 0 0 #0000;
+    --elevation-xl: 0 0 #0000;
+    --elevation-2xl: 0 0 #0000;
+}
+
+[data-elevation="subtle"] {
+    --elevation-2xs: 0 0 #0000;
+    --elevation-xs: 0 1px rgb(0 0 0 / 0.05);
+    --elevation-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-md:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-xl:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-2xl:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+[data-elevation="raised"] {
+    --elevation-2xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-xs:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-sm:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-md:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --elevation-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --elevation-2xl: 0 35px 60px -15px rgb(0 0 0 / 0.3);
+}
+
+/* Motion — `data-motion`. A multiplier on every duration: `none` makes
+   transitions and enter/exit animations instant (Base UI still unmounts on
+   the next frame: no animation is left to wait for). */
+[data-motion="none"] {
+    --motion-scale: 0;
+}
+
+[data-motion="fast"] {
+    --motion-scale: 0.5;
+}
+
+[data-motion="expressive"] {
+    --motion-scale: 1.5;
+}
+
+/* Reduced motion always wins: `none` whatever `data-motion` says. Same
+   specificity as the levels, and later, so it overrides them. The
+   `motion-reduce:` variants on the components still apply as well. */
+@media (prefers-reduced-motion: reduce) {
+    :root,
+    [data-motion] {
+        --motion-scale: 0;
+    }
 }
 
 /* Hover direction per theme: hover darkens in light, lightens in dark.
