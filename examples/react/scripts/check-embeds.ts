@@ -52,6 +52,10 @@ const ROOM = 1400;
 // height to start from: its frame IS its height.
 const FILL_FROM = 240;
 
+// The modal examples (dialog, alert-dialog, drawer) are not here: their
+// popups cover the site's page, promoted (MODALS, below), so their frame
+// needs no room for them.
+//
 // How each overlay example opens its popups. `click` finds every trigger in
 // the stage (`aria-haspopup`, a combobox, a navigation trigger), opens it,
 // checks the popup and one level of submenus, and closes it again.
@@ -61,9 +65,6 @@ const OVERLAYS: Record<string, Opener> = {
     combobox: "click",
     "dropdown-menu": "click",
     "context-menu": "contextmenu",
-    dialog: "click",
-    "alert-dialog": "click",
-    drawer: "click",
     popover: "click",
     tooltip: "hover",
     "navigation-menu": "click",

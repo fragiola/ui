@@ -12,7 +12,7 @@ import {
 } from "./validate.ts";
 
 // `pnpm site:export --base /<slug> --out <dir>` — the site export, contract
-// v1.2 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
+// v1.3 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
 // provides:
 //
 //   <out>/project.json      who this project is

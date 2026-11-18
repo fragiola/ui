@@ -12,7 +12,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1.2, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.3, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
@@ -33,11 +33,13 @@ import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
 //
-// v1.1 and v1.2 keep `"contract": 1` (CONTRACT.md, "Changes in v1.2"), so
-// CONTRACT stays 1 while the rules are v1.2's: CONTRACT_REVISION.
+// v1.1, v1.2 and v1.3 keep `"contract": 1` (CONTRACT.md, "Changes in
+// v1.3"), so CONTRACT stays 1 while the rules are v1.3's: CONTRACT_REVISION.
+// v1.3 adds runtime messages only (overlay promotion, §5.4) — nothing in an
+// export to check; `check:embeds` drives them in a real browser.
 
 export const CONTRACT = 1;
-export const CONTRACT_REVISION = "1.2";
+export const CONTRACT_REVISION = "1.3";
 
 /** v1.2: the lengths of titles, descriptions and keywords (§2, §3.2). */
 export const LIMITS = {
