@@ -1047,6 +1047,16 @@
                     "target": "@ui/tree/parts.tsx"
                 },
                 {
+                    "path": "registry/ui/tree/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "@ui/tree/templates/index.ts"
+                },
+                {
+                    "path": "registry/ui/tree/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tree/templates/simple.tsx"
+                },
+                {
                     "path": "registry/ui/tree.tsx",
                     "type": "registry:ui",
                     "target": "@ui/tree.tsx"

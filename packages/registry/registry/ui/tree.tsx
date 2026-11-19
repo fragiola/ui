@@ -18,6 +18,7 @@ import {
     Toggle,
     VirtualItems,
 } from "./tree/parts";
+import { Template } from "./tree/templates";
 
 // Tree — an accessible tree view (expand and collapse, selection, the APG
 // keyboard and type-ahead, drag and drop, tri-state checks, inline rename,
@@ -34,10 +35,15 @@ import {
 //   import { createTreeModel } from "@fragiola/tree-react";
 //   import { selection } from "@fragiola/tree-react/selection";
 //
+// Tree.Template.Simple renders a whole tree from a model, with the UI of
+// each feature the model has installed; the parts are there for the tree
+// that outgrows it.
+//
 // See the parts for what each one adds, and families/tree.ts for why it
 // looks the way it does.
 
 export const Tree = {
+    Template,
     Root,
     Items,
     VirtualItems,

@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { dock } from "../registry/families/dock";
 import { menu } from "../registry/families/menu";
 import { tree } from "../registry/families/tree";
 
@@ -199,6 +200,16 @@ describe("tree family", () => {
         expect(own).toContain("not-data-[drop-position=inside]:border-t-2");
         expect(own).toContain("data-[drop-position=inside]:border-2");
         expect(own).toContain("pointer-events-none");
+        // The inside box is dock.dropIndicator's frame (S4).
+        const docked = classes(dock.dropIndicator);
+        for (const shared of [
+            "rounded-md",
+            "border-2",
+            "border-palette-ring",
+        ]) {
+            expect(docked, shared).toContain(shared);
+        }
+        expect(own).toContain("data-[drop-position=inside]:rounded-md");
     });
 
     it("keeps the rename field's frame on Field.Row (rule 3)", async () => {
@@ -232,5 +243,26 @@ describe("tree family", () => {
         expect(box).toContain("aria-hidden");
         expect(box).toContain("tabIndex: _tabIndex");
         expect(box).toContain("<CheckboxBox.Root");
+    });
+
+    it("leaves Template.Simple with no style of its own", async () => {
+        // The template rules: nothing beyond the parts — no tv(), no class
+        // literal, no family member. The one className goes to Root.
+        const source = await readFile(
+            path.join(REGISTRY, "ui/tree/templates/simple.tsx"),
+            "utf-8",
+        );
+        const code = source.replace(/^\s*\/\/.*$/gm, "");
+        expect(code).not.toMatch(/\btv\(/);
+        expect(code).not.toMatch(/className="/);
+        expect(code).not.toMatch(/#\/families\//);
+        expect(code.match(/className=\{/g)).toEqual(["className={"]);
+        // Its own props stay under the ceiling of 7: the rest is Root's.
+        const own = code.match(/> & \{([\s\S]*?)\n\};/)?.[1] ?? "";
+        const props = own.match(/^\s+\w+\??:/gm) ?? [];
+        expect(props.length).toBe(4);
+        expect(props.length).toBeLessThanOrEqual(7);
+        // The features come from the model, never from a prop.
+        expect(code).toContain('model.get("features")');
     });
 });
