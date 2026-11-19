@@ -13,10 +13,10 @@ allowBuilds:
   # optional dependencies, so the fallback build script is not needed.
   "@parcel/watcher": false
 # pnpm 11 holds back a version younger than its minimum release age (a
-# supply-chain guard). Dockable is this organisation's own package, published
-# the day the dockable item landed (Epic #66); exact versions, so the guard
-# still covers anything else.
+# supply-chain guard). These are this organisation's own packages, consumed
+# by the special items the day they are published (Dockable 0.3.0: Epic #85);
+# exact versions, so the guard still covers anything else.
 minimumReleaseAgeExclude:
-  - '@fragiola/dockable-react@0.1.0'
-  - '@fragiola/dockable@0.1.0'
+  - '@fragiola/dockable-react@0.3.0'
+  - '@fragiola/dockable@0.3.0'
 verifyDepsBeforeRun: false

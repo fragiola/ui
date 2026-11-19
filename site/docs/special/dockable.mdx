@@ -52,7 +52,7 @@ Every change is a named command (`model.run("tab.close", { tabId })`), and every
 </Dockable.Template.Simple>
 ```
 
-It assembles the rows and tabsets, the splitters, every tab's panel, the drop indicator, the borders the model declares and the popout windows. Each tabset's header has its tabs, with a close button on every tab that may close, the overflow menu, a popout button and maximize. Each button renders only while the model allows its command, so a pinned tab, a tab with `enableClose: false` or a vetoed command shows no button instead of one that does nothing.
+It assembles the rows and tabsets, the splitters, every tab's panel, the drop indicator, the borders the model declares and the popout windows. Each tabset's header has its tabs, with a close button on every tab that may close, the overflow menu, a popout button and maximize. Each button renders only while the model allows its command, so a pinned tab, a tab with `closable: false` or a vetoed command shows no button instead of one that does nothing.
 
 It takes three props: `model`, the function child (a tab's content, where `tab.data` narrows on `tab.component`) and `className`, which goes to the root. Everything else is forwarded to `Dockable.Root`: `popoutURL`, `keyMap`, `realtimeResize`, `supportsPopout`, `onExternalDrag`… The root needs a size: give it one through `className` or its container.
 
@@ -102,7 +102,7 @@ The popout button moves the selected tab into a native browser window, and in th
 <Dockable.Template.Simple model={model} popoutURL={`${import.meta.env.BASE_URL}popout.html`}>
 ```
 
-Allow it per tab (`enablePopout: true`) or for every tab (`defaults: { tab: { enablePopout: true } }`). Template.Simple turns on `popoutMirrorRoot`, which copies the `<html>` and `<body>` attributes into each window and keeps them in sync: the theme (`data-theme`) follows into open windows. A window's floor repeats the root's palette class.
+Allow it per tab (`poppable: true`) or for every tab (`defaults: { tab: { poppable: true } }`). Template.Simple turns on `popoutMirrorRoot`, which copies the `<html>` and `<body>` attributes into each window and keeps them in sync: the theme (`data-theme`) follows into open windows. A window's floor repeats the root's palette class.
 
 <Callout type="info">
 Inside a popout window a tabset's strip keeps every tab and scrolls instead of hiding them behind the overflow menu. The menu is a `DropdownMenu`, whose popup opens in the main window's document. Pass `overflow` to `Dockable.TabList` to choose either way.

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Dockable } from "#/components/ui/dockable";
 
 // The header's actions, each shown only while the model allows its command:
-//   close     on every tab but "Home" (enableClose: false) and "Pinned";
+//   close     on every tab but "Home" (closable: false) and "Pinned";
 //             "Audit log" is refused by a middleware veto — no button either.
 //             Ctrl+Delete on a focused tab closes it from the keyboard.
 //   maximize  on every tabset (a tabset alone in its layout has none); the
@@ -35,7 +35,7 @@ const json: LayoutJson<Types> = {
                 type: "tabset",
                 weight: 65,
                 children: [
-                    tab("Home", { enableClose: false }),
+                    tab("Home", { closable: false }),
                     tab("Pinned", { pinned: true }),
                     tab("Report"),
                     tab("Audit log"),
