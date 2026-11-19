@@ -225,6 +225,10 @@
                 {
                     "label": "Dockable",
                     "path": "special/dockable"
+                },
+                {
+                    "label": "Splitter",
+                    "path": "special/splitter"
                 }
             ]
         }
