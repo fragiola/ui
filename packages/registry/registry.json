@@ -1107,6 +1107,34 @@
                     "target": "@ui/grid-layout.tsx"
                 }
             ]
+        },
+        {
+            "name": "data-grid",
+            "type": "registry:ui",
+            "title": "Data Grid",
+            "description": "A virtualized data grid — rows and columns windowed on both axes, the keys and the active cell, column groups, loading rows, RTL — from @fragiola/data-grid-react, styled by the sheet family. A special component: the package's parts under the same names (Root, Grid, Header, HeaderRows, HeaderRow, HeaderCells, HeaderCell, Body, Rows, Row, Cells, Cell, Empty), each wearing its sheet member, plus a header cell's Label and Title. The registry's Table made interactive: its cell padding, line dividers and header type; a sticky soft header, an inset ring on the active cell, row heights from the spacing scale through the engine. Parts paint from the palette in scope. No tokens of its own. The model API is imported from the package.",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "dependencies": [
+                "@fragiola/data-grid-react@^0.1.0",
+                "tailwind-variants"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/sheet.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/sheet.ts"
+                },
+                {
+                    "path": "registry/ui/data-grid/parts.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/data-grid/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/data-grid.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/data-grid.tsx"
+                }
+            ]
         }
     ]
 }
