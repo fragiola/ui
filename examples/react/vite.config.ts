@@ -23,5 +23,15 @@ export default defineConfig({
         // ECharts is the chart example's own chunk (~1.1 MB), fetched only
         // when that example is shown: every example is a lazy import.
         chunkSizeWarningLimit: 1200,
+        // Three pages: the examples (index.html), and the Create page
+        // (create.html) with its preview document (create-preview.html),
+        // served by fragiola.com at /<slug>/create/ (contract v1.6).
+        rollupOptions: {
+            input: {
+                index: "index.html",
+                create: "create.html",
+                "create-preview": "create-preview.html",
+            },
+        },
     },
 });
