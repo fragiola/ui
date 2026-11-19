@@ -1,0 +1,54 @@
+---
+title: "Special components"
+description: "Special components are Fragiola's headless libraries, styled by Fragiola UI and installed with one command, with the package behind them pinned."
+---
+
+Some components are too large to live as copy-paste source: a docking layout, a
+data grid, a tree view. Fragiola builds them as **headless libraries**, published
+on npm as `@fragiola/<name>` (a framework-free core) and `@fragiola/<name>-react`
+(the React primitives). They ship behaviour and accessibility, but no CSS, icons
+or text: their state is exposed as `data-*` and ARIA attributes.
+
+A special component is the **styled layer** over one of those libraries. One
+command installs the package and writes the layer into your project:
+
+```bash
+npx shadcn@latest add @fragiola/dockable
+```
+
+## What you get
+
+- **The package**, added to your `dependencies` at the range the layer is written
+  for (`@fragiola/dockable-react@^0.3.0`). The libraries are `0.x`, and a minor
+  may break, so the item pins the version it was built and tested against.
+- **The styled parts**, one namespace named after the library (`Dockable.Root`,
+  `Dockable.Tab`, …). They mirror the package's primitives one-to-one and are
+  painted with the palette roles, so a palette class re-tints them, and they
+  follow dark mode, RTL and the design axes like every other component.
+- **One template**, `<Name>.Template.Simple`, which renders the whole component
+  in one line. When you need another arrangement, compose the parts yourself:
+  the examples on each page show how.
+
+The package owns the behaviour: its model, its commands and its keyboard and
+pointer handling. Import those from the package. The layer re-exports none of
+them. Your copy of the layer owns the look, and you can edit it like any other
+Fragiola UI file.
+
+## The special components
+
+| component | what it is | item | library docs |
+|---|---|---|---|
+| [Dockable](/docs/special/dockable) | dockable panels: tabs, splitters, drag and drop, borders, popout windows | `dockable` | [fragiola.com/dockable](https://fragiola.com/dockable) |
+
+More Fragiola libraries are published, and each joins this table when its styled
+layer ships: [Splitter](https://fragiola.com/splitter) (resizable split views),
+[Tree](https://fragiola.com/tree) (an accessible tree view),
+[Grid Layout](https://fragiola.com/grid-layout) (draggable, resizable dashboards)
+and [Data Grid](https://fragiola.com/data-grid). Until then, use their packages
+directly and style them with palette roles.
+
+<Callout type="info">
+An AI agent can tell the two kinds apart for you. The Fragiola MCP server answers
+which items are Fragiola UI source and which are library packages, and how to
+install each. See [AI agents](/docs/getting-started/ai-agents).
+</Callout>

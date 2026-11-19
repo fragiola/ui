@@ -1,0 +1,117 @@
+---
+title: "AI agents"
+description: "Give your AI agent Fragiola's docs: the Fragiola MCP server answers what exists and how to install it, and the agent skills teach how to build with it."
+---
+
+Fragiola publishes two tools for AI agents (Claude Code, Cursor, VS Code, Codex,
+OpenCode, …). They work in any project and are independent of each other:
+
+| tool | what it gives the agent | install |
+|---|---|---|
+| **MCP server** (the [`fragiola`](https://www.npmjs.com/package/fragiola) CLI) | everything fragiola.com documents: which components exist, their docs, the libraries' APIs and how to install each | `npx fragiola@latest mcp init --client <client>` |
+| **Agent skills** ([`fragiola/skills`](https://github.com/fragiola/skills)) | how to build with Fragiola: palettes, style families, composition, the headless libraries, the MCP server | `npx skills add fragiola/skills` |
+
+## The MCP server
+
+Fragiola has two kinds of components, and the server always says which one an
+item is:
+
+- **Fragiola UI**: components as source code, installed with
+  `npx shadcn@latest add @fragiola/<name>`. The code is copied into your project,
+  which owns it.
+- **Libraries**: headless npm packages, a core `@fragiola/<x>` and adapters such as
+  `@fragiola/<x>-react`. You install the adapter for your framework and import
+  from it. The [special components](/docs/special/overview) are the styled layer
+  over these.
+
+Every answer comes from fragiola.com and is fetched when a tool needs it, so new
+components and pages show up without upgrading anything.
+
+### Set it up
+
+Run this in your project:
+
+```bash
+npx fragiola@latest mcp init --client <client>
+```
+
+| client | `--client` | what it does |
+|---|---|---|
+| Claude Code | `claude` | writes `.mcp.json`. Restart Claude Code and approve the server (`/mcp` shows it) |
+| Cursor | `cursor` | writes `.cursor/mcp.json`. Enable the server in Cursor Settings → MCP |
+| VS Code | `vscode` | writes `.vscode/mcp.json`. Click Start next to the server, then use Copilot Chat in agent mode |
+| OpenCode | `opencode` | writes `opencode.json`. Restart OpenCode |
+| Codex | `codex` | prints the block for `~/.codex/config.toml`. Codex keeps its servers outside the project, so nothing is written |
+
+Without `--client`, it asks which client to configure. It merges into an
+existing config file and keeps your other servers, and running it again changes
+nothing. `fragiola` is not added to your dependencies: every client runs
+`npx fragiola@latest mcp`, so it always uses the latest server.
+
+### Configure it by hand
+
+Claude Code (`.mcp.json`) and Cursor (`.cursor/mcp.json`):
+
+```json
+{
+    "mcpServers": {
+        "fragiola": { "command": "npx", "args": ["fragiola@latest", "mcp"] }
+    }
+}
+```
+
+VS Code (`.vscode/mcp.json`):
+
+```json
+{
+    "servers": {
+        "fragiola": { "command": "npx", "args": ["fragiola@latest", "mcp"] }
+    }
+}
+```
+
+OpenCode (`opencode.json`):
+
+```json
+{
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "fragiola": {
+            "type": "local",
+            "command": ["npx", "fragiola@latest", "mcp"],
+            "enabled": true
+        }
+    }
+}
+```
+
+Codex (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.fragiola]
+command = "npx"
+args = ["fragiola@latest", "mcp"]
+```
+
+The server needs Node.js 24 or later on the client's `PATH`.
+
+### Ask it
+
+- "Which Fragiola components exist for forms?"
+- "Add a Fragiola select to this form, styled with the palette roles."
+- "Which Fragiola library gives me dockable panels, and how do I install it?"
+
+## The agent skills
+
+[Agent skills](https://agentskills.io) are instructions an agent loads when a
+task needs them. The `fragiola` skill teaches it to build with Fragiola UI, the
+headless libraries and the MCP server. Install it from your project with the
+[`skills` CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add fragiola/skills
+```
+
+Add `-g` to install it for every project, or `-a <agent>` to pick the agent. You
+can also copy `skills/<name>/` from the repository into your agent's skills
+folder (`.claude/skills/`, `.agents/skills/`, …).
