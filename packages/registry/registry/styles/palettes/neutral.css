@@ -1,0 +1,25 @@
+/* Neutral — the default action palette: a solid, near-black fill in light
+   and a near-white one in dark, with no hue of its own. It is what a primary
+   button, a solid badge or a checked control carries when the design has no
+   brand colour yet (docs/visual-language.md). A palette, not a role: the
+   number of palettes is free (rule 1). Its neutrals share surface.css's hue
+   (250) and tint, so it sits on the floor as part of it. Both themes declare
+   all six roles. */
+
+:root[data-theme="light"] .palette-neutral {
+    --palette-base: oklch(0.21 0.01 250);
+    --palette-soft: oklch(0.96 0.003 250);
+    --palette-line: oklch(0.86 0.004 250);
+    --palette-contrast: oklch(0.98 0.003 250);
+    --palette-accent: oklch(0.21 0.01 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-neutral {
+    --palette-base: oklch(0.92 0.005 250);
+    --palette-soft: oklch(0.26 0.012 250);
+    --palette-line: oklch(0.36 0.012 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.92 0.005 250);
+    --palette-ring: var(--palette-accent);
+}

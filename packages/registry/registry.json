@@ -45,6 +45,20 @@
             ]
         },
         {
+            "name": "palette-neutral",
+            "type": "registry:file",
+            "title": "Neutral palette",
+            "description": "The default action palette: a near-black solid in light, near-white in dark, no hue. Both themes, all six roles.",
+            "registryDependencies": ["@fragiola/theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/neutral.css",
+                    "type": "registry:file",
+                    "target": "styles/palettes/neutral.css"
+                }
+            ]
+        },
+        {
             "name": "palette-blue",
             "type": "registry:file",
             "title": "Blue palette",
@@ -245,7 +259,11 @@
             "type": "registry:ui",
             "title": "Clickable",
             "description": "The button surface — Button, Link and ExternalLink under one namespace. Three orthogonal axes (variant: solid/ghost/outline/icon, size: sm/md, shape: auto/square), none of which is colour. Tone arrives as a palette class. Link is a plain <a>; consumers stitch a router link through render. ExternalLink is a separate export for its outbound defaults.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [
                 {
@@ -265,6 +283,21 @@
                     "path": "registry/atoms/icon/index.ts",
                     "type": "registry:ui",
                     "target": "@components/atoms/icon/index.ts"
+                }
+            ]
+        },
+        {
+            "name": "foundation",
+            "type": "registry:lib",
+            "title": "foundation family",
+            "description": "The visual language every family composes: focus (outside, inset, field, nested), the control box, hover, highlighted, checked, rail, knob, disabled and secondary text. One member per idea, zero variants.",
+            "registryDependencies": ["@fragiola/theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/foundation.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/foundation.ts"
                 }
             ]
         },
@@ -349,7 +382,8 @@
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
-                "@fragiola/text"
+                "@fragiola/text",
+                "@fragiola/foundation"
             ],
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [
@@ -409,8 +443,12 @@
             "name": "choice",
             "type": "registry:lib",
             "title": "choice family",
-            "description": "The checkable controls family — root, control, indicator, label, description. Zero variants. Shared by Checkbox, Radio and Switch. data-checked fills with palette-base and swaps text to contrast.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "description": "The checkable controls family. Zero variants. Shared by Checkbox, Radio and Switch: mark (box or circle), indicator, track and thumb (the switch), label, description. Composes the foundation: a control box unchecked, filled with ring when checked.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["tailwind-variants"],
             "files": [
                 {
@@ -708,7 +746,7 @@
             "type": "registry:lib",
             "title": "track family",
             "description": "A rail with a filled portion — the two things slider and progress genuinely share. Two members (rail, fill), zero variants. Orientation is data-orientation from the primitive, not a style axis. The fill's geometry comes from the primitive's inline styles (logical properties, so RTL inverts automatically); the family carries only the visual treatment. Installing slider after progress writes exactly one file.",
-            "registryDependencies": ["@fragiola/theme"],
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
             "dependencies": ["tailwind-variants"],
             "files": [
                 {
@@ -748,7 +786,8 @@
                 "@fragiola/cn",
                 "@fragiola/track",
                 "@fragiola/text",
-                "@fragiola/field"
+                "@fragiola/field",
+                "@fragiola/foundation"
             ],
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [
