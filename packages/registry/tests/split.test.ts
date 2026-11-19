@@ -119,6 +119,8 @@ describe("split family", () => {
         expect(classes(split.separator)).toContain("group/separator");
         expect(classes(split.grip)).toContain("pointer-events-none");
         expect(classes(split.grip)).toContain("opacity-0");
+        // The drawer handle's shape, so the radius axis reaches it.
+        expect(classes(split.grip)).toContain("rounded-pill");
     });
 
     it("hides content by its panel's collapsed state, both ways", () => {
@@ -126,5 +128,24 @@ describe("split family", () => {
         expect(classes(split.collapsed)).toEqual([
             "not-in-data-collapsed:hidden",
         ]);
+    });
+
+    it("leaves Template.Simple with no style of its own", async () => {
+        // The template rules: nothing beyond the parts — no tv(), no class
+        // literal, no family member. The one className goes to Group.
+        const source = await readFile(
+            path.join(REGISTRY, "ui/splitter/templates/simple.tsx"),
+            "utf-8",
+        );
+        const code = source.replace(/^\s*\/\/.*$/gm, "");
+        expect(code).not.toMatch(/\btv\(/);
+        expect(code).not.toMatch(/className="/);
+        expect(code).not.toMatch(/#\/families\//);
+        expect(code.match(/className=\{/g)).toEqual(["className={"]);
+        // Its own props stay under the ceiling of 7: the rest is Group's.
+        const own = code.match(/& \{([\s\S]*?)\n\};/)?.[1] ?? "";
+        const props = own.match(/^\s+\w+\??:/gm) ?? [];
+        expect(props.length).toBeGreaterThan(0);
+        expect(props.length).toBeLessThanOrEqual(7);
     });
 });

@@ -981,7 +981,7 @@
             "name": "splitter",
             "type": "registry:ui",
             "title": "Splitter",
-            "description": "Resizable split views — pointer and keyboard resizing, nested groups, collapsible panels, size constraints in any unit, RTL — from @fragiola/splitter-react, styled by the split family. A special component: the package's Group, Panel and Separator under the same names, each wearing its split member, plus a Grip for a separator. A 1px line rule with a wider invisible hit area, ring on hover, drag and focus; panels paint from the palette in scope, so a palette class on a group re-tints it. No tokens of its own. The model API is imported from the package.",
+            "description": "Resizable split views — pointer and keyboard resizing, nested groups, collapsible panels, size constraints in any unit, RTL — from @fragiola/splitter-react, styled by the split family. A special component: the package's Group, Panel and Separator under the same names, each wearing its split member, plus a Grip for a separator. A 1px line rule with a wider invisible hit area, ring on hover, drag and focus; panels paint from the palette in scope, so a palette class on a group re-tints it. No tokens of its own. Splitter.Template.Simple puts a separator with a grip between the panels it is given. The model API is imported from the package.",
             "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
             "dependencies": [
                 "@fragiola/splitter-react@^0.1.0",
@@ -997,6 +997,16 @@
                     "path": "registry/ui/splitter/parts.tsx",
                     "type": "registry:ui",
                     "target": "@ui/splitter/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/splitter/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "@ui/splitter/templates/index.ts"
+                },
+                {
+                    "path": "registry/ui/splitter/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/splitter/templates/simple.tsx"
                 },
                 {
                     "path": "registry/ui/splitter.tsx",

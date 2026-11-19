@@ -1,6 +1,7 @@
 "use client";
 
 import { Grip, Group, Panel, Separator } from "./splitter/parts";
+import { Template } from "./splitter/templates";
 
 // Splitter — resizable split views (pointer and keyboard resizing, nested
 // groups, collapsible panels, size constraints in any unit, RTL) from
@@ -14,10 +15,14 @@ import { Grip, Group, Panel, Separator } from "./splitter/parts";
 //
 //   import { useSplitterRef } from "@fragiola/splitter-react";
 //
+// Splitter.Template.Simple puts a separator with a grip between the panels
+// it is given; the parts are there for the layout that outgrows it.
+//
 // See the parts for what each one adds, and families/split.ts for why it
 // looks the way it does.
 
 export const Splitter = {
+    Template,
     Group,
     Panel,
     Separator,
