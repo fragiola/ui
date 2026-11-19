@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import {
     mkdir,
     mkdtemp,
@@ -100,6 +101,22 @@ describe("site/docs", () => {
                                     "utf-8",
                                 ),
                             ],
+                            ...(
+                                ["create.html", "create-preview.html"] as const
+                            ).map(
+                                (name) =>
+                                    [
+                                        name,
+                                        readFileSync(
+                                            path.join(
+                                                ROOT,
+                                                "examples/react",
+                                                name,
+                                            ),
+                                            "utf-8",
+                                        ),
+                                    ] as [string, string],
+                            ),
                         ]),
                         manifest,
                     },
@@ -200,7 +217,14 @@ function fixture(): ExportInput {
         embeds: new Map([
             [
                 "react",
-                { html: new Map([["index.html", EMBED_HTML]]), manifest },
+                {
+                    html: new Map([
+                        ["index.html", EMBED_HTML],
+                        ["create.html", EMBED_HTML],
+                        ["create-preview.html", EMBED_HTML],
+                    ]),
+                    manifest,
+                },
             ],
         ]),
         registry: {
@@ -600,6 +624,65 @@ describe("validate", () => {
 /** 52 characters as written, 48 as read: code marks are not characters. */
 const CODE_48 = `\`one\` and \`two\` ${"x".repeat(36)}`;
 
+describe("validate (v1.6)", () => {
+    it("accepts a Create page declared with its file", () => {
+        expect(validate(fixture())).toEqual([]);
+    });
+
+    it("rejects a Create page whose file is missing", () => {
+        const input = fixture();
+        input.embeds.get("react")?.html.delete("create.html");
+        expect(validate(input)).toContainEqual(
+            expect.stringContaining("embed/react/create.html is missing"),
+        );
+    });
+
+    it("rejects a Create page in a framework the project does not have", () => {
+        const input = fixture();
+        input.project = {
+            ...input.project,
+            create: {
+                title: "Create",
+                description: input.project.create?.description ?? "",
+                framework: "vue",
+            },
+        };
+        expect(validate(input)).toContainEqual(
+            expect.stringContaining(
+                'create.framework "vue" is not in frameworks',
+            ),
+        );
+    });
+
+    it("rejects a Create page with a short description", () => {
+        const input = fixture();
+        input.project = {
+            ...input.project,
+            create: {
+                title: "Create",
+                description: "Too short.",
+                framework: "react",
+            },
+        };
+        expect(validate(input)).toContainEqual(
+            expect.stringContaining("create.description"),
+        );
+    });
+
+    it("rejects a /create link when no Create page is declared", () => {
+        const input = fixture();
+        const { create: _, ...project } = input.project;
+        input.project = project;
+        input.pages.set(
+            "atoms/button",
+            `${input.pages.get("atoms/button") ?? ""}\nTry it in [Create](/create).\n`,
+        );
+        expect(validate(input)).toContainEqual(
+            expect.stringContaining("declares no Create page"),
+        );
+    });
+});
+
 describe("validate (v1.2)", () => {
     // withPage(): the frontmatter is lines 1–4, the body starts on line 6.
     const page =
@@ -623,7 +706,12 @@ describe("validate (v1.2)", () => {
     };
     const html = (files: Record<string, string>) => (i: ExportInput) => {
         const embed = i.embeds.get("react");
-        if (embed) embed.html = new Map(Object.entries(files));
+        if (embed) {
+            embed.html = new Map([
+                ["create.html", embed.html.get("create.html") ?? ""],
+                ...Object.entries(files),
+            ]);
+        }
     };
     // JSON.stringify(PROJECT, null, 4): "description" is line 5, "keywords"
     // comes last.

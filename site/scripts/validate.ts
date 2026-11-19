@@ -12,7 +12,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1.3, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.6, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
@@ -33,13 +33,16 @@ import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
 //
-// v1.1, v1.2 and v1.3 keep `"contract": 1` (CONTRACT.md, "Changes in
-// v1.3"), so CONTRACT stays 1 while the rules are v1.3's: CONTRACT_REVISION.
+// v1.1 to v1.6 keep `"contract": 1` (CONTRACT.md, the changelog), so CONTRACT
+// stays 1 while the rules are v1.6's: CONTRACT_REVISION. v1.4 and v1.5 add
+// optional fields this project does not use (sidebar icons, adapters); v1.6
+// adds the Create page (`create` in project.json, embed/<fw>/create.html,
+// the `/create` link), which it does.
 // v1.3 adds runtime messages only (overlay promotion, §5.4) — nothing in an
 // export to check; `check:embeds` drives them in a real browser.
 
 export const CONTRACT = 1;
-export const CONTRACT_REVISION = "1.3";
+export const CONTRACT_REVISION = "1.6";
 
 /** v1.2: the lengths of titles, descriptions and keywords (§2, §3.2). */
 export const LIMITS = {
@@ -62,6 +65,8 @@ export type ProjectJson = {
     repository?: string;
     /** v1.2: topics for the project's structured data only. */
     keywords?: string[];
+    /** v1.6: a full-page tool served at /<slug>/create/ (§2). */
+    create?: { title: string; description: string; framework: string };
 };
 
 type ConfigPage =
@@ -660,6 +665,11 @@ export function validate(input: ExportInput): string[] {
         if (pathname === "/examples") {
             return allExampleIds.size > 0 ? null : "there are no examples";
         }
+        if (pathname === "/create") {
+            return project.create
+                ? null
+                : "the project declares no Create page (§2, v1.6)";
+        }
         const example = pathname.match(/^\/examples\/([^/]+)$/);
         if (example) {
             return allExampleIds.has(example[1] ?? "")
@@ -1143,6 +1153,46 @@ export function validate(input: ExportInput): string[] {
                         );
                 }
                 break;
+            }
+        }
+    }
+
+    // v1.6 (§2): the Create page — its shape, its framework, its file.
+    if (project.create !== undefined) {
+        const where = projectAt("create");
+        const create = project.create as Partial<
+            NonNullable<ProjectJson["create"]>
+        >;
+        if (typeof create !== "object" || create === null) {
+            problems.push(`${where}: create must be an object (§2)`);
+        } else {
+            if (
+                typeof create.title !== "string" ||
+                !create.title ||
+                create.title.length > LIMITS.title
+            ) {
+                problems.push(
+                    `${where}: create.title must be 1–${LIMITS.title} characters (§2)`,
+                );
+            }
+            const wrong =
+                typeof create.description === "string" && create.description
+                    ? descriptionLength(create.description)
+                    : "is missing";
+            if (wrong) {
+                problems.push(`${where}: create.description ${wrong} (§2)`);
+            }
+            if (
+                typeof create.framework !== "string" ||
+                !project.frameworks?.includes(create.framework)
+            ) {
+                problems.push(
+                    `${where}: create.framework "${create.framework}" is not in frameworks (§2)`,
+                );
+            } else if (!embeds.get(create.framework)?.html.has("create.html")) {
+                problems.push(
+                    `embed/${create.framework}/create.html is missing: project.json declares a Create page (§2)`,
+                );
             }
         }
     }
