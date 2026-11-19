@@ -570,6 +570,11 @@ in the remaining surface:
   The advanced features (ranges, fill, clipboard, grouping, master-detail, reordering,
   summary rows, spans) have no piece yet. See `docs/port-report-epic-98.md`.
 
+- **The visual language** — settled in Epic #107: one answer per visual question
+  (`visual-language.md`), held by the `foundation` family that every family composes,
+  with a guard test. A neutral action palette joins the set. See
+  `docs/port-report-epic-107.md`.
+
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
 error, no type error, no crash — it simply does nothing, and type-check and lint both
