@@ -125,6 +125,7 @@ disclosure  expand/collapse        accordion, collapsible
 dock        the docking layout     dockable
 split       the split view         splitter
 tree        the tree view          tree
+tile        the dashboard grid     grid-layout
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -155,6 +156,21 @@ check box is `Checkbox` (hidden from assistive technology, never focused, as the
 package's contract asks) and rename is `Field.Row` + `Input` (rule 3: the frame is the
 row). Neither changed. Its family file is `families/tree.tsx`, without JSX, for the
 same reason as `field.tsx`: `ui/tree.tsx` shares its basename.
+
+`tile` is the fourth (Grid Layout, §5): root, cells, item, drag handle, resize handle,
+placeholder, drag source and drag preview, plus a card's header, title and content. It
+is named `tile`, not `grid`, which Data Grid's family will want. Its items do not nest,
+so it is the first package family since `dock` to **declare a surface palette on a
+part**: an item is a card on `palette-raised` with `layer.panel`'s values (line, radius,
+fill, text, `shadow-lg` while held), as a dialog is; the root, cells and placeholder
+paint from the palette in scope, so a palette class on the root tints the dots, the
+placeholder and the drop outline, and one on an item replaces `raised`. The placeholder
+is `dock.dropIndicator`'s box, dashed, and a resize handle's mark is `split.grip`'s pill
+with `split.separator`'s cursors. The engine places every item, cell and the placeholder
+with an inline `transform`, so a held item lifts with the separate `scale` property and
+no member sets geometry on them. A refused drop is `palette-danger`, which a variant
+cannot switch (a palette is a plain class): `Root` and `DragPreview` add the `refused`
+member from their state, the one place a special layer reads state in React for a look.
 
 `dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
@@ -201,9 +217,11 @@ The rule is for state that means *the same thing* across libraries. Dockable's s
 (`data-selected`, `data-active` on the tabset, `data-dragging`, `data-drop-kind`) are
 its own, read by one family, so `dock` reads them directly and the theme gains no
 variant. Splitter's (`data-dragging`, `data-collapsed`, `data-collapsible`) are the
-same case for `split`, and Tree's (`data-selected`, `data-focused`, `data-expanded`,
-`data-renaming`, `data-load-error`, …) for `tree`: a tree's `data-selected` lights a
-row while focus is elsewhere, so it is not the `highlighted` variant.
+same case for `split`, Tree's (`data-selected`, `data-focused`, `data-expanded`,
+`data-renaming`, `data-load-error`, …) for `tree` — a tree's `data-selected` lights a
+row while focus is elsewhere, so it is not the `highlighted` variant — and Grid
+Layout's (`data-dragging`, `data-grabbed`, `data-dropping`, `data-drop-refused`,
+`data-static`, `data-side`, `data-kind`, …) for `tile`.
 
 ---
 
@@ -404,7 +422,8 @@ data grid, a scheduler. They are published packages, and the registry item ships
 item writes the parts (dressed by a family) and one template. Dockable is the
 first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`),
 Splitter the second (`@fragiola/splitter`, Epic #88), Tree the third
-(`@fragiola/tree`, Epic #91).
+(`@fragiola/tree`, Epic #91), Grid Layout the fourth (`@fragiola/grid-layout`,
+Epic #94).
 The model, the commands and the behaviour stay the package's and are imported from
 it; the layer re-exports none of them. In the docs and the gallery they share one
 section, **Special**.
@@ -494,6 +513,12 @@ in the remaining surface:
   (`dragAndDrop({ indentation, indicatorInset })`), so under another density its line
   drifts from the rows by a few pixels per level; S5 keeps the family from moving it. See
   `docs/port-report-epic-91.md`.
+- **`grid-layout`** — settled in Epic #94, the fourth special component: the `tile`
+  family, the package's parts plus a card's Header, Title and Content,
+  `GridLayout.Template.Simple` with four props, no token and no palette added. The S1–S8
+  rules held unchanged. One limit is the package's: the row height, the gap and the
+  padding are pixel options (`rowHeight`, `gap`, `padding`), so the grid's rhythm does
+  not follow the density while the cards' insides do. See `docs/port-report-epic-94.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
