@@ -126,6 +126,7 @@ dock        the docking layout     dockable
 split       the split view         splitter
 tree        the tree view          tree
 tile        the dashboard grid     grid-layout
+sheet       the data grid          data-grid
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -159,7 +160,7 @@ same reason as `field.tsx`: `ui/tree.tsx` shares its basename.
 
 `tile` is the fourth (Grid Layout, §5): root, cells, item, drag handle, resize handle,
 placeholder, drag source and drag preview, plus a card's header, title and content. It
-is named `tile`, not `grid`, which Data Grid's family will want. Its items do not nest,
+is named `tile`, not `grid`, which would be ambiguous beside Data Grid's. Its items do not nest,
 so it is the first package family since `dock` to **declare a surface palette on a
 part**: an item is a card on `palette-raised` with `layer.panel`'s values (line, radius,
 fill, text, `shadow-lg` while held), as a dialog is; the root, cells and placeholder
@@ -171,6 +172,23 @@ with an inline `transform`, so a held item lifts with the separate `scale` prope
 no member sets geometry on them. A refused drop is `palette-danger`, which a variant
 cannot switch (a palette is a plain class): `Root` and `DragPreview` add the `refused`
 member from their state, the one place a special layer reads state in React for a look.
+
+`sheet` is the fifth (Data Grid, §5): root, grid, header, header row, header cell, a
+header cell's label and title, row, cell and empty, plus members for the seven common
+features' pieces (sort indicator, column resizer, check boxes, header filter, cell
+editor, pagination). It is named `sheet`, not `grid`, which would be ambiguous beside
+Grid Layout's `tile`. Rows nest no rows, but a grid sits in any surface, so like `split`
+and `tree` it declares **no** palette. It is the registry's static `Table` made
+interactive, and shares its cell padding, its `line` row rule, its header type and fill
+and its body text (pinned on both sides by a test); `Table` itself is unchanged. Its
+selected row is `tree.row`'s (`soft`, `contrast` text), its resizer `split.separator`'s
+rule, its "select all" `tree.checkbox`'s mixed box, its loading cell `Skeleton`'s bar. A
+pinned cell inherits its row's fill (`bg-inherit`), so every row fill is opaque — the
+hover is `soft` mixed half into `base`, not `soft/50`. The engine places every row and
+cell, and holds the pinned ones sticky: the family sets no geometry and no `overflow` on
+them, only the pinned cells' stacking, which the package leaves to the app. Its pieces
+**compose more registry items** than Tree's — `Checkbox`, `Field` + `Input`, `Select`,
+`Pagination` — and each renders only when the grid's model has its feature installed.
 
 `dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
@@ -221,7 +239,9 @@ same case for `split`, Tree's (`data-selected`, `data-focused`, `data-expanded`,
 `data-renaming`, `data-load-error`, …) for `tree` — a tree's `data-selected` lights a
 row while focus is elsewhere, so it is not the `highlighted` variant — and Grid
 Layout's (`data-dragging`, `data-grabbed`, `data-dropping`, `data-drop-refused`,
-`data-static`, `data-side`, `data-kind`, …) for `tile`.
+`data-static`, `data-side`, `data-kind`, …) for `tile`, and Data Grid's (`data-active`,
+`data-interacting`, `data-editing`, `data-loading`, `data-pinned`, `data-sort`, …) for
+`sheet`.
 
 ---
 
@@ -272,9 +292,11 @@ A component with many parts ships one **template**: the parts assembled into the
 common case, so a page does not re-assemble them every time —
 `Input.Template.Simple`, `Dockable.Template.Simple` (the whole docking layout
 from a model and a tab's content), `Splitter.Template.Simple` (a separator with
-its grip between the panels it is given; two props) and `Tree.Template.Simple` (the
+its grip between the panels it is given; two props), `Tree.Template.Simple` (the
 whole tree, with the UI of each feature the model has installed — read from the
-model, never from a prop; four props). The rules are the same for all:
+model, never from a prop; four props), `GridLayout.Template.Simple` (a whole
+dashboard; four props) and `DataGrid.Template.Simple` (a whole grid, with the piece of
+each feature installed; five props). The rules are the same for all:
 
 1. no style of its own — nothing beyond the parts and their family members;
 2. no appearance props;
@@ -423,7 +445,7 @@ item writes the parts (dressed by a family) and one template. Dockable is the
 first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`),
 Splitter the second (`@fragiola/splitter`, Epic #88), Tree the third
 (`@fragiola/tree`, Epic #91), Grid Layout the fourth (`@fragiola/grid-layout`,
-Epic #94).
+Epic #94), Data Grid the fifth (`@fragiola/data-grid`, Epic #98).
 The model, the commands and the behaviour stay the package's and are imported from
 it; the layer re-exports none of them. In the docs and the gallery they share one
 section, **Special**.
@@ -519,6 +541,15 @@ in the remaining surface:
   rules held unchanged. One limit is the package's: the row height, the gap and the
   padding are pixel options (`rowHeight`, `gap`, `padding`), so the grid's rhythm does
   not follow the density while the cards' insides do. See `docs/port-report-epic-94.md`.
+- **`data-grid`** — settled in Epic #98, the fifth special component: the `sheet`
+  family, the package's parts plus a header cell's Label and Title, a piece per common
+  feature (sorting, column resizing, column pinning, row selection, filtering, editing,
+  pagination), `DataGrid.Template.Simple` with five props, no token and no palette
+  added. The S1–S8 rules held unchanged. The rows' heights are the engine's, and the
+  styled Root sets them from the spacing scale it measures, so density keeps
+  virtualization exact; column widths stay pixel options and do not follow the density.
+  The advanced features (ranges, fill, clipboard, grouping, master-detail, reordering,
+  summary rows, spans) have no piece yet. See `docs/port-report-epic-98.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
