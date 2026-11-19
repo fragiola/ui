@@ -243,6 +243,25 @@
             "registryDependencies": []
         },
         {
+            "name": "colour",
+            "type": "registry:lib",
+            "title": "colour helpers",
+            "description": "generatePalette: a complete Fragiola palette pair (palette-<name> and palette-surface-<name>, both themes, six roles) from one hue, contrast-checked with the registry guard's own OKLCH → WCAG maths; serializePalette writes it in the palette files' shape. No colour library.",
+            "files": [
+                {
+                    "path": "registry/lib/colour/contrast.ts",
+                    "type": "registry:lib",
+                    "target": "@lib/colour/contrast.ts"
+                },
+                {
+                    "path": "registry/lib/colour/palette.ts",
+                    "type": "registry:lib",
+                    "target": "@lib/colour/palette.ts"
+                }
+            ],
+            "registryDependencies": []
+        },
+        {
             "name": "text",
             "type": "registry:ui",
             "title": "Text atom",
