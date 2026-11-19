@@ -44,3 +44,32 @@ thing, shared style cannot be written once. Normalize in CSS, in one place:
 
 A new library is one more selector here. This is cheaper than a React
 translation layer per component.
+
+`current` (the active tab, the current page, the active link) and `selected`
+(chosen rows, a dockable tabset's shown tab) are normalized the same way, so
+every set is lit the same way whatever its library calls the state.
+
+## One visual language: the foundation
+
+Families that never share a member still answer the same visual questions:
+what a control box looks like, how focus is drawn, what "on" and "selected"
+are. The answers live in one family, `foundation`, and every other family
+composes it instead of writing the classes again:
+
+```ts
+const row = tv({ base: [foundation.box(), foundation.fieldFocus(), "…"] });
+```
+
+| member | the idea | where |
+|---|---|---|
+| `box` | a `line` stroke on a transparent background, value in `accent` | the field row, a select trigger, an outline button, an unchecked checkbox |
+| `focus`, `focusInset`, `fieldFocus` | one 2px `ring` outline, outside a standalone element, inside an item of a list | every focusable |
+| `hover`, `highlighted` | `soft` under the pointer or the keyboard | buttons, menu items, triggers |
+| `current`, `selected` | `soft` with `contrast` text | tabs, pages, sidebar links, tree and grid rows |
+| `checked`, `rail`, `knob` | "on" is `ring`, "off" ground is `line`, what slides is `base` | checkbox, radio, switch, slider, progress |
+| `panel`, `overlay` | a container on the floor; a raised surface with the overlay shadow | accordion, data grid; menus, popovers, dialogs |
+
+So a button and a field beside it share their stroke, their ring and their
+height, and "on" is one colour across every control. Installing a component
+installs `foundation` with it, and changing a member changes every component
+that composes it.

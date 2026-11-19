@@ -79,7 +79,7 @@ The ring is drawn outside because `ring` contrasts with what is behind the eleme
 | current (where you are in a set: the active tab, the current page, the active sidebar or navigation link) | `bg-palette-soft`, text `contrast`, `font-medium` | `current` |
 | selected (what the user chose: tree rows, grid and table rows, a dockable tabset's shown tab) | `bg-palette-soft`, text `contrast` (no weight: a row does not reflow) | `selected` |
 | hover on a row of a selectable list (tree, grid, table) | half of `soft`, mixed opaque over the row's `base`, never on a selected row | `hoverRow` |
-| checked / on (checkbox, radio, switch, slider fill, progress fill) | `bg-palette-ring`, content in `base` | `checked` |
+| checked / on (checkbox, radio, switch, slider fill, progress fill), and mixed (an indeterminate checkbox, with a dash) | `bg-palette-ring`, content in `base` | `checked` |
 | off ground (a track's rail, a switch's track) | `bg-palette-line` | `rail` |
 | what slides (switch thumb, slider thumb) | `bg-palette-base`, `shadow-sm` | `knob` |
 | disabled | `opacity-50`, `cursor-not-allowed` | `disabled` |
@@ -118,6 +118,8 @@ palette: write one, and swap the class. Nothing in the component changes.
 | secondary (description, caption, placeholder) | `text-sm` / `text-xs` | normal | `accent/85` (`secondary`) |
 | heading (dialog title, card title, `Text.Heading`) | `text-lg` and up | `font-semibold` | `contrast` |
 | badge, keyboard hint | `text-xs` | `font-medium` | by the badge's fill |
+| link (`Text.Link`, `Text.Clickable`) | inherits | normal | `contrast`, underlined in `line` (`underline-offset-4`), the underline taking the text's colour on hover |
+| error (`Text.Error`, `Field.Error`) | `text-xs` | normal | `palette-danger`'s `accent` |
 
 Every size follows the typography axis (`--text-scale`).
 
@@ -138,3 +140,31 @@ for a standalone illustration. A secondary icon (a chevron, a search glass) is
 | expand and collapse (accordion, collapsible, a sidebar group) | `duration-200` |
 
 Every duration follows the motion axis (`--motion-scale`).
+
+## Examples
+
+The examples are where a reader first sees the design, and they copy them verbatim. So
+they follow one standard, and they show the language rather than a matrix of it.
+
+1. **Open with a realistic use in the default look.** The example's root carries
+   `palette-surface` and paints the floor (`bg-palette-base text-palette-contrast`).
+   It draws no frame of its own: the docs frame is the frame. The content is something
+   an app would show (a sign-in form, a settings row, an invoice list), not
+   `Option 1, Option 2`. Primary actions carry `palette-neutral`, fields and choices
+   carry no palette class, and nothing is coloured that an app would not colour.
+2. **Show colour once, and the same way everywhere.** A component whose colour matters
+   (button, badge, choices, slider, progress, tabs, …) ends with one row captioned
+   `palettes`: the same element repeated, with only its `palette-*` class changed. For
+   surface-tier controls (fields, choices, select, combobox) the classes are the
+   `surface-*` palettes, which change only the ring and the "on" colour. Those rows sit
+   last, after the realistic use. No other row changes colour.
+3. **Keep the states a reader needs to use the component** (disabled, invalid, a
+   loading or empty state), compact and after the realistic use. Full matrices (every
+   size × every palette × every state) are review material: they live in the
+   playground's scenarios, and the coherence sheet already covers them.
+4. **Caption a row the same way everywhere:** `font-mono text-xs text-palette-accent/85`,
+   lower case.
+
+The docs page of a component with a `palettes` row carries the same callout under its
+example, "No colour variants": the colour is the palette class, a new colour is a new
+palette, and nothing in the component changes.
