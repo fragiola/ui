@@ -135,13 +135,24 @@ async function size(frame: Frame | Page) {
     });
 }
 
+// Every running transition finished: a fingerprint taken mid-transition
+// (the host's theme change fades colours) would differ for no reason.
+async function settle(frame: Frame) {
+    await frame.evaluate(async () => {
+        await new Promise((r) => setTimeout(r, 100));
+        await Promise.all(document.getAnimations().map((a) => a.finished));
+    });
+}
+
 // A fingerprint of every element of the customizer: what an axis, a scheme
 // or a direction would change if it reached this document.
 async function fingerprint(create: Frame) {
+    await settle(create);
     return create.evaluate(() =>
         [...document.querySelectorAll("header *, aside *")].map((el) => {
             const s = getComputedStyle(el);
             return [
+                `${el.tagName.toLowerCase()}${el.getAttribute("aria-label") ? `[${el.getAttribute("aria-label")}]` : ""}`,
                 s.color,
                 s.backgroundColor,
                 s.borderTopLeftRadius,
@@ -232,7 +243,12 @@ for (const [width, height] of [
         await page.keyboard.press("Escape");
         await page.waitForTimeout(300);
         const after = await fingerprint(create);
-        const changed = before.filter((print, i) => print !== after[i]).length;
+        const diffs = before.flatMap((print, i) =>
+            print !== after[i] ? [`${print}  →  ${after[i]}`] : [],
+        );
+        const changed = diffs.length;
+        if (process.env.CHECK_CREATE_DEBUG)
+            console.log(diffs.slice(0, 12).join("\n"));
         // The pickers themselves show the new values: their text changes,
         // never their style. Only the five triggers' own state may differ.
         if (changed > 10) {
