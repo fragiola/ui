@@ -551,7 +551,9 @@ describe("achromatic chart series", () => {
                 ...Array.from({ length: 5 }, (_, i) => `--chart-ramp-${i + 1}`),
             ];
             for (const key of keys) {
-                const value = new RegExp(`${key}:\\s*([^;]+);`).exec(block ?? "")?.[1];
+                const value = new RegExp(`${key}:\\s*([^;]+);`).exec(
+                    block ?? "",
+                )?.[1];
                 const parsed = value ? parseOklch(value) : null;
                 expect(parsed, `${theme} ${key}`).not.toBeNull();
                 expect(parsed?.c, `${theme} ${key} chroma`).toBe(0);

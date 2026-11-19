@@ -470,7 +470,8 @@
    chroma: the series stay apart by contrast, as a neutral design's should.
    Same specificity as the blocks above and declared after them, so they win
    for exactly these classes; every other palette keeps its derivation. */
-:root[data-theme="light"] :is(.palette-neutral, .palette-surface, .palette-raised) {
+:root[data-theme="light"]
+:is(.palette-neutral, .palette-surface, .palette-raised) {
     --chart-1: oklch(0.25 0 0);
     --chart-2: oklch(0.55 0 0);
     --chart-3: oklch(0.4 0 0);
@@ -483,7 +484,8 @@
     --chart-ramp-5: oklch(0.25 0 0);
 }
 
-:root[data-theme="dark"] :is(.palette-neutral, .palette-surface, .palette-raised) {
+:root[data-theme="dark"]
+    :is(.palette-neutral, .palette-surface, .palette-raised) {
     --chart-1: oklch(0.92 0 0);
     --chart-2: oklch(0.62 0 0);
     --chart-3: oklch(0.78 0 0);
