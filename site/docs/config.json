@@ -233,6 +233,10 @@
                 {
                     "label": "Tree",
                     "path": "special/tree"
+                },
+                {
+                    "label": "Grid Layout",
+                    "path": "special/grid-layout"
                 }
             ]
         }

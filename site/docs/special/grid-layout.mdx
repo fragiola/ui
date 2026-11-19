@@ -1,0 +1,151 @@
+---
+title: "Grid Layout"
+description: "Draggable, resizable dashboard grids with compaction, breakpoints, keyboard moves and drops from outside, styled by the tile family."
+---
+
+<InstallCommand item="grid-layout" />
+
+<Example id="grid-layout" />
+
+## What it installs
+
+[Grid Layout](https://fragiola.com/grid-layout) is a headless library of draggable, resizable grid layouts: collision and compaction, size limits and constraints, responsive breakpoints, moving and resizing from the keyboard, items brought in from outside the grid, and RTL, with no look of its own. The item adds `@fragiola/grid-layout-react@^0.1.0` to your dependencies (the range this layer is written for; the package is `0.x`, and a minor may break) and writes the styled layer over it:
+
+- `components/ui/grid-layout.tsx`: one export, `GridLayout`, with the package's parts under the same names, each wearing its member of the `tile` family, plus a card's `Header`, `Title` and `Content` and `GridLayout.Template.Simple`;
+- `components/families/tile.ts`: the family.
+
+It also installs the `raised` palette for the cards and the `danger` palette for a refused drop.
+
+The model, the compactors, the constraints and the hooks (`useGridLayoutRef`, `useGridLayoutEvents`, `useBreakpoint`, `verticalCompactor`, `veto`…) are the package's: import them from `@fragiola/grid-layout-react` (and `@fragiola/grid-layout-react/compactors`). Saving a layout, driving the grid from code, middleware and the full API are in [Grid Layout's documentation](https://fragiola.com/grid-layout).
+
+## Template.Simple
+
+`GridLayout.Template.Simple` renders a whole dashboard: the grid's background, each item of the layout as a card (a header with its drag handle and its title, your content, a resize handle on every side and corner), the placeholder, and the preview of an item dragged in from outside.
+
+```tsx
+const layout: Layout = [
+    { id: "revenue", x: 0, y: 0, w: 3, h: 2 },
+    { id: "traffic", x: 3, y: 0, w: 9, h: 3, minW: 4 },
+];
+
+<GridLayout.Template.Simple
+    defaultLayout={layout}
+    rowHeight={56}
+    itemTitle={(item) => widgets[item.id].title}
+    aria-label="Dashboard"
+>
+    {(item) => <Widget id={item.id} />}
+</GridLayout.Template.Simple>
+```
+
+It takes four props of its own: `children` (what an item shows, from its place in the layout), `itemTitle` (an item's name, its header's text and its accessible name; its id unless given), `resizeHandles` (the sides and corners an item is resized from; all eight unless given) and `className`, which goes to the root. Everything else is forwarded to `GridLayout.Root`: `layout`, `defaultLayout`, `layouts`, `onLayoutChange`, `breakpoints`, `cols`, `rowHeight`, `gap`, `compactor`, `preventCollision`, `constraints`, `draggable`, `resizable`, `gridLayoutRef`, `onDrop`…
+
+The layout holds an item's id and its box, never what it shows: keep each id's content in your own state, as the examples do. An item dragged in from a drag source shows the source's `data` in the preview when it is a string, its new id otherwise. A static item gets no drag handle.
+
+## Composing the parts
+
+Template.Simple is one arrangement. This dashboard builder is written from the parts: a sidebar of widgets to drag in, a remove button in each card's header, a corner handle only, and announcements in the app's own words.
+
+<Example id="grid-layout-dashboard-builder" />
+
+```tsx
+const gridLayoutRef = useGridLayoutRef();
+
+<GridLayout.DragSource gridLayoutRef={gridLayoutRef} item={{ w: 3, h: 2 }} data="metric">
+    <Gauge aria-hidden="true" />
+    Metric
+</GridLayout.DragSource>
+
+<GridLayout.Root gridLayoutRef={gridLayoutRef} defaultLayout={start} onDrop={add} aria-label="Your dashboard">
+    <GridLayout.Cells />
+    <GridLayout.Items>
+        {(item) => (
+            <GridLayout.Item itemId={item.id} aria-label={nameOf(item.id)}>
+                <GridLayout.Header>
+                    <GridLayout.DragHandle aria-label={`Move ${nameOf(item.id)}`} />
+                    <GridLayout.Title>{nameOf(item.id)}</GridLayout.Title>
+                    <Clickable.Button variant="icon" size="sm" shape="square" aria-label="Remove">…</Clickable.Button>
+                </GridLayout.Header>
+                <GridLayout.Content>…</GridLayout.Content>
+                <GridLayout.ResizeHandle side="bottom-end" />
+            </GridLayout.Item>
+        )}
+    </GridLayout.Items>
+    <GridLayout.Placeholder />
+</GridLayout.Root>
+
+<GridLayout.DragPreview gridLayoutRef={gridLayoutRef}>{(state) => titleOf(state.data)}</GridLayout.DragPreview>
+```
+
+| Part | Source |
+|---|---|
+| `Root`, `Cells`, `Item`, `DragHandle`, `ResizeHandle`, `Placeholder`, `DragSource`, `DragPreview` | the package's part + its `tile` member |
+| `Items` | the package's, unchanged (it renders no element) |
+| `Header` | a `div` + the `header` member: a card's top row |
+| `Title` | a `span` + the `title` member: a card's name, truncated |
+| `Content` | a `div` + the `content` member: the rest of the card, scrolling when it overflows |
+| `Template.Simple` | all of the above but `DragSource`, every item a card |
+
+Every part that wraps one of the package's forwards `render`, `ref`, its handlers and the rest of its props, and takes a `className` given as a string or as a function of the part's state. The engine places the root, the items, the cells, the placeholder and the drag preview with inline styles (position, size, a `transform`) that always win: the family sets none of them. Put `Cells` before the items, so they are drawn under them, and `Placeholder` after.
+
+A drag handle shows a grip unless you give it children, and is named "Move" unless you name it: say what it moves. Without a drag handle, an item drags from its whole body (the grab cursor follows), and the item itself is the tab stop.
+
+## State styling
+
+The parts emit their state as `data-*` attributes and the family reads them with Tailwind's data variants: no React state in the styles, except for a refused drop.
+
+| state | attribute | look |
+|---|---|---|
+| at rest | | a card on the `raised` palette: its line, radius and a small shadow |
+| held by a pointer | `data-dragging`, `data-resizing` on the item (and the root) | the overlay shadow; moved, it lifts (`scale`) and the cursor grabs; no transition, so it never lags the pointer |
+| held by the keyboard | `data-grabbed` on the item (and the root) | the same lift, and its resize handles show |
+| a touch holding it | `data-pressing` on the item | it presses in, until the hold turns into a drag |
+| off the grid | `data-outside` on the item and the root | the item fades, the dots hide: released there, it goes back |
+| static | `data-static` on the item | the `soft` fill: it never moves, and the package renders no resize handle (the template no drag handle either) |
+| draggable | `data-draggable` on the item and its handle | the grab cursor; without it the handle dims |
+| resizable | `data-resizable` on the item | the package renders its resize handles only then |
+| a resize handle | `data-side`, `data-resizing` | a `ring` pill on a side (a dot on a corner), shown while the card is hovered, focused or grabbed, and full `ring` while hovered or pulled |
+| a gesture in progress | `data-dragging`, `data-resizing`, `data-grabbed`, `data-dropping` on the root | a `line` dot at the centre of each cell |
+| where it lands | `data-kind` on the placeholder | a dashed `ring` box with a light `ring` fill, gliding between cells; solid for an item coming in (`drop`) |
+| an item coming in | `data-dropping` on the root | a dashed `ring` outline inside the grid's edge |
+| a refused drop | `data-drop-refused` on the root and the drag preview | the root and the preview take the `danger` palette, even under a palette class of yours: a danger outline and dots, and a danger card |
+| a drag source | `data-dragging`, `data-grabbed`, `data-disabled` | it dims while it brings its item, and when disabled (no grab cursor) |
+| the drag preview | `data-over` | a lifted card off the grid; over it the placeholder takes over and the card fades |
+
+A palette is a plain class, so a variant cannot switch it: `Root` and `DragPreview` add the `danger` palette from their state (`state.dropRefused`, `state.refused`). `data-breakpoint` on the root names the active breakpoint, and `data-x` and `data-y` on a cell its place, for your own rules.
+
+Items glide to their new places (`transform`, `width`, `height`) and the placeholder glides between cells, with durations from the motion axis.
+
+## Palette
+
+The cards are on the `raised` palette, like a dialog or a popover, so they stand above the page in both themes. The grid itself declares none: a palette class on the root tints the dots, the placeholder and the drop outline.
+
+```tsx
+<GridLayout.Template.Simple className="palette-surface-blue" … />
+```
+
+A card's palette is its own: a palette class on `GridLayout.Item` replaces `raised` (compose the parts to give one).
+
+## Density and RTL
+
+Density reaches the cards' header, padding and gaps, the drag handle, the resize handles' hit areas and the dots. The row height, the gap between items and the grid's padding are the engine's options, in pixels (`rowHeight`, `gap`, `padding`): they do not follow the density, so set them for the density you use. The radius, typography, elevation and motion axes reach the cards' corners, their text and icons, their shadows and every transition.
+
+The layout is logical: under `dir="rtl"` the first column is on the right, a `start` handle is on the right edge, the diagonal cursors mirror, and the arrow keys follow what they show.
+
+## Accessibility
+
+The package writes no text and sets no roles, so every name is yours:
+
+- **The grid**: `Root` is a `group`; name it with `aria-label`.
+- **The items**: `Item` is a `group`, so its name is read; name each item (`aria-label`), as the template does with its title. Describe what it is with `aria-roledescription` and the keys with `aria-describedby` if your users need it.
+- **The drag handle** is the item's tab stop, a `button` described as a "drag handle": name it by what it moves ("Move Revenue").
+- **The resize handles** are for the pointer only and take no focus: the keyboard resizes a grabbed item.
+- **Announcements**: the grid tells each step (`grab`, `move`, `resize`, `drop`, `cancel`) through `useGridLayoutEvents`; say it in a live region in your own words, as the dashboard builder does (each keyboard step, each drop, a refused place).
+
+## Keyboard
+
+Every item is a tab stop (its drag handle, when it has one). Space or Enter grabs it or drops it, the arrows move it a cell, Shift and the arrows resize it from its end and bottom edges, Escape puts it back, and Tab puts it back and moves on. A drag source is a tab stop too: Enter brings its item into the grid already grabbed, the same keys place it, and Enter adds it. The bindings are the package's: see [Grid Layout's documentation](https://fragiola.com/grid-layout).
+
+## Parts
+
+`Template.Simple`, `Root`, `Cells`, `Items`, `Item`, `Header`, `Title`, `Content`, `DragHandle`, `ResizeHandle`, `Placeholder`, `DragSource`, `DragPreview`.
