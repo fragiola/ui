@@ -1,15 +1,6 @@
-import type { Column } from "@fragiola/data-grid-react";
-import { useLocalRows } from "@fragiola/data-grid-react/local";
-import { navigation } from "@fragiola/data-grid-react/navigation";
-import { rowSelection } from "@fragiola/data-grid-react/row-selection";
-import { sorting } from "@fragiola/data-grid-react/sorting";
-import type { TreeJson } from "@fragiola/tree-react";
-import { selection } from "@fragiola/tree-react/selection";
 import {
     CarIcon,
     CoffeeIcon,
-    FileIcon,
-    FolderIcon,
     MoreHorizontalIcon,
     ShoppingCartIcon,
     TvIcon,
@@ -19,11 +10,9 @@ import { Badge } from "#/components/atoms/badge";
 import { Clickable } from "#/components/atoms/clickable";
 import { Avatar } from "#/components/ui/avatar";
 import { Checkbox } from "#/components/ui/checkbox";
-import { DataGrid } from "#/components/ui/data-grid";
 import { DropdownMenu } from "#/components/ui/dropdown-menu";
 import { Pagination } from "#/components/ui/pagination";
 import { Table } from "#/components/ui/table";
-import { Tree } from "#/components/ui/tree";
 import { Card, useTone } from "../card";
 
 // Data: lists, tables, a data grid and a tree — selection, row menus and
@@ -185,92 +174,6 @@ export function Invoices() {
                     ))}
                 </Table.Body>
             </Table.Root>
-        </Card>
-    );
-}
-
-type Person = { id: number; name: string; team: string; role: string };
-const STAFF: Person[] = Array.from({ length: 40 }, (_, i) => ({
-    id: i + 1,
-    name:
-        ["Ada", "Alan", "Grace", "Katherine", "Linus", "Margaret"][i % 6] +
-        ` ${i + 1}`,
-    team: ["Core", "Data", "Design", "Growth"][i % 4] ?? "",
-    role: ["Engineer", "Designer", "Manager"][i % 3] ?? "",
-}));
-const COLUMNS: Column<Person>[] = [
-    { key: "name", name: "Name", width: 130, sortable: true },
-    { key: "team", name: "Team", width: 90, sortable: true },
-    { key: "role", name: "Role", width: 110, sortable: true },
-];
-const GRID_FEATURES = [navigation(), sorting(), rowSelection()];
-
-export function PeopleGrid() {
-    const { control } = useTone();
-    const local = useLocalRows(STAFF, COLUMNS, { features: GRID_FEATURES });
-    return (
-        <Card
-            title="People"
-            description="A data grid: sort, select, move with the keys."
-        >
-            <DataGrid.Template.Simple
-                features={GRID_FEATURES}
-                {...local.props}
-                columns={COLUMNS}
-                rowKey={(person) => person.id}
-                rowSelection="multiple"
-                aria-label="People"
-                className={`${control} h-72`}
-            />
-        </Card>
-    );
-}
-
-type Files = { items: { folder: undefined; file: undefined } };
-const TREE_FEATURES = [selection({ mode: "multiple" })] as const;
-const PROJECT: TreeJson<Files> = {
-    version: 1,
-    rootItemIds: ["src", "public", "package"],
-    items: {
-        src: {
-            kind: "folder",
-            label: "src",
-            childItemIds: ["components", "app"],
-        },
-        components: {
-            kind: "folder",
-            label: "components",
-            childItemIds: ["button", "dialog"],
-        },
-        button: { kind: "file", label: "button.tsx" },
-        dialog: { kind: "file", label: "dialog.tsx" },
-        app: { kind: "file", label: "app.tsx" },
-        public: { kind: "folder", label: "public", childItemIds: ["favicon"] },
-        favicon: { kind: "file", label: "favicon.svg" },
-        package: { kind: "file", label: "package.json" },
-    },
-    expandedItemIds: ["src", "components"],
-    selectedItemIds: ["dialog"],
-};
-
-export function FileTree() {
-    const { control } = useTone();
-    return (
-        <Card title="Files" description="A tree: expand, select, type ahead.">
-            <div className={control}>
-                <Tree.Template.Simple<Files, typeof TREE_FEATURES>
-                    defaultTree={PROJECT}
-                    features={TREE_FEATURES}
-                    aria-label="Project files"
-                    icon={(item) =>
-                        item.kind === "folder" ? (
-                            <FolderIcon aria-hidden="true" />
-                        ) : (
-                            <FileIcon aria-hidden="true" />
-                        )
-                    }
-                />
-            </div>
         </Card>
     );
 }

@@ -12,6 +12,7 @@ import {
     resolve,
 } from "../design/design";
 import { GetCode } from "../output/get-code";
+import { usePreviewPromotion } from "./preview-promotion";
 
 // The Create page: fragiola.com serves it full-page at /ui/create/ (contract
 // v1.6). It is drawn like the docs — a frame, the customizer on the frame
@@ -29,12 +30,40 @@ const SITE = BASE.replace(/embed\/react\/?$/, "");
 const PREVIEW = `${BASE}create-preview.html`;
 const REPOSITORY = "https://github.com/fragiola/ui";
 
+const hostScheme = (): Design["scheme"] =>
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+
 export function CreateShell() {
-    const [design, setDesign] = useState<Design>(INITIAL);
+    // The preview opens in the reader's scheme: the host's theme, which
+    // src/theme.ts keeps on this document's <html>. It follows the host until
+    // the reader picks a scheme in the customizer; Reset hands it back.
+    const [design, setDesign] = useState<Design>(() => ({
+        ...INITIAL,
+        scheme: hostScheme(),
+    }));
+    const schemeChosen = useRef(false);
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            if (schemeChosen.current) return;
+            setDesign((d) =>
+                d.scheme === hostScheme() ? d : { ...d, scheme: hostScheme() },
+            );
+        });
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"],
+        });
+        return () => observer.disconnect();
+    }, []);
     const resolved = useMemo(() => resolve(design), [design]);
     const frame = useRef<HTMLIFrameElement>(null);
-    const set = (patch: Partial<Design>) =>
+    // A modal opened in the preview covers the whole page: the frame leaves
+    // the inset for the viewport while it is open (preview-promotion.ts).
+    const promoted = usePreviewPromotion(frame);
+    const set = (patch: Partial<Design>) => {
+        if (patch.scheme) schemeChosen.current = true;
         setDesign((d) => ({ ...d, ...patch }));
+    };
 
     // Send the design to the preview on every change, and whenever it says
     // it is (again) ready — a reload of the frame asks for the design anew.
@@ -86,7 +115,7 @@ export function CreateShell() {
 
     return (
         <Tooltip.Provider>
-            <div className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklab,var(--color-palette-soft)_55%,var(--color-palette-base))] text-palette-contrast">
+            <div className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklab,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast">
                 <header className="flex h-12 shrink-0 items-center gap-3 px-4">
                     <a
                         href={SITE}
@@ -134,13 +163,14 @@ export function CreateShell() {
                         </Action>
                         <Action
                             label="Reset"
-                            onClick={() =>
+                            onClick={() => {
+                                schemeChosen.current = false;
                                 setDesign((d) => ({
                                     ...INITIAL,
-                                    scheme: d.scheme,
+                                    scheme: hostScheme(),
                                     dir: d.dir,
-                                }))
-                            }
+                                }));
+                            }}
                         >
                             <RotateCcwIcon />
                         </Action>
@@ -161,7 +191,11 @@ export function CreateShell() {
                                 ref={frame}
                                 title="Theme preview"
                                 src={PREVIEW}
-                                className="block size-full border-0"
+                                className={
+                                    promoted
+                                        ? "fixed inset-0 z-50 block size-full border-0"
+                                        : "block size-full border-0"
+                                }
                             />
                         </div>
                     </main>

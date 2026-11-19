@@ -129,7 +129,7 @@ describe("tree family", () => {
         expect(fills.sort()).toEqual(
             [
                 "selected:bg-palette-soft",
-                "not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
+                "not-selected:hover:bg-[color-mix(in_oklab,var(--palette-soft)_50%,var(--palette-base))]",
             ].sort(),
         );
         expect(own.filter((c) => /^hover:/.test(c))).toEqual([]);

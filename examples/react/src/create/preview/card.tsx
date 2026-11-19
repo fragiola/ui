@@ -23,9 +23,10 @@ export function Card({
     children?: ReactNode;
     className?: string;
 }) {
+    const surface = useContext(Surface);
     return (
         <section
-            className={`${foundation.panel()} flex flex-col overflow-hidden ${className ?? ""}`}
+            className={`${surface === "dark" ? "palette-raised" : "palette-surface"} ${foundation.panel()} flex flex-col overflow-hidden shadow-sm ${className ?? ""}`}
         >
             {(title || action) && (
                 <header className="flex items-start justify-between gap-3 px-5 pt-5">
@@ -101,6 +102,12 @@ export function PreviewChart(props: ChartProps) {
     const version = useContext(DesignVersion);
     return <Chart key={version} {...props} />;
 }
+
+// The preview's scheme, for the cards' surface: in light a card is the
+// surface's `base` on a `soft` canvas; in dark it is a raised panel on the
+// surface's `base` — the card always stands apart from the floor, so its
+// shadow (the elevation axis) can be seen.
+export const Surface = createContext<"light" | "dark">("light");
 
 // The design's two classes, for every card: `action` on solid things (a
 // primary button, a badge, a progress bar), `control` on a control on the

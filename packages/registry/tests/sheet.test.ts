@@ -183,10 +183,10 @@ describe("sheet family", () => {
         // selected row — and opaque, so a pinned cell inheriting it is too
         const fills = own.filter((c) => /(?:^|:)bg-/.test(c));
         expect(fills).toEqual([
-            "not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
+            "not-selected:hover:bg-[color-mix(in_oklab,var(--palette-soft)_50%,var(--palette-base))]",
             "selected:bg-palette-soft",
             "bg-palette-base",
-            "not-data-selected:data-active:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
+            "not-data-selected:data-active:bg-[color-mix(in_oklab,var(--palette-soft)_50%,var(--palette-base))]",
         ]);
         expect(classes(sheet.cell)).toContain("data-pinned:bg-inherit");
         expect(classes(sheet.headerCell)).toContain("data-pinned:bg-inherit");

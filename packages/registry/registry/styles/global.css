@@ -462,6 +462,42 @@
     --chart-ramp-5: oklch(from var(--palette-base) 0.8 0.15 h);
 }
 
+/* Achromatic palettes derive ACHROMATIC series. The derivation above
+   rotates hue from the palette's base and lifts its chroma to at least
+   0.14 — right for a colour, wrong for a neutral: on `palette-neutral`,
+   `palette-surface` and `palette-raised` (base chroma ~0.01, hue 250) it drew
+   every chart a pale blue. These palettes step lightness instead, with no
+   chroma: the series stay apart by contrast, as a neutral design's should.
+   Same specificity as the blocks above and declared after them, so they win
+   for exactly these classes; every other palette keeps its derivation. */
+:root[data-theme="light"]
+:is(.palette-neutral, .palette-surface, .palette-raised) {
+    --chart-1: oklch(0.25 0 0);
+    --chart-2: oklch(0.55 0 0);
+    --chart-3: oklch(0.4 0 0);
+    --chart-4: oklch(0.7 0 0);
+    --chart-5: oklch(0.82 0 0);
+    --chart-ramp-1: oklch(0.85 0 0);
+    --chart-ramp-2: oklch(0.7 0 0);
+    --chart-ramp-3: oklch(0.55 0 0);
+    --chart-ramp-4: oklch(0.4 0 0);
+    --chart-ramp-5: oklch(0.25 0 0);
+}
+
+:root[data-theme="dark"]
+    :is(.palette-neutral, .palette-surface, .palette-raised) {
+    --chart-1: oklch(0.92 0 0);
+    --chart-2: oklch(0.62 0 0);
+    --chart-3: oklch(0.78 0 0);
+    --chart-4: oklch(0.48 0 0);
+    --chart-5: oklch(0.36 0 0);
+    --chart-ramp-1: oklch(0.36 0 0);
+    --chart-ramp-2: oklch(0.48 0 0);
+    --chart-ramp-3: oklch(0.62 0 0);
+    --chart-ramp-4: oklch(0.78 0 0);
+    --chart-ramp-5: oklch(0.92 0 0);
+}
+
 html,
 body {
     min-height: 100%;
