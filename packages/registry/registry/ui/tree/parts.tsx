@@ -184,7 +184,13 @@ function Label({ className, ...props }: React.ComponentProps<"span">) {
 
 type CheckboxProps<T extends TreeTypes> = Omit<
     React.ComponentProps<typeof CheckboxBox.Root>,
-    "checked" | "defaultChecked" | "indeterminate" | "className" | "render"
+    | "checked"
+    | "defaultChecked"
+    | "indeterminate"
+    | "disabled"
+    | "className"
+    | "render"
+    | "aria-hidden"
 > & {
     /** The item whose check it shows and toggles. */
     item: ItemOf<T>;
@@ -200,25 +206,28 @@ type CheckboxProps<T extends TreeTypes> = Omit<
 function Checkbox<T extends TreeTypes = AnyTypes>({
     item,
     className,
+    onCheckedChange,
     ...props
 }: CheckboxProps<T>) {
     const { model } = useTree<T, readonly [CheckboxesFeature]>();
     const { state } = useTreeItem<T>(item);
     return (
         <CheckboxBox.Root
+            {...props}
             data-slot="tree-checkbox"
             data-tree-no-drag=""
             aria-hidden
             checked={state.checked}
             indeterminate={state.indeterminate}
             disabled={state.disabled}
-            onCheckedChange={() => {
+            // the item's check is toggled first; the consumer's handler after
+            onCheckedChange={(checked, details) => {
                 model.run("item.toggle-check", { itemId: item.id });
+                onCheckedChange?.(checked, details);
             }}
             // the box is a span with no tab stop: a press lands on the item
             render={({ tabIndex: _tabIndex, ...box }) => <span {...box} />}
             className={cn(tree.checkbox(), className)}
-            {...props}
         >
             {state.indeterminate ? (
                 <span className={tree.checkboxDash()}>
@@ -233,7 +242,7 @@ function Checkbox<T extends TreeTypes = AnyTypes>({
 
 type RenameProps<T extends TreeTypes> = Omit<
     React.ComponentProps<typeof Input>,
-    "defaultValue" | "value" | "className"
+    "defaultValue" | "value" | "className" | "ref"
 > &
     UseTreeItemRenameOptions & {
         /** The item it renames. */
@@ -268,9 +277,9 @@ function Rename<T extends TreeTypes = AnyTypes>({
             <Field.Row className={tree.renameFrame()}>
                 <Input
                     aria-label={`Rename ${item.label}`}
+                    {...props}
                     {...rename.props}
                     className={cn(tree.renameInput(), className)}
-                    {...props}
                     onChange={(event) => {
                         rename.props.onChange?.(event);
                         onChange?.(event);
@@ -335,10 +344,11 @@ function LoadError({
 
 type RetryProps<T extends TreeTypes> = Omit<
     React.ComponentProps<typeof Clickable.Button>,
-    "variant" | "size" | "shape"
+    "variant" | "size" | "shape" | "className"
 > & {
     /** The item whose children it loads again. */
     item: ItemOf<T>;
+    className?: string;
 };
 
 // Loads an item's children again (`engine.run("load-children")`). Named
@@ -357,7 +367,7 @@ function Retry<T extends TreeTypes = AnyTypes>({
             variant="ghost"
             size="sm"
             aria-label={`Retry loading ${item.label}`}
-            className={cn(tree.retry(), className as string)}
+            className={cn(tree.retry(), className)}
             onClick={(event) => {
                 onClick?.(event);
                 engine.run("load-children", { itemId: item.id });
