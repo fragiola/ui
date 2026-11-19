@@ -123,6 +123,7 @@ field       the input control      input, textarea, select trigger
 layer       backdrop + panel       dialog, alert-dialog, drawer
 disclosure  expand/collapse        accordion, collapsible
 dock        the docking layout     dockable
+split       the split view         splitter
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -132,6 +133,14 @@ The sidebar is the largest one so far: its items are `menu`'s navigation members
 (`navItem`, `navSubItem`), the same row as a dropdown item but lit by hover and
 `data-active` instead of focus. Everything else in it is `Clickable`, `Badge`, `Skeleton`,
 `Separator`, `Field`, `Tooltip` and `Drawer`, and it adds no stylesheet and no token.
+
+`split` is the second family over a published package (Splitter, §5): group, panel,
+separator, grip, and two members for a panel's content (`expanded`, `collapsed`). Unlike
+`dock` it declares **no** palette: groups nest, and a default palette on each would be
+redeclared by a nested group and swallow a swap on the outer one, so the parts paint from
+the palette in scope. Its separator is `ui/separator.tsx`'s 1px `line` rule with an
+invisible hit area from the spacing scale; it shares `dock.splitter`'s cursors, `ring` on
+drag and focus, and `z-10`, and records why the rest differs (`families/split.ts`).
 
 `dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
@@ -177,7 +186,8 @@ layer per component.
 The rule is for state that means *the same thing* across libraries. Dockable's states
 (`data-selected`, `data-active` on the tabset, `data-dragging`, `data-drop-kind`) are
 its own, read by one family, so `dock` reads them directly and the theme gains no
-variant.
+variant. Splitter's (`data-dragging`, `data-collapsed`, `data-collapsible`) are the
+same case for `split`.
 
 ---
 
@@ -226,8 +236,9 @@ picker — is only its own middle.
 
 A component with many parts ships one **template**: the parts assembled into the
 common case, so a page does not re-assemble them every time —
-`Input.Template.Simple`, and `Dockable.Template.Simple` (the whole docking layout
-from a model and a tab's content). The rules are the same for both:
+`Input.Template.Simple`, `Dockable.Template.Simple` (the whole docking layout
+from a model and a tab's content) and `Splitter.Template.Simple` (a separator with
+its grip between the panels it is given; two props). The rules are the same for all:
 
 1. no style of its own — nothing beyond the parts and their family members;
 2. no appearance props;
@@ -373,7 +384,8 @@ Some components are too large to port into copy-paste source: a docking layout, 
 data grid, a scheduler. They are published packages, and the registry item ships
 **the styled layer over the package**: the package goes into `dependencies`, the
 item writes the parts (dressed by a family) and one template. Dockable is the
-first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`).
+first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`),
+Splitter the second (`@fragiola/splitter`, Epic #88).
 The model, the commands and the behaviour stay the package's and are imported from
 it; the layer re-exports none of them. In the docs and the gallery they share one
 section, **Special**.
@@ -450,6 +462,12 @@ in the remaining surface:
   window's tab strip keeps every tab and scrolls instead. Restoring the menu there
   needs a portal `container` on the `menu` family's Content — a public API change,
   not taken. See `docs/port-report-epic-66.md`.
+- **`splitter`** — settled in Epic #88, the second special component: the `split`
+  family, the styled parts plus a `Grip`, `Template.Simple` with two props, no token and
+  no palette added (the family declares none, see §2). The S1–S8 rules held unchanged.
+  One limit is the package's: a group has no size of its own, so a nested group needs
+  `h-full` from its consumer, Template.Simple's included. See
+  `docs/port-report-epic-88.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build

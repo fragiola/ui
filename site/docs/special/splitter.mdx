@@ -1,0 +1,103 @@
+---
+title: "Splitter"
+description: "Resizable split views with nested groups, collapsible panels and keyboard resizing: Splitter's primitives styled by the split family, plus a ready template."
+---
+
+<InstallCommand item="splitter" />
+
+<Example id="splitter" />
+
+## What it installs
+
+[Splitter](https://fragiola.com/splitter) is a headless library of resizable panel groups: pointer and keyboard resizing, nested groups, collapsible panels, size limits in any unit and RTL, with no look of its own. The item adds `@fragiola/splitter-react@^0.1.0` to your dependencies (the range this layer is written for; the package is `0.x`, and a minor may break) and writes the styled layer over it:
+
+- `components/ui/splitter.tsx`: one export, `Splitter`, with the package's primitives under the same names (`Splitter.Group`, `Splitter.Panel`, `Splitter.Separator`), each wearing its member of the `split` family, plus `Splitter.Grip` and `Splitter.Template.Simple`;
+- `components/families/split.ts`: the family.
+
+The model, the commands and the hooks (`useSplitterRef`, `useSplitterState`, `createModel`…) are the package's: import them from `@fragiola/splitter-react`. Saving a layout, driving it from code and the full API are in [Splitter's documentation](https://fragiola.com/splitter).
+
+## Template.Simple
+
+`Splitter.Template.Simple` puts a separator, with its grip, between the panels it is given:
+
+```tsx
+<Splitter.Template.Simple className="h-80">
+    <Splitter.Panel id="files" defaultSize="25%" minSize="10rem" collapsible>
+        …
+    </Splitter.Panel>
+    <Splitter.Panel id="editor">…</Splitter.Panel>
+</Splitter.Template.Simple>
+```
+
+Every direct child is a panel, and `false`, `null` and `undefined` are skipped, so a conditional panel just works. A panel that holds another Template.Simple nests it. It takes two props of its own: the panels, and `className`, which goes to the group. Everything else is forwarded to `Splitter.Group`: `orientation`, `layout`, `defaultLayout`, `onLayoutChange`, `onLayoutCommit`, `disabled`, `model`, `splitterRef`… Sizes, limits and collapsing are the panels' own props (`defaultSize`, `minSize`, `maxSize`, `collapsible`, `collapsedSize`).
+
+A group's size is yours, as the package says: give the outer one a height (`h-80`, or `h-full` in a sized container), and a nested one `h-full`.
+
+Each separator is named "Resize". When a page has more than one, name each by what it resizes: compose the parts.
+
+## Composing the parts
+
+Template.Simple is one arrangement. This editor layout is written from the parts: a name for every separator, and a sidebar that collapses to a rail of icons whose labels hide while it is collapsed.
+
+<Example id="splitter-ide" />
+
+```tsx
+<Splitter.Group className="h-full">
+    <Splitter.Panel id="sidebar" defaultSize="24%" minSize="11rem" collapsible collapsedSize="3rem">
+        …
+        <span className={split.expanded()}>Explorer</span>
+    </Splitter.Panel>
+    <Splitter.Separator aria-label="Resize the sidebar">
+        <Splitter.Grip />
+    </Splitter.Separator>
+    <Splitter.Panel id="main">…</Splitter.Panel>
+</Splitter.Group>
+```
+
+| Part | Source |
+|---|---|
+| `Group`, `Panel`, `Separator` | the package's primitive + its `split` member |
+| `Grip` | a decorative `span` + the `grip` member, the content of a separator |
+| `Template.Simple` | `Group`, with a `Separator` and a `Grip` between each pair of panels |
+
+Every part forwards `render`, `ref`, its handlers and the rest of its props to the primitive, keeps the generic type (`Splitter.Panel<Types>`), and takes a `className` given as a string or as a function of the part's state. The structural inline style each primitive sets (the group's flex direction, a panel's flex size and overflow) always wins: the family sets none of it.
+
+## State styling
+
+The primitives emit their state as `data-*` attributes and the family reads them with Tailwind's data variants: no React state in the styles.
+
+| state | attribute | look |
+|---|---|---|
+| a separator between side by side panels | `data-orientation="vertical"` on the separator | a 1px vertical rule, `ew-resize` cursor |
+| a separator between stacked panels | `data-orientation="horizontal"` | a 1px horizontal rule, `ns-resize` cursor |
+| hovered | `:hover`, unless `data-disabled` | the rule turns `ring`, the grip appears |
+| dragged | `data-dragging` on the separator (and its group) | the rule turns `ring`, the grip stays; text selection stops in the group |
+| focused from the keyboard | `:focus-visible` | a 3px `ring` bar and the grip |
+| disabled | `data-disabled` on the separator or the group | the rule stays, with no resize cursor and no hover |
+| collapsed | `data-collapsed` on the panel | the panel steps to the `soft` fill |
+
+The rule is the `line` role at 1px, the values of [Separator](/docs/display/separator). The pointer finds a wider area: an invisible strip 6px on each side (a spacing step, so it follows the density), above the panels' content. The engine measures 1px, so the panels touch.
+
+Two members help a panel's content follow its state: `split.expanded()` hides an element while its panel is collapsed (from sight and from assistive technology), and `split.collapsed()` shows one only then. To dim the panels while a separator drags, read the group's state from a panel: `group-data-dragging/splitter:opacity-70`.
+
+## Palette
+
+The parts paint from the palette in scope and declare none of their own, so a palette class on a group re-tints its panels, its rules, the ring and the grip, nested groups included:
+
+```tsx
+<Splitter.Template.Simple className="h-80 palette-surface-blue">
+```
+
+A surface-ring palette (`surface-*`) colours only the ring, the hover and focus; a chromatic palette (`palette-blue`) paints the panels too.
+
+## Density and RTL
+
+Density reaches the hit area and the grip through `--spacing`; the rule stays 1px. The layout is logical: under `dir="rtl"` a horizontal group runs from the right and the arrow keys mirror. The radius, typography and motion axes reach the grip's radius, the panels' text and the transitions.
+
+## Keyboard
+
+Every separator that is not disabled is in the tab order. The arrows along the group move it by 5% (`keyboardStep` on the group), Home and End move the panel before it to its limits, Enter collapses or expands that panel, and F6 moves to the next separator. A double click resets the panel before it to its default size. The bindings are the package's: see [Splitter's documentation](https://fragiola.com/splitter).
+
+## Parts
+
+`Template.Simple`, `Group`, `Panel`, `Separator`, `Grip`.

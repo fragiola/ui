@@ -20,6 +20,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/splitter-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       lucide-react:
         specifier: ^1.34.0
         version: 1.34.0(react@19.2.8)
@@ -69,6 +72,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/splitter-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       echarts:
         specifier: ^6.1.0
         version: 6.1.0
@@ -127,6 +133,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/splitter-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -631,6 +640,15 @@ packages:
 
   '@fragiola/dockable@0.3.0':
     resolution: {integrity: sha512-V8Nqya3fhRSmokCbnQnPuzkrMig+Gj3hyGAJitME7lu8exCGsqPBhjyV0RgPSdJ+Mz3C68zFUkh8bmYt+5Ljpg==}
+
+  '@fragiola/splitter-react@0.1.0':
+    resolution: {integrity: sha512-SFBbutr71u372NKbETihcn13a4XuJ7PuN5qieknWXk4ikCp6Ctrqt218WAcraK0gU1yaMHZHzLMfP2QlkPRJVw==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@fragiola/splitter@0.1.0':
+    resolution: {integrity: sha512-V8fXY/LPLzuX7MhcVsVBGrZhY7ho3UodEG+36j6tQ+g/MyXn09AmEhJWmu9Xn0PIS4VXPxbiJby7fFvzyOpD1g==}
 
   '@hono/node-server@2.1.1':
     resolution: {integrity: sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg==}
@@ -3325,6 +3343,14 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   '@fragiola/dockable@0.3.0': {}
+
+  '@fragiola/splitter-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@fragiola/splitter': 0.1.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@fragiola/splitter@0.1.0': {}
 
   '@hono/node-server@2.1.1(hono@4.13.9)':
     dependencies:
