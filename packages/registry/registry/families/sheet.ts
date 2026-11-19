@@ -161,7 +161,7 @@ const row = tv({
         foundation.selected(),
         `
         group/sheet-row border-b border-palette-line bg-palette-base
-        not-data-selected:data-active:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]
+        not-data-selected:data-active:bg-[color-mix(in_oklab,var(--palette-soft)_50%,var(--palette-base))]
     `,
     ],
 });

@@ -76,6 +76,21 @@ describe("foundation", () => {
         expect(offenders).toEqual([]);
     });
 
+    it("never reads a --color-palette-* variable in an arbitrary value", async () => {
+        // Tailwind declares the `--color-palette-*` theme variables once, on
+        // :root, where no palette is applied: read through `var()` they
+        // resolve to nothing and the colour is dropped, silently. Arbitrary
+        // values read the palette's own `--palette-*` roles.
+        const offenders: string[] = [];
+        for (const file of await sources(REGISTRY)) {
+            const text = code(await readFile(file, "utf-8"));
+            if (/var\(--color-palette-/.test(text)) {
+                offenders.push(path.relative(REGISTRY, file));
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
     it("spells every idea it owns", async () => {
         const text = code(
             await readFile(

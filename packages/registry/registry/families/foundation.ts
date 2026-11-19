@@ -114,13 +114,18 @@ const selected = tv({
     base: "selected:bg-palette-soft selected:text-palette-contrast",
 });
 
+// The mix reads `--palette-soft` and `--palette-base`, never the
+// `--color-palette-*` theme variables: Tailwind declares those once on :root,
+// where no palette is applied, so in an arbitrary value they resolve to
+// nothing and the colour is dropped (silently: rule 8).
+//
 // hoverRow — a row under the pointer in a list whose selection is also
 // `soft` (tree, grid, table): half of `soft` over the row's own `base`, so
 // hover never reads as selected. Mixed opaque, not `soft/50`: a pinned
 // grid cell must hide what scrolls under it.
 const hoverRow = tv({
     base: `
-        not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]
+        not-selected:hover:bg-[color-mix(in_oklab,var(--palette-soft)_50%,var(--palette-base))]
     `,
 });
 
