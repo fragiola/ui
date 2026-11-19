@@ -386,6 +386,29 @@ popout host page is one. The build refuses every other `~/` target and any `..`
 in the path (`scripts/targets.ts`), and the smoke expects the file at the root in
 all four scaffolds.
 
+**A pinned range.** The packages are `0.x`, and `0.x` breaks between minors
+(Dockable 0.2.0 renamed `enableClose` to `closable`). A bare name in an item's
+`dependencies` installs whatever is newest, an API the item, its examples and its
+docs were not written for. So an ecosystem package carries its range
+(`@fragiola/dockable-react@^0.3.0`), and it is the range this registry builds and
+tests against (`packages/registry/package.json`). The build refuses anything else
+(`scripts/dependencies.ts`). The shadcn CLI always installs a dependency that has
+a range, even when the project already declares it. That is how a user gets the
+pinned version, and the smoke asserts that the CLI asks for exactly those ranges.
+
+**The rules every special item follows** (they generalize Dockable's Epic #66):
+
+| # | Rule |
+|---|---|
+| S1 | One registry item per library, named after it (`dockable`, `splitter`, `tree`, `grid-layout`, `data-grid`), installed with `npx shadcn@latest add @fragiola/<name>`. No CLI of our own (§5). |
+| S2 | The item depends on the React adapter only, at a pinned range (above). The adapter re-exports the core. Model APIs are imported from the package and never re-exported by the item. |
+| S3 | One export, a namespace named like the library (`Dockable`, `Splitter`, `Tree`, `GridLayout`, `DataGrid`). Its styled parts mirror the adapter's namespace one-to-one and forward `render`, `ref`, handlers and the generic type, with a value or function `className`. Inside, the package's namespace is aliased (`Dockable as DockablePrimitive`). |
+| S4 | One style family per library (`dock`, …): a shared `tv()` with zero variants and named members per part and state. State is styled from the library's own `data-*` vocabulary with Tailwind data-variants. Before writing a member, compare it with the closest existing family or component, then share the values or record why they differ. |
+| S5 | No new tokens, roles or palettes, and no `!important`. Shape comes from Tailwind scales and the existing radius and control-height tokens, and every class follows the design axes (§4). Parts the engine positions get no geometry: the structural inline style wins. |
+| S6 | Exactly one registry template, `<Name>.Template.Simple`, under the template rules (§3): no style of its own, no appearance props, one `className`, at most 7 flat props, behaviour props forwarded. Every other template is an example. |
+| S7 | A docs page `special/<name>.mdx` with `<InstallCommand item="<name>" />`, a row in `special/overview.mdx`, public examples, and dev scenarios in `scenarios/special/` covering light/dark, a palette swap, density, `dir="rtl"` and the design axes. |
+| S8 | A package younger than pnpm's minimum release age is excluded by exact version in `pnpm-workspace.yaml`, with the reason. The smoke declares the package in its scaffolds, because it runs offline. |
+
 ---
 
 ## 6. What is not settled
