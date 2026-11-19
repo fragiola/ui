@@ -247,7 +247,7 @@
             "type": "registry:ui",
             "title": "Text atom",
             "description": "Heading, Paragraph, Link, Small, Label, Error, Strong, Highlight, Clickable. No react-twc, no router coupling. Text.Link is a plain <a>; consumers wire Next's or TanStack's Link through render.",
-            "registryDependencies": ["@fragiola/cn"],
+            "registryDependencies": ["@fragiola/cn", "@fragiola/foundation"],
             "dependencies": ["tailwind-variants"],
             "files": [
                 {

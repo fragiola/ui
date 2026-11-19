@@ -153,6 +153,8 @@ const checked = tv({
     base: `
         data-checked:border-palette-ring data-checked:bg-palette-ring
         data-checked:text-palette-base
+        data-indeterminate:border-palette-ring data-indeterminate:bg-palette-ring
+        data-indeterminate:text-palette-base
     `,
 });
 

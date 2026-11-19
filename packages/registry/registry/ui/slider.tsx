@@ -29,9 +29,18 @@ import { cn } from "#/lib/cn";
 // `slider` after `progress` writes exactly one file — `slider.tsx` itself.
 
 function SliderRoot<Value extends number | readonly number[]>({
+    className,
     ...props
 }: SliderPrimitive.Root.Props<Value>) {
-    return <SliderPrimitive.Root data-slot="slider" {...props} />;
+    // Disabled like every control: the foundation's `disabled` on the root,
+    // which Base UI marks `data-disabled`.
+    return (
+        <SliderPrimitive.Root
+            data-slot="slider"
+            className={cn(foundation.disabled(), className as string)}
+            {...props}
+        />
+    );
 }
 
 function SliderLabel({

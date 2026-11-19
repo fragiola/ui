@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, MinusIcon } from "lucide-react";
 import type * as React from "react";
 import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
@@ -38,7 +38,14 @@ function CheckboxIndicator({
             className={cn(choice.indicator(), className as string)}
             {...props}
         >
-            <CheckIcon className="size-icon-xs" strokeWidth={3} />
+            <CheckIcon
+                className="size-icon-xs in-data-indeterminate:hidden"
+                strokeWidth={3}
+            />
+            <MinusIcon
+                className="hidden size-icon-xs in-data-indeterminate:block"
+                strokeWidth={3}
+            />
         </CheckboxPrimitive.Indicator>
     );
 }
