@@ -11,6 +11,10 @@
 // `tests/foundation.test.ts` fails when a family writes a foundation class
 // itself.
 //
+// No member resets the outline (`outline-none`): in Tailwind 4 it sets the
+// outline STYLE to none, which the `outline-2` of a focus state inherits —
+// the ring would never show. A browser draws no ring on a mouse focus anyway.
+//
 // Zero variants, like every family. Each member is one idea; the families
 // compose them by calling the member inside their own `tv()` base:
 //
@@ -27,7 +31,7 @@ import { tv } from "tailwind-variants";
 // never covers the element's own border.
 const focus = tv({
     base: `
-        outline-none focus-visible:outline-2 focus-visible:outline-offset-2
+        focus-visible:outline-2 focus-visible:outline-offset-2
         focus-visible:outline-palette-ring
     `,
 });
@@ -38,7 +42,7 @@ const focus = tv({
 // hides it.
 const focusInset = tv({
     base: `
-        outline-none focus-visible:outline-2 focus-visible:-outline-offset-2
+        focus-visible:outline-2 focus-visible:-outline-offset-2
         focus-visible:outline-palette-ring
     `,
 });
@@ -58,7 +62,7 @@ const fieldFocus = tv({
 // render itself (the slider thumb's hidden range input).
 const focusNested = tv({
     base: `
-        outline-none has-[input:focus-visible]:outline-2
+        has-[input:focus-visible]:outline-2
         has-[input:focus-visible]:outline-offset-2
         has-[input:focus-visible]:outline-palette-ring
     `,
@@ -90,6 +94,53 @@ const hover = tv({
 // full `contrast` so it reads as the active one.
 const highlighted = tv({
     base: "highlighted:bg-palette-soft highlighted:text-palette-contrast",
+});
+
+// current — the one item of a set that is where you are: the active tab, the
+// current page, the active sidebar or navigation link (`current`, global.css).
+// `soft` with the text at `contrast` and a heavier weight.
+const current = tv({
+    base: `
+        current:bg-palette-soft current:font-medium
+        current:text-palette-contrast
+    `,
+});
+
+// selected — items the user chose, any number of them: tree rows, grid and
+// table rows, a dockable tabset's shown tab (`selected`, global.css). The
+// same `soft` and `contrast` as `current`, without the weight: a selected
+// row's text does not reflow.
+const selected = tv({
+    base: "selected:bg-palette-soft selected:text-palette-contrast",
+});
+
+// hoverRow — a row under the pointer in a list whose selection is also
+// `soft` (tree, grid, table): half of `soft` over the row's own `base`, so
+// hover never reads as selected. Mixed opaque, not `soft/50`: a pinned
+// grid cell must hide what scrolls under it.
+const hoverRow = tv({
+    base: `
+        not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]
+    `,
+});
+
+// panel — a container on a floor: a card, a tile, a grid, an accordion. The
+// floor's `base` behind a `line` stroke, `rounded-lg`, no shadow.
+const panel = tv({
+    base: `
+        rounded-lg border border-palette-line bg-palette-base
+        text-palette-contrast
+    `,
+});
+
+// overlay — a surface above the page: a popup, a menu, a popover, a dialog,
+// a drawer. A raised panel with the overlay shadow (the elevation axis
+// scales it). One edge, one shadow for everything that floats.
+const overlay = tv({
+    base: `
+        palette-raised rounded-lg border border-palette-line bg-palette-base
+        text-palette-contrast shadow-lg
+    `,
 });
 
 // checked — the "on" mark of a two-state control and the filled part of a
@@ -142,6 +193,11 @@ export const foundation = {
     box,
     hover,
     highlighted,
+    current,
+    selected,
+    hoverRow,
+    panel,
+    overlay,
     checked,
     rail,
     knob,
