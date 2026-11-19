@@ -67,7 +67,8 @@ function useSpacingStep(probe: React.RefObject<HTMLElement | null>) {
         const element = probe.current;
         if (!element) return;
         const measure = () => {
-            const size = element.getBoundingClientRect().width;
+            // its layout size: a transform above the grid never skews it
+            const size = element.offsetWidth;
             if (size > 0) setStep(size / 10);
         };
         measure();

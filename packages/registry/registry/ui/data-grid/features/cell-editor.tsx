@@ -11,7 +11,9 @@ import { Field } from "#/ui/field";
 type CellEditorProps<TRow> = EditCellRenderProps<TRow, React.ReactNode> & {
     /**
      * The draft is refused: the field turns danger, and Enter and Tab keep
-     * the edit open (Escape still cancels it).
+     * the edit open (Escape still cancels it). A press or focus outside the
+     * cell still commits (the package's rule): check the value where your
+     * `onCellEdit` writes it too.
      */
     invalid?: boolean | undefined;
     /** The input's type: "text" unless given ("number", "email", "date"…). */
@@ -29,7 +31,8 @@ type CellEditorProps<TRow> = EditCellRenderProps<TRow, React.ReactNode> & {
 // starts from that key, as a spreadsheet does. The keys are the package's:
 // Enter commits and moves down, Tab commits and moves across, Escape
 // cancels, a press outside commits. `invalid` marks the field danger and
-// keeps the edit open. The field carries the edit's editor attribute
+// keeps Enter and Tab from committing; a press outside still commits, so
+// the app's `onCellEdit` checks the value it writes. The field carries the edit's editor attribute
 // (`editorProps`), so the grid knows it as this edit's. Named after its
 // column unless given an `aria-label`. The value committed is the draft, a
 // string: the app's `onCellEdit` writes it into its rows.

@@ -62,12 +62,15 @@ export default function DataGridEditing() {
                 columns={columns}
                 rowKey={(person) => person.id}
                 onCellEdit={({ row, columnKey, value }) =>
+                    // a click outside commits a refused email too: not written
                     setPeople((current) =>
-                        current.map((person) =>
-                            person.id === row.id
-                                ? { ...person, [columnKey]: value }
-                                : person,
-                        ),
+                        columnKey === "email" && !String(value).includes("@")
+                            ? current
+                            : current.map((person) =>
+                                  person.id === row.id
+                                      ? { ...person, [columnKey]: value }
+                                      : person,
+                              ),
                     )
                 }
                 aria-labelledby={label}

@@ -247,11 +247,11 @@ const checkboxDash = tv({ base: "grid place-content-center text-current" });
 
 // The header filter (filtering()): the registry's Field frame with Input
 // (rule 3), or the registry's Select trigger, under the column's name. A
-// step shorter than a standalone control (seven steps), with a row's
-// padding.
+// step shorter than a standalone control (seven steps, the frame's; the
+// control fills it), with a row's padding.
 const filter = tv({ base: "w-full font-normal" });
 const filterFrame = tv({ base: "h-7" });
-const filterControl = tv({ base: "h-7 px-2 py-0" });
+const filterControl = tv({ base: "h-full px-2 py-0" });
 
 // The cell editor (editing()): the registry's Field frame with Input, as
 // large as its cell. A refused value turns the field danger (its

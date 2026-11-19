@@ -14,8 +14,16 @@ import { Field } from "#/ui/field";
 import { Select } from "#/ui/select";
 import { installed } from "./installed";
 
-/** A choice of an enumerated column's filter. */
-type FilterOption = string | { value: string; label: string };
+/**
+ * A choice of an enumerated column's filter: a value (shown as text), or a
+ * value and its label. The value is compared with the cells' as it is, so
+ * a number column takes numbers.
+ */
+type FilterOption =
+    | string
+    | number
+    | boolean
+    | { value: unknown; label: string };
 
 type HeaderFilterProps<TRow> = {
     /** The header cell whose column it filters. */
@@ -30,11 +38,13 @@ type HeaderFilterProps<TRow> = {
     className?: string | undefined;
 };
 
-// The value of "every row" in the select: none of the choices.
-const ALL = "\u0000all";
+// The select's value for "every row"; a choice's is its index.
+const ALL = "all";
 
 const optionOf = (option: FilterOption) =>
-    typeof option === "string" ? { value: option, label: option } : option;
+    typeof option === "object"
+        ? option
+        : { value: option, label: String(option) };
 
 // A column's filter (filtering()), under its name in the header cell: the
 // column filters the grid's model holds (`column-filter.set`), which rows
@@ -74,15 +84,28 @@ function HeaderFilter<TRow>({
     )?.map(optionOf);
 
     if (choices) {
-        const items = [{ value: ALL, label: "All" }, ...choices];
-        const chosen = Array.isArray(value) ? String(value[0]) : ALL;
+        const items = [
+            { value: ALL, label: "All" },
+            ...choices.map((choice, index) => ({
+                value: String(index),
+                label: choice.label,
+            })),
+        ];
+        const index = Array.isArray(value)
+            ? choices.findIndex((choice) => Object.is(choice.value, value[0]))
+            : -1;
+        const chosen = index < 0 ? ALL : String(index);
         return (
             <Select.Root
                 items={items}
                 value={chosen}
                 onValueChange={(choice) =>
                     // a list matches equal values (`useLocalRows`)
-                    set(choice === ALL || choice == null ? undefined : [choice])
+                    set(
+                        choice === ALL || choice == null
+                            ? undefined
+                            : [choices[Number(choice)]?.value],
+                    )
                 }
             >
                 <Select.Trigger

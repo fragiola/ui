@@ -7,7 +7,7 @@ import {
 } from "@fragiola/data-grid-react";
 import type { PaginationTypes } from "@fragiola/data-grid-react/pagination";
 import type * as React from "react";
-import { useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { sheet } from "#/families/sheet";
 import { cn } from "#/lib/cn";
 import { Pagination as PaginationParts } from "#/ui/pagination";
@@ -60,8 +60,13 @@ function Pagination<TRow>({
     const grid = useDataGrid<TRow>(gridRef);
     const model = grid?.model as PagedModel | undefined;
     // every command makes a new state: the pages follow it
+    const subscribe = useMemo(
+        () =>
+            model ? (listener: () => void) => model.subscribe(listener) : NONE,
+        [model],
+    );
     useSyncExternalStore(
-        model ? (listener) => model.subscribe(listener) : NONE,
+        subscribe,
         () => model?.state,
         () => model?.state,
     );

@@ -113,8 +113,8 @@ Each piece renders nothing unless the grid installed its feature, so a grid ship
 | `columnResize()` | `ColumnResizer` | a 1px rule on the boundary with the columns that scroll (its end edge, its start edge for a column pinned at the end), shown on the header's hover, `ring` while held or focused. A drag resizes, a double click or Enter fits, F2 then Tab reaches it for the arrows | `split`'s separator values |
 | `columnPinning()` | (the cells) | pinned cells opaque from their row, above the ones that scroll, with a `line` rule on their edge and an elevation shadow while content hides under it | the elevation axis |
 | `rowSelection()` | `SelectCell`, `SelectAllCell` | a row's check box, disabled while it cannot be selected; "select all" over the keys you give, mixed while some are selected; a selected row on `soft` | `checkbox` |
-| `filtering()` | `HeaderFilter` | a text field under the column's name (rows containing it), or a select with `options` or `meta.filterOptions` (rows equal to the choice). The header rows grow to hold it | `field` + `input`, `select` |
-| `editing()` | `CellEditor` | a text field as large as its cell, for a column's `renderEditCell`; `invalid` turns it danger and keeps the edit open | `field` + `input` |
+| `filtering()` | `HeaderFilter` | a text field under the column's name (rows containing it), or a select with `options` or `meta.filterOptions` (rows equal to the choice; a choice is a value, compared as it is, or `{ value, label }`). The header rows grow to hold it | `field` + `input`, `select` |
+| `editing()` | `CellEditor` | a text field as large as its cell, for a column's `renderEditCell`; `invalid` turns it danger and keeps Enter and Tab from committing (a press outside still commits: check the value in `onCellEdit`) | `field` + `input` |
 | `pagination()` | `Pagination` | "Page 2 of 40", Previous, the pages around the current one, Next, and with `pageSizes` a page size | `pagination`, `select` |
 
 The pieces read the model through the grid they are in; `Pagination` renders below the root, so give it the root's `gridRef` (`useDataGridRef()`), as the template does. `SelectAllCell` takes the keys it covers (the page, the rows shown, every filtered row): pass them through a context, so your columns stay one array.
@@ -151,9 +151,11 @@ The grid declares no palette: it paints from the one in scope, so a palette clas
 <DataGrid.Template.Simple className="h-80 palette-surface-blue" … />
 ```
 
+The template's pages render after the root, outside it: they take the palette in scope around the template, so put the palette class on a container to tint both.
+
 ## Density and RTL
 
-The rows' heights follow the spacing scale, and the engine is told them, so virtualization stays exact at any density: unless you give `rowHeight` or `headerRowHeight`, a row is nine spacing steps (36px at the default density), a header row ten (40px), or seventeen with `filtering()` installed (a name above a filter). The root measures the scale and follows a change of `data-density` anywhere above it. Column widths, `minWidth` and `maxWidth` are the engine's pixels: they do not follow the density, so set them for the density you use. The radius, typography, elevation and motion axes reach the frame, the text and icons, the pinned edges' shadow and the transitions.
+The rows' heights follow the spacing scale, and the engine is told them, so virtualization stays exact at any density: unless you give `rowHeight` or `headerRowHeight`, a row is nine spacing steps (36px at the default density), a header row ten (40px), or seventeen with `filtering()` installed (a name above a filter; the package has one header row height, so a column group's row is as tall). The root measures the scale and follows a change of `data-density` anywhere above it. Column widths, `minWidth` and `maxWidth` are the engine's pixels: they do not follow the density, so set them for the density you use. The radius, typography, elevation and motion axes reach the frame, the text and icons, the pinned edges' shadow and the transitions.
 
 The layout is logical: under `dir="rtl"` the first column is on the right, columns pinned at the start sit on the right edge, a resizer is on its cell's left edge, and the pinned edges' shadow mirrors.
 

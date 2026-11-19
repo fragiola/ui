@@ -152,15 +152,25 @@ the parts the engine places, no `outline-none` on a cell: `tests/sheet.test.ts` 
   narrow enough at every density.
 - **The editor refuses with `invalid`.** `CellEditor` takes an `invalid` flag: Field turns
   danger and the editor prevents Enter and Tab (its handler runs before the grid's, the
-  package's contract), so a refused draft is never committed; Escape still cancels. It
-  spreads the edit's `editorProps` on its Field (the package's editor attribute).
+  package's contract), so those keys never commit a refused draft; Escape still cancels.
+  A press or focus outside the cell still commits (the package's rule), so the app checks
+  the value where `onCellEdit` writes it, as the people directory does (the review's
+  finding). It spreads the edit's `editorProps` on its Field (the package's editor
+  attribute).
+- **A header cell with a filter is named by its title** (`aria-labelledby` on its
+  `HeaderTitle`): a `columnheader`'s name is computed from its content, which would take
+  the filter's text in. Template.Simple and the people directory do it.
+- **The template's pages take the palette around it.** They render after the Root, so the
+  one `className` (the Root's) does not reach them; a palette class on a container tints
+  both. Documented rather than adding a wrapper part.
 - **Pagination outside the scroll container.** The Root is the scroll container; a footer
   inside it would scroll. `Pagination` takes the Root's `gridRef`, and the template
   renders it after the Root (its one fragment), creating a ref unless given one. Its
   links are `Pagination.Link` rendered as buttons through `render`; Previous and Next are
   disabled at the ends.
 - **Enumerated filters through `meta`.** A column's `meta.filterOptions` makes its filter a
-  select (rows equal to the choice: a list value, `useLocalRows`'s "one of"), and
+  select (rows equal to the choice: a list value, `useLocalRows`'s "one of"; a choice is
+  a value compared as it is — a number column takes numbers — or `{ value, label }`), and
   `meta.filterable: false` removes it. `HeaderFilter` also takes `options` directly.
 - **Template.Simple has five props**: `aria-label`, `aria-labelledby` (the grid's name: it
   goes on `Grid`, not on the Root), `empty`, `pageSizes` and `className`. Everything else
@@ -177,6 +187,8 @@ the parts the engine places, no `outline-none` on a cell: `tests/sheet.test.ts` 
   the density (the Root measures it), but column widths, `minWidth` and `maxWidth`, and a
   resizer's 10px / 50px steps are pixels. Tree's `indentation` (Epic #91) and Grid
   Layout's `rowHeight`, `gap` and `padding` (Epic #94) are the same limit.
+- **One header row height.** `headerRowHeight` is a single number, so with `filtering()` a
+  column group's header row is as tall as the columns' (a name above a filter).
 - **No scroll state on the root.** The pinned edges' shadow needs the styled Root to read
   the scroll itself. A `data-scrolled-start` / `-end` from the package would remove that
   code.

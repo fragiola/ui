@@ -12,7 +12,7 @@ import { filtering } from "@fragiola/data-grid-react/filtering";
 import { useLocalRows } from "@fragiola/data-grid-react/local";
 import { navigation } from "@fragiola/data-grid-react/navigation";
 import { sorting } from "@fragiola/data-grid-react/sorting";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Clickable } from "#/components/atoms/clickable";
 import { DataGrid } from "#/components/ui/data-grid";
 
@@ -24,7 +24,8 @@ import { DataGrid } from "#/components/ui/data-grid";
 // header's edge, or F2 then Tab to it and use the arrows), and the title
 // and email edited in place — Enter, F2, typing or a double click; an
 // email without "@" is refused: the field turns danger and the edit stays
-// open. The app keeps the people and writes each edit. Copy it and change
+// open (a click outside ends it, and the app writes no such email). The
+// app keeps the people and writes each edit. Copy it and change
 // what your app needs.
 
 type Person = {
@@ -137,12 +138,14 @@ const features = [
     columnPinning(),
 ];
 
-// A header cell: its name and sort arrow, its filter, its resizer.
+// A header cell: its name and sort arrow, its filter, its resizer. Named
+// by its title alone: its name would otherwise take the filter's text in.
 function HeaderCell({ cell }: { cell: HeaderCellInfo<Person> }) {
+    const title = useId();
     return (
-        <DataGrid.HeaderCell cell={cell}>
+        <DataGrid.HeaderCell cell={cell} aria-labelledby={title}>
             <DataGrid.HeaderLabel>
-                <DataGrid.HeaderTitle>
+                <DataGrid.HeaderTitle id={title}>
                     {headerCellContent(cell)}
                 </DataGrid.HeaderTitle>
                 <DataGrid.SortIndicator cell={cell} />
@@ -178,15 +181,20 @@ export default function DataGridPeopleDirectory() {
                 {...local.props}
                 columns={columns}
                 rowKey={(person) => person.id}
-                onCellEdit={({ row, columnKey, value }) =>
+                onCellEdit={({ row, columnKey, value }) => {
+                    // the editor keeps Enter and Tab from committing a
+                    // refused email; a click outside still commits, so the
+                    // app checks what it writes
+                    const text = String(value);
+                    if (columnKey === "email" && !text.includes("@")) return;
                     setPeople((current) =>
                         current.map((person) =>
                             person.id === row.id
-                                ? { ...person, [columnKey]: String(value) }
+                                ? { ...person, [columnKey]: text }
                                 : person,
                         ),
-                    )
-                }
+                    );
+                }}
                 className="min-h-0 flex-1"
             >
                 <DataGrid.Grid aria-label="People">

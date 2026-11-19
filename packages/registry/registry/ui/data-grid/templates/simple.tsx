@@ -5,6 +5,7 @@ import {
     type ColumnOrGroup,
     type DataGridFeatures,
     type EditCellRenderProps,
+    type HeaderCellInfo,
     headerCellContent,
     type RootProps,
     type RowKey,
@@ -12,7 +13,7 @@ import {
     useDataGridRef,
 } from "@fragiola/data-grid-react";
 import type * as React from "react";
-import { createContext, use, useMemo } from "react";
+import { createContext, use, useId, useMemo } from "react";
 import { CellEditor } from "../features/cell-editor";
 import { ColumnResizer } from "../features/column-resizer";
 import { HeaderFilter } from "../features/header-filter";
@@ -76,9 +77,13 @@ import {
 //
 // The template rules (the same as Input.Template.Simple):
 // 1. No style of its own — no class, no tv(), nothing beyond the parts.
-// 2. No appearance props — no variant, size, color, density, row height.
+// 2. No appearance props — no variant, size, color, density. (Root's
+//    `rowHeight` and `headerRowHeight` pass through as the Root's own,
+//    the engine's geometry; unless given, the Root sets them from the
+//    spacing scale.)
 // 3. One className, going to the main piece (Root): its size (a grid needs
-//    a height), and the palette channel.
+//    a height), and the palette channel. The pages render after the Root,
+//    outside it: they take the palette in scope around the template.
 //
 // Forbidden: renderRow / cellProps / any *Props bag. Props stay flat.
 //
@@ -110,7 +115,8 @@ type SimpleProps<TRow, TFeatures extends DataGridFeatures = []> = Omit<
 // columns stay the same arrays while the rows change.
 const SelectableKeys = createContext<readonly RowKey[]>([]);
 
-const SELECT_COLUMN = "select";
+// namespaced: a column of the consumer's may be called "select"
+const SELECT_COLUMN = "data-grid-select";
 
 function SelectAll() {
     return <SelectAllCell rowKeys={use(SelectableKeys)} />;
@@ -148,6 +154,32 @@ function columnsFor<TRow>(
         renderCell: ({ rowIndex }) => <SelectCell rowIndex={rowIndex} />,
     };
     return [select, ...given];
+}
+
+// A header cell: its name and sort indicator, its filter, its resizer.
+// With a filter, the cell is named by its title alone: a header's name
+// would otherwise take the filter's text in.
+function SimpleHeaderCell<TRow>({
+    cell,
+    filtering,
+}: {
+    cell: HeaderCellInfo<TRow>;
+    filtering: boolean;
+}) {
+    const title = useId();
+    return (
+        <HeaderCell<TRow>
+            cell={cell}
+            aria-labelledby={filtering ? title : undefined}
+        >
+            <HeaderLabel>
+                <HeaderTitle id={title}>{headerCellContent(cell)}</HeaderTitle>
+                <SortIndicator<TRow> cell={cell} />
+            </HeaderLabel>
+            {filtering && <HeaderFilter<TRow> cell={cell} />}
+            <ColumnResizer<TRow> cell={cell} />
+        </HeaderCell>
+    );
 }
 
 function Simple<TRow, const TFeatures extends DataGridFeatures = []>({
@@ -206,26 +238,10 @@ function Simple<TRow, const TFeatures extends DataGridFeatures = []>({
                                     <HeaderRow<TRow> row={row}>
                                         <HeaderCells<TRow>>
                                             {(cell) => (
-                                                <HeaderCell<TRow> cell={cell}>
-                                                    <HeaderLabel>
-                                                        <HeaderTitle>
-                                                            {headerCellContent(
-                                                                cell,
-                                                            )}
-                                                        </HeaderTitle>
-                                                        <SortIndicator<TRow>
-                                                            cell={cell}
-                                                        />
-                                                    </HeaderLabel>
-                                                    {filtering && (
-                                                        <HeaderFilter<TRow>
-                                                            cell={cell}
-                                                        />
-                                                    )}
-                                                    <ColumnResizer<TRow>
-                                                        cell={cell}
-                                                    />
-                                                </HeaderCell>
+                                                <SimpleHeaderCell<TRow>
+                                                    cell={cell}
+                                                    filtering={filtering}
+                                                />
                                             )}
                                         </HeaderCells>
                                     </HeaderRow>
