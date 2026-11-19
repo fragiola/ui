@@ -1014,6 +1014,54 @@
                     "target": "@ui/splitter.tsx"
                 }
             ]
+        },
+        {
+            "name": "tree",
+            "type": "registry:ui",
+            "title": "Tree",
+            "description": "An accessible tree view — expand and collapse, selection, the APG keyboard and type-ahead, drag and drop (pointer and keyboard), tri-state checks, inline rename, async children and virtualization — from @fragiola/tree-react, styled by the tree family. A special component: the package's parts under the same names (Root, Items, Item, ItemContent, Group, Toggle, LiveRegion, DropIndicator, VirtualItems), each wearing its tree member, plus what the package leaves to the app: Label, a Checkbox on the registry's Checkbox, Rename on Field + Input, the Loading and LoadError rows with a Retry on Clickable, and Empty. Rows share the Sidebar menu button's height, radius and focus ring; depth is a logical start padding on the spacing scale. Parts paint from the palette in scope, so a palette class on the root re-tints it. No tokens of its own. Tree.Template.Simple renders a whole tree from a model, with each installed feature's UI. The model API is imported from the package.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/palette-danger",
+                "@fragiola/icon-size",
+                "@fragiola/clickable",
+                "@fragiola/checkbox",
+                "@fragiola/field",
+                "@fragiola/input"
+            ],
+            "dependencies": [
+                "@fragiola/tree-react@^0.1.0",
+                "lucide-react",
+                "tailwind-variants"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/tree.tsx",
+                    "type": "registry:lib",
+                    "target": "@components/families/tree.tsx"
+                },
+                {
+                    "path": "registry/ui/tree/parts.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tree/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/tree/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "@ui/tree/templates/index.ts"
+                },
+                {
+                    "path": "registry/ui/tree/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tree/templates/simple.tsx"
+                },
+                {
+                    "path": "registry/ui/tree.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tree.tsx"
+                }
+            ]
         }
     ]
 }

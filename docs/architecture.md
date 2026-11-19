@@ -124,6 +124,7 @@ layer       backdrop + panel       dialog, alert-dialog, drawer
 disclosure  expand/collapse        accordion, collapsible
 dock        the docking layout     dockable
 split       the split view         splitter
+tree        the tree view          tree
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -141,6 +142,19 @@ redeclared by a nested group and swallow a swap on the outer one, so the parts p
 the palette in scope. Its separator is `ui/separator.tsx`'s 1px `line` rule with an
 invisible hit area from the spacing scale; it shares `dock.splitter`'s cursors, `ring` on
 drag and focus, and `z-10`, and records why the rest differs (`families/split.ts`).
+
+`tree` is the third (Tree, §5): root, item, row, toggle, label, group, the drop
+indicator and the live region, plus members for what the package leaves to the app — a
+check box, a rename field, the loading / load-error / empty rows. Items nest, so like
+`split` it declares no surface palette; its one palette is semantic (`loadError` is
+`palette-danger`). Its row is `menu.navItem`'s (the Sidebar's menu button): the same
+height, radius, gap, text, icon size, secondary text at rest and focus ring, pinned on
+both sides by a test; its hover is `soft/50` because a tree selects many rows. It is the
+first special item to **compose other registry items** inside the package's parts: the
+check box is `Checkbox` (hidden from assistive technology, never focused, as the
+package's contract asks) and rename is `Field.Row` + `Input` (rule 3: the frame is the
+row). Neither changed. Its family file is `families/tree.tsx`, without JSX, for the
+same reason as `field.tsx`: `ui/tree.tsx` shares its basename.
 
 `dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
@@ -187,7 +201,9 @@ The rule is for state that means *the same thing* across libraries. Dockable's s
 (`data-selected`, `data-active` on the tabset, `data-dragging`, `data-drop-kind`) are
 its own, read by one family, so `dock` reads them directly and the theme gains no
 variant. Splitter's (`data-dragging`, `data-collapsed`, `data-collapsible`) are the
-same case for `split`.
+same case for `split`, and Tree's (`data-selected`, `data-focused`, `data-expanded`,
+`data-renaming`, `data-load-error`, …) for `tree`: a tree's `data-selected` lights a
+row while focus is elsewhere, so it is not the `highlighted` variant.
 
 ---
 
@@ -237,8 +253,10 @@ picker — is only its own middle.
 A component with many parts ships one **template**: the parts assembled into the
 common case, so a page does not re-assemble them every time —
 `Input.Template.Simple`, `Dockable.Template.Simple` (the whole docking layout
-from a model and a tab's content) and `Splitter.Template.Simple` (a separator with
-its grip between the panels it is given; two props). The rules are the same for all:
+from a model and a tab's content), `Splitter.Template.Simple` (a separator with
+its grip between the panels it is given; two props) and `Tree.Template.Simple` (the
+whole tree, with the UI of each feature the model has installed — read from the
+model, never from a prop; four props). The rules are the same for all:
 
 1. no style of its own — nothing beyond the parts and their family members;
 2. no appearance props;
@@ -385,7 +403,8 @@ data grid, a scheduler. They are published packages, and the registry item ships
 **the styled layer over the package**: the package goes into `dependencies`, the
 item writes the parts (dressed by a family) and one template. Dockable is the
 first (`npx shadcn@latest add @fragiola/dockable` installs `@fragiola/dockable-react`),
-Splitter the second (`@fragiola/splitter`, Epic #88).
+Splitter the second (`@fragiola/splitter`, Epic #88), Tree the third
+(`@fragiola/tree`, Epic #91).
 The model, the commands and the behaviour stay the package's and are imported from
 it; the layer re-exports none of them. In the docs and the gallery they share one
 section, **Special**.
@@ -468,6 +487,13 @@ in the remaining surface:
   One limit is the package's: a group has no size of its own, so a nested group needs
   `h-full` from its consumer, Template.Simple's included. See
   `docs/port-report-epic-88.md`.
+- **`tree`** — settled in Epic #91, the third special component: the `tree` family, the
+  package's parts plus Label, Checkbox, Rename, Loading, LoadError, Retry and Empty,
+  `Tree.Template.Simple` with four props, no token and no palette added. The S1–S8 rules
+  held unchanged. One limit is the package's: the drop indicator is placed in pixels
+  (`dragAndDrop({ indentation, indicatorInset })`), so under another density its line
+  drifts from the rows by a few pixels per level; S5 keeps the family from moving it. See
+  `docs/port-report-epic-91.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build

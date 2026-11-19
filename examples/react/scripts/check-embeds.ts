@@ -77,6 +77,45 @@ const OVERLAYS: Record<string, Opener> = {
     dockable: "click",
 };
 
+// The examples whose rows are dragged in the frame: a row, and the folder it
+// is dropped on.
+const DRAGS: Record<string, { row: string; folder: string }> = {
+    tree: { row: "README.md", folder: "components" },
+    "tree-file-explorer": { row: "README.md", folder: "docs" },
+};
+
+// Drags a tree row onto the middle of a folder's row with the mouse, and
+// tells whether the row is now inside the folder (an expanded one: a
+// collapsed folder renders no children).
+async function dragInto(
+    page: Page,
+    frame: Frame,
+    row: string,
+    folder: string,
+): Promise<boolean> {
+    const content = (name: string) =>
+        frame
+            .getByRole("treeitem", { name, exact: true })
+            .locator(":scope > [data-tree-part=content]");
+    const from = await content(row).boundingBox();
+    const to = await content(folder).boundingBox();
+    if (!from || !to) return false;
+    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(from.x + from.width / 2, from.y - 8, { steps: 4 });
+    await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+        steps: 8,
+    });
+    await page.mouse.up();
+    await page.waitForTimeout(150);
+    return (
+        (await frame
+            .getByRole("treeitem", { name: folder, exact: true })
+            .getByRole("treeitem", { name: row, exact: true })
+            .count()) === 1
+    );
+}
+
 type ManifestExample = {
     id: string;
     layout: "fill" | "flow";
@@ -592,6 +631,16 @@ for (const example of selected) {
                         .length,
             );
             if (drawn < 3) say(`${drawn} of 3 charts drawn`);
+        }
+
+        // A drag in the frame: Tree's pointer drag (Pointer Events, a
+        // threshold, the drop target hit-tested from the rows) works in an
+        // iframe as on a page — the row lands in the folder it is dropped on.
+        const drag = DRAGS[example.id];
+        if (drag) {
+            const moved = await dragInto(page, frame, drag.row, drag.folder);
+            if (!moved)
+                say(`dragging ${drag.row} onto ${drag.folder} moved nothing`);
         }
 
         if (values.screenshots) {

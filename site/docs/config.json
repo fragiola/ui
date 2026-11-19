@@ -229,6 +229,10 @@
                 {
                     "label": "Splitter",
                     "path": "special/splitter"
+                },
+                {
+                    "label": "Tree",
+                    "path": "special/tree"
                 }
             ]
         }
