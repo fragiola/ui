@@ -100,10 +100,12 @@ const separator = tv({
 // separator is hovered (unless disabled), dragged or focused. It lines up
 // with the separator by reading its orientation through the named group,
 // never `data-orientation` alone — a nested group carries one too. It lets
-// the pointer through to the separator.
+// the pointer through to the separator. Its shape is the drawer's handle
+// (ui/drawer.tsx: `h-1.5`, `rounded-pill`, which follows the radius axis),
+// shorter, in `ring`: it marks an interaction, not a resting affordance.
 const grip = tv({
     base: `
-        pointer-events-none shrink-0 rounded-full bg-palette-ring opacity-0
+        pointer-events-none shrink-0 rounded-pill bg-palette-ring opacity-0
         transition-opacity
         group-data-[orientation=vertical]/separator:h-6
         group-data-[orientation=vertical]/separator:w-1.5
