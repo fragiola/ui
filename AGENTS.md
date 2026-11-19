@@ -19,6 +19,11 @@ Distribution reuses shadcn's registry format and CLI — see architecture §8.
 **`docs/architecture.md`** — the three problems this project answers and the three
 decisions that answer them, plus what is still unsettled. Short; read it once in full.
 
+**`docs/visual-language.md`** — how every component looks: the control box, focus,
+the states, type, icons and motion. Before styling anything, compose the
+`foundation` family's member for the idea instead of writing its classes
+(`tests/foundation.test.ts` enforces it).
+
 ## Non-negotiable rules
 
 These are deliberately tight. Do not "fix" them.

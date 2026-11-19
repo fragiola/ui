@@ -1,0 +1,125 @@
+# Fragiola UI — Visual language
+
+`architecture.md` says how the registry is built: palettes, families, composition and
+axes. This page says how the components **look**: one answer to each visual question
+that every component gives in the same way.
+
+Before it existed, each family answered these questions in its own words, and each
+answer was defensible on its own:
+
+- the field was a filled `soft` box, while the select trigger and the outline button
+  were outlined;
+- the field drew its focus ring at offset 0, checkbox, radio and switch at offset 1
+  with a 1px outline, and the slider's thumb at 2px;
+- a checked box was filled with `ring` and a progress bar with `base`;
+- the switch's off track was `soft`, invisible on a white floor.
+
+Together they read as several design systems.
+
+The answers live in one family, **`families/foundation.ts`**. Every other family
+composes its members instead of restating them, and `tests/foundation.test.ts` fails
+when one writes a foundation idea itself. Changing an answer means changing it there,
+and it changes everywhere.
+
+## Surfaces
+
+| tier | what | treatment |
+|---|---|---|
+| floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
+| raised | a card, the sidebar, a tile, a dock panel | `palette-raised`, `bg-palette-base`, a `line` border, no shadow |
+| overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-lg` (the elevation axis scales it) |
+
+A container never paints with `soft`. `soft` is a **state** (hover, highlighted,
+selected) or a recessed adornment inside a control: a field's addon, a table's header,
+inline code.
+
+## The control box (`foundation.box`)
+
+Every control is the same box: a `line` stroke on a **transparent** background, with
+its value in `accent`. That covers:
+
+- the field row;
+- the select and combobox triggers;
+- an outline button;
+- an unchecked checkbox and radio.
+
+It has the height `h-control`, the radius `rounded-control` (capped at half the height
+for the field) and inner padding `px-3`.
+
+- **Transparent, not `soft`.** A box sits on whatever floor it is on (a page, a raised
+  card) and reads as part of it. `soft` stays free to mean a state.
+- **Value in `accent`, not `contrast`.** The invalid state arrives by palette
+  inheritance (`[data-invalid]` applies `palette-danger`), and `danger`'s `contrast`
+  is the white meant for a red fill. With `accent` and a transparent box, an invalid
+  field is a red stroke with red text, never a red block.
+- **Placeholders are secondary text**, `accent/85`, like every other secondary text
+  (AGENTS.md).
+
+## Focus
+
+One ring: `outline-2` in `palette-ring`.
+
+| member | where | drawn |
+|---|---|---|
+| `focus` | a standalone focusable: button, link, trigger, tab | 2px outside (`outline-offset-2`) |
+| `focusInset` | an item inside a container that packs or clips it: menu item, list row, tree row, grid cell | 2px inside (`-outline-offset-2`) |
+| `fieldFocus` | a box whose control is inside it, or is itself: the field row, a select trigger, checkbox, radio, switch | outside, fired by the `.field-control` marker |
+| `focusNested` | a box whose focusable is a nested native input it does not render: the slider thumb | outside |
+
+The ring is drawn outside because `ring` contrasts with what is behind the element
+(architecture.md §1), and so it never covers the element's own border.
+
+## States
+
+| state | treatment | member |
+|---|---|---|
+| hover (a transparent interactive thing) | `bg-palette-soft` | `hover` |
+| highlighted (the item the pointer or keyboard is on, in a list) | `bg-palette-soft`, text `contrast` | `highlighted` |
+| selected / current (the chosen item of a set: tab, page, sidebar item, tree row, grid row, dock tab) | `bg-palette-soft`, text `contrast`, `font-medium` | settled in the pass over the sets |
+| checked / on (checkbox, radio, switch, slider fill, progress fill) | `bg-palette-ring`, content in `base` | `checked` |
+| off ground (a track's rail, a switch's track) | `bg-palette-line` | `rail` |
+| what slides (switch thumb, slider thumb) | `bg-palette-base`, `shadow-sm` | `knob` |
+| disabled | `opacity-50`, `cursor-not-allowed` | `disabled` |
+| invalid | `palette-danger` by inheritance, nothing else | none (global.css) |
+
+**"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
+palette that palette's colour, and on a chromatic palette its deeper tone. The checked
+box, the selected radio, the switch, the slider's fill and the progress bar are one
+colour on every palette.
+
+## Colour by class
+
+There are no colour variants anywhere. A component takes the colour of the palette
+class it carries or inherits. The default action palette is **`palette-neutral`**: a
+near-black solid in light, a near-white one in dark, with no hue. A brand is another
+palette: write one, and swap the class. Nothing in the component changes.
+
+## Type
+
+| role | size | weight | colour |
+|---|---|---|---|
+| body, a control's value | `text-sm` | normal | `contrast` on a floor, `accent` in a box |
+| label (a field's name, a choice's name) | `text-sm` | `font-medium` | `accent` |
+| secondary (description, caption, placeholder) | `text-sm` / `text-xs` | normal | `accent/85` (`secondary`) |
+| heading (dialog title, card title, `Text.Heading`) | `text-lg` and up | `font-semibold` | `contrast` |
+| badge, keyboard hint | `text-xs` | `font-medium` | by the badge's fill |
+
+Every size follows the typography axis (`--text-scale`).
+
+## Icons
+
+Icons follow the text axis. `size-icon` is the default beside `text-sm`, `size-icon-sm`
+goes in a dense row, `size-icon-xs` in a badge or a check mark, and `size-icon-lg` is
+for a standalone illustration. A secondary icon (a chevron, a search glass) is
+`accent/85`.
+
+## Motion
+
+| kind | duration |
+|---|---|
+| a state change (colour, border, a thumb sliding) | `duration-150` |
+| a popup or menu entering and leaving | `duration-150` |
+| a layer (dialog, drawer) entering and leaving | `duration-200` |
+| expand and collapse (accordion, collapsible, a sidebar group) | `duration-200` |
+
+Every duration follows the motion axis (`--motion-scale`).
