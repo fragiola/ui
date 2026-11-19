@@ -65,6 +65,7 @@
 // Namespace object: a single `sheet` export with all members.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // The frame: the scroll container (the package's root, which sets
 // `position` and `overflow`). It names the Tailwind group `sheet`. The
@@ -155,12 +156,14 @@ const headerTitle = tv({ base: "min-w-0 truncate" });
 // (opaque, see the header); a selected one `soft` with `contrast` text — a
 // hover never lights it. It names the group `sheet-row`.
 const row = tv({
-    base: `
+    base: [
+        foundation.hoverRow(),
+        foundation.selected(),
+        `
         group/sheet-row border-b border-palette-line bg-palette-base
-        not-data-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]
         not-data-selected:data-active:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]
-        data-selected:bg-palette-soft
     `,
+    ],
 });
 
 // A body cell: table's padding and secondary text, one line, truncated,

@@ -3,6 +3,7 @@
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import type * as React from "react";
 import { disclosure } from "#/families/disclosure";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Accordion — a group of expand/collapse items with coordination. Composes
@@ -22,7 +23,11 @@ function AccordionRoot({ className, ...props }: AccordionPrimitive.Root.Props) {
     return (
         <AccordionPrimitive.Root
             data-slot="accordion"
-            className={cn("flex flex-col gap-1", className as string)}
+            className={cn(
+                foundation.panel(),
+                "flex flex-col divide-y divide-palette-line overflow-hidden",
+                className as string,
+            )}
             {...props}
         />
     );
@@ -32,10 +37,7 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
     return (
         <AccordionPrimitive.Item
             data-slot="accordion-item"
-            className={cn(
-                "border border-palette-line rounded-md",
-                className as string,
-            )}
+            className={cn(className as string)}
             {...props}
         />
     );

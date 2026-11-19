@@ -19,26 +19,30 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const REGISTRY = path.join(ROOT, "registry");
 
 // Each idea, and the classes that would restate it.
+// The focus ring is matched on the standard focus variants only. A library's
+// own focus target (the grid's focused cell, `[:focus-visible>&]` on a tree
+// row) and its drag-and-drop outlines are its own vocabulary (architecture.md
+// §2, "Normalize state before sharing"); they keep the ring's values by
+// review. A conditional hover (`data-draggable:hover:`) is the same case.
 const RESTATED: { idea: string; pattern: RegExp }[] = [
-    { idea: "focus ring", pattern: /outline-palette-ring|outline-offset-/ },
-    { idea: "hover", pattern: /(?<![\w-])hover:bg-palette-soft/ },
+    {
+        idea: "focus ring",
+        pattern: /(?<![\w:\]-])(?:focus-visible|field-focus|focus):outline-/,
+    },
+    { idea: "hover", pattern: /(?<![\w:\]-])hover:bg-palette-soft/ },
     { idea: "highlighted", pattern: /highlighted:bg-palette-soft/ },
+    {
+        idea: "current",
+        pattern: /(?<![\w-])(?:current|data-active):bg-palette-soft/,
+    },
+    {
+        idea: "selected",
+        pattern: /(?<![\w-])(?:selected|data-selected):bg-palette-soft/,
+    },
     { idea: "checked", pattern: /data-checked:bg-palette-/ },
 ];
 
-const PENDING = new Set([
-    "families/disclosure.ts",
-    "families/dock.ts",
-    "families/menu.ts",
-    "families/sheet.ts",
-    "families/tile.ts",
-    "families/tree.tsx",
-    "ui/breadcrumb.tsx",
-    "ui/navigation-menu.tsx",
-    "ui/sidebar.tsx",
-    "ui/table.tsx",
-    "ui/tabs.tsx",
-]);
+const PENDING = new Set<string>();
 
 async function sources(dir: string): Promise<string[]> {
     const entries = await readdir(dir, { withFileTypes: true });

@@ -2,6 +2,7 @@
 
 import { MoreHorizontalIcon } from "lucide-react";
 import type * as React from "react";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Breadcrumb — a navigation trail. Uses a semantic <nav> with an ordered
@@ -66,7 +67,10 @@ function BreadcrumbLink({ className, ...props }: React.ComponentProps<"a">) {
         <a
             data-slot="breadcrumb-link"
             className={cn(
-                "rounded-md px-1 py-0.5 text-palette-accent/85 transition-colors hover:text-palette-contrast hover:bg-palette-soft",
+                foundation.secondary(),
+                foundation.hover(),
+                foundation.focus(),
+                "rounded-md px-1 py-0.5 transition-colors duration-150 hover:text-palette-contrast",
                 className as string,
             )}
             {...props}

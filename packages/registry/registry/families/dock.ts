@@ -73,6 +73,7 @@
 // Namespace object: a single `dock` export with all members.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // The layout's floor. `palette-surface` by default — merged away by any
 // palette class the consumer passes (cn knows the palette group).
@@ -137,13 +138,14 @@ const scrollingTabList = tv({
 // inline padding is the room above and below the label, the block padding
 // the room beside it — not the other way round.
 const tab = tv({
-    base: `
+    base: [
+        foundation.hover(),
+        foundation.focusInset(),
+        foundation.selected(),
+        `
         group/tab relative flex min-h-8 max-w-60 shrink-0 self-stretch cursor-pointer select-none
         items-center gap-1.5 rounded-md px-2.5 text-sm font-medium
-        text-palette-accent/85 transition-colors
-        hover:bg-palette-soft hover:text-palette-contrast
-        focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-palette-ring
-        data-selected:bg-palette-soft data-selected:text-palette-contrast
+        text-palette-accent/85 transition-colors hover:text-palette-contrast
         data-dragging:opacity-50
         [&_svg:not([class*='size-'])]:size-icon-sm
         [&_svg]:pointer-events-none [&_svg]:shrink-0
@@ -154,6 +156,7 @@ const tab = tv({
         group-data-[orientation=vertical]/border:[writing-mode:vertical-rl]
         group-data-[tab-direction=up]/border:rotate-180
     `,
+    ],
 });
 
 // A tab's text: truncated, so a long label never pushes its action out.

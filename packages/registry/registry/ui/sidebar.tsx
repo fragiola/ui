@@ -8,6 +8,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { Badge } from "#/atoms/badge";
 import { Clickable } from "#/atoms/clickable";
 import { Input } from "#/atoms/fields";
+import { foundation } from "#/families/foundation";
 import { menu } from "#/families/menu";
 import { cn } from "#/lib/cn";
 import { Drawer } from "#/ui/drawer";
@@ -646,8 +647,8 @@ function SidebarGroupLabel({
             ...props,
             className: cn(
                 menu.label(),
+                foundation.focusInset(),
                 "flex h-8 shrink-0 items-center gap-2 rounded-md",
-                "focus-visible:outline-2 focus-visible:outline-palette-ring",
                 "[&>svg]:size-icon [&>svg]:shrink-0",
                 "transition-[margin,opacity] duration-200 ease-linear motion-reduce:transition-none",
                 "group-data-[collapsible=icon]/sidebar:-mt-8 group-data-[collapsible=icon]/sidebar:opacity-0",

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import type * as React from "react";
 import { Clickable } from "#/atoms/clickable";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Pagination — a strip of links where one is the current page. No Base UI
@@ -81,10 +82,10 @@ function PaginationLink({
         <Clickable.Link
             data-slot="pagination-link"
             aria-current={active ? "page" : undefined}
-            variant={active ? "outline" : "ghost"}
+            variant="ghost"
             size="sm"
             shape="square"
-            className={cn(className as string)}
+            className={cn(foundation.current(), className as string)}
             {...props}
         />
     );

@@ -1,6 +1,7 @@
 "use client";
 
 import type * as React from "react";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Table — semantic HTML with palette roles. No primitive, no family. The
@@ -65,8 +66,9 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
         <tr
             data-slot="table-row"
             className={cn(
-                "border-b border-palette-line transition-colors hover:bg-palette-soft",
-                "data-[state=selected]:bg-palette-soft",
+                foundation.hoverRow(),
+                foundation.selected(),
+                "border-b border-palette-line transition-colors duration-150",
                 className as string,
             )}
             {...props}

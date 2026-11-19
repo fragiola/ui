@@ -70,9 +70,9 @@ describe("tree family", () => {
             "empty",
         ]) {
             expect(
-                new RegExp(`data-${state}(?![\\w-])|data-\\[${state}=`).test(
-                    written,
-                ),
+                new RegExp(
+                    `data-${state}(?![\\w-])|data-\\[${state}=|(?:^|[\\s:])${state}:`,
+                ).test(written),
                 state,
             ).toBe(true);
         }
@@ -104,12 +104,14 @@ describe("tree family", () => {
             "select-none",
             "text-palette-accent/85",
             "[&_svg:not([class*='size-'])]:size-icon",
-            "data-selected:bg-palette-soft",
         ]) {
-            const navShared = shared.replace("data-selected:", "data-active:");
             expect(own, shared).toContain(shared);
-            expect(nav, navShared).toContain(navShared);
+            expect(nav, shared).toContain(shared);
         }
+        // Lit by the foundation: `selected` on a row, `current` on a link —
+        // the same fill under each one's vocabulary.
+        expect(own).toContain("selected:bg-palette-soft");
+        expect(nav).toContain("current:bg-palette-soft");
         // The focus ring: navItem on its own focus, the row on its item's.
         for (const ring of ["outline-2", "outline-palette-ring"]) {
             expect(nav).toContain(`focus-visible:${ring}`);
@@ -126,8 +128,8 @@ describe("tree family", () => {
         const fills = own.filter((c) => /(?:^|:)bg-/.test(c));
         expect(fills.sort()).toEqual(
             [
-                "data-selected:bg-palette-soft",
-                "not-data-selected:not-data-disabled:hover:bg-palette-soft/50",
+                "selected:bg-palette-soft",
+                "not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
             ].sort(),
         );
         expect(own.filter((c) => /^hover:/.test(c))).toEqual([]);

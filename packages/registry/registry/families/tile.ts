@@ -70,6 +70,7 @@
 // Namespace object: a single `tile` export with all members.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // The grid: nothing at rest. It names the Tailwind group `tile`, which the
 // cells and the placeholder read. While an item from outside is over it
@@ -118,12 +119,12 @@ const cells = tv({
 // sets it into the floor. The grab cursor is the body's only when the item
 // has no drag handle — with one, the handle is where it drags from.
 const item = tv({
-    base: `
+    base: [
+        foundation.focus(),
+        `
         group/tile-item palette-raised flex flex-col overflow-hidden
         rounded-lg border border-palette-line bg-palette-base
         text-sm text-palette-contrast shadow-sm
-        focus-visible:outline-2 focus-visible:outline-offset-2
-        focus-visible:outline-palette-ring
         not-data-dragging:not-data-resizing:transition-[transform,width,height,scale,box-shadow,opacity]
         not-data-dragging:not-data-resizing:duration-200
         not-data-dragging:not-data-resizing:ease-out
@@ -135,6 +136,7 @@ const item = tv({
         data-draggable:not-data-dragging:not-has-data-[grid-layout-part=drag-handle]:cursor-grab
         data-dragging:cursor-grabbing
     `,
+    ],
 });
 
 // The card's top row: the drag handle, the title and any action.
@@ -156,11 +158,12 @@ const content = tv({ base: "min-h-0 flex-1 overflow-auto p-3" });
 // item; dimmed, with no cursor, while its item cannot be dragged (no
 // `data-draggable`).
 const dragHandle = tv({
-    base: `
+    base: [
+        foundation.focus(),
+        `
         inline-flex size-6 shrink-0 items-center justify-center rounded-md
         text-palette-accent/85 transition-colors duration-150
         [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-icon
-        focus-visible:outline-2 focus-visible:outline-palette-ring
         data-draggable:hover:bg-palette-soft
         data-draggable:hover:text-palette-contrast
         data-dragging:bg-palette-soft data-dragging:text-palette-contrast
@@ -169,6 +172,7 @@ const dragHandle = tv({
         data-draggable:not-data-dragging:cursor-grab
         data-dragging:cursor-grabbing
     `,
+    ],
 });
 
 // A side or corner an item is resized from: a hit area inside the card's
@@ -231,17 +235,19 @@ const placeholder = tv({
 // scope, a tab stop. While it brings its item (pointer or keyboard) it dims;
 // a disabled one dims and loses its cursor and hover.
 const dragSource = tv({
-    base: `
+    base: [
+        foundation.focus(),
+        `
         flex items-center gap-2 rounded-md border border-palette-line
         bg-palette-base px-3 py-2 text-sm text-palette-contrast select-none
         transition-[background-color,opacity] duration-150
         [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon
-        focus-visible:outline-2 focus-visible:outline-palette-ring
         not-data-disabled:hover:bg-palette-soft
         not-data-disabled:not-data-dragging:cursor-grab
         data-dragging:cursor-grabbing
         data-dragging:opacity-50 data-grabbed:opacity-50 data-disabled:opacity-50
     `,
+    ],
 });
 
 // What follows the pointer while it brings a new item: a lifted card. Over

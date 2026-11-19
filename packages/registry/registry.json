@@ -14,7 +14,8 @@
                     "type": "registry:theme",
                     "target": "styles/global.css"
                 }
-            ]
+            ],
+            "registryDependencies": []
         },
         {
             "name": "palette-surface",
@@ -224,7 +225,8 @@
                     "type": "registry:lib",
                     "target": "@lib/cn.ts"
                 }
-            ]
+            ],
+            "registryDependencies": []
         },
         {
             "name": "get-token",
@@ -237,7 +239,8 @@
                     "type": "registry:lib",
                     "target": "@lib/get-token/index.ts"
                 }
-            ]
+            ],
+            "registryDependencies": []
         },
         {
             "name": "text",
@@ -284,7 +287,8 @@
                     "type": "registry:ui",
                     "target": "@components/atoms/icon/index.ts"
                 }
-            ]
+            ],
+            "registryDependencies": []
         },
         {
             "name": "foundation",
@@ -306,7 +310,7 @@
             "type": "registry:lib",
             "title": "popup family",
             "description": "The floating box family — one member, content. Zero variants. Carries the box (raised palette, border, radius, shadow), sizing from Base UI's positioner, open/close animations and per-side slide-in including logical inline-start/inline-end with rtl counterparts. Shared by dropdown-menu, context-menu, select and combobox.",
-            "registryDependencies": ["@fragiola/theme"],
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
             "dependencies": ["tailwind-variants"],
             "files": [
                 {
@@ -324,7 +328,8 @@
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
-                "@fragiola/popup"
+                "@fragiola/popup",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "tailwind-variants",
@@ -531,7 +536,8 @@
                 "@fragiola/theme",
                 "@fragiola/cn",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "tailwind-variants",
@@ -671,7 +677,7 @@
             "type": "registry:lib",
             "title": "disclosure family",
             "description": "The expand/collapse family — trigger, panel, content. Zero variants. trigger is the toggle button (group for chevron rotation, w-full, justify-between, logical padding, hover on soft, focus ring). panel is the animated container (overflow-hidden, data-starting-style/data-ending-style fade). content is the inner padded content (p-4 pt-0). Shared by accordion and collapsible.",
-            "registryDependencies": ["@fragiola/theme"],
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
             "dependencies": ["tailwind-variants"],
             "files": [
                 {
@@ -686,7 +692,10 @@
             "type": "registry:ui",
             "title": "Accordion",
             "description": "A group of expand/collapse items with coordination. Composes the disclosure family (trigger, panel, content). Declares only Root, Item and Header — the coordination points. openMultiple controls whether one or many items can be open. The trigger is a group; put a chevron inside with group-data-[panel-open]:rotate-180.",
-            "registryDependencies": ["@fragiola/disclosure"],
+            "registryDependencies": [
+                "@fragiola/disclosure",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["@base-ui/react"],
             "files": [
                 {
@@ -701,7 +710,10 @@
             "type": "registry:ui",
             "title": "Collapsible",
             "description": "A single expand/collapse section. Composes the disclosure family (trigger, panel, content). An accordion is a group of collapsibles with coordination; a collapsible is one section on its own. Both share the same trigger, panel and content — the zero-variant rule is preserved.",
-            "registryDependencies": ["@fragiola/disclosure"],
+            "registryDependencies": [
+                "@fragiola/disclosure",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["@base-ui/react"],
             "files": [
                 {
@@ -731,7 +743,11 @@
             "type": "registry:ui",
             "title": "Breadcrumb",
             "description": "A navigation trail. Uses a semantic nav with an ordered list. The last item is the current page (aria-current), not a link. Separators are chevrons on the inline axis, RTL-aware. No variants — visual differences (separator type, truncation) are composition. Breadcrumb.Ellipsis for collapsed items.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["lucide-react"],
             "files": [
                 {
@@ -803,7 +819,11 @@
             "type": "registry:ui",
             "title": "Tabs",
             "description": "A strip of triggers where one is current, with an animated indicator. The indicator uses the primitive's CSS variables (--active-tab-*), not React measurement — it tracks on resize and under RTL automatically. Orientation is behaviour from the primitive. Focus ring is palette-ring; the active state is a role (bg-palette-soft), not a colour. No navigation family — tabs and navigation-menu share state normalisation (highlighted) but not enough structural style. The negative result is in the port report.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation"
+            ],
             "dependencies": ["@base-ui/react", "tailwind-variants"],
             "files": [
                 {
@@ -821,7 +841,8 @@
             "registryDependencies": [
                 "@fragiola/popup",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/foundation"
             ],
             "dependencies": ["@base-ui/react", "lucide-react"],
             "files": [
@@ -840,7 +861,8 @@
             "registryDependencies": [
                 "@fragiola/clickable",
                 "@fragiola/theme",
-                "@fragiola/cn"
+                "@fragiola/cn",
+                "@fragiola/foundation"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -877,7 +899,11 @@
             "type": "registry:ui",
             "title": "Table",
             "description": "Semantic HTML with palette roles. No primitive, no family. border-palette-line for the grid, bg-palette-soft for the header and hover, text-palette-contrast for header text, text-palette-accent/85 for body text. The wrapper handles horizontal scroll on small screens.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation"
+            ],
             "dependencies": [],
             "files": [
                 {
@@ -950,7 +976,8 @@
                 "@fragiola/field",
                 "@fragiola/input",
                 "@fragiola/separator",
-                "@fragiola/skeleton"
+                "@fragiola/skeleton",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "@base-ui/react",
@@ -976,7 +1003,8 @@
                 "@fragiola/palette-surface",
                 "@fragiola/clickable",
                 "@fragiola/icon-size",
-                "@fragiola/dropdown-menu"
+                "@fragiola/dropdown-menu",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "@fragiola/dockable-react@^0.3.0",
@@ -1067,7 +1095,8 @@
                 "@fragiola/clickable",
                 "@fragiola/checkbox",
                 "@fragiola/field",
-                "@fragiola/input"
+                "@fragiola/input",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "@fragiola/tree-react@^0.1.0",
@@ -1112,7 +1141,8 @@
                 "@fragiola/cn",
                 "@fragiola/palette-raised",
                 "@fragiola/palette-danger",
-                "@fragiola/icon-size"
+                "@fragiola/icon-size",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "@fragiola/grid-layout-react@^0.1.0",
@@ -1160,7 +1190,8 @@
                 "@fragiola/field",
                 "@fragiola/input",
                 "@fragiola/select",
-                "@fragiola/pagination"
+                "@fragiola/pagination",
+                "@fragiola/foundation"
             ],
             "dependencies": [
                 "@fragiola/data-grid-react@^0.1.0",

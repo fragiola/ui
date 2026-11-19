@@ -4,6 +4,7 @@ import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/naviga
 import { ChevronDownIcon } from "lucide-react";
 import type * as React from "react";
 import { Text } from "#/atoms/text";
+import { foundation } from "#/families/foundation";
 import { popup } from "#/families/popup";
 import { cn } from "#/lib/cn";
 
@@ -82,9 +83,9 @@ function NavigationMenuTrigger({
             data-slot="navigation-menu-trigger"
             className={cn(
                 "relative cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-control px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
-                "highlighted:bg-palette-soft highlighted:text-palette-contrast",
+                foundation.hover(),
+                foundation.focus(),
                 "data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast",
-                "focus-visible:outline-2 focus-visible:outline-palette-ring",
                 className as string,
             )}
             {...props}

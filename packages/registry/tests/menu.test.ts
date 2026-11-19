@@ -75,7 +75,7 @@ describe("menu family", () => {
             // swallow the focus-visible ring.
             expect(nav).not.toContain("outline-none");
             expect(nav).toContain("focus-visible:outline-palette-ring");
-            expect(nav).toContain("data-active:bg-palette-soft");
+            expect(nav).toContain("current:bg-palette-soft");
         }
         expect(classes(menu.navSubItem)).toContain("h-7");
         expect(classes(menu.navSubItem)).not.toContain("h-8");
