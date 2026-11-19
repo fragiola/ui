@@ -1062,6 +1062,41 @@
                     "target": "@ui/tree.tsx"
                 }
             ]
+        },
+        {
+            "name": "grid-layout",
+            "type": "registry:ui",
+            "title": "Grid Layout",
+            "description": "Draggable, resizable dashboard grids — collision and compaction, responsive breakpoints, the keyboard, items brought in from outside, RTL — from @fragiola/grid-layout-react, styled by the tile family. A special component: the package's parts under the same names (Root, Cells, Items, Item, DragHandle, ResizeHandle, Placeholder, DragSource, DragPreview), each wearing its tile member, plus a card's Header, Title and Content. Items are cards on the raised tier that lift while held; a dashed ring placeholder; line dots behind the grid during a gesture; logical resize handles on every side and corner; a refused drop in danger. No tokens of its own. The model API is imported from the package.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/palette-raised",
+                "@fragiola/palette-danger",
+                "@fragiola/icon-size"
+            ],
+            "dependencies": [
+                "@fragiola/grid-layout-react@^0.1.0",
+                "lucide-react",
+                "tailwind-variants"
+            ],
+            "files": [
+                {
+                    "path": "registry/families/tile.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/tile.ts"
+                },
+                {
+                    "path": "registry/ui/grid-layout/parts.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/grid-layout/parts.tsx"
+                },
+                {
+                    "path": "registry/ui/grid-layout.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/grid-layout.tsx"
+                }
+            ]
         }
     ]
 }
