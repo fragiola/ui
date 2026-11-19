@@ -1,5 +1,28 @@
 "use client";
 
+import { CellEditor } from "./data-grid/features/cell-editor";
+import { ColumnResizer } from "./data-grid/features/column-resizer";
+import { HeaderFilter } from "./data-grid/features/header-filter";
+import { Pagination } from "./data-grid/features/pagination";
+import { SelectAllCell, SelectCell } from "./data-grid/features/row-selection";
+import { SortIndicator } from "./data-grid/features/sort-indicator";
+import {
+    Body,
+    Cell,
+    Cells,
+    Empty,
+    Grid,
+    Header,
+    HeaderCell,
+    HeaderCells,
+    HeaderLabel,
+    HeaderRow,
+    HeaderRows,
+    HeaderTitle,
+    Root,
+    Row,
+    Rows,
+} from "./data-grid/parts";
 
 // DataGrid — a virtualized data grid (rows and columns windowed on both
 // axes, the keys and the active cell, column groups, loading rows, RTL)
@@ -10,8 +33,13 @@
 // One export, `DataGrid`: the package's parts under the same names (Root,
 // Grid, Header, HeaderRows, HeaderRow, HeaderCells, HeaderCell, Body, Rows,
 // Row, Cells, Cell, Empty), each wearing its `sheet` member, plus a header
-// cell's Label and Title. The model, the features and rows in memory are
-// the package's:
+// cell's Label and Title. Then a piece per common feature, each rendering
+// nothing unless the grid installed its feature: SortIndicator (sorting),
+// ColumnResizer (columnResize), SelectCell and SelectAllCell
+// (rowSelection), HeaderFilter (filtering), CellEditor (editing) and
+// Pagination (pagination); pinned columns (columnPinning) need no piece,
+// their cells carry it. The model, the features and rows in memory are the
+// package's:
 //
 //   import { useDataGrid } from "@fragiola/data-grid-react";
 //   import { sorting } from "@fragiola/data-grid-react/sorting";
@@ -36,4 +64,11 @@ export const DataGrid = {
     Cells,
     Cell,
     Empty,
+    SortIndicator,
+    ColumnResizer,
+    SelectCell,
+    SelectAllCell,
+    HeaderFilter,
+    CellEditor,
+    Pagination,
 };

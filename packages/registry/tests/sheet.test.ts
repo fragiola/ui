@@ -256,6 +256,40 @@ describe("sheet family", () => {
         expect(classes(sheet.checkboxDash)).toEqual(classes(tree.checkboxDash));
     });
 
+    it("composes the registry's controls unchanged", async () => {
+        const selection = await read("ui/data-grid/features/row-selection.tsx");
+        expect(selection).toMatch(/from "#\/ui\/checkbox"/);
+        const filter = await read("ui/data-grid/features/header-filter.tsx");
+        expect(filter).toMatch(/from "#\/ui\/field"/);
+        expect(filter).toMatch(/from "#\/ui\/select"/);
+        expect(filter).toMatch(/from "#\/atoms\/fields"/);
+        const editor = await read("ui/data-grid/features/cell-editor.tsx");
+        expect(editor).toMatch(/from "#\/ui\/field"/);
+        expect(editor).toMatch(/from "#\/atoms\/fields"/);
+        expect(editor).toContain("{...editorProps}");
+        const pagination = await read("ui/data-grid/features/pagination.tsx");
+        expect(pagination).toMatch(/from "#\/ui\/pagination"/);
+    });
+
+    it("renders each feature piece only with its feature installed", async () => {
+        const pieces: Record<string, string[]> = {
+            "sort-indicator.tsx": ["sorting"],
+            "column-resizer.tsx": ["columnResize"],
+            "row-selection.tsx": ["rowSelection", "rowSelection"],
+            "header-filter.tsx": ["filtering"],
+            "pagination.tsx": ["pagination"],
+        };
+        for (const [file, features] of Object.entries(pieces)) {
+            const source = await read(`ui/data-grid/features/${file}`);
+            const gates = [
+                ...source.matchAll(/installed\([^,]+, "(\w+)"\)/g),
+            ].map((match) => match[1]);
+            expect(gates, file).toEqual(features);
+        }
+        // The cell editor is a column's renderEditCell: the package renders
+        // it only with editing() installed.
+    });
+
     it("tells the engine the rows' heights from the spacing scale", async () => {
         const parts = await read("ui/data-grid/parts.tsx");
         expect(parts).toContain("rowHeight: rowHeight ?? step * 9");
