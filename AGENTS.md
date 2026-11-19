@@ -95,8 +95,13 @@ customizer; `create-preview.html` is the sample, in an iframe inside the inset
 panel. The customizer posts the design (`design/design.ts`) and only the
 preview applies it to its own `<html>` (`design/apply-design.ts`), so an axis
 never reaches the customizer. A sample card goes in `preview/cards/<group>.tsx`
-and in a column of `preview/canvas.tsx`; it reads `useTone()` for the design's
-classes and draws charts with `PreviewChart`. `pnpm --filter examples-react
+and in `CARDS` (`preview/canvas.tsx`), which deals cards into the shortest
+column by measured height; it reads `useTone()` for the design's classes and
+draws charts with `PreviewChart`. The special components lead the canvas, in
+`preview/band/special.tsx`. The preview's stage (`[data-stage]`) is its
+scroller, and a modal opened in it covers the whole page: the preview speaks
+the embed half of overlay promotion, `shell/preview-promotion.ts` the host
+half. `pnpm --filter examples-react
 check:create` hosts it as fragiola.com does and checks the scroll, the overflow
 and the isolation. `scenarios/atoms/theme-builder-edges.tsx` shows the palette
 generator on the hues where it is hardest.

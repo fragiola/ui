@@ -51,3 +51,28 @@ docs and is drawn in the docs' own style:
 - Shareable URLs and presets (out of scope).
 - The chart wrapper still does not follow a palette's CSS changing in place. That would be
   a registry change: observing the palette's `<style>`, or a `version` prop.
+
+## Addendum — Epic #122: Create polish
+
+The review of the first Create page found six problems. Each was fixed:
+
+1. **The inset was not visible.** The frame's `color-mix` read
+   `var(--color-palette-soft)`. Tailwind declares that variable once on `:root`, where no
+   palette is applied, so it resolved to nothing and the frame was transparent. The row
+   hover (`hoverRow`) and the data grid's active row were dropped the same way. Arbitrary
+   values now read `--palette-*`, and a guard test refuses `var(--color-palette-…)`.
+2. **The bottom of the canvas was empty.** Fixed column lists ended at different heights.
+   The masonry now deals every card into the shortest column by measured height, and
+   `check:create` keeps the spread under 400px.
+3. **The special components were missing, and modals opened inside the iframe.**
+   - A band of wide panels (Dockable, Data Grid, Grid Layout, Tree with Splitter) now
+     leads the canvas.
+   - Modals cover the whole page. The preview speaks the embed half of overlay promotion
+     (§5.4), and the Create page is its host. The stage became the preview's scroller, so
+     pinning it keeps the scroll and the canvas does not move.
+4. **The preview opened light.** It now opens in the host's scheme and follows it until
+   the reader picks one.
+5. **The cards were the same colour as the floor.** In light the canvas is `soft` and the
+   cards `base` with a shadow; in dark the canvas is `base` and the cards are raised.
+6. **Neutral charts were pale blue.** The series derivation forces a chroma of 0.14, so
+   the achromatic palettes (neutral, surface, raised) now declare grey series and ramps.
