@@ -20,6 +20,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/grid-layout-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/splitter-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -75,6 +78,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/grid-layout-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/splitter-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -139,6 +145,9 @@ importers:
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/grid-layout-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/splitter-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -649,6 +658,15 @@ packages:
 
   '@fragiola/dockable@0.3.0':
     resolution: {integrity: sha512-V8Nqya3fhRSmokCbnQnPuzkrMig+Gj3hyGAJitME7lu8exCGsqPBhjyV0RgPSdJ+Mz3C68zFUkh8bmYt+5Ljpg==}
+
+  '@fragiola/grid-layout-react@0.1.0':
+    resolution: {integrity: sha512-dDYu27RjkN/WpzbvrDc8I1llkTdtM5KNazH0g+ROA+nEHsI9LS8W6KpUcD5rVYTz8pfaeZ9G/QJRfgU/UK24Eg==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@fragiola/grid-layout@0.1.0':
+    resolution: {integrity: sha512-PlRdmfZg/LKTQNA8eI9L9UbQqOZ8yevV2RDrVURt0LGS+JhMO05F5tzBCoMRwozZJPIUwT9POE6kqPgMDPqelQ==}
 
   '@fragiola/splitter-react@0.1.0':
     resolution: {integrity: sha512-SFBbutr71u372NKbETihcn13a4XuJ7PuN5qieknWXk4ikCp6Ctrqt218WAcraK0gU1yaMHZHzLMfP2QlkPRJVw==}
@@ -3361,6 +3379,14 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   '@fragiola/dockable@0.3.0': {}
+
+  '@fragiola/grid-layout-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@fragiola/grid-layout': 0.1.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@fragiola/grid-layout@0.1.0': {}
 
   '@fragiola/splitter-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
