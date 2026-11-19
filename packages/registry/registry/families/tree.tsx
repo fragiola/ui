@@ -143,15 +143,17 @@ const group = tv({ base: "flex flex-col" });
 
 // Where a drag would drop (see the header). Lines end where the rows do
 // (the root's `p-1`). The engine starts the `inside` box at the child level
-// (`indentation` past the row's own); `-ms-3` (the root's padding minus one
-// default level, 4 - 16px) brings it back to the row's start, so the box
-// frames the whole row, toggle included.
+// (one `indentation` past the row's own); `-ms-3` (the root's padding minus
+// one default level, 4 - 16px) brings it back to the row's own indentation,
+// so the box frames the row from its depth, toggle included. An empty tree's
+// `inside` (`data-depth="0"`, the only one at depth 0) starts at the root's
+// edge already and keeps it.
 const dropIndicator = tv({
     base: `
         pointer-events-none z-10 me-1 border-palette-ring
         not-data-[drop-position=inside]:-mt-px
         not-data-[drop-position=inside]:border-t-2
-        data-[drop-position=inside]:-ms-3
+        data-[drop-position=inside]:not-data-[depth=0]:-ms-3
         data-[drop-position=inside]:rounded-md
         data-[drop-position=inside]:border-2
     `,

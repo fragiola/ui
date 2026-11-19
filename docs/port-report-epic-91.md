@@ -107,8 +107,8 @@ Zero variants, no surface palette, no geometry on the drop indicator beyond marg
   package's default `indentation` (16px) at the default density.
 - **The drop indicator keeps the engine's geometry (S5).** The engine places it in pixels
   from `dragAndDrop({ indentation, indicatorInset })`; the family draws it and pulls the
-  `inside` box back to the row's start with a margin, which composes with the inline
-  insets. Under another density the line drifts by a few pixels per level: the
+  `inside` box back to the row's own indentation with a margin (`-ms-3`, except for an
+  empty tree's), which composes with the inline insets. Under another density the line drifts by a few pixels per level: the
   options are pixels, and a model's features are fixed when it is created.
 - **The check box never takes focus.** Checkbox's root is rendered without its tab stop
   (`render` drops `tabIndex`), hidden from assistive technology and marked
@@ -145,7 +145,7 @@ Zero variants, no surface palette, no geometry on the drop indicator beyond marg
   the keyboard (arrows, Home, End, `*`, type-ahead, Enter, Space, Shift and Ctrl
   selection, Ctrl+A); tri-state checks (a press on a box checks without selecting and
   focuses the item, cascade and mixed, Space with `space: "check"`, a disabled item);
-  pointer drag (before / after line at the icon, inside box on the row, the grabbing
+  pointer drag (before / after line at the icon, inside box from the row's indentation, the grabbing
   cursor, half opacity) and keyboard drag (the dashed outline, the announcements, Enter,
   Escape) in both directions; rename (F2, the name selected, a refused name in danger,
   commit, Escape, focus back to the item, not renamable, double click); async loading

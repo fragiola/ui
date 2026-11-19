@@ -43,10 +43,10 @@ What it renders follows the model's features (`model.get("features")`), never a 
 | `dragAndDrop()`, `foreignDrop()` | the drop indicator |
 | `checkboxes()` | a check box in each row |
 | `rename()` | the rename field, opened by F2 |
-| `asyncChildren()` | the loading and load-error rows, with Retry |
+| `asyncChildren()` | the loading and load-error rows, with Retry (not in a virtualized tree, whose row sizes are the window's) |
 | `virtualization()` | only the rows in view, flat (give the root a height and `overflow-auto` through `className`) |
 
-Selection, type-ahead and the keyboard need no part: they are the package's. It takes four props of its own: `label` (an item's label, its `label` unless given), `icon` (before the label), `empty` (what an empty tree shows) and `className`, which goes to the root. Everything else is forwarded to `Tree.Root`: `model`, `defaultTree`, `features`, `aria-label`, `expandedItemIds`, `selectedItemIds`, `checkedItemIds`, `loadChildren`, `announce`, `keyMap`, `expandOnClick`, `treeRef`…
+Selection, type-ahead and the keyboard need no part: they are the package's. It takes four props of its own: `label` (an item's label, its `label` unless given; the item's accessible name stays its `label`, so keep that text in what you render), `icon` (before the label), `empty` (what an empty tree shows) and `className`, which goes to the root. Everything else is forwarded to `Tree.Root`: `model`, `defaultTree`, `features`, `aria-label`, `expandedItemIds`, `selectedItemIds`, `checkedItemIds`, `loadChildren`, `announce`, `keyMap`, `expandOnClick`, `treeRef`…
 
 ## Composing the parts
 
@@ -111,7 +111,7 @@ Every part of an item carries the item's state as `data-*` attributes, and the f
 | loading | `data-loading` | a Loading row one level below, its mark pulsing |
 | failed to load | `data-load-error` | a LoadError row one level below, in the `danger` palette |
 | dragged | `data-dragging` | half opacity; the tree shows a grabbing cursor |
-| a drop target | `data-drop-target`, `data-drop-position` | `contrast` text, and the drop indicator: a 2px `ring` line before or after, a `ring` box inside |
+| a drop target | `data-drop-target`, `data-drop-position` | `contrast` text, and the drop indicator: a 2px `ring` line before or after, a `ring` box inside, framing the row from its indentation |
 | a keyboard drag | `data-keyboard-dragging` on the root | a dashed `ring` outline around the tree (also while a drag from another tree of the group is over it) |
 | empty | `data-empty` on the root | the Empty row |
 
@@ -119,7 +119,7 @@ The row is the Sidebar menu button's: the same height (`h-8`), radius, gap, text
 
 ## Depth, density and RTL
 
-A row is indented by its depth: a logical start padding of four spacing steps per level (`--tree-depth`, which the package sets on every part of an item). Density scales it with the row's height, the toggle and the gaps, and under `dir="rtl"` rows indent from the right, the chevron points left and turns down the other way, and the arrow keys mirror. The radius, typography and motion axes reach the rows' corners, their text and icons, and the chevron's turn.
+A row is indented by its depth: a logical start padding of four spacing steps per level (`--tree-depth`, which the package sets on the item, its row and its group). Density scales it with the row's height, the toggle and the gaps, and under `dir="rtl"` rows indent from the right, the chevron points left and turns down the other way, and the arrow keys mirror. The radius, typography and motion axes reach the rows' corners, their text and icons, and the chevron's turn.
 
 The drop indicator is placed by the package in pixels, from `dragAndDrop({ indentation, indicatorInset })`. At the default density the rows match the package's default `indentation` (16), and a line starts past the toggle with `indicatorInset: 36` (the root's and the row's padding, the toggle and a gap: 4 + 8 + 16 + 8). Add each piece you put before the label (a check box or an icon: 16 + 8) to start the line there.
 

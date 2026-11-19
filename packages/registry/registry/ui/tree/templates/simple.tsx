@@ -46,6 +46,8 @@ import {
 //   checkboxes                    a check box in each row
 //   rename                        the rename field (F2)
 //   async-children                the loading and load-error rows, with Retry
+//                                 (not in a virtualized tree: its rows'
+//                                 sizes are the window's)
 //   virtualization                the rows in view, flat (no groups)
 // Selection, type-ahead and the keyboard need no part: they are the
 // package's. It is assembled from the `Tree.*` parts and nothing else: a
@@ -76,7 +78,10 @@ type SimpleProps<
     T extends TreeTypes = AnyTypes,
     F extends TreeFeatures = readonly [],
 > = Omit<RootProps<T, F>, "children" | "className"> & {
-    /** An item's label, in its row: its `label` unless given. */
+    /**
+     * An item's label, in its row: its `label` unless given. The item's
+     * accessible name stays its `label`: keep that text in what you render.
+     */
     label?: ((item: ItemOf<T>) => React.ReactNode) | undefined;
     /** An icon before the label (decorative: give it `aria-hidden`). */
     icon?: ((item: ItemOf<T>) => React.ReactNode) | undefined;
@@ -153,7 +158,8 @@ function SimpleItem<T extends TreeTypes>({
                 <Label>{show.label ? show.label(item) : item.label}</Label>
                 {show.rename && <Rename<T> item={item} />}
             </ItemContent>
-            {show.async && (
+            {/* a virtualized row's size is the window's: no status rows */}
+            {show.async && !show.flat && (
                 <>
                     <Loading />
                     <LoadError>
