@@ -575,6 +575,11 @@ in the remaining surface:
   with a guard test. A neutral action palette joins the set. See
   `docs/port-report-epic-107.md`.
 
+- **The Create page** — settled in Epic #117: the theme builder as a full page at
+  fragiola.com/ui/create/ (www contract v1.6), two pages of the embed app with the preview
+  in its own document so a design never reaches the customizer. See
+  `docs/port-report-epic-117.md`.
+
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
 error, no type error, no crash — it simply does nothing, and type-check and lint both

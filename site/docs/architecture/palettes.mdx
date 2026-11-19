@@ -96,7 +96,7 @@ Neutral surface, rose focus ring (~345).
 
 ## Writing a palette
 
-The fast path is the [Theme Builder](/docs/getting-started/theme-builder): pick
+The fast path is the [Create](/create): pick
 a hue, and it writes the palette pair below for you, contrast-checked. By hand,
 a palette is a CSS class that declares six custom properties:
 
@@ -123,3 +123,19 @@ a palette is a CSS class that declares six custom properties:
 Both themes, all six roles, no exceptions. Add the palette name to the `cn`
 helper's palette class group so `cn("palette-surface", "palette-my-blue")`
 resolves to one.
+
+## Generating at runtime
+
+The Create page uses the registry's `colour` helper, which you can install:
+
+```bash
+npx shadcn@latest add @fragiola/colour
+```
+
+```ts
+import { generatePalette, serializePalette } from "@/lib/colour/palette";
+
+const palette = generatePalette({ name: "brand", hue: 160, chroma: "vivid" });
+palette.pass; // every pair clears AA
+const css = serializePalette(palette); // inject in a <style>, or write to a file
+```

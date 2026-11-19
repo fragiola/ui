@@ -13,10 +13,6 @@
                     "path": "getting-started/installation"
                 },
                 {
-                    "label": "Theme Builder",
-                    "path": "getting-started/theme-builder"
-                },
-                {
                     "label": "Registry",
                     "path": "getting-started/registry"
                 },

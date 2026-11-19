@@ -12,13 +12,14 @@ import {
 } from "./validate.ts";
 
 // `pnpm site:export --base /<slug> --out <dir>` — the site export, contract
-// v1.3 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
+// v1.6 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
 // provides:
 //
 //   <out>/project.json      who this project is
 //   <out>/docs/             the pages and the sidebar, from site/docs
 //   <out>/examples.json     the gallery's levels and themes (examples/gallery.ts)
-//   <out>/embed/react/      the examples app, built for <base>/embed/react/
+//   <out>/embed/react/      the examples app and the Create page (create.html),
+//                           built for <base>/embed/react/
 //   <out>/r/                the registry, built from packages/registry
 //
 // The output is validated against the contract before the command succeeds

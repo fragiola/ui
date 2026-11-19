@@ -20,4 +20,12 @@ export const PROJECT: ProjectJson = {
         "tailwind css",
         "theming",
     ],
+    // v1.6: the theme builder, full-page at /ui/create/
+    // (examples/react/create.html).
+    create: {
+        title: "Create",
+        description:
+            "Build your theme: pick a colour and the five design axes, see dozens of components follow live, then copy the CSS.",
+        framework: "react",
+    },
 };
