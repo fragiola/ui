@@ -26,7 +26,7 @@ const doc = (label: string, text: string, extra: object = {}) => ({
 
 const json: LayoutJson<Types> = {
     version: 1,
-    defaults: { tab: { enablePopout: true }, border: { size: 180 } },
+    defaults: { tab: { poppable: true }, border: { size: 180 } },
     borders: [
         {
             location: "start",
@@ -48,7 +48,7 @@ const json: LayoutJson<Types> = {
                 weight: 60,
                 children: [
                     doc("Overview", "Pinned in place: no close button.", {
-                        enableClose: false,
+                        closable: false,
                     }),
                     doc("Report", "Q3 numbers."),
                     doc("Roadmap", "Next quarter."),

@@ -15,6 +15,10 @@
                 {
                     "label": "Registry",
                     "path": "getting-started/registry"
+                },
+                {
+                    "label": "AI agents",
+                    "path": "getting-started/ai-agents"
                 }
             ]
         },
@@ -214,6 +218,10 @@
             "label": "Special",
             "collapsible": true,
             "pages": [
+                {
+                    "label": "Overview",
+                    "path": "special/overview"
+                },
                 {
                     "label": "Dockable",
                     "path": "special/dockable"

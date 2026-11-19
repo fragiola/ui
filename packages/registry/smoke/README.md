@@ -11,7 +11,8 @@ without `src/` — and fails if:
   missing;
 - an installed import does not resolve, or differs from the one the registry
   emitted (the CLI re-resolves alias imports after writing and can pick
-  another file with the same basename).
+  another file with the same basename);
+- the CLI installs anything but exactly the packages items pin to a range.
 
 ```bash
 pnpm registry:smoke            # from the repo root; builds dist/r first
@@ -30,7 +31,14 @@ pnpm registry:smoke -- --keep  # keep the projects to inspect them
   Tailwind v4, `components.json` with the default aliases. They are not
   `create-next-app`/`create-vite` output.
 - Every npm package the registry declares is already in the scaffold's
-  `package.json`, so the CLI skips `npm install`. The test needs no network.
+  `package.json` (a pinned one with its range), so the CLI skips installing
+  every package an item names bare. The test needs no network.
+- A package an item pins (`@fragiola/dockable-react@^0.3.0`, see
+  `scripts/dependencies.ts`) is always installed by the CLI, whatever the
+  project declares — that is how a user gets the range. A stub `npm` on
+  `PATH` records the install instead of running it, and the test fails on
+  any install other than exactly the pinned ranges, or a pinned range the
+  CLI did not ask for.
 - `tailwind.baseColor` is empty: with a base colour, every `add` fetches
   `ui.shadcn.com/r/colors/<name>.json` regardless of the registry, which
   would hide a real leak.

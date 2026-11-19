@@ -38,7 +38,7 @@ const metric = (label: string, value: string, change: string) => ({
 
 const json: LayoutJson<Types> = {
     version: 1,
-    defaults: { tab: { enablePopout: true } },
+    defaults: { tab: { poppable: true } },
     borders: [
         {
             location: "bottom",
@@ -57,7 +57,7 @@ const json: LayoutJson<Types> = {
                     note(
                         "Overview",
                         "The quarter at a glance. This tab may not close.",
-                        { enableClose: false },
+                        { closable: false },
                     ),
                     note("Roadmap", "Billing page, then team settings."),
                     note("Changelog", "Popouts, borders and RTL shipped."),

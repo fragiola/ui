@@ -328,7 +328,7 @@ type ActionProps = Omit<
 >;
 
 // A tab's close button, rendered only while `tab.close` would apply (the
-// tab's enableClose, not pinned, no veto). The tab stays the tab stop —
+// tab's closable, not pinned, no veto). The tab stays the tab stop —
 // Ctrl+Delete closes it from the keyboard (Dockable's keyMap) — so the
 // button is out of the tab sequence, and a press on it neither selects the
 // tab nor activates its tabset.

@@ -5,6 +5,7 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+    chmod,
     mkdir,
     mkdtemp,
     readdir,
@@ -16,6 +17,7 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { splitDependency } from "../scripts/dependencies.ts";
 
 const PACKAGE = path.resolve(import.meta.dirname, "..");
 const BUILT_R = path.join(PACKAGE, "dist", "r");
@@ -171,7 +173,12 @@ async function scaffold(
         react: "*",
         "react-dom": "*",
     };
-    for (const dep of npmDependencies) dependencies[dep] = "*";
+    // An item may pin a range (`@fragiola/dockable-react@^0.3.0`): the
+    // scaffold declares the package under its name, with that range.
+    for (const dep of npmDependencies) {
+        const { name, range } = splitDependency(dep);
+        dependencies[name] = range ?? "*";
+    }
 
     if (variant.framework === "next") {
         dependencies.next = "*";
@@ -353,6 +360,28 @@ async function main() {
     });
 
     const workspace = await mkdtemp(path.join(tmpdir(), "fragiola-smoke-"));
+
+    // The CLI skips a package the project already declares only when the item
+    // names it bare; a pinned range (`@fragiola/dockable-react@^0.3.0`) is
+    // always installed, so a user gets that range. Offline, `npm install`
+    // would resolve the whole scaffold, so a stub npm on PATH records what
+    // the CLI asks for instead: exactly the pinned ranges, nothing else.
+    const bin = path.join(workspace, "bin");
+    const npmLog = path.join(workspace, "npm.log");
+    await mkdir(bin, { recursive: true });
+    await writeFile(
+        path.join(bin, "npm"),
+        '#!/bin/sh\nprintf \'%s\\n\' "$*" >> "$FRAGIOLA_SMOKE_NPM_LOG"\n',
+        "utf-8",
+    );
+    await chmod(path.join(bin, "npm"), 0o755);
+    Object.assign(env, {
+        PATH: `${bin}${path.delimiter}${env.PATH ?? ""}`,
+        FRAGIOLA_SMOKE_NPM_LOG: npmLog,
+    });
+    const pinned = npmDependencies.filter(
+        (dep) => splitDependency(dep).range !== undefined,
+    );
     let failed = false;
 
     for (const variant of VARIANTS) {
@@ -366,6 +395,7 @@ async function main() {
         external.length = 0;
 
         await scaffold(dir, variant, registryUrl, npmDependencies);
+        await writeFile(npmLog, "", "utf-8");
         const before = await snapshot(dir);
 
         const { code, output } = await run(
@@ -423,7 +453,16 @@ async function main() {
             }
         }
 
+        const installed = (await readFile(npmLog, "utf-8"))
+            .split("\n")
+            .filter(Boolean)
+            .flatMap((line) => line.split(" -- ")[1]?.split(" ") ?? []);
+
         const problems: string[] = [];
+        for (const dep of installed.filter((d) => !pinned.includes(d)))
+            problems.push(`unexpected install: ${dep}`);
+        for (const dep of pinned.filter((d) => !installed.includes(d)))
+            problems.push(`pinned range not installed: ${dep}`);
         if (code !== 0) problems.push(`shadcn exited with ${code}`);
         for (const url of external) problems.push(`external request: ${url}`);
         for (const url of missing) problems.push(`registry 404: ${url}`);
