@@ -685,4 +685,42 @@ export const examples: Example[] = [
         height: 420,
         load: () => import("./tree-file-explorer.tsx"),
     },
+    {
+        id: "grid-layout",
+        title: "Grid Layout",
+        description:
+            "A dashboard in one line: Template.Simple renders each item as a card with a drag handle, its title, your content and a resize handle on every side. Drag, resize and compact; the keyboard moves and resizes too.",
+        level: "special",
+        order: 7,
+        features: [
+            "GridLayout.Template.Simple",
+            "drag and resize",
+            "compaction",
+            "keyboard",
+            "grid background",
+        ],
+        docs: "/docs/special/grid-layout",
+        layout: "flow",
+        height: 380,
+        load: () => import("./grid-layout.tsx"),
+    },
+    {
+        id: "grid-layout-dashboard-builder",
+        title: "Grid Layout: a dashboard builder",
+        description:
+            "Composed from the parts: a sidebar of widgets to drag in, a remove button in each card's header, a corner resize handle and announcements in the app's own words.",
+        level: "special",
+        order: 8,
+        features: [
+            "GridLayout.DragSource",
+            "GridLayout.DragPreview",
+            "GridLayout.Header",
+            "gridLayoutRef",
+            "announce",
+        ],
+        docs: "/docs/special/grid-layout",
+        layout: "fill",
+        height: 440,
+        load: () => import("./grid-layout-dashboard-builder.tsx"),
+    },
 ];
