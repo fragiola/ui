@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
+import { ecosystemRangeProblems } from "./dependencies.ts";
 import { rootTargetRefused } from "./targets.ts";
 
 // `node scripts/build-registry.ts [--out <dir>]` — validates registry.json and
@@ -177,6 +178,19 @@ async function buildRegistry() {
                 process.exit(1);
             }
         }
+    }
+
+    // Check npm dependencies: an ecosystem package carries the range this
+    // package builds against (see scripts/dependencies.ts).
+    const manifest = JSON.parse(
+        await readFile(path.join(ROOT, "package.json"), "utf-8"),
+    ) as { dependencies?: Record<string, string> };
+    const rangeProblems = items.flatMap((item) =>
+        ecosystemRangeProblems(item, manifest.dependencies ?? {}),
+    );
+    if (rangeProblems.length) {
+        for (const problem of rangeProblems) console.error(problem);
+        process.exit(1);
     }
 
     // Check for dependency cycles

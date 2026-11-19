@@ -940,7 +940,7 @@
                 "@fragiola/dropdown-menu"
             ],
             "dependencies": [
-                "@fragiola/dockable-react",
+                "@fragiola/dockable-react@^0.3.0",
                 "lucide-react",
                 "tailwind-variants"
             ],

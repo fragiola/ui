@@ -9,7 +9,7 @@ description: "A docking layout with tabs, splitters, drag and drop, borders and 
 
 ## What it installs
 
-[Dockable](https://fragiola.com/dockable) is a headless docking layout: a JSON model of rows, tabsets and tabs, and React primitives that render it with no look of their own. The item adds `@fragiola/dockable-react` to your dependencies and writes the styled layer over it:
+[Dockable](https://fragiola.com/dockable) is a headless docking layout: a JSON model of rows, tabsets and tabs, and React primitives that render it with no look of their own. The item adds `@fragiola/dockable-react@^0.3.0` to your dependencies (the range this layer is written for; the package is `0.x`, and a minor may break) and writes the styled layer over it:
 
 - `components/ui/dockable.tsx`: one export, `Dockable`, with the package's primitives under the same names (`Dockable.Root`, `Dockable.TabSet`, `Dockable.Tab`…), each wearing its member of the `dock` family, plus `Dockable.Template.Simple`;
 - `components/families/dock.ts`: the family;
