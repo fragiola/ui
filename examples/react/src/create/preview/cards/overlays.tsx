@@ -280,7 +280,7 @@ export function SmartLock() {
                 </span>
             }
         >
-            <div className="relative flex aspect-video items-center justify-center rounded-md bg-palette-soft bg-[repeating-linear-gradient(135deg,transparent_0_10px,var(--color-palette-line)_10px_11px)]">
+            <div className="relative flex aspect-video items-center justify-center rounded-md bg-palette-soft bg-[repeating-linear-gradient(135deg,transparent_0_10px,var(--palette-line)_10px_11px)]">
                 <Badge
                     variant="soft"
                     className="palette-danger absolute end-2 top-2"
