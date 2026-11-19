@@ -174,6 +174,32 @@ async function dragGrid(
     return (await items.count()) === count + 1;
 }
 
+// The Data Grid examples, used in the frame: a header sorted by a click and
+// a page turned (the template), a column filtered by typing (the
+// directory). Each tells whether the grid answered.
+const GRID_USES: Record<string, (frame: Frame) => Promise<boolean>> = {
+    "data-grid": async (frame) => {
+        const header = frame.getByRole("columnheader", { name: "Customer" });
+        await header.click({ position: { x: 24, y: 12 } });
+        await frame
+            .getByRole("button", { name: "Page 2", exact: true })
+            .click();
+        await frame.waitForTimeout(150);
+        return (
+            (await header.getAttribute("aria-sort")) === "ascending" &&
+            (await frame.getByText("Page 2 of 24").count()) === 1
+        );
+    },
+    "data-grid-people-directory": async (frame) => {
+        const filter = frame.getByRole("textbox", { name: "Filter Name" });
+        await filter.click();
+        await filter.pressSequentially("Ada");
+        await frame.waitForTimeout(150);
+        const count = await frame.getByTestId("count").textContent();
+        return count !== null && !count.startsWith("300 of");
+    },
+};
+
 type ManifestExample = {
     id: string;
     layout: "fill" | "flow";
@@ -707,6 +733,11 @@ for (const example of selected) {
         const gridDrag = GRID_DRAGS[example.id];
         if (gridDrag && !(await dragGrid(page, frame, gridDrag)))
             say(`dragging in ${example.id} changed nothing`);
+
+        // Data Grid in the frame: a sort and a page, or a filter, answer.
+        const gridUse = GRID_USES[example.id];
+        if (gridUse && !(await gridUse(frame)))
+            say(`using ${example.id} changed nothing`);
 
         if (values.screenshots) {
             for (const name of THEMES.map((t) => t.name)) {

@@ -237,6 +237,10 @@
                 {
                     "label": "Grid Layout",
                     "path": "special/grid-layout"
+                },
+                {
+                    "label": "Data Grid",
+                    "path": "special/data-grid"
                 }
             ]
         }

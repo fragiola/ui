@@ -17,6 +17,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/data-grid-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -75,6 +78,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/data-grid-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -142,6 +148,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/data-grid-react':
+        specifier: ^0.1.0
+        version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/dockable-react':
         specifier: ^0.3.0
         version: 0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -649,6 +658,15 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fragiola/data-grid-react@0.1.0':
+    resolution: {integrity: sha512-NMOR+80CFvN+V0h0yVChmhKZOsNGTFO4aMtKjbxt0UcPBzVuBpl2VU3UC+RalBzho/0MhtNmkrxDjJ9gEzzm4g==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@fragiola/data-grid@0.1.0':
+    resolution: {integrity: sha512-SrH4Fdz0m/SE1BKAz9WIP3LJ847Wah9wXMlm6Siz3Bjlu+QEqT10UWqZ98guiKmQFv1IoKOOvOhrKsWD1POFkw==}
 
   '@fragiola/dockable-react@0.3.0':
     resolution: {integrity: sha512-T9HJ/85VCa0F3eQqYxNiZjsNAPQJ+zumF3XjU9hv8P2TnXKtDdVx08VDoqZxk1LK0z747IQuSoAbQ+jb5R7N5g==}
@@ -3371,6 +3389,14 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fragiola/data-grid-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@fragiola/data-grid': 0.1.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@fragiola/data-grid@0.1.0': {}
 
   '@fragiola/dockable-react@0.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:

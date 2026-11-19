@@ -723,4 +723,42 @@ export const examples: Example[] = [
         height: 440,
         load: () => import("./grid-layout-dashboard-builder.tsx"),
     },
+    {
+        id: "data-grid",
+        title: "Data Grid",
+        description:
+            "A data grid in one line: Template.Simple renders the header, the virtualized rows and the piece of each feature installed: sort arrows, a check box column and the pages below. The keys move the active cell.",
+        level: "special",
+        order: 9,
+        features: [
+            "DataGrid.Template.Simple",
+            "sorting",
+            "row selection",
+            "pagination",
+            "keyboard",
+        ],
+        docs: "/docs/special/data-grid",
+        layout: "flow",
+        height: 470,
+        load: () => import("./data-grid.tsx"),
+    },
+    {
+        id: "data-grid-people-directory",
+        title: "Data Grid: a people directory",
+        description:
+            "Composed from the parts: a toolbar outside the grid, the name and office pinned, a filter under each column, every column resizable, and the title and email edited in place with a refused value.",
+        level: "special",
+        order: 10,
+        features: [
+            "DataGrid.HeaderFilter",
+            "DataGrid.ColumnResizer",
+            "DataGrid.CellEditor",
+            "pinned columns",
+            "useLocalRows",
+        ],
+        docs: "/docs/special/data-grid",
+        layout: "fill",
+        height: 480,
+        load: () => import("./data-grid-people-directory.tsx"),
+    },
 ];

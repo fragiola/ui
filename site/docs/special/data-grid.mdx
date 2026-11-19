@@ -1,0 +1,178 @@
+---
+title: "Data Grid"
+description: "A virtualized data grid with sorting, resizing, pinning, row selection, filters, editing and pages, styled by the sheet family."
+---
+
+<InstallCommand item="data-grid" />
+
+<Example id="data-grid" />
+
+## What it installs
+
+[Data Grid](https://fragiola.com/data-grid) is a headless data grid: rows and columns windowed on both axes, the keys and the active cell, column groups, rows loaded on demand, RTL, and a feature for each optional behaviour, with no look of its own. The item adds `@fragiola/data-grid-react@^0.1.0` to your dependencies (the range this layer is written for; the package is `0.x`, and a minor may break) and writes the styled layer over it:
+
+- `components/ui/data-grid.tsx`: one export, `DataGrid`, with the package's parts under the same names, each wearing its member of the `sheet` family, a header cell's `Label` and `Title`, a piece for each common feature, and `DataGrid.Template.Simple`;
+- `components/families/sheet.ts`: the family.
+
+It also installs the registry controls the pieces are built on: `checkbox`, `field`, `input`, `select` and `pagination`.
+
+The model, the features, rows in memory and the hooks (`useDataGrid`, `useDataGridRef`, `useLocalRows`, `sorting()`, `rowSelection()`, `headerCellContent`…) are the package's: import them from `@fragiola/data-grid-react` and its entries (`/sorting`, `/local`…). Loading rows from a server, middleware, controlled state and the full API are in [Data Grid's documentation](https://fragiola.com/data-grid).
+
+## Template.Simple
+
+`DataGrid.Template.Simple` renders a whole grid: the header (a row per level of column groups), the virtualized body and the empty state, plus the piece of each feature the grid installs.
+
+```tsx
+const features = [navigation(), sorting(), rowSelection(), pagination()];
+
+const local = useLocalRows(invoices, columns, { features, pageSize: 20 });
+
+<DataGrid.Template.Simple
+    features={features}
+    {...local.props}
+    columns={columns}
+    rowKey={(invoice) => invoice.id}
+    rowSelection="multiple"
+    aria-label="Invoices"
+    className="h-80"
+/>
+```
+
+It takes five props of its own: `aria-label` and `aria-labelledby` (the grid's name: the package sets none), `empty` (what an empty grid shows; "No rows" unless given), `pageSizes` (with `pagination()`, the page sizes to choose from) and `className`, which goes to the root. Give the root a height: it is the scroll container, and the grid inside is as large as the dataset. Everything else is forwarded to `DataGrid.Root`: `features`, `columns`, `rows`, `rowKey`, `getRow`, `rowCount`, each feature's state and callbacks (`sortColumns`, `rowSelection`, `onCellEdit`, `pageIndex`…), `gridRef`…
+
+What it renders follows the features installed, read from the grid's model:
+
+- `sorting()`: the sort indicator in each sortable header cell;
+- `columnResize()`: a resizer on each resizable column;
+- `rowSelection()`, with `rowSelection` set: a check box column first ("select all" covers the rows given), pinned at the start with `columnPinning()`;
+- `filtering()`: a filter under each column's name, a select for a column with `meta.filterOptions`, none for one with `meta.filterable: false`;
+- `editing()`: the text editor on an editable column without a `renderEditCell`;
+- `pagination()`: the pages below the grid.
+
+`navigation()` (the keys, the active cell, the tab stop) and `columnPinning()` need no piece. Without any feature, the template renders a table: no keys, no active cell, none of the pieces.
+
+## Composing the parts
+
+Template.Simple is one arrangement. This people directory is written from the parts: a toolbar outside the grid, pinned columns, a filter in each header, resizers, and two columns edited in place.
+
+<Example id="data-grid-people-directory" />
+
+```tsx
+function HeaderCell({ cell }: { cell: HeaderCellInfo<Person> }) {
+    return (
+        <DataGrid.HeaderCell cell={cell}>
+            <DataGrid.HeaderLabel>
+                <DataGrid.HeaderTitle>{headerCellContent(cell)}</DataGrid.HeaderTitle>
+                <DataGrid.SortIndicator cell={cell} />
+            </DataGrid.HeaderLabel>
+            <DataGrid.HeaderFilter cell={cell} />
+            <DataGrid.ColumnResizer cell={cell} />
+        </DataGrid.HeaderCell>
+    );
+}
+
+<DataGrid.Root features={features} {...local.props} columns={columns} rowKey={(p) => p.id} onCellEdit={write} className="h-96">
+    <DataGrid.Grid aria-label="People">
+        <DataGrid.Header>
+            <DataGrid.HeaderRow>
+                <DataGrid.HeaderCells<Person>>{(cell) => <HeaderCell cell={cell} />}</DataGrid.HeaderCells>
+            </DataGrid.HeaderRow>
+        </DataGrid.Header>
+        <DataGrid.Body>
+            <DataGrid.Rows<Person>>
+                {(row) => (
+                    <DataGrid.Row row={row}>
+                        <DataGrid.Cells<Person>>{(cell) => <DataGrid.Cell cell={cell} />}</DataGrid.Cells>
+                    </DataGrid.Row>
+                )}
+            </DataGrid.Rows>
+        </DataGrid.Body>
+        <DataGrid.Empty>No one matches these filters.</DataGrid.Empty>
+    </DataGrid.Grid>
+</DataGrid.Root>
+```
+
+| Part | Source |
+|---|---|
+| `Root`, `Grid`, `Header`, `HeaderRow`, `HeaderCell`, `Body`, `Row`, `Cell`, `Empty` | the package's part + its `sheet` member |
+| `HeaderRows`, `HeaderCells`, `Rows`, `Cells` | the package's, unchanged (children functions; they render no element) |
+| `HeaderLabel` | a `span` + the `headerLabel` member: a header cell's name and sort indicator, on one line |
+| `HeaderTitle` | a `span` + the `headerTitle` member: the name, truncated |
+| `SortIndicator`, `ColumnResizer`, `SelectCell`, `SelectAllCell`, `HeaderFilter`, `CellEditor`, `Pagination` | a feature's piece (below) |
+| `Template.Simple` | all of the above, each piece where its feature is installed |
+
+Every part that wraps one of the package's forwards `render`, `ref`, its handlers, the row type (`DataGrid.Rows<Person>`) and the rest of its props, and takes a `className` given as a string or as a function of the part's state. The engine places the rows and the cells with inline styles (position, size, a `transform`; pinned cells are sticky) that always win: the family sets none of them. Keep the cells as the rows' own children, and give a row no `overflow`: pinned cells hold to the root.
+
+## The features
+
+Each piece renders nothing unless the grid installed its feature, so a grid ships only what it uses.
+
+| feature | piece | what it shows | built on |
+|---|---|---|---|
+| `sorting()` | `SortIndicator` | an arrow for the direction in a sortable header cell, and the column's place while more than one sorts; a faint up-down mark on hover while unsorted. A click sorts, Ctrl or ⌘ adds a column | `lucide-react`, the text axis's icon size |
+| `columnResize()` | `ColumnResizer` | a 1px rule on the boundary with the columns that scroll (its end edge, its start edge for a column pinned at the end), shown on the header's hover, `ring` while held or focused. A drag resizes, a double click or Enter fits, F2 then Tab reaches it for the arrows | `split`'s separator values |
+| `columnPinning()` | (the cells) | pinned cells opaque from their row, above the ones that scroll, with a `line` rule on their edge and an elevation shadow while content hides under it | the elevation axis |
+| `rowSelection()` | `SelectCell`, `SelectAllCell` | a row's check box, disabled while it cannot be selected; "select all" over the keys you give, mixed while some are selected; a selected row on `soft` | `checkbox` |
+| `filtering()` | `HeaderFilter` | a text field under the column's name (rows containing it), or a select with `options` or `meta.filterOptions` (rows equal to the choice; a choice is a value, compared as it is, or `{ value, label }`). The header rows grow to hold it | `field` + `input`, `select` |
+| `editing()` | `CellEditor` | a text field as large as its cell, for a column's `renderEditCell`; `invalid` turns it danger and keeps Enter and Tab from committing (a press outside still commits: check the value in `onCellEdit`) | `field` + `input` |
+| `pagination()` | `Pagination` | "Page 2 of 40", Previous, the pages around the current one, Next, and with `pageSizes` a page size | `pagination`, `select` |
+
+The pieces read the model through the grid they are in; `Pagination` renders below the root, so give it the root's `gridRef` (`useDataGridRef()`), as the template does. `SelectAllCell` takes the keys it covers (the page, the rows shown, every filtered row): pass them through a context, so your columns stay one array.
+
+**Not styled yet.** The package's advanced features render with the core look and no piece of their own: range and cell selection, the fill handle, the clipboard, row grouping and tree data, collapsible column groups, master-detail rows, row and column reordering, summary rows and column spans. Their states (`data-selected-cell`, `data-fill-target`, `data-dragging`, `data-drop-target`, `data-expanded`, `data-group-row`…) are on the parts for your own classes; their pieces are a later release.
+
+## State styling
+
+The parts emit their state as `data-*` attributes and the family reads them with Tailwind's data variants: no React state in the styles.
+
+| state | attribute | look |
+|---|---|---|
+| at rest | | the registry's `Table` made interactive: its cell padding, its `line` rule under each row and its header type; a `line` frame with `rounded-lg` |
+| the header | (sticky) | opaque `soft`, so the rows scroll under it; a `line` rule under each header cell, so a column spanning header rows is never crossed |
+| the active cell | `data-active` on the cell (and the header cell) | an inset `ring` outline while it or its controls have focus |
+| its row | `data-active` on the row | `soft` at half, as a hovered row |
+| its controls have the keys | `data-interacting` | the outline turns dashed |
+| a selected row | `data-selected` | `soft`, with `contrast` text; a hover never lights it |
+| an edited cell | `data-editing` | the editor fills it, and draws its own ring |
+| a loading row | `data-loading` on the row and its cells | a `Skeleton` bar in each cell (`soft`, `animate-pulse`) |
+| an empty grid | `data-empty`, `DataGrid.Empty` | centred secondary text below the header |
+| a group's header cell | `data-group` | centred over its columns |
+| a pinned cell | `data-pinned`, `data-pinned-edge` | see the features |
+| a sortable header | `data-sortable`, `data-sort`, `data-sort-priority` | the pointer cursor, the arrow and the priority |
+| a resize | `data-resizing` | the resizer in `ring` |
+
+The root also carries `data-overflow-start` and `data-overflow-end` while content is hidden past that edge: the pinned edges' shadow reads them.
+
+## Palette
+
+The grid declares no palette: it paints from the one in scope, so a palette class on the root (or around it) re-tints the frame, the header, the rows, the active ring and the check boxes.
+
+```tsx
+<DataGrid.Template.Simple className="h-80 palette-surface-blue" … />
+```
+
+The template's pages render after the root, outside it: they take the palette in scope around the template, so put the palette class on a container to tint both.
+
+## Density and RTL
+
+The rows' heights follow the spacing scale, and the engine is told them, so virtualization stays exact at any density: unless you give `rowHeight` or `headerRowHeight`, a row is nine spacing steps (36px at the default density), a header row ten (40px), or seventeen with `filtering()` installed (a name above a filter; the package has one header row height, so a column group's row is as tall). The root measures the scale and follows a change of `data-density` anywhere above it. Column widths, `minWidth` and `maxWidth` are the engine's pixels: they do not follow the density, so set them for the density you use. The radius, typography, elevation and motion axes reach the frame, the text and icons, the pinned edges' shadow and the transitions.
+
+The layout is logical: under `dir="rtl"` the first column is on the right, columns pinned at the start sit on the right edge, a resizer is on its cell's left edge, and the pinned edges' shadow mirrors.
+
+## Accessibility
+
+The package sets the grid's roles and ARIA (`grid`, `row`, `columnheader`, `gridcell`, the row and column counts and indexes, `aria-sort`, `aria-selected`), and writes no text, so every name is yours:
+
+- **The grid**: name it with `aria-label` or `aria-labelledby` on `DataGrid.Grid` (the template's own props).
+- **The check boxes**: "Select row" and "Select all rows" unless named; name a row's by the row ("Select Ada Lovelace").
+- **The resizers**: separators named "Resize &lt;column&gt;".
+- **The filters**: "Filter &lt;column&gt;"; **the editor**: its column's name.
+- **The sort indicator** is decorative: the header cell's `aria-sort` says the sort.
+
+## Keyboard
+
+With `navigation()` the grid is one tab stop: the arrows, Home / End, Ctrl+Home / Ctrl+End and PageUp / PageDown move the active cell. Enter or F2 hands a cell's controls the keys (a check box, a filter, a resizer) and Escape gives them back; on an editable cell they start an edit, as typing does, and Enter, Tab and Escape end it. Shift+Space selects the active row, Shift and the arrows extend, Ctrl or ⌘+A selects every row. Enter on a sortable header sorts. The bindings are the package's: see [Data Grid's documentation](https://fragiola.com/data-grid).
+
+## Parts
+
+`Template.Simple`, `Root`, `Grid`, `Header`, `HeaderRows`, `HeaderRow`, `HeaderCells`, `HeaderCell`, `HeaderLabel`, `HeaderTitle`, `Body`, `Rows`, `Row`, `Cells`, `Cell`, `Empty`, `SortIndicator`, `ColumnResizer`, `SelectCell`, `SelectAllCell`, `HeaderFilter`, `CellEditor`, `Pagination`.
