@@ -300,4 +300,19 @@ describe("sheet family", () => {
         expect(classes(sheet.probe)).toContain("size-10");
         expect(parts).toContain("size / 10");
     });
+
+    it("leaves Template.Simple with no style of its own", async () => {
+        // The template rules: nothing beyond the parts — no tv(), no class
+        // literal, no family member. The one className goes to Root.
+        const code = await read("ui/data-grid/templates/simple.tsx");
+        expect(code).not.toMatch(/\btv\(/);
+        expect(code).not.toMatch(/className="/);
+        expect(code).not.toMatch(/#\/families\//);
+        expect(code.match(/className=\{/g)).toEqual(["className={"]);
+        // Its own props stay under the ceiling of 7: the rest is Root's.
+        const own = code.match(/> & \{([\s\S]*?)\n\};/)?.[1] ?? "";
+        const props = own.match(/^\s+"?[\w-]+"?\??:/gm) ?? [];
+        expect(props.length).toBe(5);
+        expect(props.length).toBeLessThanOrEqual(7);
+    });
 });

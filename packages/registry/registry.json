@@ -1112,7 +1112,7 @@
             "name": "data-grid",
             "type": "registry:ui",
             "title": "Data Grid",
-            "description": "A virtualized data grid — rows and columns windowed on both axes, the keys and the active cell, column groups, loading rows, RTL — with its common features (sorting, column resizing, column pinning, row selection, filtering, editing, pagination), from @fragiola/data-grid-react, styled by the sheet family. A special component: the package's parts under the same names (Root, Grid, Header, HeaderRows, HeaderRow, HeaderCells, HeaderCell, Body, Rows, Row, Cells, Cell, Empty), each wearing its sheet member, plus a header cell's Label and Title, and a piece per feature that renders nothing unless the grid installed it: SortIndicator, ColumnResizer, SelectCell and SelectAllCell on the registry's Checkbox, HeaderFilter on Field + Input or Select, CellEditor on Field + Input, Pagination on the registry's Pagination. The registry's Table made interactive: its cell padding, line dividers and header type; a sticky soft header, an inset ring on the active cell, soft selected rows, opaque pinned columns with an elevation shadow, row heights from the spacing scale through the engine. Parts paint from the palette in scope. No tokens of its own. The model API is imported from the package.",
+            "description": "A virtualized data grid — rows and columns windowed on both axes, the keys and the active cell, column groups, loading rows, RTL — with its common features (sorting, column resizing, column pinning, row selection, filtering, editing, pagination), from @fragiola/data-grid-react, styled by the sheet family. A special component: the package's parts under the same names (Root, Grid, Header, HeaderRows, HeaderRow, HeaderCells, HeaderCell, Body, Rows, Row, Cells, Cell, Empty), each wearing its sheet member, plus a header cell's Label and Title, and a piece per feature that renders nothing unless the grid installed it: SortIndicator, ColumnResizer, SelectCell and SelectAllCell on the registry's Checkbox, HeaderFilter on Field + Input or Select, CellEditor on Field + Input, Pagination on the registry's Pagination. The registry's Table made interactive: its cell padding, line dividers and header type; a sticky soft header, an inset ring on the active cell, soft selected rows, opaque pinned columns with an elevation shadow, row heights from the spacing scale through the engine. Parts paint from the palette in scope. No tokens of its own. DataGrid.Template.Simple renders a whole grid with the pieces of the features installed. The model API is imported from the package.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -1173,6 +1173,16 @@
                     "path": "registry/ui/data-grid/features/pagination.tsx",
                     "type": "registry:ui",
                     "target": "@ui/data-grid/features/pagination.tsx"
+                },
+                {
+                    "path": "registry/ui/data-grid/templates/index.ts",
+                    "type": "registry:ui",
+                    "target": "@ui/data-grid/templates/index.ts"
+                },
+                {
+                    "path": "registry/ui/data-grid/templates/simple.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/data-grid/templates/simple.tsx"
                 },
                 {
                     "path": "registry/ui/data-grid.tsx",

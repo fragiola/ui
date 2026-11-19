@@ -23,6 +23,7 @@ import {
     Row,
     Rows,
 } from "./data-grid/parts";
+import { Template } from "./data-grid/templates";
 
 // DataGrid — a virtualized data grid (rows and columns windowed on both
 // axes, the keys and the active cell, column groups, loading rows, RTL)
@@ -45,10 +46,15 @@ import {
 //   import { sorting } from "@fragiola/data-grid-react/sorting";
 //   import { useLocalRows } from "@fragiola/data-grid-react/local";
 //
+// DataGrid.Template.Simple renders a whole grid from its columns and rows,
+// with the pieces of the features installed; the parts are there for the
+// grid that outgrows it.
+//
 // See the parts for what each one adds, and families/sheet.ts for why it
 // looks the way it does.
 
 export const DataGrid = {
+    Template,
     Root,
     Grid,
     Header,
