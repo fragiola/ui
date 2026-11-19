@@ -5,7 +5,8 @@ import { Splitter } from "#/components/ui/splitter";
 // it is given. Above: three panels, one rendered conditionally (the button
 // toggles it; the separators follow), and a nested template. Below: the
 // same template under a surface-ring and a chromatic palette, passed as its
-// one className. Theme, direction and the axes come from the toolbar.
+// one className. The panels take generated ids: three layouts share the
+// page, and a panel id is its DOM id. Theme, direction and the axes come from the toolbar.
 export default function SplitterTemplateSimple() {
     const [preview, setPreview] = useState(true);
     return (
@@ -38,29 +39,24 @@ function Layout({
 }) {
     return (
         <Splitter.Template.Simple className={`overflow-hidden ${className}`}>
-            <Splitter.Panel
-                id="files"
-                defaultSize="25%"
-                minSize="15%"
-                collapsible
-            >
+            <Splitter.Panel defaultSize="25%" minSize="15%" collapsible>
                 <p className="p-3">Files</p>
             </Splitter.Panel>
-            <Splitter.Panel id="work" minSize="30%">
+            <Splitter.Panel minSize="30%">
                 <Splitter.Template.Simple
                     orientation="vertical"
                     className="h-full"
                 >
-                    <Splitter.Panel id="editor">
+                    <Splitter.Panel>
                         <p className="p-3">Editor</p>
                     </Splitter.Panel>
-                    <Splitter.Panel id="terminal" defaultSize="35%" collapsible>
+                    <Splitter.Panel defaultSize="35%" collapsible>
                         <p className="p-3">Terminal</p>
                     </Splitter.Panel>
                 </Splitter.Template.Simple>
             </Splitter.Panel>
             {preview && (
-                <Splitter.Panel id="preview" defaultSize="25%" minSize="15%">
+                <Splitter.Panel defaultSize="25%" minSize="15%">
                     <p className="p-3">Preview</p>
                 </Splitter.Panel>
             )}

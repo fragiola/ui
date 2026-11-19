@@ -48,21 +48,21 @@ function View({ className, name }: { className?: string; name: string }) {
                 className,
             )}
         >
-            <Splitter.Panel id="a" defaultSize="40%" minSize="15%">
+            <Splitter.Panel defaultSize="40%" minSize="15%">
                 <Cell>Start</Cell>
             </Splitter.Panel>
             <Splitter.Separator aria-label={`Resize start, ${name}`}>
                 <Splitter.Grip />
             </Splitter.Separator>
-            <Splitter.Panel id="b">
+            <Splitter.Panel>
                 <Splitter.Group orientation="vertical" className="h-full">
-                    <Splitter.Panel id="c">
+                    <Splitter.Panel>
                         <Cell>Top</Cell>
                     </Splitter.Panel>
                     <Splitter.Separator aria-label={`Resize top, ${name}`}>
                         <Splitter.Grip />
                     </Splitter.Separator>
-                    <Splitter.Panel id="d" collapsible minSize="25%">
+                    <Splitter.Panel collapsible minSize="25%">
                         <Cell>Bottom</Cell>
                     </Splitter.Panel>
                 </Splitter.Group>
