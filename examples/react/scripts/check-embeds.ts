@@ -116,6 +116,64 @@ async function dragInto(
     );
 }
 
+// The Grid Layout examples, dragged in the frame: a card moved by its
+// handle (the template), or a widget brought in from a drag source (the
+// builder).
+const GRID_DRAGS: Record<string, { handle: string } | { source: string }> = {
+    "grid-layout": { handle: "Move Revenue" },
+    "grid-layout-dashboard-builder": { source: "Metric widget" },
+};
+
+// Drags a card by its handle a third of the grid across (a card moved
+// down would settle back up: the layout compacts), or a drag source onto the
+// grid's empty bottom-end corner, with the mouse; tells whether the card
+// moved, or the grid has one more item.
+async function dragGrid(
+    page: Page,
+    frame: Frame,
+    drag: { handle: string } | { source: string },
+): Promise<boolean> {
+    const items = frame.locator("[data-grid-layout-part=item]");
+    const count = await items.count();
+    const start = frame.getByLabel(
+        "handle" in drag ? drag.handle : drag.source,
+        { exact: true },
+    );
+    const from = await start.first().boundingBox();
+    const grid = await frame
+        .locator("[data-grid-layout-part=root]")
+        .boundingBox();
+    if (!from || !grid) return false;
+    const card =
+        "handle" in drag
+            ? frame
+                  .locator("[data-grid-layout-part=item]")
+                  .filter({ has: start.first() })
+            : undefined;
+    const before = card ? await card.boundingBox() : null;
+    const x = from.x + from.width / 2;
+    const y = from.y + from.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 8, y + 8, { steps: 4 });
+    if ("handle" in drag) {
+        await page.mouse.move(x + grid.width / 3, y + 8, { steps: 10 });
+    } else {
+        await page.mouse.move(
+            grid.x + grid.width - 80,
+            grid.y + grid.height - 40,
+            { steps: 10 },
+        );
+    }
+    await page.mouse.up();
+    await page.waitForTimeout(400);
+    if (card && before) {
+        const after = await card.boundingBox();
+        return !!after && Math.abs(after.x - before.x) > 20;
+    }
+    return (await items.count()) === count + 1;
+}
+
 type ManifestExample = {
     id: string;
     layout: "fill" | "flow";
@@ -642,6 +700,13 @@ for (const example of selected) {
             if (!moved)
                 say(`dragging ${drag.row} onto ${drag.folder} moved nothing`);
         }
+
+        // Grid Layout's pointer drag in the frame: a card follows its handle
+        // and lands a third of the grid across; a drag source's item lands
+        // on the grid.
+        const gridDrag = GRID_DRAGS[example.id];
+        if (gridDrag && !(await dragGrid(page, frame, gridDrag)))
+            say(`dragging in ${example.id} changed nothing`);
 
         if (values.screenshots) {
             for (const name of THEMES.map((t) => t.name)) {

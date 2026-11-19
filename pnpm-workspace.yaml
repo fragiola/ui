@@ -15,7 +15,8 @@ allowBuilds:
 # pnpm 11 holds back a version younger than its minimum release age (a
 # supply-chain guard). These are this organisation's own packages, consumed
 # by the special items the day they are published (Dockable 0.3.0: Epic #85;
-# Splitter 0.1.0: Epic #88; Tree 0.1.0: Epic #91); exact versions, so the
+# Splitter 0.1.0: Epic #88; Tree 0.1.0: Epic #91;
+# Grid Layout 0.1.0: Epic #94); exact versions, so the
 # guard still covers anything else.
 minimumReleaseAgeExclude:
   - '@fragiola/dockable-react@0.3.0'
@@ -24,4 +25,6 @@ minimumReleaseAgeExclude:
   - '@fragiola/splitter@0.1.0'
   - '@fragiola/tree-react@0.1.0'
   - '@fragiola/tree@0.1.0'
+  - '@fragiola/grid-layout-react@0.1.0'
+  - '@fragiola/grid-layout@0.1.0'
 verifyDepsBeforeRun: false
