@@ -55,8 +55,9 @@ import {
 // not template configuration. If an eighth is needed, stop and record it.
 //
 // Names: each item is named by its title (its id without `itemTitle`), its
-// handle "Move <title>". An item brought in from a drag source shows the
-// source's `data` in the preview when it is a string.
+// handle "Move <title>"; a static item has no handle. An item brought in
+// from a drag source shows the source's `data` in the preview when it is a
+// string, its new id otherwise.
 
 type SimpleProps = Omit<RootProps, "children" | "className"> & {
     /** What an item shows, under its header. */
@@ -84,7 +85,9 @@ function Simple({
                     return (
                         <Item itemId={item.id} aria-label={name}>
                             <Header>
-                                <DragHandle aria-label={`Move ${name}`} />
+                                {!item.static && (
+                                    <DragHandle aria-label={`Move ${name}`} />
+                                )}
                                 <Title>{name}</Title>
                             </Header>
                             <Content>{children(item)}</Content>
@@ -98,7 +101,7 @@ function Simple({
             <Placeholder />
             <DragPreview>
                 {(state) =>
-                    typeof state.data === "string" ? state.data : null
+                    typeof state.data === "string" ? state.data : state.itemId
                 }
             </DragPreview>
         </Root>
