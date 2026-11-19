@@ -1,16 +1,23 @@
-import { SearchIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Badge } from "#/components/atoms/badge";
 import { Clickable } from "#/components/atoms/clickable";
 import { Input } from "#/components/atoms/fields";
+import { Accordion } from "#/components/ui/accordion";
+import { Breadcrumb } from "#/components/ui/breadcrumb";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Combobox } from "#/components/ui/combobox";
+import { DropdownMenu } from "#/components/ui/dropdown-menu";
 import { Field } from "#/components/ui/field";
+import { Pagination } from "#/components/ui/pagination";
+import { Popover } from "#/components/ui/popover";
 import { Progress } from "#/components/ui/progress";
 import { Radio, RadioGroup } from "#/components/ui/radio";
 import { Select } from "#/components/ui/select";
 import { Slider } from "#/components/ui/slider";
 import { Switch } from "#/components/ui/switch";
+import { Table } from "#/components/ui/table";
+import { Tabs } from "#/components/ui/tabs";
 
 // The coherence sheet — every control side by side, in every state, so the
 // visual language (docs/visual-language.md) is reviewed on one screen: the
@@ -35,6 +42,9 @@ export default function CoherenceSheet() {
         <div className="palette-surface flex flex-col gap-8 bg-palette-base p-6 text-palette-contrast">
             {SETS.map((set) => (
                 <Sheet key={set.floor} {...set} />
+            ))}
+            {SETS.map((set) => (
+                <Sets key={set.floor} {...set} />
             ))}
         </div>
     );
@@ -218,6 +228,124 @@ function Sheet({ floor, action }: { floor: string; action: string }) {
                     Solid
                 </Badge>
                 <Badge className="palette-danger">Danger</Badge>
+            </Row>
+        </section>
+    );
+}
+
+// Sets, containers and overlays: the current item of a set (a tab, a page),
+// a selected row, a container on the floor, and what floats. Open the menu
+// and the popover to compare the overlay's edge, shadow and motion.
+function Sets({ floor }: { floor: string; action: string }) {
+    return (
+        <section className={`palette-${floor} flex flex-col gap-6`}>
+            <h2 className="font-mono text-xs text-palette-accent/85">
+                sets · palette-{floor}
+            </h2>
+
+            <Row label="current (tab, page)">
+                <Tabs.Root defaultValue="account">
+                    <Tabs.List>
+                        <Tabs.Tab value="account">Account</Tabs.Tab>
+                        <Tabs.Tab value="password">Password</Tabs.Tab>
+                        <Tabs.Tab value="team">Team</Tabs.Tab>
+                    </Tabs.List>
+                </Tabs.Root>
+                <Pagination.Root className="mx-0 w-auto">
+                    <Pagination.Content>
+                        {[1, 2, 3].map((page) => (
+                            <Pagination.Item key={page}>
+                                <Pagination.Link
+                                    href={`?page=${page}`}
+                                    active={page === 2}
+                                >
+                                    {page}
+                                </Pagination.Link>
+                            </Pagination.Item>
+                        ))}
+                    </Pagination.Content>
+                </Pagination.Root>
+                <Breadcrumb.Root>
+                    <Breadcrumb.List>
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href="#">Home</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Separator />
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Page>Settings</Breadcrumb.Page>
+                        </Breadcrumb.Item>
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
+            </Row>
+
+            <Row label="selected row · container">
+                <div className="w-96">
+                    <Table.Root>
+                        <Table.Body>
+                            {["INV001", "INV002", "INV003"].map((invoice) => (
+                                <Table.Row
+                                    key={invoice}
+                                    data-state={
+                                        invoice === "INV002"
+                                            ? "selected"
+                                            : undefined
+                                    }
+                                >
+                                    <Table.Cell>{invoice}</Table.Cell>
+                                    <Table.Cell className="text-end">
+                                        $250.00
+                                    </Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table.Root>
+                </div>
+                <Accordion.Root className="w-80" defaultValue={["a"]}>
+                    {["a", "b"].map((value) => (
+                        <Accordion.Item key={value} value={value}>
+                            <Accordion.Header>
+                                <Accordion.Trigger>
+                                    Question {value.toUpperCase()}
+                                    <ChevronDownIcon className="size-icon shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
+                                </Accordion.Trigger>
+                            </Accordion.Header>
+                            <Accordion.Panel>
+                                <Accordion.Content>
+                                    The answer, in secondary text.
+                                </Accordion.Content>
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                    ))}
+                </Accordion.Root>
+            </Row>
+
+            <Row label="overlays (open them)">
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger
+                        render={<Clickable.Button variant="outline" />}
+                    >
+                        Menu
+                        <ChevronDownIcon />
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                        <DropdownMenu.Item>Profile</DropdownMenu.Item>
+                        <DropdownMenu.Item>Billing</DropdownMenu.Item>
+                        <DropdownMenu.Separator />
+                        <DropdownMenu.Item className="palette-danger">
+                            Delete
+                        </DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+                <Popover.Root>
+                    <Popover.Trigger
+                        render={<Clickable.Button variant="outline" />}
+                    >
+                        Popover
+                    </Popover.Trigger>
+                    <Popover.Content>
+                        <p className="text-sm">The same edge as the menu.</p>
+                    </Popover.Content>
+                </Popover.Root>
             </Row>
         </section>
     );
