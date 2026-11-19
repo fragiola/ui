@@ -125,12 +125,16 @@ async function waitForPreview(create: Frame): Promise<Frame> {
 
 async function size(frame: Frame | Page) {
     return frame.evaluate(() => {
-        const el = document.scrollingElement ?? document.documentElement;
+        // The preview scrolls its stage; the page scrolls its document.
+        const el =
+            document.querySelector<HTMLElement>("[data-stage]") ??
+            document.scrollingElement ??
+            document.documentElement;
         return {
             scrollWidth: el.scrollWidth,
             scrollHeight: el.scrollHeight,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: el.clientWidth,
+            height: el.clientHeight,
         };
     });
 }
