@@ -1,19 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { Clickable } from "#/components/atoms/clickable";
 import { Input } from "#/components/atoms/fields";
 import { Field } from "#/components/ui/field";
 
-// The palette class goes on the field element, not on a wrapping context.
-// The floor is palette-surface; each Field.Root carries a palette-surface-*
-// class — a neutral surface whose only difference from surface is a
-// chromatic focus ring. The frame reads neutral; focusing shows the coloured
-// ring. This is the Epic's exception: a field is a surface, not a coloured
-// element, but its focus ring states the theme's colour.
-//
-// Axes shown, one per row, all aligned:
-//   palettes   one field per surface-ring palette (default state)
-//   states     default / invalid / disabled / required
+// The surface-tier palettes: each is the neutral surface with one chromatic
+// ring, so a field wearing one reads neutral and shows its colour only on
+// focus. Literal here because examples are published source (the code panel
+// shows this file verbatim, with a copy button).
 const SURFACE_RING = [
     "surface-blue",
     "surface-purple",
@@ -22,71 +17,99 @@ const SURFACE_RING = [
     "surface-rose",
 ] as const;
 
+// A profile form in the default look: the fields carry no palette class and
+// take the floor's; the box (stroke, height, focus ring) lives on Field.Row,
+// never on the input. Then the states a form needs, invalid and disabled,
+// and last the same field in each surface-ring palette (focus one to see
+// its ring).
 export default function FieldDemo() {
     return (
-        <div className="not-prose palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* palettes — one field per surface-ring palette; focus to see
-                the ring colour. Frames read neutral in both themes. */}
-            <Row label="palettes (focus to see ring)">
-                {SURFACE_RING.map((palette) => (
-                    <Field.Root
-                        key={palette}
-                        className={`palette-${palette} w-48`}
-                    >
-                        <Field.Label>{palette}</Field.Label>
-                        <Field.Row>
-                            <Field.Body>
-                                <Input placeholder="Focus me" />
-                            </Field.Body>
-                        </Field.Row>
-                    </Field.Root>
-                ))}
-            </Row>
-
-            {/* states — default / invalid / disabled / required (palette
-                surface-blue). Invalid arrives by palette inheritance: Base UI
-                emits data-invalid on Field.Root, and danger.css registers
-                [data-invalid] as a palette-danger applier — the whole subtree
-                becomes danger with no extra class. */}
-            <Row label="states">
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Default</Field.Label>
+        <div className="not-prose palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <form
+                className="flex max-w-sm flex-col gap-4"
+                onSubmit={(event) => event.preventDefault()}
+            >
+                <Field.Root>
+                    <Field.Label>Name</Field.Label>
                     <Field.Row>
                         <Field.Body>
-                            <Input placeholder="Default" />
+                            <Input defaultValue="Ada Lovelace" />
                         </Field.Body>
                     </Field.Row>
-                    <Field.Description>Helper text.</Field.Description>
                 </Field.Root>
 
-                <Field.Root invalid className="w-48">
-                    <Field.Label>Invalid</Field.Label>
+                <Field.Root>
+                    <Field.Label>Email</Field.Label>
+                    <Field.Row>
+                        <Field.Body>
+                            <Input type="email" placeholder="ada@example.com" />
+                        </Field.Body>
+                    </Field.Row>
+                    <Field.Description>
+                        We send receipts to this address.
+                    </Field.Description>
+                </Field.Root>
+
+                <Clickable.Button
+                    type="submit"
+                    className="palette-neutral self-start"
+                >
+                    Save profile
+                </Clickable.Button>
+            </form>
+
+            {/* Invalid arrives by palette inheritance: Base UI emits
+                data-invalid on Field.Root, and danger.css registers
+                [data-invalid] as a palette-danger applier, so the whole
+                field turns danger with no extra class. */}
+            <Row label="states">
+                <Field.Root invalid className="w-56">
+                    <Field.Label>Username</Field.Label>
                     <Field.Row>
                         <Field.Body>
                             <Input defaultValue="admin" />
                         </Field.Body>
                     </Field.Row>
-                    <Field.Error>This username is taken.</Field.Error>
+                    <Field.Error match>This username is taken.</Field.Error>
                 </Field.Root>
 
-                <Field.Root disabled className="palette-surface-blue w-48">
-                    <Field.Label>Disabled</Field.Label>
+                <Field.Root disabled className="w-56">
+                    <Field.Label>Workspace ID</Field.Label>
                     <Field.Row>
                         <Field.Body>
-                            <Input defaultValue="Cannot edit" />
+                            <Input defaultValue="ws_8f2k41" />
                         </Field.Body>
                     </Field.Row>
                 </Field.Root>
+            </Row>
+
+            {/* the same field, only its palette-* class changed */}
+            <Row label="palettes">
+                {SURFACE_RING.map((palette) => (
+                    <Field.Root
+                        key={palette}
+                        className={`palette-${palette} w-40`}
+                    >
+                        <Field.Row>
+                            <Field.Body>
+                                <Input
+                                    aria-label={palette}
+                                    placeholder={palette}
+                                />
+                            </Field.Body>
+                        </Field.Row>
+                    </Field.Root>
+                ))}
             </Row>
         </div>
     );
 }
 
-// Row — a labelled, aligned row. The label is a <span>, not a heading.
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             <div className="flex flex-wrap items-start gap-4">{children}</div>

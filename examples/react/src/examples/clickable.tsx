@@ -1,13 +1,13 @@
 "use client";
 
-import { PlusIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Clickable } from "#/components/atoms/clickable";
+import { Text } from "#/components/atoms/text";
 
-// The chromatic palettes — the colour IS the element. Literal here because
-// examples are published source (the code panel shows this file verbatim,
-// with a copy button); an import of site chrome would break for whoever
-// copies it.
+// The chromatic palettes. Literal here because examples are published source
+// (the code panel shows this file verbatim, with a copy button); an import of
+// site chrome would break for whoever copies it.
 const CHROMATIC = [
     "blue",
     "purple",
@@ -17,151 +17,92 @@ const CHROMATIC = [
     "danger",
 ] as const;
 
-// The palette class goes on the button itself, not on a wrapping context.
-// The floor is palette-surface; each button carries its own palette-* class
-// and styles only itself. This is the architecture's claim: N palettes can
-// coexist in the same subtree, each scoped to the element that needs it.
-//
-// Axes shown, one per row, all aligned:
-//   variant  solid / outline / ghost / icon
-//   size     sm / md
-//   disabled solid / outline / ghost / icon
+// A settings card's actions, in the default look: the primary action is a
+// solid button in palette-neutral (the default action palette), the
+// secondary one an outline button and the quiet ones ghost and icon buttons,
+// which take the floor's palette. Then the size and the disabled state, and
+// last the same solid button in each chromatic palette: the colour is the
+// palette class on the button, there is no colour variant.
 export default function ClickableDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* solid — one button per chromatic palette */}
-            <Row label="solid">
-                {CHROMATIC.map((palette) => (
-                    <Clickable.Button
-                        key={palette}
-                        className={`palette-${palette}`}
-                        variant="solid"
-                        size="md"
-                    >
-                        {palette}
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                    <Text.Heading as="h3">Workspace</Text.Heading>
+                    <Text.Paragraph className="text-palette-accent/85">
+                        Changes apply to every member of the workspace.
+                    </Text.Paragraph>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Clickable.Button className="palette-neutral">
+                        Save changes
                     </Clickable.Button>
-                ))}
-            </Row>
-
-            {/* outline — one button per chromatic palette */}
-            <Row label="outline">
-                {CHROMATIC.map((palette) => (
-                    <Clickable.Button
-                        key={palette}
-                        className={`palette-${palette}`}
-                        variant="outline"
-                        size="md"
-                    >
-                        {palette}
+                    <Clickable.Button variant="outline">
+                        Cancel
                     </Clickable.Button>
-                ))}
-            </Row>
-
-            {/* ghost — one button per chromatic palette */}
-            <Row label="ghost">
-                {CHROMATIC.map((palette) => (
-                    <Clickable.Button
-                        key={palette}
-                        className={`palette-${palette}`}
-                        variant="ghost"
-                        size="md"
-                    >
-                        {palette}
+                    <Clickable.Button variant="ghost">
+                        <PlusIcon />
+                        Invite
                     </Clickable.Button>
-                ))}
-            </Row>
+                    <Clickable.Button
+                        variant="icon"
+                        shape="square"
+                        aria-label="Rename workspace"
+                    >
+                        <PencilIcon />
+                    </Clickable.Button>
+                    <Clickable.Button
+                        className="palette-danger"
+                        variant="icon"
+                        shape="square"
+                        aria-label="Delete workspace"
+                    >
+                        <Trash2Icon />
+                    </Clickable.Button>
+                </div>
+            </div>
 
-            {/* size axis: sm / md (variant solid, palette blue) */}
+            {/* sm sits in dense rows (a toolbar, a table cell); md is
+                h-control, the height of a field */}
             <Row label="size">
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="solid"
-                    size="sm"
-                >
+                <Clickable.Button className="palette-neutral" size="sm">
                     Small
                 </Clickable.Button>
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="solid"
-                    size="md"
-                >
+                <Clickable.Button className="palette-neutral">
                     Medium
                 </Clickable.Button>
             </Row>
 
-            {/* icon — variant="icon" + shape="square", sm / md, per palette */}
-            <Row label="icon">
+            <Row label="disabled">
+                <Clickable.Button className="palette-neutral" disabled>
+                    Save changes
+                </Clickable.Button>
+                <Clickable.Button variant="outline" disabled>
+                    Cancel
+                </Clickable.Button>
+            </Row>
+
+            {/* the same button, only its palette-* class changed */}
+            <Row label="palettes">
                 {CHROMATIC.map((palette) => (
                     <Clickable.Button
                         key={palette}
                         className={`palette-${palette}`}
-                        variant="icon"
-                        shape="square"
-                        size="md"
-                        aria-label={palette}
                     >
-                        <PlusIcon />
+                        {palette}
                     </Clickable.Button>
                 ))}
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="icon"
-                    shape="square"
-                    size="sm"
-                    aria-label="Small add"
-                >
-                    <PlusIcon />
-                </Clickable.Button>
-            </Row>
-
-            {/* disabled — no pointer events, same variants */}
-            <Row label="disabled">
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="solid"
-                    size="md"
-                    disabled
-                >
-                    Solid
-                </Clickable.Button>
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="outline"
-                    size="md"
-                    disabled
-                >
-                    Outline
-                </Clickable.Button>
-                <Clickable.Button
-                    className="palette-blue"
-                    variant="ghost"
-                    size="md"
-                    disabled
-                >
-                    Ghost
-                </Clickable.Button>
-                <Clickable.Button
-                    className="palette-danger"
-                    variant="icon"
-                    shape="square"
-                    size="md"
-                    disabled
-                    aria-label="Delete"
-                >
-                    <Trash2Icon />
-                </Clickable.Button>
             </Row>
         </div>
     );
 }
 
-// Row — a labelled, aligned row of buttons. The label is a <span>, not a
-// heading, so it does not pollute the page's table of contents. Items align
-// to center and wrap cleanly on narrow viewports.
+// Row — a captioned row. The caption is a <span>, not a heading, so it does
+// not pollute the page's table of contents.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             <div className="flex flex-wrap items-center gap-2">{children}</div>

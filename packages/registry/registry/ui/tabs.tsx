@@ -2,6 +2,7 @@
 
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import type * as React from "react";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Tabs — a strip of triggers where one is current, with an animated
@@ -71,10 +72,10 @@ function TabsTab({
         <TabsPrimitive.Tab
             data-slot="tabs-tab"
             className={cn(
-                "relative cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium text-palette-accent/85 outline-none select-none",
-                "highlighted:bg-palette-soft highlighted:text-palette-contrast",
-                "data-active:bg-palette-soft data-active:text-palette-contrast",
-                "focus-visible:outline-2 focus-visible:outline-palette-ring",
+                foundation.hover(),
+                foundation.current(),
+                foundation.focusInset(),
+                "relative cursor-pointer items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium text-palette-accent/85 select-none transition-colors duration-150",
                 "data-disabled:pointer-events-none data-disabled:opacity-50",
                 "data-[orientation=horizontal]:-mb-px data-[orientation=horizontal]:rounded-b-none",
                 "data-[orientation=vertical]:-ms-px data-[orientation=vertical]:rounded-e-none",
@@ -99,12 +100,13 @@ function TabsIndicator({
     //
     // Horizontal: positioned by left + width, sitting at the bottom of the
     // list. Vertical: positioned by top + height, sitting at the inline-end.
-    // `bg-palette-base` is the palette's colour (the active indicator).
+    // `bg-palette-ring` is the colour of every "on" mark (the foundation's
+    // `checked`), so the underline reads in any palette.
     return (
         <TabsPrimitive.Indicator
             data-slot="tabs-indicator"
             className={cn(
-                "absolute rounded-sm bg-palette-base transition-all duration-200",
+                "absolute rounded-sm bg-palette-ring transition-all duration-200",
                 "data-[orientation=horizontal]:bottom-0 data-[orientation=horizontal]:h-0.5 data-[orientation=horizontal]:left-(--active-tab-left) data-[orientation=horizontal]:w-(--active-tab-width)",
                 "data-[orientation=vertical]:inset-e-0 data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:top-(--active-tab-top) data-[orientation=vertical]:h-(--active-tab-height)",
                 className as string,

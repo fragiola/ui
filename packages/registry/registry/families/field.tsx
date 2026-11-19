@@ -50,6 +50,7 @@
 // compiling.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // root — vertical column: label on top, box (row) in the middle,
 // description/error below. `group/field` lets row/body/addon react to the
@@ -80,16 +81,22 @@ const choiceRoot = tv({
 // instead of turning into a stadium. `--field-radius` is declared here, on
 // the box, so the addons and insets inside derive their inner radius from it
 // (minus the 2px gap, never below zero).
+//
+// The surface, the stroke and the ring are the foundation's (`box`,
+// `fieldFocus`, docs/visual-language.md): the row looks like every other
+// control box — an outline button, a select trigger, an unchecked checkbox.
 const row = tv({
-    base: `
+    base: [
+        foundation.box(),
+        foundation.fieldFocus(),
+        `
         flex w-full min-w-0 flex-wrap items-stretch overflow-hidden
         [--field-radius:min(var(--radius-control),calc(var(--spacing)*4.5))]
-        rounded-(--field-radius) border border-palette-line bg-palette-soft
-        text-sm text-palette-accent/85
-        field-focus:outline-2 field-focus:outline-palette-ring
+        rounded-(--field-radius) text-sm
         group-data-disabled/field:cursor-not-allowed
         group-data-disabled/field:opacity-50
     `,
+    ],
 });
 
 // body — the control's area inside the box. No border, no background and
@@ -124,8 +131,8 @@ const body = tv({
 // writing only the middle.
 const control = tv({
     base: `
-        field-control w-full min-w-0 bg-transparent px-3 py-2 text-sm text-palette-accent/85 outline-none
-        placeholder:text-palette-accent/60
+        field-control w-full min-w-0 bg-transparent px-3 py-2 text-sm text-palette-accent outline-none
+        placeholder:text-palette-accent/85
         selection:bg-palette-base selection:text-palette-contrast
         disabled:cursor-not-allowed
         file:border-0 file:bg-transparent file:text-sm file:font-semibold
@@ -151,7 +158,7 @@ const control = tv({
 // Side is data-side, NOT a variant — zero variants means zero.
 const addon = tv({
     base: `
-        flex shrink-0 items-center self-stretch px-3 text-sm text-palette-accent/85
+        flex shrink-0 items-center self-stretch bg-palette-soft px-3 text-sm text-palette-accent/85
         border-palette-line
         data-[side=inline-start]:border-e
         data-[side=inline-end]:border-s
@@ -185,12 +192,16 @@ const inset = tv({
 // Text.Error brings palette-danger/text-xs. Redefining typography here would
 // violate the composition rule — the same rule as DialogTitle. data-disabled
 // comes from Base UI itself on these elements.
+//
+// The label is the field's name, not secondary text: full `accent` (not
+// `contrast` — under `palette-danger` that is the white meant for a red
+// fill) at `font-medium`, the weight of every label (docs/visual-language.md).
 const label = tv({
-    base: "text-palette-accent/85 leading-none data-disabled:opacity-50",
+    base: "font-medium text-palette-accent leading-none data-disabled:opacity-50",
 });
 
 const description = tv({
-    base: "text-palette-accent/85 data-disabled:opacity-50",
+    base: [foundation.secondary(), "data-disabled:opacity-50"],
 });
 
 const error = tv({

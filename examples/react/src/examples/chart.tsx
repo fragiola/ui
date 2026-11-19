@@ -4,12 +4,12 @@ import type { EChartsOption } from "echarts";
 import type { ReactNode } from "react";
 import { Chart } from "#/components/ui/chart";
 
-// The floor is palette-surface. The chart series are derived from
-// --palette-base (global.css: chart-1 IS the palette's colour, the rest
-// rotate hue from it), and the Chart reads the tokens from ITS OWN
-// element — so the palette class goes on the chart, the same way it goes
-// on a badge or a button. Three chart types, three palettes: the same
-// option re-colours by moving one class.
+// A dashboard's three charts, in one palette. The chart series are derived
+// from --palette-base (global.css: chart-1 IS the palette's colour, the rest
+// rotate hue from it), and the Chart reads the tokens from ITS OWN element —
+// so the palette class goes on the chart, the same way it goes on a badge or
+// a button. Every chart here wears palette-blue; another palette class
+// re-colours a chart without touching its option.
 //
 // Each Chart carries a height. ECharts reads the parent's height, and a
 // 100%-height child of a zero-height parent is its classic silent failure.
@@ -76,9 +76,8 @@ const WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function ChartDemo() {
     return (
-        <div className="palette-surface flex w-full flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* line — series derived from palette-blue */}
-            <Row label="line · palette-blue">
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <Row label="line">
                 <Chart
                     className="palette-blue h-72"
                     option={lineOption}
@@ -86,27 +85,27 @@ export default function ChartDemo() {
                 />
             </Row>
 
-            {/* bar — the same wrapper, series derived from palette-green */}
-            <Row label="bar · palette-green">
+            <Row label="bar">
                 <Chart
-                    className="palette-green h-72"
+                    className="palette-blue h-72"
                     option={barOption}
                     categories={["Q1", "Q2", "Q3", "Q4"]}
                 />
             </Row>
 
             {/* pie (donut) — slices take the categorical slots in order */}
-            <Row label="pie (donut) · palette-purple">
-                <Chart className="palette-purple h-72" option={pieOption} />
+            <Row label="pie (donut)">
+                <Chart className="palette-blue h-72" option={pieOption} />
             </Row>
         </div>
     );
 }
 
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             {children}

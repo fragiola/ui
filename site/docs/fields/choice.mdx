@@ -7,6 +7,13 @@ description: "Checkbox, Radio with RadioGroup, and Switch: three controls that s
 
 <Example id="choice" />
 
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
 ## Style family
 
 The `choice` family has five members — `root`, `control`, `indicator`, `label`, `description` — and zero variants. Checkbox and Radio use `root` + `indicator`; Switch uses `root` (the track) + `control` (the thumb). Each component overrides only what differs: Radio adds `rounded-full`, Switch adds `w-9 h-5 rounded-full` and a translate on the thumb.
@@ -17,4 +24,4 @@ Checkable controls use `Field.ChoiceRoot` instead of `Field.Root` — a horizont
 
 ## State normalization
 
-Base UI emits `data-checked` and `data-unchecked` (not `data-state=checked`). The family uses `data-checked:bg-palette-base` and `data-checked:text-palette-contrast` — the indicator icon inherits the text colour and inverts automatically.
+Base UI emits `data-checked` and `data-unchecked` (not `data-state=checked`). Unchecked, a checkbox or a radio is a control box, the same `line` stroke as a field. Checked, it takes the foundation's `checked` member: the box fills with `ring`, the colour of every "on" state (a switch, a slider, a progress bar), and the check or dot inherits the box's text colour, `base`. A switch is the choice family's `track` and `thumb`: the track is `line` when off and `ring` when on, the same two colours as a slider. See [the visual language](/docs/architecture/style-families).

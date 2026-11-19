@@ -173,8 +173,9 @@ describe("sheet family", () => {
     it("selects rows as tree.row does, and never lets a hover fight it", () => {
         const own = classes(sheet.row);
         const row = classes(tree.row);
-        expect(row).toContain("data-selected:bg-palette-soft");
-        expect(own).toContain("data-selected:bg-palette-soft");
+        // Both compose the foundation's `selected` and `hoverRow`.
+        expect(row).toContain("selected:bg-palette-soft");
+        expect(own).toContain("selected:bg-palette-soft");
         expect(classes(sheet.cell)).toContain(
             "group-data-selected/sheet-row:text-palette-contrast",
         );
@@ -182,10 +183,10 @@ describe("sheet family", () => {
         // selected row — and opaque, so a pinned cell inheriting it is too
         const fills = own.filter((c) => /(?:^|:)bg-/.test(c));
         expect(fills).toEqual([
+            "not-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
+            "selected:bg-palette-soft",
             "bg-palette-base",
-            "not-data-selected:hover:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
             "not-data-selected:data-active:bg-[color-mix(in_oklab,var(--color-palette-soft)_50%,var(--color-palette-base))]",
-            "data-selected:bg-palette-soft",
         ]);
         expect(classes(sheet.cell)).toContain("data-pinned:bg-inherit");
         expect(classes(sheet.headerCell)).toContain("data-pinned:bg-inherit");

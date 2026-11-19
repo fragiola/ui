@@ -20,7 +20,9 @@ import { Separator } from "#/components/ui/separator";
 import { Sidebar } from "#/components/ui/sidebar";
 
 // An app shell. The sidebar is palette-raised; the page beside it (the Inset)
-// is palette-surface. Everything in the column is a component the library
+// is palette-surface, its content placeholders panels (a `line` border, no
+// fill). The team's mark wears palette-neutral, the default action palette.
+// Everything in the column is a component the library
 // already has, put in place by the sidebar's parts:
 //
 // - the team switcher and the user menu are DropdownMenus whose trigger is a
@@ -49,7 +51,7 @@ export default function SidebarDemo() {
                                 <DropdownMenu.Trigger
                                     render={<Sidebar.MenuButton size="lg" />}
                                 >
-                                    <span className="palette-blue flex size-8 shrink-0 items-center justify-center rounded-md bg-palette-base text-palette-contrast">
+                                    <span className="palette-neutral flex size-8 shrink-0 items-center justify-center rounded-md bg-palette-base text-palette-contrast">
                                         F
                                     </span>
                                     <span className="flex min-w-0 flex-col leading-tight">
@@ -266,10 +268,10 @@ export default function SidebarDemo() {
                     </Breadcrumb.Root>
                 </header>
                 <div className="grid flex-1 auto-rows-min grid-cols-3 gap-4 p-4">
-                    <div className="aspect-video rounded-lg bg-palette-soft" />
-                    <div className="aspect-video rounded-lg bg-palette-soft" />
-                    <div className="aspect-video rounded-lg bg-palette-soft" />
-                    <div className="col-span-3 min-h-48 rounded-lg bg-palette-soft" />
+                    <div className="aspect-video rounded-lg border border-palette-line" />
+                    <div className="aspect-video rounded-lg border border-palette-line" />
+                    <div className="aspect-video rounded-lg border border-palette-line" />
+                    <div className="col-span-3 min-h-48 rounded-lg border border-palette-line" />
                 </div>
             </Sidebar.Inset>
         </Sidebar.Provider>

@@ -6,7 +6,7 @@
 
    Contract (architecture.md §1):
      --palette-base      the color of this palette — background or fill
-     --palette-soft      subtle background — alert, badge, field surface, hover
+     --palette-soft      subtle background — alert, badge, hover, a field's addon
      --palette-line      stroke
      --palette-contrast  content on base/shade (a background YOU painted)
      --palette-accent    content on a foreign background or on soft

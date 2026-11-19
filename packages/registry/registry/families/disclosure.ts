@@ -43,16 +43,19 @@
 // wrong; unify.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 const trigger = tv({
-    base: `
+    base: [
+        foundation.hover(),
+        foundation.focusInset(),
+        `
         group flex w-full items-center justify-between
-        rounded-md ps-4 pe-3 py-3
+        ps-4 pe-3 py-3
         text-sm font-medium text-palette-contrast
-        hover:bg-palette-soft
-        focus-visible:outline-2 focus-visible:outline-palette-ring
         data-[disabled]:pointer-events-none data-[disabled]:opacity-50
     `,
+    ],
 });
 
 const panel = tv({

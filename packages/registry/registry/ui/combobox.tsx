@@ -86,7 +86,7 @@ function ComboboxInput({
         <ComboboxPrimitive.Input
             data-slot="combobox-input"
             className={cn(
-                "field-control min-w-0 flex-1 bg-transparent text-sm text-palette-contrast outline-none placeholder:text-palette-accent/85",
+                "field-control min-w-0 flex-1 bg-transparent text-sm text-palette-accent outline-none placeholder:text-palette-accent/85",
                 className as string,
             )}
             {...props}

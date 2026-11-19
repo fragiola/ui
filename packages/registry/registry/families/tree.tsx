@@ -73,6 +73,7 @@
 // Namespace object: a single `tree` export with all members.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // The tree. It names the Tailwind group `tree` (the empty row and the rows'
 // grab cursor read it). A keyboard drag, and a drag from another tree of the
@@ -99,21 +100,23 @@ const item = tv({ base: "outline-none" });
 
 // An item's row (Tree.ItemContent). See the header for every value.
 const row = tv({
-    base: `
+    base: [
+        foundation.hoverRow(),
+        foundation.selected(),
+        `
         group/tree-row flex h-8 cursor-default items-center gap-2 rounded-md
         pe-2 ps-[calc(var(--tree-depth)*var(--spacing)*4+var(--spacing)*2)]
         text-sm text-palette-accent/85 select-none
         [&_svg:not([class*='size-'])]:size-icon
         [&_svg]:pointer-events-none [&_svg]:shrink-0
         not-data-disabled:hover:text-palette-contrast
-        not-data-selected:not-data-disabled:hover:bg-palette-soft/50
-        data-selected:bg-palette-soft data-selected:text-palette-contrast
         data-focused:text-palette-contrast
         data-drop-target:text-palette-contrast
         data-disabled:opacity-50 data-dragging:opacity-50
         group-data-dragging/tree:cursor-grabbing
         [:focus-visible>&]:outline-2 [:focus-visible>&]:outline-palette-ring
     `,
+    ],
 });
 
 // The toggle: a chevron that points at the inline end, turns a quarter to
@@ -168,7 +171,7 @@ const liveRegion = tv({ base: "sr-only" });
 // (a check, a dash) and not by their colour.
 const checkbox = tv({
     base: `
-        data-indeterminate:border-palette-line
+        data-indeterminate:border-palette-ring
         data-indeterminate:bg-palette-ring
         data-indeterminate:text-palette-base
     `,

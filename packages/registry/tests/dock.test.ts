@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { dock } from "../registry/families/dock";
+import { foundation } from "../registry/families/foundation";
 
 // ─── The dock family ────────────────────────────────────────────────────────
 // ui/dockable dresses Dockable's headless primitives with `dock`. A class that
@@ -111,9 +112,10 @@ describe("dock family", () => {
     });
 
     it("gives a tab the values of ui/tabs.tsx's tab, lit by data-selected", async () => {
-        // Not extracted into a shared member (different state vocabulary,
-        // and tabs.tsx is not a family) — so the shared values are pinned on
-        // both sides instead, and drift on either fails here.
+        // The ring and the lit state are the foundation's on both sides
+        // (`focusInset`, and `selected` / `current` — one fill under each
+        // library's vocabulary); the rest is pinned on both sides, and drift
+        // on either fails here.
         const tabs = await readFile(
             path.join(REGISTRY, "ui/tabs.tsx"),
             "utf-8",
@@ -124,16 +126,18 @@ describe("dock family", () => {
             "text-sm",
             "font-medium",
             "text-palette-accent/85",
-            "focus-visible:outline-2",
-            "focus-visible:outline-palette-ring",
         ]) {
             expect(tab, shared).toContain(shared);
             expect(tabs, shared).toContain(shared);
         }
-        for (const state of ["bg-palette-soft", "text-palette-contrast"]) {
-            expect(tab).toContain(`data-selected:${state}`);
-            expect(tabs).toContain(`data-active:${state}`);
+        for (const shared of classes(foundation.focusInset)) {
+            expect(tab, shared).toContain(shared);
         }
+        expect(tabs).toContain("foundation.focusInset()");
+        for (const state of ["bg-palette-soft", "text-palette-contrast"]) {
+            expect(tab).toContain(`selected:${state}`);
+        }
+        expect(tabs).toContain("foundation.current()");
     });
 
     it("leaves Template.Simple with no style of its own", async () => {

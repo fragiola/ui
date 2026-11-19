@@ -1,56 +1,46 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Separator } from "#/components/ui/separator";
 
-// The floor is palette-surface. The separator reads the floor's line role —
-// the same line colour as the border. Shows: horizontal, with content on
-// either side, and vertical.
+// An account summary in the default look: the separator reads the floor's
+// line role, the same colour as every border. Horizontal between sections,
+// vertical between the inline links of a footer.
 export default function SeparatorDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            <Row label="horizontal">
-                <div className="flex flex-col gap-4">
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex w-full max-w-sm flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-sm font-medium">Ada Lovelace</span>
                     <span className="text-sm text-palette-accent/85">
-                        Above the separator
-                    </span>
-                    <Separator />
-                    <span className="text-sm text-palette-accent/85">
-                        Below the separator
+                        ada@example.com
                     </span>
                 </div>
-            </Row>
-
-            <Row label="between content">
-                <div className="flex items-center gap-4">
-                    <span className="text-sm text-palette-accent/85">
-                        Start
-                    </span>
-                    <Separator className="flex-1" />
-                    <span className="text-sm text-palette-accent/85">End</span>
-                </div>
-            </Row>
-
-            <Row label="vertical">
-                <div className="flex h-8 items-center gap-4">
-                    <span className="text-sm text-palette-accent/85">Left</span>
+                <Separator />
+                <dl className="flex flex-col gap-2 text-sm">
+                    <div className="flex justify-between">
+                        <dt className="text-palette-accent/85">Plan</dt>
+                        <dd>Team</dd>
+                    </div>
+                    <div className="flex justify-between">
+                        <dt className="text-palette-accent/85">Seats</dt>
+                        <dd>8 of 10</dd>
+                    </div>
+                </dl>
+                <Separator />
+                <div className="flex h-5 items-center gap-3 text-sm">
+                    <a href="#billing" className="hover:underline">
+                        Billing
+                    </a>
                     <Separator orientation="vertical" />
-                    <span className="text-sm text-palette-accent/85">
-                        Right
-                    </span>
+                    <a href="#security" className="hover:underline">
+                        Security
+                    </a>
+                    <Separator orientation="vertical" />
+                    <a href="#sign-out" className="hover:underline">
+                        Sign out
+                    </a>
                 </div>
-            </Row>
-        </div>
-    );
-}
-
-function Row({ label, children }: { label: string; children: ReactNode }) {
-    return (
-        <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
-                {label}
-            </span>
-            {children}
+            </div>
         </div>
     );
 }

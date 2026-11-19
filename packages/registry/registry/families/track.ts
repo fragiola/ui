@@ -10,7 +10,10 @@
 //  - rail: `bg-palette-line` (stroke role), `rounded-full`, hairline height
 //    on the cross axis. `--radius-full` and `bg-palette-line`/`bg-palette-base`
 //    are the role choices; no colour literal.
-//  - fill: `bg-palette-base` (the palette's colour), `rounded-full`. The
+//  - fill: `bg-palette-ring` (the foundation's `checked`, the colour of every
+//    "on" state — docs/visual-language.md), `rounded-full`. It was
+//    `bg-palette-base`, which made a progress bar on a neutral or `surface-*`
+//    palette a white fill on a grey rail. The
 //    primitive sets the geometry inline — `inset-inline-start` + `width` for
 //    the horizontal case, `bottom` + `height` for the vertical case — so the
 //    fill member carries only the visual treatment, not the positioning.
@@ -34,23 +37,27 @@
 // Namespace object: a single `track` export with `rail` and `fill`.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
 // rail — the track. `w-full grow` so it fills a flex control (slider) and a
 // block context (progress) alike. The cross-axis size is the hairline:
 // `h-1.5` by default (horizontal / progress), `w-1.5 h-full` for vertical.
 const rail = tv({
-    base: `
-        relative w-full grow rounded-full bg-palette-line
+    base: [
+        foundation.rail(),
+        `
+        relative w-full grow rounded-full
         h-1.5
         data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5
     `,
+    ],
 });
 
 // fill — the indicator. Only the visual: the palette's colour and the
 // rounded ends. Geometry comes from the primitive's inline styles. See the
 // header for why `absolute` is safe and why no block-axis inset is here.
 const fill = tv({
-    base: "absolute rounded-full bg-palette-base",
+    base: "absolute rounded-full bg-palette-ring",
 });
 
 export const track = { rail, fill };

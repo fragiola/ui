@@ -4,6 +4,7 @@ import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { useRender } from "@base-ui/react/use-render";
 import * as React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Clickable — the button surface. One component, three exports:
@@ -44,22 +45,27 @@ import { cn } from "#/lib/cn";
 // `ExternalLink` is a separate export (not a prop) because it differs in
 // defaults and semantics (`target`, `rel`), not in appearance.
 
+// The focus ring, the outline fill (a control box, the same surface as a
+// field) and the soft hover are the foundation's (docs/visual-language.md),
+// so a button and a field beside it share their stroke, their ring and
+// their height.
 const clickable = tv({
-    base: `
+    base: [
+        foundation.focus(),
+        `
         inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control
-        text-sm font-medium transition-colors
-        focus-visible:outline-2 focus-visible:outline-palette-ring
+        text-sm font-medium transition-colors duration-150
         [&_svg:not([class*='size-'])]:size-icon
     `,
+    ],
     variants: {
         variant: {
             solid: "bg-palette-base text-palette-contrast hover:bg-palette-base-hover",
-            ghost: "bg-transparent text-palette-accent hover:bg-palette-soft",
-            outline:
-                "border border-palette-line bg-transparent text-palette-accent hover:bg-palette-soft",
+            ghost: ["bg-transparent text-palette-accent", foundation.hover()],
+            outline: [foundation.box(), foundation.hover()],
             // `icon` is a fill strategy, not a shape: transparent, no border,
             // a soft hover. Pair with `shape="square"` for an icon button.
-            icon: "bg-transparent text-palette-accent hover:bg-palette-soft",
+            icon: ["bg-transparent text-palette-accent", foundation.hover()],
         },
         size: {
             xs: "h-4 px-2",

@@ -5,21 +5,10 @@ import type { ReactNode } from "react";
 import { Input } from "#/components/atoms/fields";
 import { Field } from "#/components/ui/field";
 
-// The palette class goes on the field element, not on a wrapping context.
-// The floor is palette-surface; each Field.Root carries a palette-surface-*
-// class — a neutral surface whose only difference from surface is a
-// chromatic focus ring. The frame reads neutral; focusing shows the coloured
-// ring.
-//
-// The "one input" claim: the same Input bare, in a group with an addon, and
-// with an inset icon — all reading roles from the same palette. The field
-// frame carries border, background and focus ring; the input carries none.
-//
-// Axes shown, one per row, all aligned:
-//   palettes   one bare input per surface-ring palette
-//   composition  bare / inline-start addon / inline-end addon / inset icon
-//   template   Input.Template.Simple (7 props, no appearance props)
-//   states     disabled / invalid
+// The surface-tier palettes: each is the neutral surface with one chromatic
+// ring, so an input wearing one reads neutral and shows its colour only on
+// focus. Literal here because examples are published source (the code panel
+// shows this file verbatim, with a copy button).
 const SURFACE_RING = [
     "surface-blue",
     "surface-purple",
@@ -28,114 +17,100 @@ const SURFACE_RING = [
     "surface-rose",
 ] as const;
 
+// The "one input" claim, in a store's settings: the same Input with an inset
+// icon, with an addon on either side, and as Input.Template.Simple. The
+// field row carries the box (stroke, height, focus ring); the input carries
+// none of it, and no field carries a palette class. Then the disabled and
+// invalid states, and last the same input in each surface-ring palette
+// (focus one to see its ring).
 export default function InputDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* palettes — one bare input per surface-ring palette; focus to
-                see the ring colour. */}
-            <Row label="palettes (focus to see ring)">
-                {SURFACE_RING.map((palette) => (
-                    <Field.Root
-                        key={palette}
-                        className={`palette-${palette} w-48`}
-                    >
-                        <Field.Row>
-                            <Field.Body>
-                                <Input placeholder={palette} />
-                            </Field.Body>
-                        </Field.Row>
-                    </Field.Root>
-                ))}
-            </Row>
-
-            {/* composition — bare / inline-start addon / inline-end addon /
-                inset icon (palette surface-blue) */}
-            <Row label="composition">
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Bare</Field.Label>
-                    <Field.Row>
-                        <Field.Body>
-                            <Input placeholder="Just an input" />
-                        </Field.Body>
-                    </Field.Row>
-                </Field.Root>
-
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Inline-start addon</Field.Label>
-                    <Field.Row>
-                        <Field.Addon side="inline-start">$</Field.Addon>
-                        <Field.Body>
-                            <Input placeholder="0.00" />
-                        </Field.Body>
-                    </Field.Row>
-                </Field.Root>
-
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Inline-end addon</Field.Label>
-                    <Field.Row>
-                        <Field.Body>
-                            <Input placeholder="example" />
-                        </Field.Body>
-                        <Field.Addon side="inline-end">.com</Field.Addon>
-                    </Field.Row>
-                </Field.Root>
-
-                <Field.Root className="palette-surface-blue w-48">
-                    <Field.Label>Inset icon</Field.Label>
+        <div className="not-prose palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex max-w-sm flex-col gap-4">
+                <Field.Root>
                     <Field.Row>
                         <Field.Body>
                             <Field.Inset>
                                 <SearchIcon className="size-4" />
                             </Field.Inset>
-                            <Input placeholder="Search…" />
+                            <Input
+                                aria-label="Search products"
+                                placeholder="Search products…"
+                            />
                         </Field.Body>
                     </Field.Row>
                 </Field.Root>
-            </Row>
 
-            {/* template — Input.Template.Simple: 7 props, no appearance
-                props (palette surface-blue) */}
-            <Row label="template">
                 <Input.Template.Simple
-                    className="palette-surface-blue w-48"
-                    label="Website"
-                    description="Enter your full URL."
-                    placeholder="example"
+                    label="Store address"
+                    description="Customers reach your store here."
+                    placeholder="my-store"
                     addon={{ inline: { start: "https://" } }}
                     required
                 />
+
+                <Field.Root>
+                    <Field.Label>Price</Field.Label>
+                    <Field.Row>
+                        <Field.Addon side="inline-start">$</Field.Addon>
+                        <Field.Body>
+                            <Input inputMode="decimal" placeholder="0.00" />
+                        </Field.Body>
+                        <Field.Addon side="inline-end">USD</Field.Addon>
+                    </Field.Row>
+                </Field.Root>
+            </div>
+
+            <Row label="states">
+                <Field.Root disabled className="w-56">
+                    <Field.Label>Store ID</Field.Label>
+                    <Field.Row>
+                        <Field.Body>
+                            <Input defaultValue="st_51x9a" />
+                        </Field.Body>
+                    </Field.Row>
+                </Field.Root>
+
+                <Field.Root invalid className="w-56">
+                    <Field.Label>Support email</Field.Label>
+                    <Field.Row>
+                        <Field.Body>
+                            <Input defaultValue="help@store" />
+                        </Field.Body>
+                    </Field.Row>
+                    <Field.Error match>
+                        Enter a valid email address.
+                    </Field.Error>
+                </Field.Root>
             </Row>
 
-            {/* states — disabled / invalid (palette surface-blue) */}
-            <Row label="states">
-                <Field.Root disabled className="palette-surface-blue w-48">
-                    <Field.Label>Disabled</Field.Label>
-                    <Field.Row>
-                        <Field.Body>
-                            <Input defaultValue="Cannot edit" />
-                        </Field.Body>
-                    </Field.Row>
-                </Field.Root>
-
-                <Field.Root invalid className="w-48">
-                    <Field.Label>Invalid</Field.Label>
-                    <Field.Row>
-                        <Field.Body>
-                            <Input defaultValue="bad@email" />
-                        </Field.Body>
-                    </Field.Row>
-                    <Field.Error>Enter a valid email address.</Field.Error>
-                </Field.Root>
+            {/* the same input, only its palette-* class changed */}
+            <Row label="palettes">
+                {SURFACE_RING.map((palette) => (
+                    <Field.Root
+                        key={palette}
+                        className={`palette-${palette} w-40`}
+                    >
+                        <Field.Row>
+                            <Field.Body>
+                                <Input
+                                    aria-label={palette}
+                                    placeholder={palette}
+                                />
+                            </Field.Body>
+                        </Field.Row>
+                    </Field.Root>
+                ))}
             </Row>
         </div>
     );
 }
 
-// Row — a labelled, aligned row. The label is a <span>, not a heading.
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             <div className="flex flex-wrap items-start gap-4">{children}</div>

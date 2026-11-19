@@ -4,6 +4,7 @@ import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import type * as React from "react";
 import { Text } from "#/atoms/text";
 import { field } from "#/families/field";
+import { foundation } from "#/families/foundation";
 import { track } from "#/families/track";
 import { cn } from "#/lib/cn";
 
@@ -28,9 +29,18 @@ import { cn } from "#/lib/cn";
 // `slider` after `progress` writes exactly one file — `slider.tsx` itself.
 
 function SliderRoot<Value extends number | readonly number[]>({
+    className,
     ...props
 }: SliderPrimitive.Root.Props<Value>) {
-    return <SliderPrimitive.Root data-slot="slider" {...props} />;
+    // Disabled like every control: the foundation's `disabled` on the root,
+    // which Base UI marks `data-disabled`.
+    return (
+        <SliderPrimitive.Root
+            data-slot="slider"
+            className={cn(foundation.disabled(), className as string)}
+            {...props}
+        />
+    );
 }
 
 function SliderLabel({
@@ -115,20 +125,20 @@ function SliderThumb({
     className,
     ...props
 }: React.ComponentProps<typeof SliderPrimitive.Thumb>) {
-    // The thumb is the only piece that draws its own focus ring — `palette-ring`
-    // via `:focus-visible` on the nested input. `size-4` + `rounded-full` is the
-    // shape; `bg-palette-base` is the palette's colour (the same role the fill
-    // uses, so the thumb reads as the tip of the fill). `shadow-sm` lifts it off
-    // the rail. The primitive positions the thumb absolutely and sets the
-    // translate inline, so no positioning class is needed here.
+    // The thumb is the foundation's `knob` (the palette's `base` over a light
+    // shadow — the switch's thumb too) ringed in `ring`, the fill's colour, so
+    // it reads as the tip of the fill on any palette. Its focus is
+    // `focusNested`: the focusable is the primitive's hidden range input.
+    // The primitive positions the thumb absolutely and sets the translate
+    // inline, so no positioning class is needed here.
     return (
         <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             className={cn(
-                "absolute block size-4 rounded-full bg-palette-base shadow-sm",
-                "outline-none has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-palette-ring",
-                "data-[dragging]:scale-110",
-                "data-[orientation=vertical]:size-4",
+                foundation.knob(),
+                foundation.focusNested(),
+                "absolute block size-4 rounded-full border-2 border-palette-ring",
+                "transition-transform duration-150 data-[dragging]:scale-110",
                 className as string,
             )}
             {...props}

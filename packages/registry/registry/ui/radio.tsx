@@ -3,13 +3,15 @@
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
 import type * as React from "react";
+import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
-// Radio — a checkable circle. Uses the choice family's root (the circle)
-// and indicator (the dot). Base UI's Radio provides the behaviour.
+// Radio — a checkable circle. Uses the choice family's `mark` (the circle)
+// and `indicator` (the dot). Base UI's Radio provides the behaviour.
 //
-// The choice family root has rounded-sm; radio overrides to rounded-full.
-// The indicator is a filled circle (size-2) instead of a check icon.
+// The mark is the checkbox's box; the radio adds `rounded-full`, an intrinsic
+// circle. The indicator is a dot in the mark's text colour (`base` on the
+// `ring` fill) instead of a check icon.
 //
 // RadioGroup is the root directly (not a namespace) — it renders a <div>
 // and provides shared state to the radio buttons inside.
@@ -34,15 +36,7 @@ function RadioRoot({
     return (
         <RadioPrimitive.Root
             data-slot="radio"
-            className={cn(
-                "field-control size-4 shrink-0 rounded-full border",
-                "border-palette-line bg-palette-soft",
-                "data-checked:bg-palette-ring",
-                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
-                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
-                "transition-colors",
-                className as string,
-            )}
+            className={cn(choice.mark(), "rounded-full", className as string)}
             {...props}
         />
     );
@@ -55,13 +49,10 @@ function RadioIndicator({
     return (
         <RadioPrimitive.Indicator
             data-slot="radio-indicator"
-            className={cn(
-                "grid place-content-center w-full h-full",
-                className as string,
-            )}
+            className={cn(choice.indicator(), "size-full", className as string)}
             {...props}
         >
-            <span className="size-2 rounded-full bg-palette-base" />
+            <span className="size-1.5 rounded-full bg-current" />
         </RadioPrimitive.Indicator>
     );
 }

@@ -3,6 +3,7 @@
 import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
 import type * as React from "react";
 import { disclosure } from "#/families/disclosure";
+import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
 
 // Collapsible — a single expand/collapse section. Composes the `disclosure`
@@ -26,7 +27,8 @@ function CollapsibleRoot({
         <CollapsiblePrimitive.Root
             data-slot="collapsible"
             className={cn(
-                "border border-palette-line rounded-md",
+                foundation.panel(),
+                "overflow-hidden",
                 className as string,
             )}
             {...props}

@@ -46,7 +46,7 @@ colors.
 | role | what it is |
 |---|---|
 | `base` | the color of this palette — background or fill |
-| `soft` | subtle background — alert, badge, hover, field surface |
+| `soft` | subtle background — alert, badge, hover, selected, a field's addon |
 | `line` | stroke |
 | `contrast` | content on `base` |
 | `accent` | content on a foreign background or on `soft` |
@@ -242,6 +242,25 @@ Layout's (`data-dragging`, `data-grabbed`, `data-dropping`, `data-drop-refused`,
 `data-static`, `data-side`, `data-kind`, …) for `tile`, and Data Grid's (`data-active`,
 `data-interacting`, `data-editing`, `data-loading`, `data-pinned`, `data-sort`, …) for
 `sheet`.
+
+### One visual language, one foundation family
+
+Sharing a skeleton inside a family is not enough. Families that never share a member
+still have to answer the same visual questions: what a control box looks like, how
+focus is drawn, what "on" and "selected" are. Before the visual-language pass each
+family answered them in its own words, and the registry read as several designs. The
+answers are written down in **[`visual-language.md`](visual-language.md)**. They live
+in one family, `foundation`, whose members (`focus`, `focusInset`, `fieldFocus`,
+`box`, `hover`, `highlighted`, `checked`, `rail`, `knob`, `disabled`, `secondary`)
+every other family composes inside its own `tv()`:
+
+```ts
+const row = tv({ base: [foundation.box(), foundation.fieldFocus(), "…"] });
+```
+
+`tests/foundation.test.ts` fails when a file other than the foundation spells one of
+its ideas (a `palette-ring` outline, the `soft` hover, the `highlighted` fill, the
+`checked` fill).
 
 ---
 
@@ -550,6 +569,11 @@ in the remaining surface:
   virtualization exact; column widths stay pixel options and do not follow the density.
   The advanced features (ranges, fill, clipboard, grouping, master-detail, reordering,
   summary rows, spans) have no piece yet. See `docs/port-report-epic-98.md`.
+
+- **The visual language** — settled in Epic #107: one answer per visual question
+  (`visual-language.md`), held by the `foundation` family that every family composes,
+  with a guard test. A neutral action palette joins the set. See
+  `docs/port-report-epic-107.md`.
 
 **There is no automated visual testing, and that is the largest gap.** The dominant
 failure mode in the POC was silent: a class that does not exist produces no build
