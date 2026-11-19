@@ -26,8 +26,9 @@ and it changes everywhere.
 | tier | what | treatment |
 |---|---|---|
 | floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
-| raised | a card, the sidebar, a tile, a dock panel | `palette-raised`, `bg-palette-base`, a `line` border, no shadow |
-| overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-lg` (the elevation axis scales it) |
+| panel | a container on the floor: an accordion, a collapsible, a data grid, a dock panel | the floor's `bg-palette-base`, a `line` border, `rounded-lg` (`panel`) |
+| raised | a card that stands on the floor: a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-sm` |
+| overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-lg` (`overlay`; the elevation axis scales it) |
 
 A container never paints with `soft`. `soft` is a **state** (hover, highlighted,
 selected) or a recessed adornment inside a control: a field's addon, a table's header,
@@ -75,17 +76,31 @@ The ring is drawn outside because `ring` contrasts with what is behind the eleme
 |---|---|---|
 | hover (a transparent interactive thing) | `bg-palette-soft` | `hover` |
 | highlighted (the item the pointer or keyboard is on, in a list) | `bg-palette-soft`, text `contrast` | `highlighted` |
-| selected / current (the chosen item of a set: tab, page, sidebar item, tree row, grid row, dock tab) | `bg-palette-soft`, text `contrast`, `font-medium` | settled in the pass over the sets |
+| current (where you are in a set: the active tab, the current page, the active sidebar or navigation link) | `bg-palette-soft`, text `contrast`, `font-medium` | `current` |
+| selected (what the user chose: tree rows, grid and table rows, a dockable tabset's shown tab) | `bg-palette-soft`, text `contrast` (no weight: a row does not reflow) | `selected` |
+| hover on a row of a selectable list (tree, grid, table) | half of `soft`, mixed opaque over the row's `base`, never on a selected row | `hoverRow` |
 | checked / on (checkbox, radio, switch, slider fill, progress fill) | `bg-palette-ring`, content in `base` | `checked` |
 | off ground (a track's rail, a switch's track) | `bg-palette-line` | `rail` |
 | what slides (switch thumb, slider thumb) | `bg-palette-base`, `shadow-sm` | `knob` |
 | disabled | `opacity-50`, `cursor-not-allowed` | `disabled` |
 | invalid | `palette-danger` by inheritance, nothing else | none (global.css) |
 
+`current` and `selected` are custom variants (global.css), like `highlighted`: each
+library spells these states its own way (`data-active`, `aria-current`, `data-selected`,
+`data-state="selected"`), and the variant reads them all, so every set is lit the same
+way.
+
 **"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
 palette that palette's colour, and on a chromatic palette its deeper tone. The checked
 box, the selected radio, the switch, the slider's fill and the progress bar are one
 colour on every palette.
+
+A tab's underline is `ring` too: it marks "on" on every palette.
+
+**What the guard does not cover.** A library's own focus target (the data grid's
+focused cell, the tree's `[:focus-visible>&]` row), its drag-and-drop outlines (dashed,
+`ring`) and conditional hovers (`data-draggable:hover:`) are its own vocabulary
+(architecture.md §2). They keep the same values (2px, `ring`) by review.
 
 ## Colour by class
 
