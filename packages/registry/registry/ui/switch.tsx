@@ -2,15 +2,14 @@
 
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
 import type * as React from "react";
+import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
-// Switch — a toggle. Uses the choice family's root (the track) and control
-// (the thumb). Base UI's Switch provides the behaviour.
-//
-// The choice family root has size-4.5 and rounded-sm; switch overrides to
-// w-9 h-5 rounded-pill. The thumb follows the track's shape (rounded-pill
-// too), so at `data-radius="flat"` a square track slides a square thumb.
-// data-checked fills the track with palette-base.
+// Switch — a toggle. The choice family's `track` (the body: `rail` when off,
+// `ring` when on — the same two colours as a slider) and `thumb` (the knob).
+// Base UI's Switch provides the behaviour. The thumb follows the track's
+// shape (`rounded-pill`), so at `data-radius="flat"` a square track slides a
+// square thumb.
 
 function SwitchRoot({
     className,
@@ -19,15 +18,7 @@ function SwitchRoot({
     return (
         <SwitchPrimitive.Root
             data-slot="switch"
-            className={cn(
-                "field-control inline-flex shrink-0 items-center rounded-pill border border-transparent",
-                "w-8 h-5 p-0.5",
-                "bg-palette-soft data-checked:bg-palette-ring",
-                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
-                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
-                "transition-colors",
-                className as string,
-            )}
+            className={cn(choice.track(), className as string)}
             {...props}
         />
     );
@@ -40,10 +31,7 @@ function SwitchThumb({
     return (
         <SwitchPrimitive.Thumb
             data-slot="switch-thumb"
-            className={cn(
-                "block size-4 rounded-pill bg-palette-ring transition-transform data-checked:translate-x-3 data-checked:bg-palette-base",
-                className as string,
-            )}
+            className={cn(choice.thumb(), className as string)}
             {...props}
         />
     );

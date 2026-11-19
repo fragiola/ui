@@ -8,6 +8,12 @@
 // Decisions in docs/architecture.md §2 (orthogonal families), style families
 // (tv, zero variants), and palette (palette kills colour duplication).
 //
+// The components compose these members; they no longer restate them. Until
+// the visual-language pass (docs/visual-language.md) each of the three wrote
+// its own classes and the family was installed but unused: three focus rings
+// (none matching the field's), a `soft` box that vanished on white, and a
+// switch whose off track could not be seen.
+//
 // Drift resolved — recorded in the port report:
 //  - peer-peer-[data-state=checked]:border-input (radio) → eliminated;
 //    palette handles it via data-checked:bg-palette-base
@@ -25,55 +31,78 @@
 // data-checked as a state selector.
 //
 // ─── ZERO VARIANTS ─────────────────────────────────────────────────────────
-// root has no size variant. The three controls share the same size
-// (size-4.5 → 18px). If switch ever needs a different size, that is a
-// variant — until then, unify.
+// No size variant. Checkbox and radio are one `mark` (size-4); the radio's
+// circle is `rounded-full` on top, an intrinsic shape. The switch is not a
+// bigger mark: it is a `track` with a `thumb`, two named members.
 
 import { tv } from "tailwind-variants";
+import { foundation } from "./foundation";
 
-// root — the box. size-4.5 (18px) for checkbox and radio; switch overrides
-// width via its own className. Border, background, radius and focus ring
-// all live here. data-checked fills with palette-base and swaps text to
-// contrast — the indicator icon inherits text-palette-contrast.
-const root = tv({
-    base: `
-        peer field-control shrink-0 rounded-sm border border-palette-line
-        bg-palette-soft text-palette-contrast
-        field-focus:outline-2 field-focus:outline-palette-ring
-        data-disabled:cursor-not-allowed data-disabled:opacity-50
-        [&_svg:not([class*='size-'])]:size-icon-sm
+// mark — the checkbox's and the radio's box. Unchecked it is a control box
+// (`box`); checked it fills with `ring` (`checked`), the colour every "on"
+// state uses. The ring, the disabled state and the icon size are shared.
+const mark = tv({
+    base: [
+        foundation.box(),
+        foundation.checked(),
+        foundation.fieldFocus(),
+        foundation.disabled(),
+        `
+        peer field-control grid size-4 shrink-0 place-content-center rounded-sm
+        [&_svg:not([class*='size-'])]:size-icon-xs
     `,
+    ],
 });
 
-// control — the indicator area. For checkbox and radio, this is the same
-// element as root (the indicator is a child). For switch, this is the thumb
-// that slides. Kept as a separate member for the switch thumb.
-const control = tv({
-    base: "pointer-events-none flex items-center justify-center text-palette-contrast",
-});
-
-// indicator — the icon shown when checked. For checkbox: a check mark.
-// For radio: a dot. For switch: nothing (the thumb position is the
-// indicator). The indicator is conditionally rendered by Base UI.
+// indicator — what appears in a checked mark: a check or a dot. It takes the
+// mark's text colour (`base` on the `ring` fill).
 const indicator = tv({
-    base: "flex items-center justify-center text-palette-contrast",
+    base: "grid place-content-center text-current",
 });
 
-// label — points at Text.Label via render in the composition. The family
-// declares only palette and state, not typography.
+// track — the switch's body: the `rail` when off, `ring` when on. The same
+// two colours as a slider's rail and fill.
+const track = tv({
+    base: [
+        foundation.rail(),
+        foundation.checked(),
+        foundation.fieldFocus(),
+        foundation.disabled(),
+        `
+        field-control inline-flex h-5 w-9 shrink-0 items-center rounded-pill
+        p-0.5
+    `,
+    ],
+});
+
+// thumb — the knob that slides along the track. It follows the track's
+// shape (`rounded-pill`), so a flat track slides a square thumb.
+const thumb = tv({
+    base: [
+        foundation.knob(),
+        `
+        pointer-events-none block size-4 rounded-pill transition-transform
+        duration-150 data-checked:translate-x-4 rtl:data-checked:-translate-x-4
+    `,
+    ],
+});
+
+// label — the control's name (Text.Label via render). Same treatment as
+// field.label.
 const label = tv({
-    base: "text-palette-accent/85 leading-none data-disabled:opacity-50",
+    base: "font-medium text-palette-accent leading-none data-disabled:opacity-50",
 });
 
 // description — points at Text.Paragraph via render.
 const description = tv({
-    base: "text-palette-accent/85 data-disabled:opacity-50",
+    base: [foundation.secondary(), "data-disabled:opacity-50"],
 });
 
 export const choice = {
-    root,
-    control,
+    mark,
     indicator,
+    track,
+    thumb,
     label,
     description,
 };

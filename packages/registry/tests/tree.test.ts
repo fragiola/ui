@@ -77,11 +77,13 @@ describe("tree family", () => {
             ).toBe(true);
         }
         expect(written).toContain("var(--tree-depth)");
-        const checkbox = await readFile(
-            path.join(REGISTRY, "ui/checkbox.tsx"),
+        // A checked box's fill is the foundation's `checked`; a mixed one
+        // takes the same fill.
+        const foundation = await readFile(
+            path.join(REGISTRY, "families/foundation.ts"),
             "utf-8",
         );
-        expect(checkbox).toContain("data-checked:bg-palette-ring");
+        expect(foundation).toContain("data-checked:bg-palette-ring");
         expect(classes(tree.checkbox)).toContain(
             "data-indeterminate:bg-palette-ring",
         );

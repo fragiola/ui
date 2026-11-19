@@ -236,7 +236,7 @@ const columnResizer = tv({
 const checkbox = tv({
     base: `
         inline-flex align-middle
-        data-indeterminate:border-palette-line
+        data-indeterminate:border-palette-ring
         data-indeterminate:bg-palette-ring
         data-indeterminate:text-palette-base
     `,

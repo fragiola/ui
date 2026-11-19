@@ -3,14 +3,15 @@
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
 import { CheckIcon } from "lucide-react";
 import type * as React from "react";
+import { choice } from "#/families/choice";
 import { cn } from "#/lib/cn";
 
-// Checkbox — a checkable box. Uses the choice family's root (the box) and
-// indicator (the check icon). Base UI's Checkbox provides the behaviour
+// Checkbox — a checkable box. Uses the choice family's `mark` (the box) and
+// `indicator` (the check icon). Base UI's Checkbox provides the behaviour
 // (checked/unchecked/indeterminate states, keyboard, aria).
 //
-// The choice family root has size-4.5 (18px) and rounded-sm. The indicator
-// is a CheckIcon at size-3.5 (inherited from the family's svg rule).
+// The mark is size-4 with `rounded-sm`; the check is `size-icon-xs` with a
+// heavier stroke, so it reads at that size.
 //
 // No size variant, no tone prop — palette handles tone via className.
 
@@ -21,15 +22,7 @@ function CheckboxRoot({
     return (
         <CheckboxPrimitive.Root
             data-slot="checkbox"
-            className={cn(
-                "field-control size-4 shrink-0 rounded-sm border",
-                "border-palette-line bg-palette-soft",
-                "data-checked:bg-palette-ring data-checked:border-palette-line data-checked:text-palette-base",
-                "field-focus:outline-solid field-focus:outline-1 field-focus:outline-offset-1 field-focus:outline-palette-ring",
-                "data-disabled:opacity-50 data-disabled:cursor-not-allowed",
-                "transition-colors",
-                className as string,
-            )}
+            className={cn(choice.mark(), className as string)}
             {...props}
         />
     );
@@ -42,13 +35,10 @@ function CheckboxIndicator({
     return (
         <CheckboxPrimitive.Indicator
             data-slot="checkbox-indicator"
-            className={cn(
-                "grid place-content-center text-current",
-                className as string,
-            )}
+            className={cn(choice.indicator(), className as string)}
             {...props}
         >
-            <CheckIcon className="size-icon-sm" />
+            <CheckIcon className="size-icon-xs" strokeWidth={3} />
         </CheckboxPrimitive.Indicator>
     );
 }

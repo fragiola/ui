@@ -168,7 +168,7 @@ const liveRegion = tv({ base: "sr-only" });
 // (a check, a dash) and not by their colour.
 const checkbox = tv({
     base: `
-        data-indeterminate:border-palette-line
+        data-indeterminate:border-palette-ring
         data-indeterminate:bg-palette-ring
         data-indeterminate:text-palette-base
     `,

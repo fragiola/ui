@@ -141,7 +141,7 @@ const Label = React.forwardRef<
         <label
             ref={ref}
             className={cn(
-                "text-palette-contrast text-sm font-semibold block",
+                "text-palette-contrast text-sm font-medium block",
                 className,
             )}
             {...rest}
