@@ -12,6 +12,7 @@ import {
     resolve,
 } from "../design/design";
 import { GetCode } from "../output/get-code";
+import { usePreviewPromotion } from "./preview-promotion";
 
 // The Create page: fragiola.com serves it full-page at /ui/create/ (contract
 // v1.6). It is drawn like the docs — a frame, the customizer on the frame
@@ -56,6 +57,9 @@ export function CreateShell() {
     }, []);
     const resolved = useMemo(() => resolve(design), [design]);
     const frame = useRef<HTMLIFrameElement>(null);
+    // A modal opened in the preview covers the whole page: the frame leaves
+    // the inset for the viewport while it is open (preview-promotion.ts).
+    const promoted = usePreviewPromotion(frame);
     const set = (patch: Partial<Design>) => {
         if (patch.scheme) schemeChosen.current = true;
         setDesign((d) => ({ ...d, ...patch }));
@@ -187,7 +191,11 @@ export function CreateShell() {
                                 ref={frame}
                                 title="Theme preview"
                                 src={PREVIEW}
-                                className="block size-full border-0"
+                                className={
+                                    promoted
+                                        ? "fixed inset-0 z-50 block size-full border-0"
+                                        : "block size-full border-0"
+                                }
                             />
                         </div>
                     </main>

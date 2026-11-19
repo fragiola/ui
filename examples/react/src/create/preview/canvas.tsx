@@ -15,6 +15,7 @@ import * as navigation from "./cards/navigation";
 import * as overlays from "./cards/overlays";
 import * as settings from "./cards/settings";
 import * as status from "./cards/status";
+import { COLUMN_COUNT, COLUMN_WIDTH, GAP } from "./layout";
 
 // The canvas: a band of wide panels for the special components, then every
 // card in a masonry of fixed columns, far wider and taller than any screen
@@ -25,10 +26,6 @@ import * as status from "./cards/status";
 // measured height: the columns end together, and scrolling to any corner
 // shows cards, not an empty floor. A design changes the cards' sizes (the
 // density, the type scale), so it is re-measured on every change.
-
-export const COLUMN_COUNT = 10;
-export const COLUMN_WIDTH = 380;
-export const GAP = 16;
 
 // The order cards are dealt in: varied, so neighbours differ in kind.
 const CARDS: ComponentType[] = [
@@ -120,11 +117,15 @@ export function Canvas({
             <DesignVersion.Provider value={version}>
                 <Surface.Provider value={scheme}>
                     <Tooltip.Provider>
+                        {/* The stage is the scroller, not the document: overlay
+                            promotion pins it where it is while a modal covers
+                            the page, and a pinned element keeps its scroll
+                            offsets — the canvas does not move under the modal. */}
                         <div
                             data-stage=""
-                            className={`palette-surface min-h-dvh w-max text-palette-contrast ${scheme === "dark" ? "bg-palette-base" : "bg-palette-soft"}`}
+                            className={`palette-surface h-dvh w-dvw overflow-auto text-palette-contrast ${scheme === "dark" ? "bg-palette-base" : "bg-palette-soft"}`}
                         >
-                            <div className="flex flex-col gap-4 p-6">
+                            <div className="flex w-max flex-col gap-4 p-6">
                                 {band}
                                 <Masonry cards={CARDS} measureKey={version} />
                             </div>
