@@ -8,7 +8,8 @@
         "build": "vite build && node scripts/build-manifest.ts",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
-        "check:embeds": "node scripts/check-embeds.ts"
+        "check:embeds": "node scripts/check-embeds.ts",
+        "check:create": "node scripts/check-create.ts"
     },
     "dependencies": {
         "@base-ui/react": "^1.7.0",
