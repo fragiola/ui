@@ -4,10 +4,12 @@ import { ChevronDownIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Accordion } from "#/components/ui/accordion";
 
-// The floor is palette-surface — a neutral surface that belongs to no
-// palette. The accordion shows its real axes: open/closed items, multiple
-// vs single, and a disabled item. No palette showcasing — an accordion is
-// not "a blue accordion".
+// A pricing page's FAQ, in the default look. The accordion is a panel on
+// the floor (a line border, no fill of its own); open items read the same
+// as closed ones, only the chevron turns. More than one item can be open at
+// once — `multiple={false}` on the root keeps one. Then the one state a
+// reader needs, a disabled item. An accordion has no colour of its own, so
+// there is no palettes row.
 //
 // The root carries a width. The preview centres its demo with flex, so a
 // widthless root shrinks to its closed triggers and then stretches to the
@@ -15,91 +17,66 @@ import { Accordion } from "#/components/ui/accordion";
 // container, never from the item.
 export default function AccordionDemo() {
     return (
-        <div className="palette-surface flex w-full max-w-xl flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* Multiple open (default) — multiple={true} is the default */}
-            <Row label="multiple open (default)">
-                <Accordion.Root>
-                    <Accordion.Item>
-                        <Accordion.Header>
-                            <Accordion.Trigger>
-                                Is it accessible?
-                                <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
-                            </Accordion.Trigger>
-                        </Accordion.Header>
-                        <Accordion.Panel>
-                            <Accordion.Content>
-                                Yes. It adheres to the WAI-ARIA design pattern
-                                and uses Base UI's Accordion primitive for
-                                keyboard navigation, focus management and
-                                aria-expanded.
-                            </Accordion.Content>
-                        </Accordion.Panel>
-                    </Accordion.Item>
+        <div className="palette-surface flex w-full max-w-xl flex-col gap-6 bg-palette-base text-palette-contrast">
+            <Accordion.Root>
+                <Accordion.Item>
+                    <Accordion.Header>
+                        <Accordion.Trigger>
+                            Can I change my plan later?
+                            <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
+                        </Accordion.Trigger>
+                    </Accordion.Header>
+                    <Accordion.Panel>
+                        <Accordion.Content>
+                            Yes. Upgrades apply at once and are prorated;
+                            downgrades take effect at the end of the billing
+                            period.
+                        </Accordion.Content>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item>
+                    <Accordion.Header>
+                        <Accordion.Trigger>
+                            How do refunds work?
+                            <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
+                        </Accordion.Trigger>
+                    </Accordion.Header>
+                    <Accordion.Panel>
+                        <Accordion.Content>
+                            Annual plans can be refunded in full within 30 days.
+                            Monthly plans are not refunded, but you can cancel
+                            at any time.
+                        </Accordion.Content>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item>
+                    <Accordion.Header>
+                        <Accordion.Trigger>
+                            Do you offer a discount for nonprofits?
+                            <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
+                        </Accordion.Trigger>
+                    </Accordion.Header>
+                    <Accordion.Panel>
+                        <Accordion.Content>
+                            Yes. Write to us from your organisation's address
+                            and we apply 50% off every plan.
+                        </Accordion.Content>
+                    </Accordion.Panel>
+                </Accordion.Item>
+            </Accordion.Root>
 
-                    <Accordion.Item>
-                        <Accordion.Header>
-                            <Accordion.Trigger>
-                                Is it styled?
-                                <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
-                            </Accordion.Trigger>
-                        </Accordion.Header>
-                        <Accordion.Panel>
-                            <Accordion.Content>
-                                Yes. The trigger, panel and content come from
-                                the disclosure family — zero variants, shared
-                                with the collapsible component.
-                            </Accordion.Content>
-                        </Accordion.Panel>
-                    </Accordion.Item>
-                </Accordion.Root>
-            </Row>
-
-            {/* Single open */}
-            <Row label="single open">
-                <Accordion.Root multiple={false}>
-                    <Accordion.Item>
-                        <Accordion.Header>
-                            <Accordion.Trigger>
-                                First
-                                <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
-                            </Accordion.Trigger>
-                        </Accordion.Header>
-                        <Accordion.Panel>
-                            <Accordion.Content>
-                                Only one item open at a time.
-                            </Accordion.Content>
-                        </Accordion.Panel>
-                    </Accordion.Item>
-                    <Accordion.Item>
-                        <Accordion.Header>
-                            <Accordion.Trigger>
-                                Second
-                                <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
-                            </Accordion.Trigger>
-                        </Accordion.Header>
-                        <Accordion.Panel>
-                            <Accordion.Content>
-                                Opening this one closes the first.
-                            </Accordion.Content>
-                        </Accordion.Panel>
-                    </Accordion.Item>
-                </Accordion.Root>
-            </Row>
-
-            {/* Disabled item */}
-            <Row label="disabled item">
+            <Row label="disabled">
                 <Accordion.Root>
                     <Accordion.Item disabled>
                         <Accordion.Header>
                             <Accordion.Trigger>
-                                Disabled item
+                                Enterprise contracts
                                 <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 group-data-panel-open:rotate-180" />
                             </Accordion.Trigger>
                         </Accordion.Header>
                         <Accordion.Panel>
                             <Accordion.Content>
-                                This item is disabled — pointer events are
-                                zeroed and opacity is reduced.
+                                Talk to sales for a custom contract.
                             </Accordion.Content>
                         </Accordion.Panel>
                     </Accordion.Item>
@@ -109,10 +86,11 @@ export default function AccordionDemo() {
     );
 }
 
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             {children}

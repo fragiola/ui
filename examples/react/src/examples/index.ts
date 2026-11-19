@@ -44,7 +44,7 @@ export const examples: Example[] = [
         id: "text",
         title: "Text",
         description:
-            "Headings, paragraphs, labels and links from one primitive, a heading worn by a dialog title through `render`, and the settled secondary text.",
+            "A release note from one primitive: headings, a byline in the settled secondary text, a paragraph with a link, then a label and an error, and a heading worn by another part through `render`.",
         level: "atoms",
         order: 1,
         features: [
@@ -56,14 +56,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/atoms/text",
         layout: "flow",
-        height: 690,
+        height: 420,
         load: () => import("./text.tsx"),
     },
     {
         id: "clickable",
         title: "Clickable",
         description:
-            "Every variant, size and shape of the button surface, one palette class per button — there is no tone prop.",
+            "A settings card's actions — a solid primary in palette-neutral, an outline, a ghost and icon buttons — then the size, the disabled state and one row of palettes. There is no tone prop.",
         level: "atoms",
         order: 2,
         features: [
@@ -75,25 +75,27 @@ export const examples: Example[] = [
         ],
         docs: "/docs/atoms/clickable",
         layout: "flow",
-        height: 590,
+        height: 420,
         load: () => import("./clickable.tsx"),
     },
     {
         id: "palettes",
         title: "Palettes",
         description:
-            "Six palettes on one neutral floor: the same button in every variant, each one wearing its own palette-* class.",
+            "One class, and the colour changes: pick a colour and the same card re-colours, while the only code that changes is each element's palette-* class.",
         level: "atoms",
         order: 3,
         features: [
-            "palette-surface",
+            "palette-neutral",
+            "palette-surface-blue",
             "palette-blue",
-            "palette-danger",
             "Clickable.Button",
+            "Field",
+            "Switch",
         ],
         docs: "/docs/architecture/palettes",
         layout: "flow",
-        height: 346,
+        height: 472,
         load: () => import("./palettes.tsx"),
     },
 
@@ -102,7 +104,7 @@ export const examples: Example[] = [
         id: "field",
         title: "Field",
         description:
-            "One field per surface-ring palette, then the default, invalid, disabled and required states. The box lives on the row; focus shows the palette's ring.",
+            "A profile form in the default look, then the invalid and disabled states, then the same field on each surface-ring palette. The box lives on the row; focus shows the palette's ring.",
         level: "fields",
         order: 1,
         features: [
@@ -114,14 +116,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/field",
         layout: "flow",
-        height: 410,
+        height: 498,
         load: () => import("./field.tsx"),
     },
     {
         id: "input",
         title: "Input",
         description:
-            "The same input bare, with addons on either side, with an inset icon and as a template — the frame carries the box, the input carries none of it.",
+            "A store settings form: the same input with an inset icon, as a template with an addon, and with addons on both sides — the frame carries the box, the input carries none of it.",
         level: "fields",
         order: 2,
         features: [
@@ -132,14 +134,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/input",
         layout: "flow",
-        height: 580,
+        height: 500,
         load: () => import("./input.tsx"),
     },
     {
         id: "choice",
         title: "Choice controls",
         description:
-            "Checkbox, radio and switch side by side: one per surface-ring palette, every state, and with a label and description. One `choice` family for all three.",
+            "Notification settings with a switch, a radio group and a checkbox, then the indeterminate and disabled states, and one row of surface-ring palettes. One `choice` family for all three.",
         level: "fields",
         order: 3,
         features: [
@@ -151,14 +153,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/choice",
         layout: "flow",
-        height: 650,
+        height: 402,
         load: () => import("./choice.tsx"),
     },
     {
         id: "select",
         title: "Select",
         description:
-            "Selects on each surface-ring palette, grouped items with labels and a separator, and the disabled and invalid states — `field` + `popup` + `menu`, no style of its own.",
+            "Regional settings with grouped items, labels and a separator, then the disabled and invalid states and one row of surface-ring palettes — `field` + `popup` + `menu`, no style of its own.",
         level: "fields",
         order: 4,
         features: [
@@ -169,14 +171,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/select",
         layout: "flow",
-        height: 560,
+        height: 480,
         load: () => import("./select.tsx"),
     },
     {
         id: "combobox",
         title: "Combobox",
         description:
-            "Filtering comboboxes on each surface-ring palette, grouped options, multiple selection with chips, and the disabled state.",
+            "A filtering combobox with grouped options and a multiple one with chips, then the disabled and invalid states and one row of surface-ring palettes.",
         level: "fields",
         order: 5,
         features: [
@@ -187,7 +189,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/combobox",
         layout: "flow",
-        height: 820,
+        height: 620,
         load: () => import("./combobox.tsx"),
     },
 
@@ -196,7 +198,7 @@ export const examples: Example[] = [
         id: "dropdown-menu",
         title: "Dropdown menu",
         description:
-            "A grouped label, a destructive item painted by a palette class, submenus, checkbox and radio items with shortcuts.",
+            "An account menu with a group label, shortcuts, a checkbox item and a submenu of radio items, and a row's actions menu with a destructive item painted by a palette class.",
         level: "menus",
         order: 1,
         features: [
@@ -207,14 +209,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/menus/dropdown-menu",
         layout: "flow",
-        height: 620,
+        height: 400,
         load: () => import("./dropdown-menu.tsx"),
     },
     {
         id: "context-menu",
         title: "Context menu",
         description:
-            "Right-click the area to open a menu with a submenu, a checkbox item and a destructive item — the same factory and members as the dropdown menu.",
+            "Right-click a file to open a menu with a submenu, a checkbox item and a destructive item — the same factory and members as the dropdown menu.",
         level: "menus",
         order: 2,
         features: [
@@ -225,7 +227,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/menus/context-menu",
         layout: "flow",
-        height: 460,
+        height: 340,
         load: () => import("./context-menu.tsx"),
     },
 
@@ -240,7 +242,7 @@ export const examples: Example[] = [
         features: ["Dialog.Content", "Dialog.Body", "Dialog.Footer", "layer"],
         docs: "/docs/overlays/dialog",
         layout: "flow",
-        height: 258,
+        height: 100,
         load: () => import("./dialog.tsx"),
     },
     {
@@ -258,7 +260,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/overlays/alert-dialog",
         layout: "flow",
-        height: 258,
+        height: 100,
         load: () => import("./alert-dialog.tsx"),
     },
     {
@@ -276,14 +278,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/overlays/drawer",
         layout: "flow",
-        height: 342,
+        height: 100,
         load: () => import("./drawer.tsx"),
     },
     {
         id: "popover",
         title: "Popover",
         description:
-            "A popover holding a small form, and one without a close button. Title, description and close arrive through `render`.",
+            "A popover holding a small form, and a note without a close button. Title, description and close arrive through `render`.",
         level: "overlays",
         order: 4,
         features: [
@@ -294,20 +296,20 @@ export const examples: Example[] = [
         ],
         docs: "/docs/overlays/popover",
         layout: "flow",
-        height: 300,
+        height: 380,
         load: () => import("./popover.tsx"),
     },
     {
         id: "tooltip",
         title: "Tooltip",
         description:
-            "Two triggers under one provider: moving from the first to the second opens its tooltip without waiting for the delay again.",
+            "An editor toolbar under one provider: moving from one button to the next opens its tooltip without waiting for the delay again.",
         level: "overlays",
         order: 5,
         features: ["Tooltip.Provider", "Tooltip.Content", "popup.tooltip"],
         docs: "/docs/overlays/tooltip",
         layout: "flow",
-        height: 200,
+        height: 140,
         load: () => import("./tooltip.tsx"),
     },
 
@@ -316,7 +318,7 @@ export const examples: Example[] = [
         id: "accordion",
         title: "Accordion",
         description:
-            "Several items open at once, a single-open group and a disabled item — the disclosure family's trigger, panel and content.",
+            "A pricing FAQ with several items open at once, and a disabled item — the disclosure family's trigger, panel and content.",
         level: "disclosure",
         order: 1,
         features: [
@@ -327,14 +329,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/disclosure/accordion",
         layout: "flow",
-        height: 470,
+        height: 294,
         load: () => import("./accordion.tsx"),
     },
     {
         id: "collapsible",
         title: "Collapsible",
         description:
-            "One section on its own: closed by default, open by default, and disabled.",
+            "An order summary that starts open, and a disabled section.",
         level: "disclosure",
         order: 2,
         features: [
@@ -345,7 +347,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/disclosure/collapsible",
         layout: "flow",
-        height: 420,
+        height: 260,
         load: () => import("./collapsible.tsx"),
     },
 
@@ -354,13 +356,13 @@ export const examples: Example[] = [
         id: "tabs",
         title: "Tabs",
         description:
-            "Horizontal tabs with the animated indicator, a disabled tab, and a vertical list. The indicator follows the primitive's CSS variables, RTL included.",
+            "Account settings tabs with the animated indicator and a disabled tab, a vertical list, and one row of palettes. The indicator follows the primitive's CSS variables, RTL included.",
         level: "navigation",
         order: 1,
         features: ["Tabs.List", "Tabs.Tab", "Tabs.Panel", "orientation"],
         docs: "/docs/navigation/tabs",
         layout: "flow",
-        height: 480,
+        height: 384,
         load: () => import("./tabs.tsx"),
     },
     {
@@ -377,14 +379,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/navigation/navigation-menu",
         layout: "flow",
-        height: 280,
+        height: 220,
         load: () => import("./navigation-menu.tsx"),
     },
     {
         id: "pagination",
         title: "Pagination",
         description:
-            "Basic pagination, collapsed ranges with an ellipsis, and previous disabled on the first page. The current page is a fill strategy, never a colour.",
+            "An invoice list's footer with collapsed ranges, and previous disabled on the first page. The current page is a state, never a colour.",
         level: "navigation",
         order: 3,
         features: [
@@ -395,14 +397,14 @@ export const examples: Example[] = [
         ],
         docs: "/docs/navigation/pagination",
         layout: "flow",
-        height: 330,
+        height: 176,
         load: () => import("./pagination.tsx"),
     },
     {
         id: "breadcrumb",
         title: "Breadcrumb",
         description:
-            "A basic trail, collapsed items behind an ellipsis, and a custom separator. The current page is text, not a link.",
+            "A page header's trail, collapsed items behind an ellipsis, and a custom separator. The current page is text, not a link.",
         level: "navigation",
         order: 4,
         features: [
@@ -413,7 +415,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/navigation/breadcrumb",
         layout: "flow",
-        height: 300,
+        height: 268,
         load: () => import("./breadcrumb.tsx"),
     },
     {
@@ -444,20 +446,20 @@ export const examples: Example[] = [
         id: "badge",
         title: "Badge",
         description:
-            "Soft, solid and outline badges, with and without an icon, across six palettes on one floor — each badge carries its own palette class.",
+            "An invoice list's statuses in soft, solid and outline badges, badges with an icon, and one row of palettes — each badge carries its own palette class.",
         level: "display",
         order: 1,
         features: ["Badge", "variant", "palette-blue", "palette-danger"],
         docs: "/docs/display/badge",
         layout: "flow",
-        height: 370,
+        height: 344,
         load: () => import("./badge.tsx"),
     },
     {
         id: "table",
         title: "Table",
         description:
-            "A table painted by the floor's roles with hover and a selected row, then a column, a row and a cell tinted by a palette class on that element.",
+            "An invoice table painted by the floor's roles, with hover, a selected row, status badges and a footer, then the empty state.",
         level: "display",
         order: 2,
         features: [
@@ -469,53 +471,52 @@ export const examples: Example[] = [
         ],
         docs: "/docs/display/table",
         layout: "flow",
-        height: 860,
+        height: 597,
         load: () => import("./table.tsx"),
     },
     {
         id: "avatar",
         title: "Avatar",
         description:
-            "Images, the fallback when there is none, a broken image falling back, and sizes set from outside.",
+            "A member list with images and a fallback, sizes set from outside, and a broken image falling back.",
         level: "display",
         order: 3,
         features: ["Avatar.Image", "Avatar.Fallback", "size-*"],
         docs: "/docs/display/avatar",
         layout: "flow",
-        height: 400,
+        height: 408,
         load: () => import("./avatar.tsx"),
     },
     {
         id: "skeleton",
         title: "Skeleton",
-        description:
-            "Loading placeholders composed into a card, an avatar with text, and table rows.",
+        description: "A post card while it loads, composed from placeholders.",
         level: "display",
         order: 4,
         features: ["Skeleton", "bg-palette-soft", "animate-pulse"],
         docs: "/docs/display/skeleton",
         layout: "flow",
-        height: 580,
+        height: 360,
         load: () => import("./skeleton.tsx"),
     },
     {
         id: "separator",
         title: "Separator",
         description:
-            "Horizontal, between two pieces of content, and vertical — the floor's line role.",
+            "An account summary divided horizontally and vertically — the floor's line role.",
         level: "display",
         order: 5,
         features: ["Separator", "orientation", "bg-palette-line"],
         docs: "/docs/display/separator",
         layout: "flow",
-        height: 350,
+        height: 242,
         load: () => import("./separator.tsx"),
     },
     {
         id: "progress",
         title: "Progress",
         description:
-            "One bar per chromatic palette, the value axis from empty to full, and the indeterminate state.",
+            "An upload list, the indeterminate state, and one row of palettes.",
         level: "display",
         order: 6,
         features: [
@@ -526,33 +527,27 @@ export const examples: Example[] = [
         ],
         docs: "/docs/display/progress",
         layout: "flow",
-        height: 320,
+        height: 328,
         load: () => import("./progress.tsx"),
     },
     {
         id: "slider",
         title: "Slider",
         description:
-            "One slider per chromatic palette, a range, steps, disabled, vertical, and one inside a field row — every box style comes from the row.",
+            "A price range and a stepped rating, then the disabled and vertical sliders, and one row of palettes.",
         level: "display",
         order: 7,
-        features: [
-            "Slider.Thumb",
-            "range",
-            "orientation",
-            "Field.Row",
-            "palette-blue",
-        ],
+        features: ["Slider.Thumb", "range", "orientation", "palette-blue"],
         docs: "/docs/display/slider",
         layout: "flow",
-        height: 770,
+        height: 398,
         load: () => import("./slider.tsx"),
     },
     {
         id: "chart",
         title: "Chart",
         description:
-            "A line, a bar and a donut chart: the same wrapper re-coloured by the palette class on each chart.",
+            "A line, a bar and a donut chart, coloured by the palette class on each chart's wrapper.",
         level: "display",
         order: 8,
         features: [
@@ -564,7 +559,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/display/chart",
         layout: "flow",
-        height: 1090,
+        height: 1048,
         load: () => import("./chart.tsx"),
     },
     // ─── Special ────────────────────────────────────────────────────────────

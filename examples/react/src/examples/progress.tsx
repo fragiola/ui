@@ -3,15 +3,8 @@
 import type { ReactNode } from "react";
 import { Progress } from "#/components/ui/progress";
 
-// The palette class goes on the Progress.Root, not on a wrapping context.
-// The floor is palette-surface; each progress bar carries its own palette-*
-// class. The indicator fills with bg-palette-base — the palette's colour —
-// so six palettes on one floor show six differently-coloured bars at once.
-//
-// Axes shown, one per row, all aligned:
-//   palettes  one bar per chromatic palette (value 65%)
-//   value     0% / mid / 100%
-//   indeterminate  value=null
+// The chromatic palettes. Literal here because examples are published source
+// (the code panel shows this file verbatim, with a copy button).
 const CHROMATIC = [
     "blue",
     "purple",
@@ -21,76 +14,72 @@ const CHROMATIC = [
     "danger",
 ] as const;
 
+// An upload list in the default look: the fill is the palette's ring, the
+// "on" colour, so with no palette class it is the floor's dark neutral.
+// Then the indeterminate state (value={null}), for work whose length is
+// unknown, and last the same bar in each chromatic palette: the colour is
+// the palette class on Progress.Root, there is no colour variant.
 export default function ProgressDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* palettes — one bar per chromatic palette, same value */}
-            <Row label="palettes">
-                {CHROMATIC.map((palette) => (
-                    <Progress.Root
-                        key={palette}
-                        value={65}
-                        className={`palette-${palette} w-40`}
-                    >
-                        <Progress.Track>
-                            <Progress.Indicator />
-                        </Progress.Track>
-                    </Progress.Root>
-                ))}
-            </Row>
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex max-w-sm flex-col gap-4">
+                <Upload name="quarterly-report.pdf" value={100} />
+                <Upload name="team-photo.jpg" value={64} />
+                <Upload name="recording.mp4" value={12} />
+            </div>
 
-            {/* value axis: 0% / mid / 100% (palette blue) */}
-            <Row label="value">
-                <Progress.Root value={0} className="palette-blue w-40">
-                    <div className="flex items-center justify-between">
-                        <Progress.Label>Empty</Progress.Label>
-                        <Progress.Value />
-                    </div>
-                    <Progress.Track>
-                        <Progress.Indicator />
-                    </Progress.Track>
-                </Progress.Root>
-                <Progress.Root value={42} className="palette-blue w-40">
-                    <div className="flex items-center justify-between">
-                        <Progress.Label>Mid</Progress.Label>
-                        <Progress.Value />
-                    </div>
-                    <Progress.Track>
-                        <Progress.Indicator />
-                    </Progress.Track>
-                </Progress.Root>
-                <Progress.Root value={100} className="palette-blue w-40">
-                    <div className="flex items-center justify-between">
-                        <Progress.Label>Full</Progress.Label>
-                        <Progress.Value />
-                    </div>
-                    <Progress.Track>
-                        <Progress.Indicator />
-                    </Progress.Track>
-                </Progress.Root>
-            </Row>
-
-            {/* indeterminate — value=null (palette blue) */}
             <Row label="indeterminate">
-                <Progress.Root value={null} className="palette-blue w-40">
+                <Progress.Root value={null} className="max-w-sm">
                     <Progress.Label>Connecting…</Progress.Label>
                     <Progress.Track>
                         <Progress.Indicator />
                     </Progress.Track>
                 </Progress.Root>
             </Row>
+
+            {/* the same bar, only its palette-* class changed */}
+            <Row label="palettes">
+                <div className="flex flex-wrap items-center gap-4">
+                    {CHROMATIC.map((palette) => (
+                        <Progress.Root
+                            key={palette}
+                            value={65}
+                            aria-label={palette}
+                            className={`palette-${palette} w-20`}
+                        >
+                            <Progress.Track>
+                                <Progress.Indicator />
+                            </Progress.Track>
+                        </Progress.Root>
+                    ))}
+                </div>
+            </Row>
         </div>
     );
 }
 
-// Row — a labelled, aligned row. The label is a <span>, not a heading.
+function Upload({ name, value }: { name: string; value: number }) {
+    return (
+        <Progress.Root value={value}>
+            <div className="flex items-center justify-between">
+                <Progress.Label>{name}</Progress.Label>
+                <Progress.Value />
+            </div>
+            <Progress.Track>
+                <Progress.Indicator />
+            </Progress.Track>
+        </Progress.Root>
+    );
+}
+
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
-            <div className="flex flex-wrap items-center gap-4">{children}</div>
+            {children}
         </div>
     );
 }

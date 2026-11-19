@@ -6,23 +6,9 @@ import { field } from "#/components/families/field";
 import { Combobox } from "#/components/ui/combobox";
 import { Field } from "#/components/ui/field";
 
-// The palette class goes on the field element, not on a wrapping context.
-// The floor is palette-surface; each Field.Root carries a palette-surface-*
-// class — a neutral surface whose only difference from surface is a
-// chromatic focus ring. The combobox — input, trigger, list and items —
-// reads roles from the field's palette; focusing the input shows the
-// coloured ring. The portal content inherits the palette from the owning
-// subtree.
-//
-// Combobox.Label labels Combobox.Trigger only. When Combobox.Input is the
-// form control, use Field.Label instead — that is what is done here, so the
-// console stays clean.
-//
-// Axes shown, one per row, all aligned:
-//   palettes   one combobox per surface-ring palette
-//   grouped    groups with labels and separator
-//   multiselect  multiple selection with chips
-//   states     disabled
+// The surface-tier palettes: each is the neutral surface with one chromatic
+// ring. Literal here because examples are published source (the code panel
+// shows this file verbatim, with a copy button).
 const SURFACE_RING = [
     "surface-blue",
     "surface-purple",
@@ -31,6 +17,16 @@ const SURFACE_RING = [
     "surface-rose",
 ] as const;
 
+// A project's settings in the default look: a filtering combobox with
+// grouped options, and a multiple one whose choices become chips. The
+// fields carry no palette class; the popup reads the roles of the palette it
+// was opened from, through the portal. Then the disabled and invalid
+// states, and last the same combobox in each surface-ring palette (focus
+// one to see its ring).
+//
+// Combobox.Label labels Combobox.Trigger only. When Combobox.Input is the
+// form control, use Field.Label instead — that is what is done here, so the
+// console stays clean.
 const frameworks = [
     { value: "react", label: "React" },
     { value: "solid", label: "Solid" },
@@ -41,45 +37,10 @@ const frameworks = [
 
 export default function ComboboxDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* palettes — one combobox per surface-ring palette; focus the
-                input to see the ring colour. Field.Label is used instead of
-                Combobox.Label because Combobox.Input is the form control. */}
-            <Row label="palettes (focus input to see ring)">
-                {SURFACE_RING.map((palette) => (
-                    <Field.Root
-                        key={palette}
-                        className={`palette-${palette} w-48`}
-                    >
-                        <Field.Label>{palette}</Field.Label>
-                        <Combobox.Root items={frameworks}>
-                            <Combobox.InputGroup>
-                                <Combobox.Input placeholder="Search…" />
-                                <Combobox.Trigger />
-                            </Combobox.InputGroup>
-                            <Combobox.Content>
-                                <Combobox.List>
-                                    {(item) => (
-                                        <Combobox.Item
-                                            key={item.value}
-                                            value={item}
-                                        >
-                                            {item.label}
-                                        </Combobox.Item>
-                                    )}
-                                </Combobox.List>
-                                <Combobox.Empty>No results.</Combobox.Empty>
-                            </Combobox.Content>
-                        </Combobox.Root>
-                    </Field.Root>
-                ))}
-            </Row>
-
-            {/* grouped — groups with labels and separator (palette
-                surface-blue) */}
-            <Row label="grouped">
-                <Field.Root className="palette-surface-blue w-56">
-                    <Field.Label>Framework</Field.Label>
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex flex-wrap items-start gap-4">
+                <Field.Root className="w-56">
+                    <Field.Label>Stack</Field.Label>
                     <Combobox.Root>
                         <Combobox.InputGroup>
                             <Combobox.Input placeholder="Search…" />
@@ -121,19 +82,16 @@ export default function ComboboxDemo() {
                         </Combobox.Content>
                     </Combobox.Root>
                 </Field.Root>
-            </Row>
 
-            {/* multiselect — multiple selection with chips (palette
-                surface-blue). In multiselect, Combobox.Chips IS the input
-                group: it holds the chips (via Combobox.Value) and the input
-                together. The input goes inside the Value render prop, after
+                {/* Multiple selection with chips. In multiselect,
+                Combobox.Chips IS the input group: it holds the chips (via
+                Combobox.Value) and the input together. The input goes inside the Value render prop, after
                 the chips — not in a separate InputGroup. Each chip carries a
                 ChipRemove button. Items use string values (item.value); the
                 Combobox.Value render prop looks up the label from frameworks
                 so chips display the human-readable name. */}
-            <Row label="multiselect">
-                <Field.Root className="palette-surface-blue w-56">
-                    <Field.Label>Frameworks (multi)</Field.Label>
+                <Field.Root className="w-72">
+                    <Field.Label>Frameworks</Field.Label>
                     <Combobox.Root
                         multiple
                         items={frameworks}
@@ -180,39 +138,72 @@ export default function ComboboxDemo() {
                         </Combobox.Content>
                     </Combobox.Root>
                 </Field.Root>
+            </div>
+
+            <Row label="states">
+                <Field.Root disabled className="w-48">
+                    <Field.Label>Region</Field.Label>
+                    <Combobox.Root items={frameworks}>
+                        <Combobox.InputGroup>
+                            <Combobox.Input placeholder="eu-west-1" />
+                            <Combobox.Trigger />
+                        </Combobox.InputGroup>
+                    </Combobox.Root>
+                </Field.Root>
+
+                <Field.Root invalid className="w-48">
+                    <Field.Label>Owner</Field.Label>
+                    <Combobox.Root items={frameworks}>
+                        <Combobox.InputGroup>
+                            <Combobox.Input placeholder="Search people…" />
+                            <Combobox.Trigger />
+                        </Combobox.InputGroup>
+                    </Combobox.Root>
+                    <Field.Error match>Choose an owner.</Field.Error>
+                </Field.Root>
             </Row>
 
-            {/* states — disabled (palette surface-blue) */}
-            <Row label="states">
-                <Field.Root disabled className="palette-surface-blue w-48">
-                    <Field.Label>Disabled</Field.Label>
-                    <Combobox.Root items={frameworks}>
-                        <Combobox.InputGroup>
-                            <Combobox.Input placeholder="Cannot search" />
-                            <Combobox.Trigger />
-                        </Combobox.InputGroup>
-                    </Combobox.Root>
-                </Field.Root>
-
-                <Field.Root invalid className="palette-surface-blue w-48">
-                    <Field.Label>Invalid</Field.Label>
-                    <Combobox.Root items={frameworks}>
-                        <Combobox.InputGroup>
-                            <Combobox.Input placeholder="Cannot search" />
-                            <Combobox.Trigger />
-                        </Combobox.InputGroup>
-                    </Combobox.Root>
-                </Field.Root>
+            {/* the same combobox, only its palette-* class changed */}
+            <Row label="palettes">
+                {SURFACE_RING.map((palette) => (
+                    <Field.Root
+                        key={palette}
+                        className={`palette-${palette} w-40`}
+                    >
+                        <Combobox.Root items={frameworks}>
+                            <Combobox.InputGroup>
+                                <Combobox.Input
+                                    aria-label={palette}
+                                    placeholder={palette}
+                                />
+                                <Combobox.Trigger />
+                            </Combobox.InputGroup>
+                            <Combobox.Content>
+                                <Combobox.List>
+                                    {(item) => (
+                                        <Combobox.Item
+                                            key={item.value}
+                                            value={item}
+                                        >
+                                            {item.label}
+                                        </Combobox.Item>
+                                    )}
+                                </Combobox.List>
+                                <Combobox.Empty>No results.</Combobox.Empty>
+                            </Combobox.Content>
+                        </Combobox.Root>
+                    </Field.Root>
+                ))}
             </Row>
         </div>
     );
 }
 
-// Row — a labelled, aligned row. The label is a <span>, not a heading.
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             <div className="flex flex-wrap items-start gap-4">{children}</div>

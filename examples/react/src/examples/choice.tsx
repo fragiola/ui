@@ -6,17 +6,10 @@ import { Field } from "#/components/ui/field";
 import { Radio, RadioGroup } from "#/components/ui/radio";
 import { Switch } from "#/components/ui/switch";
 
-// The palette class goes on the field element, not on a wrapping context.
-// The floor is palette-surface; each field carries a palette-surface-* class
-// — a neutral surface whose only difference from surface is a chromatic
-// focus ring. The choice controls (checkbox, radio, switch) read roles from
-// the field's palette; focusing shows the coloured ring.
-//
-// Three columns — one per choice type (checkbox, radio, switch). Three rows,
-// one per axis:
-//   palettes     one control per surface-ring palette (focus to see ring)
-//   states       unchecked / checked / indeterminate / disabled
-//   description control + label + description
+// The surface-tier palettes: each is the neutral surface with one chromatic
+// ring, which is also the "on" colour of a checkbox, a radio and a switch.
+// Literal here because examples are published source (the code panel shows
+// this file verbatim, with a copy button).
 const SURFACE_RING = [
     "surface-blue",
     "surface-purple",
@@ -25,250 +18,142 @@ const SURFACE_RING = [
     "surface-rose",
 ] as const;
 
+// Notification settings in the default look: a switch, a radio group and a
+// checkbox, each in a Field that gives it its label and description. The
+// choices carry no palette class: "on" is the floor's ring, the dark
+// neutral. Then the states a form needs, and last the same three controls
+// in each surface-ring palette, which changes only the "on" colour and the
+// focus ring.
 export default function ChoiceDemo() {
     return (
-        <div className="not-prose palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            {/* palettes — one control per surface-ring palette; focus to
-                see the ring colour. */}
-            <Section label="palettes (focus to see ring)">
-                <Column title="Checkbox">
-                    {SURFACE_RING.map((palette) => (
-                        <Field.ChoiceRoot
-                            key={palette}
-                            className={`palette-${palette}`}
-                        >
-                            <Checkbox.Root
-                                id={`cb-palette-${palette}`}
-                                defaultChecked
-                            >
-                                <Checkbox.Indicator />
-                            </Checkbox.Root>
-                            <Field.Label htmlFor={`cb-palette-${palette}`}>
-                                {palette}
-                            </Field.Label>
-                        </Field.ChoiceRoot>
-                    ))}
-                </Column>
-
-                <Column title="Radio">
-                    {SURFACE_RING.map((palette) => (
-                        <RadioGroup
-                            key={palette}
-                            defaultValue={palette}
-                            className={`palette-${palette}`}
-                        >
-                            <Field.ChoiceRoot>
-                                <Radio.Root
-                                    value={palette}
-                                    id={`rd-palette-${palette}`}
-                                >
-                                    <Radio.Indicator />
-                                </Radio.Root>
-                                <Field.Label htmlFor={`rd-palette-${palette}`}>
-                                    {palette}
-                                </Field.Label>
-                            </Field.ChoiceRoot>
-                        </RadioGroup>
-                    ))}
-                </Column>
-
-                <Column title="Switch">
-                    {SURFACE_RING.map((palette) => (
-                        <Field.ChoiceRoot
-                            key={palette}
-                            className={`palette-${palette}`}
-                        >
-                            <Switch.Root
-                                id={`sw-palette-${palette}`}
-                                defaultChecked
-                            >
-                                <Switch.Thumb />
-                            </Switch.Root>
-                            <Field.Label htmlFor={`sw-palette-${palette}`}>
-                                {palette}
-                            </Field.Label>
-                        </Field.ChoiceRoot>
-                    ))}
-                </Column>
-            </Section>
-
-            {/* states — unchecked / checked / indeterminate / disabled
-                (palette surface-blue) */}
-            <Section label="states">
-                <Column title="Checkbox">
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Checkbox.Root id="cb-unchecked">
-                            <Checkbox.Indicator />
-                        </Checkbox.Root>
-                        <Field.Label htmlFor="cb-unchecked">
-                            Unchecked
+        <div className="not-prose palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex max-w-md flex-col gap-5">
+                <Field.ChoiceRoot>
+                    <Switch.Root id="email-alerts" defaultChecked>
+                        <Switch.Thumb />
+                    </Switch.Root>
+                    <div className="flex flex-col gap-1">
+                        <Field.Label htmlFor="email-alerts">
+                            Email alerts
                         </Field.Label>
-                    </Field.ChoiceRoot>
+                        <Field.Description>
+                            Get an email when someone mentions you.
+                        </Field.Description>
+                    </div>
+                </Field.ChoiceRoot>
 
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Checkbox.Root id="cb-checked" defaultChecked>
-                            <Checkbox.Indicator />
-                        </Checkbox.Root>
-                        <Field.Label htmlFor="cb-checked">Checked</Field.Label>
-                    </Field.ChoiceRoot>
-
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Checkbox.Root id="cb-indeterminate" indeterminate>
-                            <Checkbox.Indicator />
-                        </Checkbox.Root>
-                        <Field.Label htmlFor="cb-indeterminate">
-                            Indeterminate
-                        </Field.Label>
-                    </Field.ChoiceRoot>
-
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Checkbox.Root id="cb-disabled" disabled>
-                            <Checkbox.Indicator />
-                        </Checkbox.Root>
-                        <Field.Label htmlFor="cb-disabled">
-                            Disabled
-                        </Field.Label>
-                    </Field.ChoiceRoot>
-                </Column>
-
-                <Column title="Radio">
-                    <RadioGroup
-                        defaultValue="email"
-                        className="palette-surface-blue"
-                    >
+                <Field.Root>
+                    <Field.Label>Digest</Field.Label>
+                    <RadioGroup defaultValue="daily">
                         <Field.ChoiceRoot>
-                            <Radio.Root value="email" id="rd-email">
+                            <Radio.Root value="daily" id="digest-daily">
                                 <Radio.Indicator />
                             </Radio.Root>
-                            <Field.Label htmlFor="rd-email">
-                                Email (selected)
+                            <Field.Label htmlFor="digest-daily">
+                                Daily
                             </Field.Label>
                         </Field.ChoiceRoot>
                         <Field.ChoiceRoot>
-                            <Radio.Root value="sms" id="rd-sms">
+                            <Radio.Root value="weekly" id="digest-weekly">
                                 <Radio.Indicator />
                             </Radio.Root>
-                            <Field.Label htmlFor="rd-sms">SMS</Field.Label>
+                            <Field.Label htmlFor="digest-weekly">
+                                Weekly
+                            </Field.Label>
                         </Field.ChoiceRoot>
                         <Field.ChoiceRoot>
-                            <Radio.Root value="push" id="rd-push" disabled>
+                            <Radio.Root value="never" id="digest-never">
                                 <Radio.Indicator />
                             </Radio.Root>
-                            <Field.Label htmlFor="rd-push">
-                                Push (disabled)
+                            <Field.Label htmlFor="digest-never">
+                                Never
                             </Field.Label>
                         </Field.ChoiceRoot>
                     </RadioGroup>
-                </Column>
+                </Field.Root>
 
-                <Column title="Switch">
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Switch.Root id="sw-off">
-                            <Switch.Thumb />
-                        </Switch.Root>
-                        <Field.Label htmlFor="sw-off">Off</Field.Label>
-                    </Field.ChoiceRoot>
-
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Switch.Root id="sw-on" defaultChecked>
-                            <Switch.Thumb />
-                        </Switch.Root>
-                        <Field.Label htmlFor="sw-on">On</Field.Label>
-                    </Field.ChoiceRoot>
-
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Switch.Root id="sw-disabled" disabled>
-                            <Switch.Thumb />
-                        </Switch.Root>
-                        <Field.Label htmlFor="sw-disabled">
-                            Disabled
+                <Field.ChoiceRoot>
+                    <Checkbox.Root id="product-news">
+                        <Checkbox.Indicator />
+                    </Checkbox.Root>
+                    <div className="flex flex-col gap-1">
+                        <Field.Label htmlFor="product-news">
+                            Product news
                         </Field.Label>
-                    </Field.ChoiceRoot>
-                </Column>
-            </Section>
+                        <Field.Description>
+                            A short note when we ship something new.
+                        </Field.Description>
+                    </div>
+                </Field.ChoiceRoot>
+            </div>
 
-            {/* description — control + label + description (palette
-                surface-blue) */}
-            <Section label="with description">
-                <Column title="Checkbox">
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Checkbox.Root id="newsletter" defaultChecked>
+            <Row label="states">
+                <Field.ChoiceRoot className="w-auto">
+                    <Checkbox.Root id="select-some" indeterminate>
+                        <Checkbox.Indicator />
+                    </Checkbox.Root>
+                    <Field.Label htmlFor="select-some">
+                        Some selected
+                    </Field.Label>
+                </Field.ChoiceRoot>
+                <Field.ChoiceRoot className="w-auto">
+                    <Checkbox.Root id="locked-check" defaultChecked disabled>
+                        <Checkbox.Indicator />
+                    </Checkbox.Root>
+                    <Field.Label htmlFor="locked-check">Disabled</Field.Label>
+                </Field.ChoiceRoot>
+                <Field.ChoiceRoot className="w-auto">
+                    <Switch.Root id="locked-switch" disabled>
+                        <Switch.Thumb />
+                    </Switch.Root>
+                    <Field.Label htmlFor="locked-switch">Disabled</Field.Label>
+                </Field.ChoiceRoot>
+            </Row>
+
+            {/* the same controls, only their palette-* class changed */}
+            <Row label="palettes">
+                {SURFACE_RING.map((palette) => (
+                    <div
+                        key={palette}
+                        className={`palette-${palette} flex items-center gap-3`}
+                    >
+                        <Checkbox.Root
+                            defaultChecked
+                            aria-label={`Checkbox, ${palette}`}
+                        >
                             <Checkbox.Indicator />
                         </Checkbox.Root>
-                        <div className="flex flex-col gap-1">
-                            <Field.Label htmlFor="newsletter">
-                                Subscribe to newsletter
-                            </Field.Label>
-                            <Field.Description>
-                                Get notified about new releases.
-                            </Field.Description>
-                        </div>
-                    </Field.ChoiceRoot>
-                </Column>
-
-                <Column title="Radio">
-                    <Field.Root className="palette-surface-blue">
-                        <Field.Label>Notification preference</Field.Label>
-                        <RadioGroup defaultValue="email">
-                            <Field.ChoiceRoot>
-                                <Radio.Root value="email">
-                                    <Radio.Indicator />
-                                </Radio.Root>
-                                <Field.Label>Email</Field.Label>
-                            </Field.ChoiceRoot>
-                            <Field.ChoiceRoot>
-                                <Radio.Root value="sms">
-                                    <Radio.Indicator />
-                                </Radio.Root>
-                                <Field.Label>SMS</Field.Label>
-                            </Field.ChoiceRoot>
+                        <RadioGroup
+                            defaultValue="on"
+                            aria-label={`Radio, ${palette}`}
+                        >
+                            <Radio.Root value="on" aria-label={palette}>
+                                <Radio.Indicator />
+                            </Radio.Root>
                         </RadioGroup>
-                        <Field.Description>
-                            Choose how you want to be notified.
-                        </Field.Description>
-                    </Field.Root>
-                </Column>
-
-                <Column title="Switch">
-                    <Field.ChoiceRoot className="palette-surface-blue">
-                        <Switch.Root id="autosave" defaultChecked>
+                        <Switch.Root
+                            defaultChecked
+                            aria-label={`Switch, ${palette}`}
+                        >
                             <Switch.Thumb />
                         </Switch.Root>
-                        <div className="flex flex-col gap-1">
-                            <Field.Label htmlFor="autosave">
-                                Autosave
-                            </Field.Label>
-                            <Field.Description>
-                                Automatically save changes as you type.
-                            </Field.Description>
-                        </div>
-                    </Field.ChoiceRoot>
-                </Column>
-            </Section>
+                    </div>
+                ))}
+            </Row>
         </div>
     );
 }
 
-// Section — a labelled row of three columns.
-function Section({ label, children }: { label: string; children: ReactNode }) {
+// Row — a captioned row. The caption is a <span>, not a heading.
+function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
-            <div className="grid grid-cols-3 gap-4">{children}</div>
-        </div>
-    );
-}
-
-// Column — a titled column inside a section.
-function Column({ title, children }: { title: string; children: ReactNode }) {
-    return (
-        <div className="flex flex-col gap-3">
-            <span className="text-xs font-semibold text-palette-accent/85">
-                {title}
-            </span>
-            <div className="flex flex-col gap-3">{children}</div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                {children}
+            </div>
         </div>
     );
 }

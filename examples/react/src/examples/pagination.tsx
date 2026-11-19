@@ -3,47 +3,21 @@
 import type { ReactNode } from "react";
 import { Pagination } from "#/components/ui/pagination";
 
-// The floor is palette-surface. The pagination links and the active state
-// read roles from the floor — the active link uses contrast, the rest use
-// accent. Shows: basic, with ellipsis, and previous disabled at the start.
+// The footer of an invoice list in the default look: a count in secondary
+// text and the pages, the current one lit as `current` (a soft fill, text in
+// contrast). The pagination carries no palette class and takes the floor's.
+// Then the first page, where there is no previous page to go to.
 export default function PaginationDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            <Row label="basic">
+        <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <span className="text-sm text-palette-accent/85">
+                    Showing 161–180 of 412 invoices
+                </span>
                 <Pagination.Root>
                     <Pagination.Content>
                         <Pagination.Item>
-                            <Pagination.Previous href="?page=1" />
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Link href="?page=1">1</Pagination.Link>
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Link href="?page=2" active>
-                                2
-                            </Pagination.Link>
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Link href="?page=3">3</Pagination.Link>
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Link href="?page=4">4</Pagination.Link>
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Link href="?page=5">5</Pagination.Link>
-                        </Pagination.Item>
-                        <Pagination.Item>
-                            <Pagination.Next href="?page=3" />
-                        </Pagination.Item>
-                    </Pagination.Content>
-                </Pagination.Root>
-            </Row>
-
-            <Row label="with ellipsis">
-                <Pagination.Root>
-                    <Pagination.Content>
-                        <Pagination.Item>
-                            <Pagination.Previous href="?page=1" />
+                            <Pagination.Previous href="?page=8" />
                         </Pagination.Item>
                         <Pagination.Item>
                             <Pagination.Link href="?page=1">1</Pagination.Link>
@@ -68,8 +42,8 @@ export default function PaginationDemo() {
                             <Pagination.Ellipsis />
                         </Pagination.Item>
                         <Pagination.Item>
-                            <Pagination.Link href="?page=20">
-                                20
+                            <Pagination.Link href="?page=21">
+                                21
                             </Pagination.Link>
                         </Pagination.Item>
                         <Pagination.Item>
@@ -77,9 +51,10 @@ export default function PaginationDemo() {
                         </Pagination.Item>
                     </Pagination.Content>
                 </Pagination.Root>
-            </Row>
+            </div>
 
-            <Row label="previous disabled">
+            {/* on the first page, Previous is disabled */}
+            <Row label="first page">
                 <Pagination.Root>
                     <Pagination.Content>
                         <Pagination.Item>
@@ -94,6 +69,9 @@ export default function PaginationDemo() {
                             <Pagination.Link href="?page=2">2</Pagination.Link>
                         </Pagination.Item>
                         <Pagination.Item>
+                            <Pagination.Link href="?page=3">3</Pagination.Link>
+                        </Pagination.Item>
+                        <Pagination.Item>
                             <Pagination.Next href="?page=2" />
                         </Pagination.Item>
                     </Pagination.Content>
@@ -103,10 +81,11 @@ export default function PaginationDemo() {
     );
 }
 
+// Row — a captioned row. The caption is a <span>, not a heading.
 function Row({ label, children }: { label: string; children: ReactNode }) {
     return (
-        <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
+        <div className="flex flex-col items-start gap-2">
+            <span className="font-mono text-xs text-palette-accent/85">
                 {label}
             </span>
             {children}

@@ -1,54 +1,43 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-react";
 import { Clickable } from "#/components/atoms/clickable";
 import { Tooltip } from "#/components/ui/tooltip";
 
-// The floor is palette-surface. The tooltip content travels through a portal
-// but inherits the palette from the owning subtree. The provider coordinates
-// the delay between the two triggers — moving from one to the next opens the
-// second tooltip without waiting for the delay again.
+const ACTIONS = [
+    { label: "Bold", shortcut: "⌘B", icon: BoldIcon },
+    { label: "Italic", shortcut: "⌘I", icon: ItalicIcon },
+    { label: "Underline", shortcut: "⌘U", icon: UnderlineIcon },
+] as const;
+
+// An editor toolbar, in the default look: icon buttons whose names live in
+// tooltips. The tooltip travels through a portal and inherits the floor's
+// palette from the owning subtree. The provider shares the delay between
+// triggers: once one tooltip is open, moving to the next button opens its
+// tooltip without waiting again.
 export default function TooltipDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            <Row label="provider coordinates delay">
-                <Tooltip.Provider>
-                    <Tooltip.Root>
+        <div className="palette-surface flex items-center gap-1 bg-palette-base text-palette-contrast">
+            <Tooltip.Provider>
+                {ACTIONS.map(({ label, shortcut, icon: Icon }) => (
+                    <Tooltip.Root key={label}>
                         <Tooltip.Trigger
-                            render={<Clickable.Button variant="outline" />}
+                            render={
+                                <Clickable.Button
+                                    variant="icon"
+                                    shape="square"
+                                    aria-label={label}
+                                />
+                            }
                         >
-                            Hover me
+                            <Icon />
                         </Tooltip.Trigger>
                         <Tooltip.Content>
-                            This is a tooltip — a transient text label.
+                            {label} {shortcut}
                         </Tooltip.Content>
                     </Tooltip.Root>
-
-                    {/* Moving from one trigger to the next opens the second
-                        tooltip without waiting for the delay again. */}
-                    <Tooltip.Root>
-                        <Tooltip.Trigger
-                            render={<Clickable.Button variant="outline" />}
-                        >
-                            Then me
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            The provider coordinates the delay — no wait.
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-            </Row>
-        </div>
-    );
-}
-
-function Row({ label, children }: { label: string; children: ReactNode }) {
-    return (
-        <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
-                {label}
-            </span>
-            <div className="flex flex-wrap items-center gap-4">{children}</div>
+                ))}
+            </Tooltip.Provider>
         </div>
     );
 }

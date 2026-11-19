@@ -1,98 +1,86 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Clickable } from "#/components/atoms/clickable";
 import { Input } from "#/components/atoms/fields";
 import { Field } from "#/components/ui/field";
 import { Popover } from "#/components/ui/popover";
 
-// The floor is palette-surface. The popover content travels through a portal
-// but inherits the palette from the owning subtree — the title, description,
-// fields and buttons all read roles from the floor. Shows: a popover with a
-// form, and one without a close button.
+// Two popovers an app would have, in the default look: a small form that
+// edits a value in place, and a note with no close button (it closes on an
+// outside click or Escape). The content travels through a portal and
+// inherits the floor's palette from the owning subtree; the fields carry no
+// palette class and the primary action carries palette-neutral.
 export default function PopoverDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
-            <Row label="with form">
-                <Popover.Root>
-                    <Popover.Trigger
-                        render={<Clickable.Button variant="outline" />}
-                    >
-                        Open popover
-                    </Popover.Trigger>
-                    <Popover.Content align="start" sideOffset={4}>
-                        <div className="flex flex-col gap-3 p-4">
-                            <div className="flex flex-col gap-1">
-                                <Popover.Title>Dimensions</Popover.Title>
-                                <Popover.Description>
-                                    Set the dimensions for the canvas.
-                                </Popover.Description>
-                            </div>
-                            <Field.Root>
-                                <Field.Label>Width</Field.Label>
-                                <Field.Row>
-                                    <Field.Body>
-                                        <Input defaultValue="100%" />
-                                    </Field.Body>
-                                </Field.Row>
-                            </Field.Root>
-                            <Field.Root>
-                                <Field.Label>Height</Field.Label>
-                                <Field.Row>
-                                    <Field.Body>
-                                        <Input defaultValue="auto" />
-                                    </Field.Body>
-                                </Field.Row>
-                            </Field.Root>
-                            <div className="flex justify-end gap-2">
-                                <Popover.Close
-                                    render={
-                                        <Clickable.Button
-                                            variant="outline"
-                                            size="sm"
-                                        />
-                                    }
-                                >
-                                    Cancel
-                                </Popover.Close>
-                                <Clickable.Button variant="solid" size="sm">
-                                    Apply
-                                </Clickable.Button>
-                            </div>
-                        </div>
-                    </Popover.Content>
-                </Popover.Root>
-            </Row>
-
-            <Row label="no close button">
-                <Popover.Root>
-                    <Popover.Trigger
-                        render={<Clickable.Button variant="outline" />}
-                    >
-                        No close
-                    </Popover.Trigger>
-                    <Popover.Content showClose={false} align="start">
-                        <div className="flex flex-col gap-2 p-4">
-                            <Popover.Title>Quick info</Popover.Title>
+        <div className="palette-surface flex flex-wrap items-start gap-4 bg-palette-base text-palette-contrast">
+            <Popover.Root>
+                <Popover.Trigger
+                    render={<Clickable.Button variant="outline" />}
+                >
+                    Set dimensions
+                </Popover.Trigger>
+                <Popover.Content align="start" sideOffset={4}>
+                    <div className="flex flex-col gap-3 p-4">
+                        <div className="flex flex-col gap-1">
+                            <Popover.Title>Dimensions</Popover.Title>
                             <Popover.Description>
-                                A popover without a close button — dismissed by
-                                clicking outside or pressing Escape.
+                                Set the size of the canvas.
                             </Popover.Description>
                         </div>
-                    </Popover.Content>
-                </Popover.Root>
-            </Row>
-        </div>
-    );
-}
+                        <Field.Root>
+                            <Field.Label>Width</Field.Label>
+                            <Field.Row>
+                                <Field.Body>
+                                    <Input defaultValue="1280" />
+                                </Field.Body>
+                                <Field.Addon side="inline-end">px</Field.Addon>
+                            </Field.Row>
+                        </Field.Root>
+                        <Field.Root>
+                            <Field.Label>Height</Field.Label>
+                            <Field.Row>
+                                <Field.Body>
+                                    <Input defaultValue="720" />
+                                </Field.Body>
+                                <Field.Addon side="inline-end">px</Field.Addon>
+                            </Field.Row>
+                        </Field.Root>
+                        <div className="flex justify-end gap-2">
+                            <Popover.Close
+                                render={
+                                    <Clickable.Button
+                                        variant="outline"
+                                        size="sm"
+                                    />
+                                }
+                            >
+                                Cancel
+                            </Popover.Close>
+                            <Clickable.Button
+                                className="palette-neutral"
+                                size="sm"
+                            >
+                                Apply
+                            </Clickable.Button>
+                        </div>
+                    </div>
+                </Popover.Content>
+            </Popover.Root>
 
-function Row({ label, children }: { label: string; children: ReactNode }) {
-    return (
-        <div className="flex flex-col gap-2">
-            <span className="text-xs font-mono text-palette-accent/85">
-                {label}
-            </span>
-            <div className="flex flex-wrap items-center gap-4">{children}</div>
+            <Popover.Root>
+                <Popover.Trigger render={<Clickable.Button variant="ghost" />}>
+                    What is a seat?
+                </Popover.Trigger>
+                <Popover.Content showClose={false} align="start">
+                    <div className="flex max-w-64 flex-col gap-2 p-4">
+                        <Popover.Title>Seats</Popover.Title>
+                        <Popover.Description>
+                            One seat per member who can sign in. Guests and
+                            viewers are free.
+                        </Popover.Description>
+                    </div>
+                </Popover.Content>
+            </Popover.Root>
         </div>
     );
 }

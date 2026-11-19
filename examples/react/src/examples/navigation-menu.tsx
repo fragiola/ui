@@ -2,50 +2,49 @@
 
 import { NavigationMenu } from "#/components/ui/navigation-menu";
 
-// The floor is palette-surface. The navigation menu — triggers, links and
-// portal content — reads roles from the floor. Shows the morphing popup with
-// a viewport that resizes between items, plus a plain link item.
+// A product site's top navigation in the default look: the menu carries no
+// palette class, so its triggers, links and popup read their roles from the
+// floor. The popup morphs, its viewport resizing between the items; the last
+// item is a plain link.
 export default function NavigationMenuDemo() {
     return (
-        <div className="palette-surface flex flex-col gap-6 rounded-lg border border-palette-line bg-palette-base p-6">
+        <div className="palette-surface flex flex-col gap-6 bg-palette-base text-palette-contrast">
             <NavigationMenu.Root>
                 <NavigationMenu.List>
                     <NavigationMenu.Item>
-                        <NavigationMenu.Trigger>
-                            Components
-                        </NavigationMenu.Trigger>
+                        <NavigationMenu.Trigger>Product</NavigationMenu.Trigger>
                         <NavigationMenu.Content>
                             <ul className="grid grid-cols-2 gap-2 p-1">
                                 <li>
-                                    <NavigationMenu.Link href="/docs/field">
-                                        Field
+                                    <NavigationMenu.Link href="#">
+                                        Analytics
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        The input control family.
+                                        Dashboards for every team.
                                     </p>
                                 </li>
                                 <li>
-                                    <NavigationMenu.Link href="/docs/select">
-                                        Select
+                                    <NavigationMenu.Link href="#">
+                                        Automations
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        The recombination test.
+                                        Run workflows on a schedule.
                                     </p>
                                 </li>
                                 <li>
-                                    <NavigationMenu.Link href="/docs/tabs">
-                                        Tabs
+                                    <NavigationMenu.Link href="#">
+                                        Integrations
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        A strip of triggers.
+                                        Connect the tools you use.
                                     </p>
                                 </li>
                                 <li>
-                                    <NavigationMenu.Link href="/docs/slider">
-                                        Slider
+                                    <NavigationMenu.Link href="#">
+                                        Security
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        A field control.
+                                        SSO, audit logs and roles.
                                     </p>
                                 </li>
                             </ul>
@@ -54,24 +53,24 @@ export default function NavigationMenuDemo() {
 
                     <NavigationMenu.Item>
                         <NavigationMenu.Trigger>
-                            Patterns
+                            Resources
                         </NavigationMenu.Trigger>
                         <NavigationMenu.Content>
                             <ul className="grid grid-cols-1 gap-2 p-1">
                                 <li>
-                                    <NavigationMenu.Link href="/docs/composition">
-                                        Composition
+                                    <NavigationMenu.Link href="#">
+                                        Documentation
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        Primitives, render, factories.
+                                        Guides and API reference.
                                     </p>
                                 </li>
                                 <li>
-                                    <NavigationMenu.Link href="/docs/style-families">
-                                        Style families
+                                    <NavigationMenu.Link href="#">
+                                        Changelog
                                     </NavigationMenu.Link>
                                     <p className="text-xs text-palette-accent/85">
-                                        Shared skeletons, zero variants.
+                                        What shipped this month.
                                     </p>
                                 </li>
                             </ul>
@@ -79,8 +78,8 @@ export default function NavigationMenuDemo() {
                     </NavigationMenu.Item>
 
                     <NavigationMenu.Item>
-                        <NavigationMenu.Link href="/docs/installation">
-                            Get started
+                        <NavigationMenu.Link href="#">
+                            Pricing
                         </NavigationMenu.Link>
                     </NavigationMenu.Item>
                 </NavigationMenu.List>
