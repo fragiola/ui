@@ -1,0 +1,154 @@
+---
+title: "Tree"
+description: "An accessible tree view with selection, checks, drag and drop, rename, async children and virtualization, styled by the tree family, plus a template."
+---
+
+<InstallCommand item="tree" />
+
+<Example id="tree" />
+
+## What it installs
+
+[Tree](https://fragiola.com/tree) is a headless tree view: expand and collapse, selection, the WAI-ARIA keyboard and type-ahead, drag and drop with the pointer and the keyboard, tri-state checks, inline rename, children loaded on demand and virtualization, with no look of its own. The item adds `@fragiola/tree-react@^0.1.0` to your dependencies (the range this layer is written for; the package is `0.x`, and a minor may break) and writes the styled layer over it:
+
+- `components/ui/tree.tsx`: one export, `Tree`, with the package's parts under the same names, each wearing its member of the `tree` family, plus the pieces the package leaves to the app and `Tree.Template.Simple`;
+- `components/families/tree.tsx`: the family.
+
+It also installs the registry items it is built on: [Checkbox](/docs/fields/choice) for the checks, [Field and Input](/docs/fields/input) for rename, [Clickable](/docs/atoms/clickable) for Retry, and the `danger` palette for a failed load.
+
+The model, the features, the commands and the hooks (`createTreeModel`, `selection()`, `dragAndDrop()`, `useTree`, `useTreeState`…) are the package's: import them from `@fragiola/tree-react` and its feature entries (`@fragiola/tree-react/selection`, `/checkboxes`, `/rename`, `/drag-and-drop`, `/async-children`, `/virtualization`, `/type-ahead`). Saving a tree, driving it from code, middleware and the full API are in [Tree's documentation](https://fragiola.com/tree).
+
+## Template.Simple
+
+`Tree.Template.Simple` renders a whole tree: every item with its toggle and its children, the live region, and the UI of each feature the model has installed.
+
+```tsx
+import { selection } from "@fragiola/tree-react/selection";
+import { dragAndDrop } from "@fragiola/tree-react/drag-and-drop";
+
+const features = [selection({ mode: "multiple" }), dragAndDrop({ indicatorInset: 36 })] as const;
+
+<Tree.Template.Simple<Types, typeof features>
+    defaultTree={json}
+    features={features}
+    aria-label="Project files"
+    icon={(item) => (item.kind === "folder" ? <FolderIcon aria-hidden="true" /> : <FileIcon aria-hidden="true" />)}
+/>
+```
+
+What it renders follows the model's features (`model.get("features")`), never a prop:
+
+| feature | what the template adds |
+|---|---|
+| `dragAndDrop()`, `foreignDrop()` | the drop indicator |
+| `checkboxes()` | a check box in each row |
+| `rename()` | the rename field, opened by F2 |
+| `asyncChildren()` | the loading and load-error rows, with Retry |
+| `virtualization()` | only the rows in view, flat (give the root a height and `overflow-auto` through `className`) |
+
+Selection, type-ahead and the keyboard need no part: they are the package's. It takes four props of its own: `label` (an item's label, its `label` unless given), `icon` (before the label), `empty` (what an empty tree shows) and `className`, which goes to the root. Everything else is forwarded to `Tree.Root`: `model`, `defaultTree`, `features`, `aria-label`, `expandedItemIds`, `selectedItemIds`, `checkedItemIds`, `loadChildren`, `announce`, `keyMap`, `expandOnClick`, `treeRef`…
+
+## Composing the parts
+
+Template.Simple is one arrangement. This file explorer is written from the parts: an icon per kind, a file's size as its description, rename by double click as well as F2, and announcements in the app's words.
+
+<Example id="tree-file-explorer" />
+
+```tsx
+function FileItem({ item }: { item: ItemOf<Types> }) {
+    return (
+        <Tree.Item item={item} aria-label={item.label}>
+            <Tree.ItemContent>
+                <Tree.Toggle />
+                <FileIcon aria-hidden="true" />
+                <Tree.Label>{item.label}</Tree.Label>
+                <Tree.Rename item={item} />
+            </Tree.ItemContent>
+            <Tree.Group<Types>>{(child) => <FileItem item={child} />}</Tree.Group>
+        </Tree.Item>
+    );
+}
+
+<Tree.Root model={model} announce={announce} aria-label="Project files">
+    <Tree.Items<Types>>{(item) => <FileItem item={item} />}</Tree.Items>
+    <Tree.DropIndicator />
+    <Tree.LiveRegion />
+</Tree.Root>
+```
+
+| Part | Source |
+|---|---|
+| `Root`, `Item`, `ItemContent`, `Group`, `Toggle`, `LiveRegion` | the package's part + its `tree` member |
+| `Items` | the package's, unchanged (it renders no element) |
+| `DropIndicator` | the package's (`/drag-and-drop`) + the `dropIndicator` member |
+| `VirtualItems` | the package's (`/virtualization`), unchanged |
+| `Label` | a `span` + the `label` member, hidden while its row renames |
+| `Checkbox` | the registry's [Checkbox](/docs/fields/choice), controlled by the item's check (`item` prop) |
+| `Rename` | `useTreeItemRename` on the registry's Input in a Field frame (`item` prop), rendered only while its item renames |
+| `Loading`, `LoadError` | rows one level below their item, shown while it loads or after its load failed |
+| `Retry` | a ghost [Clickable](/docs/atoms/clickable) that loads an item's children again (`item` prop) |
+| `Empty` | what an empty tree shows |
+| `Template.Simple` | all of the above, chosen by the model's features |
+
+Every part that wraps one of the package's forwards `render`, `ref`, its handlers and the rest of its props, keeps the generic type (`Tree.Item<Types>`), and takes a `className` given as a string or as a function of the part's state. The parts the engine positions (the drop indicator) get no geometry from the family: their inline style always wins.
+
+## State styling
+
+Every part of an item carries the item's state as `data-*` attributes, and the family reads them with Tailwind's data variants: no React state in the styles.
+
+| state | attribute | look |
+|---|---|---|
+| at rest | | secondary text (`accent/85`), like the Sidebar's menu |
+| hovered | `:hover`, unless selected or disabled | `soft` at half strength, `contrast` text |
+| selected | `data-selected` | the `soft` fill and `contrast` text |
+| focused from the keyboard | `:focus-visible` on the item | a 2px `ring` outline on its row |
+| the roving tab stop | `data-focused` | `contrast` text, even while the tree has no focus |
+| expanded | `data-expanded` | the chevron turns to point down |
+| a leaf | `data-leaf` | the toggle keeps its room, invisible, so labels line up |
+| disabled | `data-disabled` | half opacity, no hover; still focusable |
+| checked, mixed | `data-checked`, `data-indeterminate` | the box fills with `ring`, with a check or a dash |
+| renaming | `data-renaming` | the label gives its place to the rename field |
+| loading | `data-loading` | a Loading row one level below, its mark pulsing |
+| failed to load | `data-load-error` | a LoadError row one level below, in the `danger` palette |
+| dragged | `data-dragging` | half opacity; the tree shows a grabbing cursor |
+| a drop target | `data-drop-target`, `data-drop-position` | `contrast` text, and the drop indicator: a 2px `ring` line before or after, a `ring` box inside |
+| a keyboard drag | `data-keyboard-dragging` on the root | a dashed `ring` outline around the tree (also while a drag from another tree of the group is over it) |
+| empty | `data-empty` on the root | the Empty row |
+
+The row is the Sidebar menu button's: the same height (`h-8`), radius, gap, text size, icon size and focus ring, so a tree in a sidebar lines up with the menu above it. A tree selects any number of rows, so its hover is half the strength of a selected row.
+
+## Depth, density and RTL
+
+A row is indented by its depth: a logical start padding of four spacing steps per level (`--tree-depth`, which the package sets on every part of an item). Density scales it with the row's height, the toggle and the gaps, and under `dir="rtl"` rows indent from the right, the chevron points left and turns down the other way, and the arrow keys mirror. The radius, typography and motion axes reach the rows' corners, their text and icons, and the chevron's turn.
+
+The drop indicator is placed by the package in pixels, from `dragAndDrop({ indentation, indicatorInset })`. At the default density the rows match the package's default `indentation` (16), and a line starts past the toggle with `indicatorInset: 36` (the root's and the row's padding, the toggle and a gap: 4 + 8 + 16 + 8). Add each piece you put before the label (a check box or an icon: 16 + 8) to start the line there.
+
+## Palette
+
+The parts paint from the palette in scope and declare none of their own, so a palette class on the root, or on any element around it, re-tints the selected rows, the hover, the checks, the focus ring and the drop indicator:
+
+```tsx
+<Tree.Template.Simple className="palette-surface-blue" … />
+```
+
+Use a surface-tier palette (`surface-*`): the rows' resting text is secondary text, which is only legible on a neutral surface, as in the Sidebar. The one palette the family writes is semantic: a load error is `danger`.
+
+## Accessibility
+
+The package sets the roles and the state (`role="tree"`, `role="treeitem"`, `aria-level`, `aria-expanded`, `aria-selected`, `aria-checked`, `aria-busy`…) but writes no text, so every name is yours:
+
+- **The tree**: name the root with `aria-label` or `aria-labelledby`.
+- **The items**: an item's name comes from its content, and its group is inside it, so a parent would take its children's text. Give each item `aria-label={item.label}`, as the template does, and put extra facts (a size) in `aria-describedby`.
+- **The toggle and the check box** are hidden from assistive technology: the item says `aria-expanded` and `aria-checked`, and the keys act on it. The check box never takes focus, so a press on it focuses the item and the arrows keep working.
+- **The rename field** is named "Rename" and the item's label unless given an `aria-label`.
+- **Announcements**: `Tree.LiveRegion` (visually hidden) says what the root's `announce` returns for each drag step and failed load. Without `announce`, it stays silent.
+
+The parts' own words ("Loading…", "Could not load.", "Retry", "No items") are English defaults: pass `children` to replace them. Tree's documentation covers accessible names in full: [fragiola.com/tree](https://fragiola.com/tree).
+
+## Keyboard
+
+The tree is one stop in the tab order. The arrows move and expand, Home and End jump, `*` expands the siblings, typing a name finds an item (with `typeAhead()`), Enter and Space select (Shift and Ctrl/Cmd extend), F2 renames, and Ctrl/Cmd+Shift+D starts a keyboard drag (the arrows pick the target, Enter drops, Escape cancels). The bindings are the package's and can be changed with `keyMap`: see [Tree's documentation](https://fragiola.com/tree).
+
+## Parts
+
+`Template.Simple`, `Root`, `Items`, `VirtualItems`, `Item`, `ItemContent`, `Group`, `Toggle`, `Label`, `Checkbox`, `Rename`, `Loading`, `LoadError`, `Retry`, `Empty`, `DropIndicator`, `LiveRegion`.
