@@ -66,3 +66,10 @@ No role describes "the third series", and reusing `danger` as series 4 breaks
 its meaning. Chart colours live outside the contract, in their own ordered
 set; their ordering is what guarantees colourblind separation. Only the
 derived ordinal ramp is themeable.
+
+## Your own colour
+
+A brand colour is two palettes, `palette-<name>` and its surface twin
+`palette-surface-<name>`. The [Theme Builder](/docs/getting-started/theme-builder)
+generates both from a hue, checks them against AA and writes the CSS. The
+`colour` registry helper does the same at runtime.
