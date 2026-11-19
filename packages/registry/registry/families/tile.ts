@@ -89,7 +89,8 @@ const root = tv({
 });
 
 // The background: a `line` dot at the centre of each cell, shown while a
-// gesture is in progress (pointer, keyboard or a drop) and hidden while the
+// gesture is in progress (pointer, keyboard or a drop, refused included: a
+// native drag `onExternalDrag` refuses has no gesture) and hidden while the
 // held item is off the grid (`data-outside`: released there, it goes back).
 // The dot is the cell's `::after`, centred in the box the engine gives the
 // cell, sized from the spacing scale.
@@ -102,6 +103,7 @@ const cells = tv({
         group-data-resizing/tile:opacity-100
         group-data-grabbed/tile:opacity-100
         group-data-dropping/tile:opacity-100
+        group-data-drop-refused/tile:opacity-100
     `,
 });
 
@@ -110,7 +112,9 @@ const cells = tv({
 // `data-resizing`) or the keyboard (`data-grabbed`) — it takes the overlay
 // shadow; moved, it lifts (`scale`), and a touch that holds it before the
 // drag presses it in (`data-pressing`). Off the grid it fades: released
-// there, it stays where it was. A static item never moves: the `soft` fill
+// there, it stays where it was. The lift snaps in rather than easing: the
+// transitions are off while a pointer holds the item, so they never lag it
+// (the package's guide). A static item never moves: the `soft` fill
 // sets it into the floor. The grab cursor is the body's only when the item
 // has no drag handle — with one, the handle is where it drags from.
 const item = tv({

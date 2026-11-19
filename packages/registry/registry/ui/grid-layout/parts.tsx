@@ -50,20 +50,24 @@ function withClass<State>(
     return cn(base, className);
 }
 
-// The grid. A refused drop turns it danger, from its state: a palette takes
-// no Tailwind variant (families/tile.ts). Its size across is its container's;
-// its height follows the layout.
+// The grid, a `group` (the package sets no role): name it with
+// `aria-label`. A refused drop turns it danger, from its state: a palette
+// takes no Tailwind variant (families/tile.ts). The danger member comes
+// last, so a palette class the consumer gives (the palette channel) does
+// not swallow it. Its size across is its container's; its height follows
+// the layout.
 function Root({ className, ...props }: RootProps) {
     return (
         <GridLayoutPrimitive.Root
             data-slot="grid-layout"
+            role="group"
             className={(state: RootState) =>
                 cn(
                     tile.root(),
-                    state.dropRefused && tile.refused(),
                     typeof className === "function"
                         ? className(state)
                         : className,
+                    state.dropRefused && tile.refused(),
                 )
             }
             {...props}
@@ -86,24 +90,29 @@ function Cells({ className, ...props }: CellsProps) {
 // The committed layout's items, a children function: no element, no style.
 const Items = GridLayoutPrimitive.Items;
 
-// An item, as a card. Name it (`aria-label`): the primitives set no text.
+// An item, as a card: a `group`, so its name is read. Name it
+// (`aria-label`): the primitives set no text.
 function Item({ className, ...props }: ItemProps) {
     return (
         <GridLayoutPrimitive.Item
             data-slot="grid-layout-item"
+            role="group"
             className={withClass(tile.item(), className)}
             {...props}
         />
     );
 }
 
-// Where its item drags from, and the item's tab stop: a grip icon unless
+// Where its item drags from, and the item's tab stop: a button described
+// as a drag handle (Space or Enter grabs its item), with a grip icon unless
 // given children. "Move" unless the consumer names it — say what it moves
 // ("Move Revenue").
 function DragHandle({ className, children, ...props }: DragHandleProps) {
     return (
         <GridLayoutPrimitive.DragHandle
             data-slot="grid-layout-drag-handle"
+            role="button"
+            aria-roledescription="drag handle"
             aria-label="Move"
             className={withClass(tile.dragHandle(), className)}
             {...props}
@@ -151,7 +160,7 @@ function DragSource({ className, ...props }: DragSourceProps) {
 }
 
 // What follows the pointer while it brings a new item: rendered only then.
-// A refused drop turns it danger, from its state (see Root).
+// A refused drop turns it danger, from its state, last (see Root).
 function DragPreview({ className, ...props }: DragPreviewProps) {
     return (
         <GridLayoutPrimitive.DragPreview
@@ -159,10 +168,10 @@ function DragPreview({ className, ...props }: DragPreviewProps) {
             className={(state) =>
                 cn(
                     tile.dragPreview(),
-                    state.refused && tile.refused(),
                     typeof className === "function"
                         ? className(state)
                         : className,
+                    state.refused && tile.refused(),
                 )
             }
             {...props}

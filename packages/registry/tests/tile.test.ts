@@ -56,8 +56,13 @@ describe("tile family", () => {
             path.join(REGISTRY, "ui/grid-layout/parts.tsx"),
             "utf-8",
         );
-        expect(parts).toContain("state.dropRefused && tile.refused()");
-        expect(parts).toContain("state.refused && tile.refused()");
+        // Last: a palette class the consumer gives never swallows it.
+        expect(parts).toMatch(
+            /className,\s*state\.dropRefused && tile\.refused\(\),\s*\)/,
+        );
+        expect(parts).toMatch(
+            /className,\s*state\.refused && tile\.refused\(\),\s*\)/,
+        );
     });
 
     it("styles every state attribute the package documents", () => {
