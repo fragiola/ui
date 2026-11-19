@@ -98,6 +98,27 @@ export const examples: Example[] = [
         height: 472,
         load: () => import("./palettes.tsx"),
     },
+    {
+        id: "theme-builder",
+        title: "Theme Builder",
+        description:
+            "See a design before building it: pick a colour and a level of each design axis, watch the registry's components follow, and copy the CSS and attributes that reproduce it.",
+        level: "atoms",
+        order: 4,
+        features: [
+            "generatePalette",
+            "serializePalette",
+            "data-density",
+            "data-radius",
+            "data-text",
+            "data-elevation",
+            "data-motion",
+        ],
+        docs: "/docs/getting-started/theme-builder",
+        layout: "fill",
+        height: 900,
+        load: () => import("./theme-builder.tsx"),
+    },
 
     // ─── Fields ─────────────────────────────────────────────────────────────
     {
