@@ -529,3 +529,33 @@ describe("contrast guard", () => {
         }
     }
 });
+
+// ─── Achromatic series ──────────────────────────────────────────────────────
+// The chart derivation lifts a palette's chroma to at least 0.14 and rotates
+// its hue, which on a neutral (base chroma ~0.01, hue 250) drew a pale blue.
+// The achromatic palettes declare their own series, with no chroma at all,
+// in both themes.
+describe("achromatic chart series", () => {
+    for (const theme of THEMES) {
+        it(`neutral, surface and raised draw grey charts in ${theme}`, async () => {
+            const css = await readFile(
+                path.join(ROOT, "registry/styles/global.css"),
+                "utf-8",
+            );
+            const block = new RegExp(
+                `:root\\[data-theme="${theme}"\\]\\s*:is\\(\\.palette-neutral, \\.palette-surface, \\.palette-raised\\)\\s*\\{([^}]+)\\}`,
+            ).exec(css)?.[1];
+            expect(block, `no achromatic block for ${theme}`).toBeDefined();
+            const keys = [
+                ...Array.from({ length: 5 }, (_, i) => `--chart-${i + 1}`),
+                ...Array.from({ length: 5 }, (_, i) => `--chart-ramp-${i + 1}`),
+            ];
+            for (const key of keys) {
+                const value = new RegExp(`${key}:\\s*([^;]+);`).exec(block ?? "")?.[1];
+                const parsed = value ? parseOklch(value) : null;
+                expect(parsed, `${theme} ${key}`).not.toBeNull();
+                expect(parsed?.c, `${theme} ${key} chroma`).toBe(0);
+            }
+        });
+    }
+});
