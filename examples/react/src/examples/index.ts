@@ -609,4 +609,42 @@ export const examples: Example[] = [
         height: 520,
         load: () => import("./dockable-custom-template.tsx"),
     },
+    {
+        id: "splitter",
+        title: "Splitter",
+        description:
+            "A split view in one line: Template.Simple puts a separator with a grip between the panels it is given. Nested groups, size limits and collapsible panels; resize by pointer or keyboard.",
+        level: "special",
+        order: 3,
+        features: [
+            "Splitter.Template.Simple",
+            "Splitter.Panel",
+            "nested groups",
+            "collapsible",
+            "keyboard resize",
+        ],
+        docs: "/docs/special/splitter",
+        layout: "fill",
+        height: 360,
+        load: () => import("./splitter.tsx"),
+    },
+    {
+        id: "splitter-ide",
+        title: "Splitter: an editor layout",
+        description:
+            "Composed from the parts: a sidebar that collapses to a rail of icons, a nested editor and terminal, and a name for every separator.",
+        level: "special",
+        order: 4,
+        features: [
+            "Splitter.Group",
+            "Splitter.Separator",
+            "Splitter.Grip",
+            "collapsedSize",
+            "split.expanded",
+        ],
+        docs: "/docs/special/splitter",
+        layout: "fill",
+        height: 360,
+        load: () => import("./splitter-ide.tsx"),
+    },
 ];
