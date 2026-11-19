@@ -14,6 +14,7 @@ import {
     Root,
     Title,
 } from "./grid-layout/parts";
+import { Template } from "./grid-layout/templates";
 
 // GridLayout — draggable, resizable dashboard grids (collision and
 // compaction, responsive breakpoints, the keyboard, items brought in from
@@ -28,10 +29,14 @@ import {
 //
 //   import { useGridLayoutRef } from "@fragiola/grid-layout-react";
 //
+// GridLayout.Template.Simple renders a whole dashboard from a layout and an
+// item's content; the parts are there for the dashboard that outgrows it.
+//
 // See the parts for what each one adds, and families/tile.ts for why it
 // looks the way it does.
 
 export const GridLayout = {
+    Template,
     Root,
     Cells,
     Items,
