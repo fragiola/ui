@@ -647,4 +647,42 @@ export const examples: Example[] = [
         height: 360,
         load: () => import("./splitter-ide.tsx"),
     },
+    {
+        id: "tree",
+        title: "Tree",
+        description:
+            "A tree in one line: Template.Simple renders the items, their toggles and children, and the UI of each feature the model has — here multiple selection, type-ahead and drag and drop.",
+        level: "special",
+        order: 5,
+        features: [
+            "Tree.Template.Simple",
+            "selection",
+            "type-ahead",
+            "drag and drop",
+            "keyboard drag",
+        ],
+        docs: "/docs/special/tree",
+        layout: "flow",
+        height: 360,
+        load: () => import("./tree.tsx"),
+    },
+    {
+        id: "tree-file-explorer",
+        title: "Tree: a file explorer",
+        description:
+            "Composed from the parts: an icon per kind, a file's size as its description, multiple selection, drag and drop, rename by F2 or double click, and announcements in the app's words.",
+        level: "special",
+        order: 6,
+        features: [
+            "Tree.Root",
+            "Tree.Item",
+            "Tree.Rename",
+            "Tree.DropIndicator",
+            "announce",
+        ],
+        docs: "/docs/special/tree",
+        layout: "flow",
+        height: 420,
+        load: () => import("./tree-file-explorer.tsx"),
+    },
 ];
