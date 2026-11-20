@@ -98,6 +98,45 @@ export const examples: Example[] = [
         height: 472,
         load: () => import("./palettes.tsx"),
     },
+    {
+        id: "palette-maker",
+        title: "Palette maker",
+        description:
+            "A new colour is a new palette: pick a hue, add it as my-palette-1, my-palette-2, … with the generator Create uses, and the button, its ring, the badge and the progress bar take its class. Only the class and the new CSS rule change.",
+        level: "atoms",
+        order: 4,
+        features: [
+            "generatePalette",
+            "my-palette-1",
+            "Clickable.Button",
+            "Badge",
+            "Progress",
+        ],
+        docs: "/docs/architecture/palettes",
+        layout: "flow",
+        height: 362,
+        load: () => import("./palette-maker.tsx"),
+    },
+    {
+        id: "component-showcase",
+        title: "Component showcase",
+        description:
+            "An app's cards in real components, the way Create previews them: a sign-up form with a select, switches, tabs over a chart, badges, progress and a team list whose Invite opens a Dialog.",
+        level: "atoms",
+        order: 5,
+        features: [
+            "Field",
+            "Select",
+            "Tabs",
+            "Chart",
+            "Dialog",
+            "palette-blue",
+        ],
+        docs: "/docs/getting-started/introduction",
+        layout: "flow",
+        height: 556,
+        load: () => import("./component-showcase.tsx"),
+    },
 
     // ─── Fields ─────────────────────────────────────────────────────────────
     {
