@@ -215,11 +215,18 @@ const SHOWCASES: Record<string, { width: number; maxHeight: number }> = {
 // and `my-palette-2` (with their surface twins), real CSS rules in the
 // document; each is a new radio, selected when added, and hands its classes
 // to the card, whose button, badge, progress bar and switch repaint; the
-// code panel names the selected classes and the rule.
+// code panel shows only the class swap (paletteCode).
 async function drivePalettes(frame: Frame): Promise<string[]> {
     const problems: string[] = [];
     const target = frame.locator("[data-palette-target]");
     const code = frame.locator("[data-palette-code]");
+    problems.push(
+        ...paletteCode(
+            (await code.textContent()) ?? "",
+            "palette-neutral",
+            "palette-surface",
+        ),
+    );
     const paints = () =>
         target.evaluate((root) => {
             const style = (selector: string) => {
@@ -277,13 +284,9 @@ async function drivePalettes(frame: Frame): Promise<string[]> {
         const radio = frame.getByRole("radio", { name });
         if ((await radio.getAttribute("aria-checked")) !== "true")
             problems.push(`${name} is not selected after it is added`);
-        const text = (await code.textContent()) ?? "";
-        if (
-            !text.includes(`className="${name}"`) ||
-            !text.includes(`className="${surface}"`) ||
-            !text.includes(`.${name} {`)
-        )
-            problems.push(`the code panel does not show ${name}`);
+        problems.push(
+            ...paletteCode((await code.textContent()) ?? "", name, surface),
+        );
         seen.push(await paints());
     }
     const [first, second] = seen;
@@ -297,6 +300,112 @@ async function drivePalettes(frame: Frame): Promise<string[]> {
     await frame.waitForTimeout(400);
     if ((await paints()).button !== first?.button)
         problems.push("selecting my-palette-1 again did not repaint it");
+    return problems;
+}
+
+// The palettes code panel is only the class swap: the card's components in
+// the order they render, each with its palette class and nothing else — no
+// text, no styling, never the palette's CSS.
+function paletteCode(text: string, action: string, control: string): string[] {
+    const expected = [
+        "<Card>",
+        `  <Badge className="${action}" />`,
+        `  <Field.Root className="${control}" />`,
+        `  <Switch.Root className="${control}" />`,
+        `  <Checkbox.Root className="${control}" />`,
+        `  <Progress.Root className="${action}" />`,
+        "  <Clickable.Button />",
+        `  <Clickable.Button className="${action}" />`,
+        "</Card>",
+    ].join("\n");
+    const problems: string[] = [];
+    if (/[{}]|--palette-|:root/.test(text))
+        problems.push(`the code panel shows CSS (${action})`);
+    if (text.trim() !== expected)
+        problems.push(
+            `the code panel is not the ${action} outline: ${JSON.stringify(text)}`,
+        );
+    return problems;
+}
+
+// The palettes demo at a landing's width: the card and the code panel side
+// by side, the same height, neither scrolling — in both themes, before and
+// after adding palettes (the longest class names).
+const PALETTES_WIDTH = 1152;
+async function palettesSideBySide(
+    page: Page,
+    floor: number,
+    shots?: string,
+): Promise<string[]> {
+    const problems: string[] = [];
+    for (const name of ["light", "dark"]) {
+        const frame = await open(page, "palettes", floor, {
+            theme: name,
+            width: PALETTES_WIDTH,
+        });
+        for (const stage of ["presets", "added"]) {
+            if (stage === "added") {
+                const add = frame.getByRole("button", { name: "Add palette" });
+                await add.click();
+                await add.click();
+                await frame.waitForTimeout(400);
+            }
+            const box = await frame.evaluate(() => {
+                const card = document.querySelector<HTMLElement>(
+                    "[data-palette-target]",
+                );
+                const code = document.querySelector<HTMLElement>(
+                    "[data-palette-code]",
+                );
+                if (!card || !code) return null;
+                const a = card.getBoundingClientRect();
+                const b = code.getBoundingClientRect();
+                const scrolls = (el: HTMLElement) =>
+                    el.scrollHeight > el.clientHeight ||
+                    el.scrollWidth > el.clientWidth;
+                return {
+                    card: [a.top, a.height, a.left],
+                    code: [b.top, b.height, b.left],
+                    scrolls: scrolls(card) || scrolls(code),
+                    page:
+                        document.documentElement.scrollWidth >
+                        document.documentElement.clientWidth,
+                };
+            });
+            const at = `at ${PALETTES_WIDTH}px, ${name}, ${stage}`;
+            if (!box) {
+                problems.push(`${at}: no card or code panel`);
+                continue;
+            }
+            const [cardTop, cardHeight, cardLeft] = box.card;
+            const [codeTop, codeHeight, codeLeft] = box.code;
+            if ((codeLeft ?? 0) <= (cardLeft ?? 0))
+                problems.push(`${at}: the code panel is not beside the card`);
+            if (
+                Math.abs((cardTop ?? 0) - (codeTop ?? 0)) > 1 ||
+                Math.abs((cardHeight ?? 0) - (codeHeight ?? 0)) > 1
+            )
+                problems.push(
+                    `${at}: card ${cardHeight}px and code panel ${codeHeight}px are not the same height`,
+                );
+            if (box.scrolls) problems.push(`${at}: the card or panel scrolls`);
+            if (box.page) problems.push(`${at}: wider than the frame`);
+            // The declared height is the frame's floor: above the content it
+            // would leave empty space under the demo on the landing.
+            const height = await contentHeight(page);
+            if (stage === "presets" && floor > height)
+                problems.push(
+                    `${at}: the ${floor}px floor is over the content (${height}px)`,
+                );
+            if (shots)
+                await page.locator("iframe").screenshot({
+                    path: path.join(
+                        shots,
+                        `palettes-${PALETTES_WIDTH}-${name}-${stage}.png`,
+                    ),
+                });
+        }
+    }
     return problems;
 }
 
@@ -840,6 +949,12 @@ for (const example of selected) {
         // The palettes demo's hue form, used (drivePalettes).
         if (example.id === "palettes") {
             for (const p of await drivePalettes(frame)) say(p);
+            for (const p of await palettesSideBySide(
+                page,
+                example.height,
+                values.screenshots,
+            ))
+                say(p);
         }
 
         const showcase = SHOWCASES[example.id];
