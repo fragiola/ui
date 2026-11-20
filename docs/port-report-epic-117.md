@@ -76,3 +76,26 @@ The review of the first Create page found six problems. Each was fixed:
    cards `base` with a shadow; in dark the canvas is `base` and the cards are raised.
 6. **Neutral charts were pale blue.** The series derivation forces a chroma of 0.14, so
    the achromatic palettes (neutral, surface, raised) now declare grey series and ramps.
+
+## Addendum — Epic #127: Create refinements
+
+The review after Epic #122 asked for four more changes:
+
+1. **Three tones.** Point 5 above stepped the cards up to `raised` in dark. Now the cards
+   are back on `palette-surface` in both schemes, and the canvas behind them has a palette
+   of its own, `palette-canvas`: in dark it sits between the frame and the cards (frame >
+   canvas > card), in light it is a near-white grey under white cards. It is achromatic,
+   so it draws grey charts like neutral, surface and raised. `check:create` measures the
+   three colours in both schemes.
+2. **A rounded inset.** The inset used `rounded-xl`, which the radius scale does not
+   define (`--radius-*: initial`): the class compiled to nothing and the corners were
+   square. The inset now uses the docs' `0.75rem`, and a test in `design-axes.test.ts`
+   refuses any `rounded-*` step outside the scale in the registry, the embed app and the
+   playground.
+3. **One handle style, and a handle axis.** Splitter's separator and Dockable's splitter
+   now compose one `handle` family (`families/handle.ts`), and Grid Layout's resize marks
+   use its mark. A sixth design axis, `data-handle` (`line`, `grip`, `dots`), chooses the
+   mark; the Create customizer has a Handle control, and Get code exports it.
+4. **No header.** The panel on the frame holds the links, a rule, Randomize and Reset, the
+   controls (which scroll) and Get code pinned at the bottom. The inset keeps the docs'
+   0.5rem margin on every side.

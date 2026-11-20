@@ -50,7 +50,7 @@ These are deliberately tight. Do not "fix" them.
    silently: no build error, no type error, no visible crash — it simply does
    nothing. This was the dominant failure mode in the POC.
 9. **A design axis only sets tokens, and its tokens reach utilities as `var()`.**
-   Spacing, radius, typography, elevation and motion are `data-*` attributes
+   Spacing, radius, typography, elevation, motion and the resize handle's mark are `data-*` attributes
    (architecture §4). No component gets a variant or a prop for one. A token
    an axis changes must compile to `var()` or to an expression over an axis
    variable, never to an inlined value. `tests/design-axes.test.ts` pins it.
@@ -94,7 +94,10 @@ example: two pages of the embed app, code in `examples/react/src/create/`
 customizer; `create-preview.html` is the sample, in an iframe inside the inset
 panel. The customizer posts the design (`design/design.ts`) and only the
 preview applies it to its own `<html>` (`design/apply-design.ts`), so an axis
-never reaches the customizer. A sample card goes in `preview/cards/<group>.tsx`
+never reaches the customizer. The shell has no header: the panel on the frame holds the links, Randomize and
+Reset, the controls and Get code, and the inset keeps the docs' 0.5rem margin
+and 0.75rem radius. The preview's canvas is `palette-canvas`, its cards
+`palette-surface`: three tones with the frame. A sample card goes in `preview/cards/<group>.tsx`
 and in `CARDS` (`preview/canvas.tsx`), which deals cards into the shortest
 column by measured height; it reads `useTone()` for the design's classes and
 draws charts with `PreviewChart`. The special components lead the canvas, in
@@ -102,8 +105,8 @@ draws charts with `PreviewChart`. The special components lead the canvas, in
 scroller, and a modal opened in it covers the whole page: the preview speaks
 the embed half of overlay promotion, `shell/preview-promotion.ts` the host
 half. `pnpm --filter examples-react
-check:create` hosts it as fragiola.com does and checks the scroll, the overflow
-and the isolation. `scenarios/atoms/theme-builder-edges.tsx` shows the palette
+check:create` hosts it as fragiola.com does and checks the scroll, the overflow,
+the isolation, the three tones, the inset and the panel's order. `scenarios/atoms/theme-builder-edges.tsx` shows the palette
 generator on the hues where it is hardest.
 
 When a scenario becomes something readers should see, it becomes an example,
