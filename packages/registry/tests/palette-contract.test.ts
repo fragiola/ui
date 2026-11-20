@@ -537,13 +537,13 @@ describe("contrast guard", () => {
 // in both themes.
 describe("achromatic chart series", () => {
     for (const theme of THEMES) {
-        it(`neutral, surface, canvas and raised draw grey charts in ${theme}`, async () => {
+        it(`neutral, surface and raised draw grey charts in ${theme}`, async () => {
             const css = await readFile(
                 path.join(ROOT, "registry/styles/global.css"),
                 "utf-8",
             );
             const block = new RegExp(
-                `:root\\[data-theme="${theme}"\\]\\s*:is\\(\\.palette-neutral, \\.palette-surface, \\.palette-canvas, \\.palette-raised\\)\\s*\\{([^}]+)\\}`,
+                `:root\\[data-theme="${theme}"\\]\\s*:is\\(\\.palette-neutral, \\.palette-surface, \\.palette-raised\\)\\s*\\{([^}]+)\\}`,
             ).exec(css)?.[1];
             expect(block, `no achromatic block for ${theme}`).toBeDefined();
             const keys = [
