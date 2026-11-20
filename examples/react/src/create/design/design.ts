@@ -12,17 +12,30 @@ import {
     type Tint,
 } from "#/components/lib/colour/palette";
 
-// The axes and their levels (architecture.md §4). `default` is no attribute.
+// The axes and their levels (architecture.md §4). The default level is no
+// attribute: `default` for five of them, `line` for the handle, the one axis
+// whose default has a name.
 export const AXES = {
     density: ["compact", "snug", "default", "comfortable", "spacious"],
     radius: ["flat", "subtle", "default", "rounded", "full"],
     text: ["small", "default", "large"],
     elevation: ["flat", "subtle", "default", "raised"],
     motion: ["none", "fast", "default", "expressive"],
+    handle: ["line", "grip", "dots"],
 } as const;
 export type Axis = keyof typeof AXES;
 export type Axes = { [A in Axis]: (typeof AXES)[A][number] };
 export const AXIS_NAMES = Object.keys(AXES) as Axis[];
+
+/** Each axis' default level: the one written as no attribute. */
+export const AXIS_DEFAULTS: Axes = {
+    density: "default",
+    radius: "default",
+    text: "default",
+    elevation: "default",
+    motion: "default",
+    handle: "line",
+};
 
 export const AXIS_LABELS: Record<Axis, string> = {
     density: "Spacing",
@@ -30,6 +43,7 @@ export const AXIS_LABELS: Record<Axis, string> = {
     text: "Typography",
     elevation: "Elevation",
     motion: "Motion",
+    handle: "Handle",
 };
 
 export const PRESETS = [
@@ -59,13 +73,7 @@ export const INITIAL: Design = {
     hue: 250,
     chroma: "default",
     tint: "subtle",
-    axes: {
-        density: "default",
-        radius: "default",
-        text: "default",
-        elevation: "default",
-        motion: "default",
-    },
+    axes: AXIS_DEFAULTS,
     scheme: "light",
     dir: "ltr",
 };
@@ -129,7 +137,7 @@ export function resolve(design: Design): Resolved {
 
 /** The `<html>` attributes that reproduce the axes, defaults left out. */
 export function htmlAttributes(axes: Axes): string {
-    return AXIS_NAMES.filter((axis) => axes[axis] !== "default")
+    return AXIS_NAMES.filter((axis) => axes[axis] !== AXIS_DEFAULTS[axis])
         .map((axis) => `data-${axis}="${axes[axis]}"`)
         .join(" ");
 }

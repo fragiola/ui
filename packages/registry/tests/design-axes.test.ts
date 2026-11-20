@@ -101,6 +101,21 @@ const AXES: Record<string, Axis> = {
             expressive: { "--motion-scale": "1.5" },
         },
     },
+    handle: {
+        // The one axis whose default level has a name (`line`), written out
+        // so a subtree can return to it; no attribute renders the same.
+        attribute: "data-handle",
+        defaults: { "--handle-rest": "0", "--handle-mask": "none" },
+        levels: {
+            line: { "--handle-rest": "0", "--handle-mask": "none" },
+            grip: { "--handle-rest": "0.5", "--handle-mask": "none" },
+            dots: {
+                "--handle-rest": "0.7",
+                "--handle-mask":
+                    "radial-gradient(circle closest-side, #000 62%, #0000 74%)",
+            },
+        },
+    },
     typography: {
         attribute: "data-text",
         defaults: { "--text-scale": "1" },
@@ -174,6 +189,15 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
     "animate-pulse": [
         "animation",
         "pulse calc(2s * var(--motion-scale, 1))\n        cubic-bezier(0.4, 0, 0.6, 1) infinite",
+    ],
+    // The handle's mark (families/handle.ts) reads both handle tokens.
+    "opacity-\\[var\\(--handle-rest\\,0\\)\\]": [
+        "opacity",
+        "var(--handle-rest,0)",
+    ],
+    "\\[mask-image\\:var\\(--handle-mask\\,none\\)\\]": [
+        "mask-image",
+        "var(--handle-mask,none)",
     ],
     ...Object.fromEntries(
         Object.entries(ICON_SIZES).map(([name, rem]) => [

@@ -56,9 +56,9 @@
 //   `border-palette-ring`, a `ring/15` fill, a transition at `duration-150`
 //   — dashed, and with the card's radius (`rounded-lg`) instead of
 //   `rounded-md`, since it stands where a card will be;
-// - a resize handle's mark is `split.grip`'s pill (`rounded-pill`, `w-6` by
-//   a step thinner, `bg-palette-ring`), at `ring/40` until the handle is
-//   hovered or pulled: `dock.splitter`'s hover hint. Its cursors are
+// - a resize handle's mark is the `handle` family's, Splitter's grip and
+//   Dockable's splitter mark (`handle.mark`), so the `data-handle` axis
+//   draws it too, with a 40% floor at rest. Its cursors are
 //   `split.separator`'s (`ew-resize`, `ns-resize`), and the corners'
 //   diagonal ones, mirrored for right-to-left;
 // - the drag handle is Clickable's `icon` fill (transparent, `soft` on hover)
@@ -71,6 +71,7 @@
 
 import { tv } from "tailwind-variants";
 import { foundation } from "./foundation";
+import { handle } from "./handle";
 
 // The grid: nothing at rest. It names the Tailwind group `tile`, which the
 // cells and the placeholder read. While an item from outside is over it
@@ -176,46 +177,51 @@ const dragHandle = tv({
 });
 
 // A side or corner an item is resized from: a hit area inside the card's
-// edge (a card may clip what overflows it), above its content, with a pill
-// mark — a dot on a corner — shown while the card is hovered, focused (or
-// holds focus) or held by the keyboard (Shift + arrows resize it), and while
-// this handle is pulled. Sides are logical: `start` and `end` mirror under
-// `dir="rtl"`, and so do the corners' diagonal cursors. The package renders
-// none while its item cannot be resized.
+// edge (a card may clip what overflows it), above its content, with the
+// handle's mark (`resizeMark`) — a dot on a corner — shown while the card is
+// hovered, focused (or holds focus) or held by the keyboard (Shift + arrows
+// resize it), and while this handle is pulled. It is a `handle` target in
+// name only (`group/handle`, which the mark reads): its geometry, its rule
+// (none: the card's border is the edge) and its cursors are its own. Sides
+// are logical: `start` and `end` mirror under `dir="rtl"`, and so do the
+// corners' diagonal cursors. The package renders none while its item cannot
+// be resized.
 const resizeHandle = tv({
     base: `
-        absolute z-10 opacity-0 transition-opacity duration-150
+        group/handle absolute z-10 flex items-center justify-center opacity-0
+        transition-opacity duration-150
         group-hover/tile-item:opacity-100
         group-focus-visible/tile-item:opacity-100
         group-has-[:focus-visible]/tile-item:opacity-100
         group-data-grabbed/tile-item:opacity-100
         data-resizing:opacity-100
-        after:absolute after:inset-0 after:m-auto after:rounded-pill
-        after:bg-palette-ring/40 after:transition-colors
-        hover:after:bg-palette-ring data-resizing:after:bg-palette-ring
         data-[side=top]:inset-x-3 data-[side=top]:top-0 data-[side=top]:h-2
         data-[side=bottom]:inset-x-3 data-[side=bottom]:bottom-0 data-[side=bottom]:h-2
         data-[side=top]:cursor-ns-resize data-[side=bottom]:cursor-ns-resize
-        data-[side=top]:after:h-1 data-[side=top]:after:w-6
-        data-[side=bottom]:after:h-1 data-[side=bottom]:after:w-6
         data-[side=start]:inset-y-3 data-[side=start]:start-0 data-[side=start]:w-2
         data-[side=end]:inset-y-3 data-[side=end]:end-0 data-[side=end]:w-2
         data-[side=start]:cursor-ew-resize data-[side=end]:cursor-ew-resize
-        data-[side=start]:after:h-6 data-[side=start]:after:w-1
-        data-[side=end]:after:h-6 data-[side=end]:after:w-1
         data-[side=top-start]:top-0 data-[side=top-start]:start-0
         data-[side=top-end]:top-0 data-[side=top-end]:end-0
         data-[side=bottom-start]:bottom-0 data-[side=bottom-start]:start-0
         data-[side=bottom-end]:bottom-0 data-[side=bottom-end]:end-0
-        data-[side=top-start]:size-3 data-[side=top-start]:after:size-1.5
-        data-[side=top-end]:size-3 data-[side=top-end]:after:size-1.5
-        data-[side=bottom-start]:size-3 data-[side=bottom-start]:after:size-1.5
-        data-[side=bottom-end]:size-3 data-[side=bottom-end]:after:size-1.5
+        data-[side=top-start]:size-3 data-[side=top-end]:size-3
+        data-[side=bottom-start]:size-3 data-[side=bottom-end]:size-3
         data-[side=top-start]:ltr:cursor-nwse-resize data-[side=top-start]:rtl:cursor-nesw-resize
         data-[side=bottom-end]:ltr:cursor-nwse-resize data-[side=bottom-end]:rtl:cursor-nesw-resize
         data-[side=top-end]:ltr:cursor-nesw-resize data-[side=top-end]:rtl:cursor-nwse-resize
         data-[side=bottom-start]:ltr:cursor-nesw-resize data-[side=bottom-start]:rtl:cursor-nwse-resize
     `,
+});
+
+// The mark on a resize handle: the handle's (families/handle.ts) — a pill
+// along a side, a dot on a corner, cut into dots under `data-handle="dots"`
+// — lit while its handle is hovered or pulled. The handle itself only shows
+// while its card is hovered or held, so the mark never hides at rest there:
+// its resting opacity has a floor of 40%, `dock.splitter`'s old hover hint.
+const resizeMark = tv({
+    extend: handle.mark,
+    base: "opacity-[max(0.4,var(--handle-rest,0))]",
 });
 
 // Where the held item would land (see the header): a dashed `ring` box with
@@ -275,6 +281,7 @@ export const tile = {
     content,
     dragHandle,
     resizeHandle,
+    resizeMark,
     placeholder,
     dragSource,
     dragPreview,

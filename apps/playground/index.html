@@ -25,7 +25,7 @@
                 const axes = __DESIGN_AXES__;
                 for (const name of Object.keys(axes)) {
                     const level = params.get(name);
-                    if (level !== "default" && axes[name].levels.includes(level)) {
+                    if (level !== axes[name].fallback && axes[name].levels.includes(level)) {
                         root.dataset[name] = level;
                     }
                 }

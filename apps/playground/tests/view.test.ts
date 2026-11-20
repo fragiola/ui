@@ -33,6 +33,7 @@ describe("the view in the URL", () => {
                     text: "large",
                     elevation: "raised",
                     motion: "none",
+                    handle: "dots",
                 },
                 code: true,
             },
@@ -53,9 +54,25 @@ describe("the view in the URL", () => {
     it("falls back on unknown values instead of applying them", () => {
         expect(
             parseView(
-                "?theme=sepia&dir=up&density=huge&radius=round&text=tiny&elevation=0&motion=slow&code=yes",
+                "?theme=sepia&dir=up&density=huge&radius=round&text=tiny&elevation=0&motion=slow&handle=wavy&code=yes",
             ),
         ).toEqual(DEFAULTS);
+    });
+
+    it("leaves the handle's default level, line, out of the query", () => {
+        expect(DEFAULT_AXES.handle).toBe("line");
+        expect(
+            toSearch({
+                ...DEFAULTS,
+                axes: { ...DEFAULT_AXES, handle: "line" },
+            }),
+        ).toBe("?");
+        expect(
+            toSearch({
+                ...DEFAULTS,
+                axes: { ...DEFAULT_AXES, handle: "grip" },
+            }),
+        ).toBe("?handle=grip");
     });
 
     it("writes each axis under its own name, and only when not default", () => {

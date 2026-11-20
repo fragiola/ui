@@ -1,10 +1,10 @@
 ---
 title: "Design axes"
-description: "Spacing, radius, typography, elevation and motion: five independent data attributes that reshape every component in a subtree, with no variant."
+description: "Spacing, radius, typography, elevation, motion and the resize handle: six independent data attributes that reshape every component in a subtree."
 ---
 
-Five **design axes** change how the whole library looks: spacing, radius,
-typography, elevation and motion. Each axis is a `data-*` attribute that you
+Six **design axes** change how the whole library looks: spacing, radius,
+typography, elevation, motion and the resize handle. Each axis is a `data-*` attribute that you
 set on any element. Its descendants inherit the level you choose, the same way
 they inherit a palette.
 
@@ -22,9 +22,12 @@ it: a button, a field or a dialog reads the same tokens at every level.
 | Typography | `data-text` | `small`, **default**, `large` |
 | Elevation | `data-elevation` | `flat`, `subtle`, **default**, `raised` |
 | Motion | `data-motion` | `none`, `fast`, **default**, `expressive` |
+| Handle | `data-handle` | **`line`**, `grip`, `dots` |
 
 The default level of an axis is the absence of its attribute. To return a
 subtree to the default, remove the attribute; there is no `"default"` value.
+The handle's default has a name, `line`, which you can also write to return a
+subtree to it under another level.
 
 ## Independent and nested
 
@@ -117,6 +120,21 @@ of popups, dialogs and drawers, the skeleton pulse and the progress bar.
 **Reduced motion always wins.** When the user's system asks for reduced
 motion, the level is `none`, whatever `data-motion` says.
 
+## Handle
+
+The handle sets the mark on every resize handle — a Splitter's separator, a
+Dockable splitter, a Grid Layout card's resize handles — which share one look.
+It is the only axis whose levels are shapes, not steps.
+
+| level | mark at rest |
+|---|---|
+| `line` (default) | none: the rule alone, the IDE look; a pill on hover, drag and focus |
+| `grip` | a faint pill |
+| `dots` | three dots |
+
+Hover, drag and keyboard focus light the mark in full `ring` at every level,
+and a disabled handle shows none.
+
 ## Popups and portals
 
 Popups, dialogs and drawers render in a portal under `<body>`, outside the
@@ -135,6 +153,6 @@ choice, the way `next-themes` does for `data-theme`.
 
 shadcn/ui offers several styles, each a stylesheet that redefines every
 component's classes. A style bundles spacing, radius, type and focus
-together, and you choose it when you install. In Fragiola the five axes are
+together, and you choose it when you install. In Fragiola the six axes are
 separate, change at runtime and apply per subtree, and each component is
 written once.

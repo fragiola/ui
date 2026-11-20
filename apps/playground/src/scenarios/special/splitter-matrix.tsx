@@ -6,8 +6,9 @@ import { cn } from "#/lib/cn";
 // a palette class on the group (it re-tints the panels, the rule, the ring
 // and the grip, nested groups included), each density (the hit area follows
 // the spacing scale), right-to-left (the first panel sits on the right; the
-// arrows mirror), and the other design axes set on a frame. Focus a rule
-// (Tab) to see its ring bar under each one.
+// arrows mirror), the three handle marks (`data-handle`: line, grip, dots —
+// the same as Dockable's, see dockable-handles) and the other design axes
+// set on a frame. Focus a rule (Tab) to see its ring bar under each one.
 const frames: {
     label: string;
     className?: string;
@@ -20,6 +21,14 @@ const frames: {
     { label: "dir=rtl", attrs: { dir: "rtl" } },
     { label: "density compact", attrs: { "data-density": "compact" } },
     { label: "density spacious", attrs: { "data-density": "spacious" } },
+    { label: "handle line", attrs: { "data-handle": "line" } },
+    { label: "handle grip", attrs: { "data-handle": "grip" } },
+    { label: "handle dots", attrs: { "data-handle": "dots" } },
+    {
+        label: "handle dots, density compact",
+        attrs: { "data-handle": "dots", "data-density": "compact" },
+    },
+    { label: "handle dots, rtl", attrs: { "data-handle": "dots", dir: "rtl" } },
     { label: "radius flat", attrs: { "data-radius": "flat" } },
     { label: "text large", attrs: { "data-text": "large" } },
     { label: "motion none", attrs: { "data-motion": "none" } },

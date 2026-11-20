@@ -125,13 +125,23 @@ function DragHandle({ className, children, ...props }: DragHandleProps) {
 // A side or corner its item is resized from (`side`: `top`, `bottom`,
 // `start`, `end` or a corner). Pointer only — the keyboard resizes a grabbed
 // item with Shift + arrows — so it takes no focus and needs no name.
-function ResizeHandle({ className, ...props }: ResizeHandleProps) {
+// It draws the handle's mark (`tile.resizeMark`) unless the consumer gives
+// children of its own.
+function ResizeHandle({ className, children, ...props }: ResizeHandleProps) {
     return (
         <GridLayoutPrimitive.ResizeHandle
             data-slot="grid-layout-resize-handle"
             className={withClass(tile.resizeHandle(), className)}
             {...props}
-        />
+        >
+            {children ?? (
+                <span
+                    data-slot="grid-layout-resize-mark"
+                    aria-hidden="true"
+                    className={tile.resizeMark()}
+                />
+            )}
+        </GridLayoutPrimitive.ResizeHandle>
     );
 }
 

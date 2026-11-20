@@ -133,8 +133,11 @@ function Row<T extends DockableTypes = AnyTypes>({
 
 // A splitter has no name of its own (`role="separator"`): "Resize" unless
 // the consumer gives one.
+// It draws the handle's mark (`dock.splitterMark`, the Splitter's grip)
+// unless the consumer gives children of its own.
 function Splitter<T extends DockableTypes = AnyTypes>({
     className,
+    children,
     ...props
 }: SplitterProps<T>) {
     return (
@@ -143,7 +146,15 @@ function Splitter<T extends DockableTypes = AnyTypes>({
             aria-label="Resize"
             className={withClass(dock.splitter(), className)}
             {...props}
-        />
+        >
+            {children ?? (
+                <span
+                    data-slot="dockable-splitter-mark"
+                    aria-hidden="true"
+                    className={dock.splitterMark()}
+                />
+            )}
+        </DockablePrimitive.Splitter>
     );
 }
 

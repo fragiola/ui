@@ -74,6 +74,7 @@
 
 import { tv } from "tailwind-variants";
 import { foundation } from "./foundation";
+import { handle } from "./handle";
 
 // The layout's floor. `palette-surface` by default — merged away by any
 // palette class the consumer passes (cn knows the palette group).
@@ -197,25 +198,31 @@ const panel = tv({
     `,
 });
 
-// The bar between two children of a row, or beside a border's panel. The
-// engine measures its thickness; the visible line is its `::after`, centred
-// with auto margins on the inline axis, so it needs no RTL flip. Between
-// tabsets it is a transparent gap; inside an overlay border it floats over
-// the layout, so it takes the floor's fill.
+// The bar between two children of a row, or beside a border's panel. Its
+// look is the `handle` family's (families/handle.ts), shared with
+// Splitter's separator: the cursors, `z-10`, the rule — `ring` on hover,
+// drag and focus, the 3px focus bar — and its mark (`splitterMark`), which
+// the `data-handle` axis chooses. What is its own is geometry: the engine
+// measures a 6px gap (`w-1.5` / `h-1.5`, the root row's margin), and its
+// rule stays transparent at rest, since the tabsets on either side already
+// draw their lines; the rule stops short of the tabsets' rounded corners
+// (`inset-y-1`). Inside an overlay border it floats over the layout, so it
+// takes the floor's fill.
 const splitter = tv({
+    extend: handle.target,
     base: `
-        relative z-10 shrink-0 outline-none in-data-overlay:bg-palette-base
-        after:absolute after:rounded-full after:transition-colors
-        hover:after:bg-palette-ring/40 focus-visible:after:bg-palette-ring
-        data-dragging:after:bg-palette-ring
-        data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:cursor-ew-resize
-        data-[orientation=vertical]:after:inset-y-1 data-[orientation=vertical]:after:inset-x-0
-        data-[orientation=vertical]:after:mx-auto data-[orientation=vertical]:after:w-0.5
-        data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:cursor-ns-resize
-        data-[orientation=horizontal]:after:inset-x-1 data-[orientation=horizontal]:after:inset-y-0
-        data-[orientation=horizontal]:after:my-auto data-[orientation=horizontal]:after:h-0.5
+        in-data-overlay:bg-palette-base
+        data-[orientation=vertical]:w-1.5
+        data-[orientation=vertical]:after:inset-y-1
+        data-[orientation=horizontal]:h-1.5
+        data-[orientation=horizontal]:after:inset-x-1
     `,
 });
+
+// The mark on a splitter: the handle's (see `splitter`). The parts render
+// it inside every splitter, so Dockable's handles and Splitter's grips look
+// the same under each `data-handle` level.
+const splitterMark = handle.mark;
 
 // Where a dragged tab would land. Solid inside or beside a tabset, dashed at
 // the layout's outer edge (`data-drop-kind=edge`). The core hides it when a
@@ -285,6 +292,7 @@ export const dock = {
     actions,
     panel,
     splitter,
+    splitterMark,
     dropIndicator,
     edgeIndicator,
     border,
