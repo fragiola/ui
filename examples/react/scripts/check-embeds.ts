@@ -211,11 +211,12 @@ const SHOWCASES: Record<string, { width: number; maxHeight: number }> = {
     "component-showcase": { width: 1152, maxHeight: 640 },
 };
 
-// The palette maker, used: two hues added become `my-palette-1` and
-// `my-palette-2`, real CSS rules in the document; selecting each hands its
-// class to the target, whose button, focus ring, badge and progress bar
-// repaint; the code panel names the selected class and its rule.
-async function drivePaletteMaker(frame: Frame): Promise<string[]> {
+// The palettes demo's hue form, used: two hues added become `my-palette-1`
+// and `my-palette-2` (with their surface twins), real CSS rules in the
+// document; each is a new radio, selected when added, and hands its classes
+// to the card, whose button, badge, progress bar and switch repaint; the
+// code panel names the selected classes and the rule.
+async function drivePalettes(frame: Frame): Promise<string[]> {
     const problems: string[] = [];
     const target = frame.locator("[data-palette-target]");
     const code = frame.locator("[data-palette-code]");
@@ -226,10 +227,10 @@ async function drivePaletteMaker(frame: Frame): Promise<string[]> {
                 return el ? getComputedStyle(el) : null;
             };
             return {
-                button: style("button")?.backgroundColor,
-                ring: style('button[aria-hidden="true"]')?.outlineColor,
+                button: style("footer button:last-child")?.backgroundColor,
                 badge: style('[data-slot="badge"]')?.backgroundColor,
                 bar: style('[data-slot="progress-indicator"]')?.backgroundColor,
+                switch: style('[role="switch"]')?.backgroundColor,
             };
         });
     const before = await paints();
@@ -248,6 +249,7 @@ async function drivePaletteMaker(frame: Frame): Promise<string[]> {
         await add.click();
         await frame.waitForTimeout(400);
         const name = `my-palette-${n}`;
+        const surface = `my-palette-surface-${n}`;
         const ruled = await frame.evaluate(
             (name) =>
                 [...document.styleSheets].some((sheet) =>
@@ -260,19 +262,32 @@ async function drivePaletteMaker(frame: Frame): Promise<string[]> {
             name,
         );
         if (!ruled) problems.push(`no CSS rule for .${name}`);
+        const twin = await frame.evaluate(
+            (surface) =>
+                [...document.styleSheets].some((sheet) =>
+                    [...sheet.cssRules].some(
+                        (rule) =>
+                            rule instanceof CSSStyleRule &&
+                            rule.selectorText.endsWith(`.${surface}`),
+                    ),
+                ),
+            surface,
+        );
+        if (!twin) problems.push(`no CSS rule for .${surface}`);
         const radio = frame.getByRole("radio", { name });
         if ((await radio.getAttribute("aria-checked")) !== "true")
             problems.push(`${name} is not selected after it is added`);
         const text = (await code.textContent()) ?? "";
         if (
             !text.includes(`className="${name}"`) ||
+            !text.includes(`className="${surface}"`) ||
             !text.includes(`.${name} {`)
         )
             problems.push(`the code panel does not show ${name}`);
         seen.push(await paints());
     }
     const [first, second] = seen;
-    for (const part of ["button", "ring", "badge", "bar"] as const) {
+    for (const part of ["button", "badge", "bar", "switch"] as const) {
         if (!first?.[part] || first[part] === before[part])
             problems.push(`my-palette-1 did not repaint the ${part}`);
         if (!second?.[part] || second[part] === first?.[part])
@@ -822,9 +837,9 @@ for (const example of selected) {
         if (gridDrag && !(await dragGrid(page, frame, gridDrag)))
             say(`dragging in ${example.id} changed nothing`);
 
-        // The palette maker, used (drivePaletteMaker).
-        if (example.id === "palette-maker") {
-            for (const p of await drivePaletteMaker(frame)) say(p);
+        // The palettes demo's hue form, used (drivePalettes).
+        if (example.id === "palettes") {
+            for (const p of await drivePalettes(frame)) say(p);
         }
 
         const showcase = SHOWCASES[example.id];
