@@ -4,7 +4,11 @@
 #   Site export       fragiola.com builds /ui from `pnpm site:export` (contract v1.2,
 #                     fragiola/www CONTRACT.md), so a pull request that breaks the export — a
 #                     broken link, an unknown MDX component, a missing example — fails here
-#                     instead of in the site's deploy.
+#                     instead of in the site's deploy. It runs in Playwright's image
+#                     (mcr.microsoft.com/playwright:v<version>-noble, the exact `playwright`
+#                     version of examples/react), which ships Chromium and its system packages,
+#                     so `check:embeds` installs no browser. Upgrading Playwright changes the
+#                     tag in the same PR; site/tests/ci-workflow.test.ts fails otherwise.
 #   Trigger www build after a push to main passes, asks fragiola/www to rebuild fragiola.com
 #                     (a repository_dispatch of type "project-updated"). It needs the
 #                     WWW_DISPATCH_TOKEN secret: a fine-grained token with Contents: read &
@@ -53,6 +57,9 @@ jobs:
   site-export:
     name: Site export
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v4
 
@@ -71,7 +78,6 @@ jobs:
 
       # Every example in a real iframe: ready/resize/theme messages, popups
       # that fit their frame, no console errors.
-      - run: pnpm --filter examples-react exec playwright install --with-deps chromium
       - run: pnpm --filter examples-react check:embeds
 
   trigger-www-build:

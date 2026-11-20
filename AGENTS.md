@@ -141,4 +141,4 @@ gives them room. `check:embeds` checks both.
 | `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
 | `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.3, fragiola/www `CONTRACT.md`) |
 | `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
-| `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium`) |
+| `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium` locally; CI runs it in Playwright's image, see `.github/workflows/ci.yml`) |
