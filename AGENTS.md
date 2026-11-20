@@ -115,6 +115,15 @@ When a scenario becomes something readers should see, it becomes an example,
 with its entry in `examples/react/src/examples/index.ts`. A scenario is never
 linked from the docs.
 
+**Two examples are fragiola.com's home page.** `component-showcase` is the
+landing's showcase (`site/docs/index.mdx`, right after the Hero), and www's
+home slide for Fragiola UI is derived from it: real components in Create's
+first design, within a showcase's height at a landing's width (`check:embeds`
+holds it under 640px at 1152px). `palette-maker` is the landing's palette
+section and www embeds it by id: a hue becomes `my-palette-1`, `my-palette-2`,
+… with the registry's generator (`lib/colour/palette`, the one Create uses,
+never a copy), and only the class and the new CSS rule change. Keep both ids.
+
 **A modal example covers the site's page.** On fragiola.com a Dialog, an
 AlertDialog or a Drawer opened in an example (the Sidebar's mobile Drawer too)
 is promoted over the whole page, not kept inside the example's frame
@@ -139,6 +148,6 @@ gives them room. `check:embeds` checks both.
 | `pnpm build` | `pnpm -r build` (production build) |
 | `pnpm registry:build` | build the registry JSON files (`packages/registry/dist/r`) |
 | `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
-| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.3, fragiola/www `CONTRACT.md`) |
+| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.7, fragiola/www `CONTRACT.md`) |
 | `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
 | `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium` locally; CI runs it in Playwright's image, see `.github/workflows/ci.yml`) |
