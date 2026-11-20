@@ -83,7 +83,7 @@ const gridLayoutRef = useGridLayoutRef();
 | `Items` | the package's, unchanged (it renders no element) |
 | `Header` | a `div` + the `header` member: a card's top row |
 | `Title` | a `span` + the `title` member: a card's name, truncated |
-| `Content` | a `div` + the `content` member: the rest of the card, scrolling when it overflows |
+| `Content` | a `div` + the `content` member: the rest of the card, scrolling when it overflows and clipped to the card's rounded corners. The card itself clips nothing (its resize handles straddle its border), so a card's body goes in `Content` |
 | `Template.Simple` | all of the above but `DragSource`, every item a card |
 
 Every part that wraps one of the package's forwards `render`, `ref`, its handlers and the rest of its props, and takes a `className` given as a string or as a function of the part's state. The engine places the root, the items, the cells, the placeholder and the drag preview with inline styles (position, size, a `transform`) that always win: the family sets none of them. Put `Cells` before the items, so they are drawn under them, and `Placeholder` after.
@@ -104,7 +104,7 @@ The parts emit their state as `data-*` attributes and the family reads them with
 | static | `data-static` on the item | the `soft` fill: it never moves, and the package renders no resize handle (the template no drag handle either) |
 | draggable | `data-draggable` on the item and its handle | the grab cursor; without it the handle dims |
 | resizable | `data-resizable` on the item | the package renders its resize handles only then |
-| a resize handle | `data-side`, `data-resizing` | a `ring` pill on a side (a dot on a corner), shown while the card is hovered, focused or grabbed, and full `ring` while hovered or pulled |
+| a resize handle | `data-side`, `data-resizing` | a pill centred on the card's border on a side (a dot inside a corner), neutral at 40% while the card is hovered, focused or grabbed, full `ring` while hovered or pulled; the `data-handle` axis shapes it, and `ide` keeps it |
 | a gesture in progress | `data-dragging`, `data-resizing`, `data-grabbed`, `data-dropping` on the root | a `line` dot at the centre of each cell |
 | where it lands | `data-kind` on the placeholder | a dashed `ring` box with a light `ring` fill, gliding between cells; solid for an item coming in (`drop`) |
 | an item coming in | `data-dropping` on the root | a dashed `ring` outline inside the grid's edge |

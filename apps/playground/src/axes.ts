@@ -32,7 +32,7 @@ export const AXES = {
     },
     handle: {
         label: "Handle",
-        levels: ["line", "grip", "dots"],
+        levels: ["line", "grip", "dots", "ide"],
         fallback: "line",
     },
 } as const;

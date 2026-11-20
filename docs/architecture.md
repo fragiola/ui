@@ -80,13 +80,12 @@ exception. The tell: a role with no coherent source.
 
 ### The neutral surfaces
 
-`surface` is the floor, `raised` a card, a popup or a dialog a step above it, and
-`canvas` the ground a page lays its cards on inside a frame — the Create page's
-preview, where the frame, the canvas and the cards are three tones. In dark `canvas`
-sits between the floor and the frame (L 0.18, against `surface`'s 0.15), so cards on
-the plain `surface` read apart from it without being `raised`; in light it is a
-near-white grey under white cards. All three are achromatic: their chart series step
-lightness, not hue (`global.css`).
+`surface` is the floor and `raised` a card, a popup or a dialog a step above it. A
+frame around a page of cards (the Create page) is `raised`, and the cards and the
+ground under them share `surface`: the cards stand apart by their line and shadow.
+A third neutral for that ground (`palette-canvas`, Epic #127) was tried and removed
+(Epic #133): between two neighbours this close it read as a muddy step, not a tone.
+Both are achromatic: their chart series step lightness, not hue (`global.css`).
 
 ### Surface-ring palettes
 
@@ -149,13 +148,16 @@ The sidebar is the largest one so far: its items are `menu`'s navigation members
 
 `handle` is the resize handle the split views share: `target`, the element a pointer
 grabs (cursors, `z-10`, the rule as its `::after` — `ring` on hover, drag and focus,
-widening into a 3px focus bar), and `mark`, the decoration on it, drawn by the
-`data-handle` axis (§4). Splitter's separator and Dockable's splitter extend `target`;
-Splitter's grip, Dockable's splitter mark and Grid Layout's resize mark are `mark`.
-What stays each consumer's is geometry: Splitter's 1px rule, painted in `line` at rest,
-with a 13px hit area; Dockable's 6px gap, whose rule stays transparent at rest because
-the bordered tabsets already draw the edge; Grid Layout's handles inside a card's edge,
-whose mark keeps a 40% floor at rest. `tests/handle.test.ts` fails when a file other
+widening into a 3px focus bar), `mark`, the decoration on a bar, neutral at rest and
+`ring` on interaction, drawn by the `data-handle` axis (§4), and `edgeMark`, the same
+mark on a card's edge, with a 40% floor at rest and kept under `ide`. Splitter's
+separator and Dockable's splitter extend `target`; Splitter's grip and Dockable's
+splitter mark are `mark`, Grid Layout's resize mark is `edgeMark`. What stays each
+consumer's is geometry: Splitter's 1px rule, painted in `line` at rest, with a 13px hit
+area; Dockable's 6px gap, whose rule stays transparent at rest because the bordered
+tabsets already draw the edge (a 1px seam under `ide`), with a hit area of at least 9px
+(a `::before` overlay that reaches 1.5px into each tabset by default, 4px under `ide`); Grid Layout's handles centred
+on a card's border, which the card no longer clips. `tests/handle.test.ts` fails when a file other
 than the family spells the mark.
 
 `split` is the second family over a published package (Splitter, §5): group, panel,
@@ -377,7 +379,7 @@ before the axes.
 | typography | `data-text` | small, default, large | `--text-scale` (every `text-*`, and the icon sizes) |
 | elevation | `data-elevation` | flat, subtle, default, raised | `--elevation-*` (behind `--shadow-*`) |
 | motion | `data-motion` | none, fast, default, expressive | `--motion-scale` (every duration) |
-| handle | `data-handle` | line (default), grip, dots | `--handle-rest`, `--handle-mask` (the resize handle's mark) |
+| handle | `data-handle` | line (default), grip, dots, ide | `--handle-rest`, `--handle-mask` (the resize handle's mark), `--handle-seam` (`ide`) |
 
 This is the answer to shadcn's styles (`style-vega.css`, `style-lyra.css`, ...): eight
 files of about 1,800 lines, each redefining every component's `cn-*` classes. Each one
@@ -426,15 +428,23 @@ becomes a stadium. Nested radii have a floor at zero. Dockable's header keeps a 
 density.
 
 **The handle axis.** Splitter, Dockable and Grid Layout draw one resize handle (the
-`handle` family, §2), and `data-handle` chooses its mark: `line`, the IDE look (the rule
+`handle` family, §2), and `data-handle` chooses its look: `line` (the rule
 alone at rest, a pill on hover, drag and focus); `grip`, the pill shown at rest; `dots`,
-three dots. It is the only axis with three levels that are shapes rather than steps, and
-the only one whose default has a name: `line` is written out too, so a subtree under
-another level can return to it (absent still renders `line`). Like every axis it only
-sets tokens — `--handle-rest`, the mark's opacity at rest, and `--handle-mask`, an image
-that cuts the pill into three dots (`radial-gradient` in a `mask-size` of a third of the
-mark's length) or `none` — and both reach the mark as `var()`, so no React reads the
-attribute and a level re-draws every handle under it without a render. The mark lines up
+three dots; `ide`, the VS Code look (no gap, no mark, a 1px rule that brightens on hover
+and thickens into a 3px `ring` bar while dragged or focused). It is the only axis whose
+levels are shapes rather than steps, and the only one whose default has a name: `line`
+is written out too, so a subtree under another level can return to it (absent still
+renders `line`). Like every axis it only sets tokens — `--handle-rest`, the mark's
+opacity at rest; `--handle-mask`, an image that cuts the pill into three dots
+(`radial-gradient` in a `mask-size` of a third of the mark's length) or `none`; and
+`--handle-seam`, 0 or 1 under `ide` — and all reach the classes as `var()` or as
+expressions over them: the hovered rule mixes `ring` by `1 - seam` (else the `line`
+brightened towards `contrast`), the dragged rule is `1px + 2px × seam`, a bar's mark is
+lit to `1 - seam`, and Dockable's gap, gutter, tabset border and radius scale by
+`1 - seam` (its splitter keeps `max(1px, …)`, the seam the engine measures, and a 9px
+hit area as a `::before` overlay). No React reads the attribute, and a level re-draws
+every handle under it without a render. The rule is centred with symmetric insets
+(`calc(50% - bar / 2)`), so a 3px bar on a 1px edge stays centred in both directions. The mark lines up
 with its bar through two custom variants, `handle-vertical` and `handle-horizontal`, that
 read its direct parent's `data-orientation` (or a Grid Layout `data-side`).
 

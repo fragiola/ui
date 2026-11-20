@@ -118,12 +118,14 @@ const cells = tv({
 // transitions are off while a pointer holds the item, so they never lag it
 // (the package's guide). A static item never moves: the `soft` fill
 // sets it into the floor. The grab cursor is the body's only when the item
-// has no drag handle — with one, the handle is where it drags from.
+// has no drag handle — with one, the handle is where it drags from. It
+// clips nothing: its resize handles straddle its border (`resizeHandle`),
+// and its content clips and rounds itself (`content`).
 const item = tv({
     base: [
         foundation.focus(),
         `
-        group/tile-item palette-raised flex flex-col overflow-hidden
+        group/tile-item palette-raised flex flex-col
         rounded-lg border border-palette-line bg-palette-base
         text-sm text-palette-contrast shadow-sm
         not-data-dragging:not-data-resizing:transition-[transform,width,height,scale,box-shadow,opacity]
@@ -151,8 +153,12 @@ const header = tv({
 // The card's name, truncated so an action beside it is never pushed out.
 const title = tv({ base: "min-w-0 flex-1 truncate font-medium" });
 
-// The card's content: what is left of the card, scrolling when it overflows.
-const content = tv({ base: "min-h-0 flex-1 overflow-auto p-3" });
+// The card's content: what is left of the card, scrolling when it overflows,
+// clipped to the card's inner bottom corners (the card itself clips
+// nothing, see `item`).
+const content = tv({
+    base: "min-h-0 flex-1 overflow-auto rounded-b-[max(0px,calc(var(--radius-lg)_-_1px))] p-3",
+});
 
 // Where an item drags from, and its tab stop: an icon at Clickable's `icon`
 // fill (see the header). Lit while the pointer or the keyboard holds its
@@ -176,8 +182,10 @@ const dragHandle = tv({
     ],
 });
 
-// A side or corner an item is resized from: a hit area inside the card's
-// edge (a card may clip what overflows it), above its content, with the
+// A side or corner an item is resized from: a hit area across the card's
+// edge — 8px centred on its 1px border (`-4.5px` from the padding box, the
+// border's middle at `-0.5px`), so a side's mark sits on the border, not
+// beside it — above its content, with the
 // handle's mark (`resizeMark`) — a dot on a corner — shown while the card is
 // hovered, focused (or holds focus) or held by the keyboard (Shift + arrows
 // resize it), and while this handle is pulled. It is a `handle` target in
@@ -195,11 +203,11 @@ const resizeHandle = tv({
         group-has-[:focus-visible]/tile-item:opacity-100
         group-data-grabbed/tile-item:opacity-100
         data-resizing:opacity-100
-        data-[side=top]:inset-x-3 data-[side=top]:top-0 data-[side=top]:h-2
-        data-[side=bottom]:inset-x-3 data-[side=bottom]:bottom-0 data-[side=bottom]:h-2
+        data-[side=top]:inset-x-3 data-[side=top]:-top-[4.5px] data-[side=top]:h-2
+        data-[side=bottom]:inset-x-3 data-[side=bottom]:-bottom-[4.5px] data-[side=bottom]:h-2
         data-[side=top]:cursor-ns-resize data-[side=bottom]:cursor-ns-resize
-        data-[side=start]:inset-y-3 data-[side=start]:start-0 data-[side=start]:w-2
-        data-[side=end]:inset-y-3 data-[side=end]:end-0 data-[side=end]:w-2
+        data-[side=start]:inset-y-3 data-[side=start]:-start-[4.5px] data-[side=start]:w-2
+        data-[side=end]:inset-y-3 data-[side=end]:-end-[4.5px] data-[side=end]:w-2
         data-[side=start]:cursor-ew-resize data-[side=end]:cursor-ew-resize
         data-[side=top-start]:top-0 data-[side=top-start]:start-0
         data-[side=top-end]:top-0 data-[side=top-end]:end-0
@@ -214,15 +222,14 @@ const resizeHandle = tv({
     `,
 });
 
-// The mark on a resize handle: the handle's (families/handle.ts) — a pill
-// along a side, a dot on a corner, cut into dots under `data-handle="dots"`
-// — lit while its handle is hovered or pulled. The handle itself only shows
-// while its card is hovered or held, so the mark never hides at rest there:
-// its resting opacity has a floor of 40%, `dock.splitter`'s old hover hint.
-const resizeMark = tv({
-    extend: handle.mark,
-    base: "opacity-[max(0.4,var(--handle-rest,0))]",
-});
+// The mark on a resize handle: the handle's mark for a card's edge
+// (`handle.edgeMark`) — a pill along a side, centred on the card's border,
+// a dot on a corner, cut into dots under `data-handle="dots"` — `ring`
+// while its handle is hovered or pulled. The handle itself only shows while
+// its card is hovered or held, so the mark never hides at rest there: its
+// resting opacity has a floor of 40%, and `ide`, which hides a bar's mark
+// behind its rule, keeps it (a card's edge has no rule).
+const resizeMark = handle.edgeMark;
 
 // Where the held item would land (see the header): a dashed `ring` box with
 // a `ring/15` fill, gliding between cells. A new item coming in from outside

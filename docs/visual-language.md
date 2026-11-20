@@ -26,15 +26,15 @@ and it changes everywhere.
 | tier | what | treatment |
 |---|---|---|
 | floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
-| canvas | the ground a page lays its cards on, inside a frame (the Create preview) | `palette-canvas`, `bg-palette-base`: in dark a step lighter than the floor, in light a near-white grey, so cards on the plain floor colour stand apart from it |
 | panel | a container on the floor: an accordion, a collapsible, a data grid, a dock panel | the floor's `bg-palette-base`, a `line` border, `rounded-lg` (`panel`) |
 | raised | a card that stands on the floor: a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-sm` |
 | overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-lg` (`overlay`; the elevation axis scales it) |
 
-Three tones in a row — a frame, a canvas inside it, cards on the canvas — are three
-palettes, never `soft` as a fill: the frame's mix of `soft` and `base` (the docs'
-inset frame), `palette-canvas`, and the cards on `palette-surface`. In dark the
-lightness steps down from the frame to the cards; in light the cards are white.
+A frame with cards inside it — the Create page — is two tones, never three and never
+`soft` as a fill: the frame is `palette-raised`, a step above the floor; inside it the
+canvas and the cards share `palette-surface`, and a card stands apart by its `line`
+border and its shadow, not by a colour of its own. A third neutral between them read
+as a muddy grey in both schemes, and was removed (`palette-canvas`, Epic #133).
 
 A container never paints with `soft`. `soft` is a **state** (hover, highlighted,
 selected) or a recessed adornment inside a control: a field's addon, a table's header,
@@ -140,19 +140,23 @@ for a standalone illustration. A secondary icon (a chevron, a search glass) is
 
 Every split view resizes from the same handle: Splitter's separator, Dockable's
 splitter and Grid Layout's resize handles compose the `handle` family. The bar shows
-the `ring` rule on hover, drag and focus (3px on focus); its mark is a `ring` pill —
-the drawer handle's shape, shorter — lit fully on hover, drag and focus and never on a
-disabled handle. The `data-handle` axis chooses the mark at rest:
+the `ring` rule on hover, drag and focus (3px on focus); its mark is a pill — the
+drawer handle's shape, shorter — centred on the rule, neutral (`accent`) at rest and
+`ring` on hover, drag and focus, never on a disabled handle. The `data-handle` axis
+chooses the look:
 
 | level | at rest | on interaction |
 |---|---|---|
-| `line` (default) | the rule alone, the IDE look | the `ring` rule and the pill |
-| `grip` | a faint pill (`ring` at 50%) | the pill in full `ring` |
-| `dots` | three dots (`ring` at 70%) | the dots in full `ring` |
+| `line` (default) | the rule alone | the `ring` rule and the pill |
+| `grip` | a faint pill (`accent` at 50%) | the pill in `ring` |
+| `dots` | three dots (`accent` at 70%) | the dots in `ring` |
+| `ide` | a 1px `line` seam, no gap, no mark | hover: the rule brightens (`line` towards `contrast`); drag and focus: a 3px `ring` bar over the edge |
 
-Geometry stays each component's: Splitter's rule is a 1px `line` at rest, Dockable's
-6px gap between bordered tabsets has no rule at rest, and a dashboard card's resize
-marks keep a 40% floor while the card is hovered.
+Geometry stays each component's: Splitter's rule is a 1px `line` at rest; Dockable's
+6px gap between bordered tabsets has no rule at rest, and under `ide` closes to a 1px
+seam between frameless tabsets; a dashboard card's resize marks sit on its border,
+keep a 40% floor while the card is hovered, and stay at every level (a card's edge has
+no rule to stand in for them).
 
 ## Motion
 

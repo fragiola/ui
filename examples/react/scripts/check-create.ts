@@ -20,17 +20,20 @@ import { chromium, type Frame, type Page } from "playwright";
 //   - isolation: setting extreme levels, the dark scheme and RTL from the
 //     customizer changes the preview's <html> and leaves every computed
 //     style of the customizer as it was
-//   - three tones, in both schemes: the frame, the canvas (`[data-stage]`)
-//     and the cards are three colours — in dark the lightness steps down
-//     from the frame to the cards, in light the cards are white and the
-//     canvas lies between them and the frame — and no card is raised
+//   - two tones, in both schemes: the frame differs from the inset; the
+//     canvas (`[data-stage]`) and the cards are one colour (white in
+//     light), the cards set apart by a visible border; no card is raised
+//   - the band: no panel has a title or a description; every panel's
+//     content stays inside its rounded border (nothing overflows the panel,
+//     nothing visible lies outside it); the data grid's header row and rows
+//     span its whole width, and its pager lies inside the panel
 //   - the inset: rounded at every corner, the docs' 0.5rem margin on all
 //     four sides
 //   - the panel: no <header>; the links, the actions, the controls and Get
 //     code, in that order in the DOM and top to bottom; Get code visible
 //     without scrolling, and still there once the controls are scrolled
-//   - the handle axis: the Handle control reaches the preview's <html>, and
-//     Get code's HTML carries `data-handle` once it is not the default
+//   - the handle axis: the Handle control offers `ide`, which reaches the
+//     preview's <html>, and Get code's HTML carries `data-handle="ide"`
 //
 // Needs a Chromium: `pnpm exec playwright install chromium`.
 
@@ -218,40 +221,170 @@ async function tones(create: Frame, preview: Frame, scheme: string) {
     await settle(create);
     await settle(preview);
     const frame = await background(create, "[data-frame]");
+    const inset = await background(create, "[data-inset]");
     const canvas = await background(preview, "[data-stage]");
-    const card = await background(preview, "[data-stage] section");
-    if (!frame || !canvas || !card) {
-        problems.push(`${scheme}: a tone is missing (frame, canvas or card)`);
+    const card = await background(preview, "[data-stage] [data-card-box]");
+    if (!frame || !inset || !canvas || !card) {
+        problems.push(
+            `${scheme}: a tone is missing (frame, inset, canvas or card)`,
+        );
         return;
     }
-    const [f, c, k] = [frame, canvas, card].map(luminance) as [
-        number,
-        number,
-        number,
-    ];
-    const keys = new Set([frame, canvas, card].map((rgb) => rgb.join(",")));
-    if (keys.size !== 3) {
+    const key = (rgb: number[]) => rgb.join(",");
+    if (key(frame) === key(inset))
         problems.push(
-            `${scheme}: frame, canvas and card are not three colours (${[frame, canvas, card].map((x) => x.join(",")).join(" / ")})`,
+            `${scheme}: the frame and the inset are one colour (${key(frame)})`,
         );
-    }
-    if (scheme === "dark" && !(f > c && c > k)) {
+    if (key(canvas) !== key(card))
         problems.push(
-            `dark: the lightness is not frame > canvas > card (${f.toFixed(4)} / ${c.toFixed(4)} / ${k.toFixed(4)})`,
+            `${scheme}: the canvas and the cards are not one surface (${key(canvas)} / ${key(card)})`,
         );
-    }
-    if (scheme === "light") {
-        if (card.join(",") !== "255,255,255")
-            problems.push(`light: the card is not white (${card.join(",")})`);
-        if (!(c < k && c > f))
-            problems.push(
-                `light: the canvas is not between the card and the frame (${f.toFixed(4)} / ${c.toFixed(4)} / ${k.toFixed(4)})`,
-            );
-    }
+    if (key(inset) !== key(canvas))
+        problems.push(
+            `${scheme}: the inset and the canvas are not one surface (${key(inset)} / ${key(canvas)})`,
+        );
+    if (scheme === "light" && key(card) !== "255,255,255")
+        problems.push(`light: the card is not white (${key(card)})`);
+    if (scheme === "dark" && !(luminance(frame) > luminance(canvas)))
+        problems.push("dark: the frame is not lighter than the canvas");
+    const border = await preview.evaluate(() => {
+        const el = document.querySelector("[data-stage] [data-card-box]");
+        if (!el) return null;
+        const style = getComputedStyle(el);
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d");
+        if (!context) return null;
+        const rgb = (color: string) => {
+            context.clearRect(0, 0, 1, 1);
+            context.fillStyle = color;
+            context.fillRect(0, 0, 1, 1);
+            return [...context.getImageData(0, 0, 1, 1).data]
+                .slice(0, 3)
+                .join(",");
+        };
+        return {
+            width: Number.parseFloat(style.borderTopWidth),
+            visible: rgb(style.borderTopColor) !== rgb(style.backgroundColor),
+        };
+    });
+    if (!border || border.width < 1 || !border.visible)
+        problems.push(`${scheme}: the cards have no visible border`);
     const raised = await preview.evaluate(
-        () => document.querySelectorAll("section.palette-raised").length,
+        () =>
+            document.querySelectorAll("[data-card-box].palette-raised").length,
     );
     if (raised > 0) problems.push(`${scheme}: ${raised} cards are raised`);
+}
+
+// The band of special components (see the header). A descendant counts as
+// outside its panel only where it is visible: clipped by every scroller
+// between it and the panel (a virtualized grid's rows below its body are
+// not outside).
+async function band(preview: Frame, at: string) {
+    const report = await preview.evaluate(() => {
+        const panels = [
+            ...document.querySelectorAll<HTMLElement>("[data-band-panel]"),
+        ];
+        return panels.map((panel) => {
+            const name = panel.getAttribute("aria-label") ?? "?";
+            const box = panel.getBoundingClientRect();
+            const titled =
+                panel.querySelector(
+                    ":scope > header, :scope > h1, :scope > h2, :scope > h3, :scope > p",
+                ) !== null ||
+                panel.querySelector(":scope > * > header > :is(h1,h2,h3)") !==
+                    null;
+            const overflow =
+                panel.scrollWidth > panel.clientWidth + 1 ||
+                panel.scrollHeight > panel.clientHeight + 1;
+            const outside: string[] = [];
+            for (const el of panel.querySelectorAll<HTMLElement>("*")) {
+                let r = el.getBoundingClientRect();
+                if (r.width === 0 || r.height === 0) continue;
+                let left = r.left;
+                let top = r.top;
+                let right = r.right;
+                let bottom = r.bottom;
+                for (
+                    let a = el.parentElement;
+                    a && a !== panel;
+                    a = a.parentElement
+                ) {
+                    const s = getComputedStyle(a);
+                    if (s.overflowX === "visible" && s.overflowY === "visible")
+                        continue;
+                    r = a.getBoundingClientRect();
+                    left = Math.max(left, r.left);
+                    top = Math.max(top, r.top);
+                    right = Math.min(right, r.right);
+                    bottom = Math.min(bottom, r.bottom);
+                }
+                if (right - left <= 0 || bottom - top <= 0) continue;
+                if (
+                    left < box.left - 0.5 ||
+                    top < box.top - 0.5 ||
+                    right > box.right + 0.5 ||
+                    bottom > box.bottom + 0.5
+                ) {
+                    outside.push(
+                        `${el.tagName.toLowerCase()}${el.dataset.slot ? `[${el.dataset.slot}]` : ""}`,
+                    );
+                }
+            }
+            let grid: string | null = null;
+            const root = panel.querySelector<HTMLElement>(
+                "[data-grid-part=root]",
+            );
+            if (root) {
+                const header = root.querySelector(
+                    "[data-grid-part=header-row]",
+                );
+                const row = root.querySelector("[data-grid-part=row]");
+                const pager = panel.querySelector(
+                    "[data-slot=data-grid-pagination]",
+                );
+                const width = root.clientWidth;
+                const hw = header?.getBoundingClientRect().width ?? 0;
+                const rw = row?.getBoundingClientRect().width ?? 0;
+                const p = pager?.getBoundingClientRect();
+                if (Math.abs(hw - width) > 1 || Math.abs(rw - width) > 1)
+                    grid = `the columns span ${Math.round(hw)}px of ${width}px`;
+                else if (
+                    !p ||
+                    p.height === 0 ||
+                    p.top < box.top ||
+                    p.bottom > box.bottom - 1
+                )
+                    grid = "the pager is not inside the panel";
+            }
+            return {
+                name,
+                titled,
+                overflow,
+                outside,
+                grid,
+                hasGrid: root !== null,
+            };
+        });
+    });
+    if (report.length !== 4)
+        problems.push(`${at}: ${report.length} band panels, expected 4`);
+    for (const panel of report) {
+        if (panel.titled)
+            problems.push(`${at}: the ${panel.name} panel has a title`);
+        if (panel.overflow)
+            problems.push(
+                `${at}: the ${panel.name} panel's content overflows it`,
+            );
+        if (panel.outside.length > 0)
+            problems.push(
+                `${at}: the ${panel.name} panel shows content outside its border (${[...new Set(panel.outside)].slice(0, 5).join(", ")})`,
+            );
+        if (panel.grid) problems.push(`${at}: Data Grid: ${panel.grid}`);
+    }
+    if (!report.some((panel) => panel.hasGrid))
+        problems.push(`${at}: no Data Grid in the band`);
 }
 
 // The shell's layout: the inset and the panel (see the header).
@@ -404,6 +537,7 @@ for (const [width, height] of [
     }
 
     await layout(create, at);
+    await band(preview, at);
     if (width === 1440) await tones(create, preview, "light");
 
     if (width === 1440) {
@@ -465,15 +599,51 @@ for (const [width, height] of [
                 `the preview did not apply the design: ${JSON.stringify(applied)}`,
             );
         }
-        await choose(page, create, "Handle", "dots");
+        await choose(page, create, "Handle", "ide");
         await page.keyboard.press("Escape");
         const handle = await preview.evaluate(
             () => document.documentElement.dataset.handle ?? null,
         );
-        if (handle !== "dots")
+        if (handle !== "ide")
             problems.push(
                 `the Handle control did not reach the preview: ${handle}`,
             );
+        // Under ide Dockable's tabsets meet: every splitter is a 1px seam
+        // (the engine measured it), the root row has no gutter, and a
+        // tabset draws no frame of its own.
+        await settle(preview);
+        const seam = await preview.evaluate(() => {
+            const dock = document.querySelector(
+                "[data-band-panel] [data-slot=dockable]",
+            );
+            if (!dock) return "no Dockable in the band";
+            const splitters = [
+                ...dock.querySelectorAll<HTMLElement>(
+                    "[data-slot=dockable-splitter]",
+                ),
+            ].map((el) => {
+                const r = el.getBoundingClientRect();
+                return Math.round(Math.min(r.width, r.height));
+            });
+            const row = dock.querySelector<HTMLElement>(
+                "[data-slot=dockable-row][data-root]",
+            );
+            const tabset = dock.querySelector<HTMLElement>(
+                "[data-slot=dockable-tabset]",
+            );
+            const margin = row ? getComputedStyle(row).marginTop : "?";
+            const border = tabset
+                ? getComputedStyle(tabset).borderTopWidth
+                : "?";
+            return splitters.length > 0 &&
+                splitters.every((t) => t === 1) &&
+                margin === "0px" &&
+                border === "0px"
+                ? null
+                : `splitters ${splitters.join(",")}px, gutter ${margin}, tabset border ${border}`;
+        });
+        if (seam)
+            problems.push(`ide: Dockable's tabsets do not meet (${seam})`);
         await create.getByRole("button", { name: "Get code" }).click();
         await create.getByRole("tab", { name: "HTML" }).click();
         const html =
@@ -481,7 +651,7 @@ for (const [width, height] of [
                 .getByRole("tabpanel", { name: "HTML" })
                 .locator("pre")
                 .textContent()) ?? "";
-        if (!/data-handle="dots"/.test(html))
+        if (!/data-handle="ide"/.test(html))
             problems.push(
                 `Get code's HTML does not carry data-handle: ${html}`,
             );

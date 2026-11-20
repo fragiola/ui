@@ -96,17 +96,19 @@ panel. The customizer posts the design (`design/design.ts`) and only the
 preview applies it to its own `<html>` (`design/apply-design.ts`), so an axis
 never reaches the customizer. The shell has no header: the panel on the frame holds the links, Randomize and
 Reset, the controls and Get code, and the inset keeps the docs' 0.5rem margin
-and 0.75rem radius. The preview's canvas is `palette-canvas`, its cards
-`palette-surface`: three tones with the frame. A sample card goes in `preview/cards/<group>.tsx`
+and 0.75rem radius. The frame is `palette-raised`; the inset, the preview's canvas
+and its cards share `palette-surface`, the cards bordered: two tones. A sample card goes in `preview/cards/<group>.tsx`
 and in `CARDS` (`preview/canvas.tsx`), which deals cards into the shortest
 column by measured height; it reads `useTone()` for the design's classes and
 draws charts with `PreviewChart`. The special components lead the canvas, in
-`preview/band/special.tsx`. The preview's stage (`[data-stage]`) is its
+`preview/band/special.tsx`, shown bare: each panel is the component edge to edge,
+with no title or description. The preview's stage (`[data-stage]`) is its
 scroller, and a modal opened in it covers the whole page: the preview speaks
 the embed half of overlay promotion, `shell/preview-promotion.ts` the host
 half. `pnpm --filter examples-react
 check:create` hosts it as fragiola.com does and checks the scroll, the overflow,
-the isolation, the three tones, the inset and the panel's order. `scenarios/atoms/theme-builder-edges.tsx` shows the palette
+the isolation, the two tones, the band (nothing clipped, the data grid at full width
+with its pager in view), the inset and the panel's order. `scenarios/atoms/theme-builder-edges.tsx` shows the palette
 generator on the hues where it is hardest.
 
 When a scenario becomes something readers should see, it becomes an example,

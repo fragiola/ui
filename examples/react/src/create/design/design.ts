@@ -21,7 +21,7 @@ export const AXES = {
     text: ["small", "default", "large"],
     elevation: ["flat", "subtle", "default", "raised"],
     motion: ["none", "fast", "default", "expressive"],
-    handle: ["line", "grip", "dots"],
+    handle: ["line", "grip", "dots", "ide"],
 } as const;
 export type Axis = keyof typeof AXES;
 export type Axes = { [A in Axis]: (typeof AXES)[A][number] };

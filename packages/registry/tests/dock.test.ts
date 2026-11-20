@@ -49,8 +49,10 @@ describe("dock family", () => {
             ).toEqual([]);
         }
         // The root row's gutter is a margin — not structural, and only on
-        // the root row.
-        expect(classes(dock.row)).toEqual(["data-root:m-1.5"]);
+        // the root row: the splitter's 6px, none under `data-handle="ide"`.
+        expect(classes(dock.row)).toEqual([
+            "data-root:m-[calc(var(--spacing)_*_1.5_*_(1_-_var(--handle-seam,0)))]",
+        ]);
     });
 
     it("floors the header at a fixed 2.25rem and lets tabs fill it", () => {

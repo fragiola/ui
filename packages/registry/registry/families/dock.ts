@@ -84,18 +84,27 @@ const root = tv({
 
 // The layout's root row — the only row with `data-root`: a margin is the
 // gutter between the floor's edge and the outer tabsets, as wide as a
-// splitter, so every gap in the layout is the same. A margin, because the
+// splitter, so every gap in the layout is the same — 6px at the default
+// density, none under `data-handle="ide"` (`1 - --handle-seam`, see
+// `splitter`). A margin, because the
 // row's position and inset are structural (`absolute; inset: 0`) and the
 // root's padding would not move it; a margin on an absolutely positioned box
 // with both insets set shrinks it, and the engine measures what it renders.
-const row = tv({ base: "data-root:m-1.5" });
+const row = tv({
+    base: "data-root:m-[calc(var(--spacing)_*_1.5_*_(1_-_var(--handle-seam,0)))]",
+});
 
-// A tabset: the line and the radius set it apart from the floor. Empty, it
-// keeps a dashed outline where tabs can be dropped.
+// A tabset: the line and the radius set it apart from the floor. Under
+// `data-handle="ide"` it has neither (both scale by `1 - --handle-seam`):
+// tabsets meet, and the 1px splitter between them is their one shared
+// edge, never a doubled border. Empty, it keeps a dashed outline where tabs
+// can be dropped, at every level.
 const tabset = tv({
     base: `
-        rounded-md border border-palette-line bg-palette-base
-        data-empty:border-dashed
+        rounded-[calc(var(--radius-md)_*_(1_-_var(--handle-seam,0)))]
+        border-[length:calc((1_-_var(--handle-seam,0))_*_1px)]
+        border-palette-line bg-palette-base
+        data-empty:border data-empty:border-dashed
     `,
 });
 
@@ -192,7 +201,8 @@ const actions = tv({
 // selector) stacks above the splitters (see the header).
 const panel = tv({
     base: `
-        rounded-b-[max(0px,calc(var(--radius-md)-1px))] bg-palette-base
+        rounded-b-[max(0px,calc(var(--radius-md)_*_(1_-_var(--handle-seam,0))_-_1px))]
+        bg-palette-base
         text-palette-contrast
         data-[layout-path^='/border/']:z-15
     `,
@@ -202,20 +212,38 @@ const panel = tv({
 // look is the `handle` family's (families/handle.ts), shared with
 // Splitter's separator: the cursors, `z-10`, the rule — `ring` on hover,
 // drag and focus, the 3px focus bar — and its mark (`splitterMark`), which
-// the `data-handle` axis chooses. What is its own is geometry: the engine
-// measures a 6px gap (`w-1.5` / `h-1.5`, the root row's margin), and its
-// rule stays transparent at rest, since the tabsets on either side already
-// draw their lines; the rule stops short of the tabsets' rounded corners
-// (`inset-y-1`). Inside an overlay border it floats over the layout, so it
-// takes the floor's fill.
+// the `data-handle` axis chooses. What is its own is geometry, which the
+// engine measures:
+//
+// - by default a 6px gap (`var(--spacing) * 1.5`, the root row's margin),
+//   whose rule stays transparent at rest, since the tabsets on either side
+//   already draw their lines; the rule stops short of the tabsets' rounded
+//   corners (`var(--spacing)` from each end);
+// - under `data-handle="ide"` (`--handle-seam: 1`) a 1px seam: the gap
+//   scales to nothing and `max(1px, …)` keeps the bar, the tabsets lose
+//   their frames, and the rule is painted in `line` at rest
+//   (`line / seam × 100%`) and runs end to end — the one edge the tabsets
+//   share.
+//
+// Its hit area is its `::before`, never under 9px (`min(0px, 50% - 4.5px)`
+// each side: 9px on the 1px seam, 9px on the 6px gap), so a thin bar stays
+// easy to grab and the thick dragged rule is an overlay: neither moves the
+// tabsets. Inside an overlay border it floats over the layout, so it takes
+// the floor's fill.
 const splitter = tv({
     extend: handle.target,
     base: `
         in-data-overlay:bg-palette-base
-        data-[orientation=vertical]:w-1.5
-        data-[orientation=vertical]:after:inset-y-1
-        data-[orientation=horizontal]:h-1.5
-        data-[orientation=horizontal]:after:inset-x-1
+        before:absolute
+        after:bg-palette-line/[calc(var(--handle-seam,0)_*_100%)]
+        data-[orientation=vertical]:w-[max(1px,calc(var(--spacing)_*_1.5_*_(1_-_var(--handle-seam,0))))]
+        data-[orientation=vertical]:before:inset-y-0
+        data-[orientation=vertical]:before:inset-x-[min(0px,calc(50%_-_4.5px))]
+        data-[orientation=vertical]:after:inset-y-[calc(var(--spacing)_*_(1_-_var(--handle-seam,0)))]
+        data-[orientation=horizontal]:h-[max(1px,calc(var(--spacing)_*_1.5_*_(1_-_var(--handle-seam,0))))]
+        data-[orientation=horizontal]:before:inset-x-0
+        data-[orientation=horizontal]:before:inset-y-[min(0px,calc(50%_-_4.5px))]
+        data-[orientation=horizontal]:after:inset-x-[calc(var(--spacing)_*_(1_-_var(--handle-seam,0)))]
     `,
 });
 

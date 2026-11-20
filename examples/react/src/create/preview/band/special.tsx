@@ -12,69 +12,61 @@ import { typeAhead } from "@fragiola/tree-react/type-ahead";
 import { FileIcon, FolderIcon } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { Badge } from "#/components/atoms/badge";
+import { foundation } from "#/components/families/foundation";
 import { DataGrid } from "#/components/ui/data-grid";
 import { Dockable } from "#/components/ui/dockable";
 import { GridLayout } from "#/components/ui/grid-layout";
 import { Splitter } from "#/components/ui/splitter";
 import { Tree } from "#/components/ui/tree";
-import { Card, useTone } from "../card";
+import { useTone } from "../card";
 import { COLUMN_WIDTH, GAP } from "../layout";
 
 // The band: the special components — the libraries Fragiola UI styles — in
 // panels several columns wide, at the top of the canvas where they are seen
 // first. Each is interactive and follows the design like every card.
+//
+// A panel is the component itself, with no title and no description: the
+// card's box (`foundation.panel` on `palette-surface`, its shadow) with the
+// component edge to edge inside, clipped to the rounded border. A component
+// that draws a frame of its own (the data grid's, the splitter's) gives it
+// up here, so the panel's border is the only one.
 
 const span = (columns: number) => COLUMN_WIDTH * columns + GAP * (columns - 1);
 
 function Panel({
     columns,
-    title,
-    description,
+    label,
     children,
 }: {
     columns: number;
-    title: string;
-    description: string;
+    label: string;
     children: ReactNode;
 }) {
     return (
-        <div style={{ width: span(columns) }} className="shrink-0">
-            <Card title={title} description={description} className="h-[30rem]">
-                <div className="h-[23rem] min-h-0">{children}</div>
-            </Card>
-        </div>
+        <section
+            aria-label={label}
+            data-band-panel=""
+            style={{ width: span(columns) }}
+            className={`palette-surface ${foundation.panel()} h-[30rem] shrink-0 overflow-hidden shadow-sm`}
+        >
+            {children}
+        </section>
     );
 }
 
 export function SpecialBand() {
     return (
         <div className="flex items-start" style={{ gap: GAP }}>
-            <Panel
-                columns={3}
-                title="Dockable"
-                description="Drag a tab to another tabset, or to an edge."
-            >
+            <Panel columns={3} label="Dockable">
                 <Workspace />
             </Panel>
-            <Panel
-                columns={2}
-                title="Data Grid"
-                description="Sort, select, page — 300 rows."
-            >
+            <Panel columns={2} label="Data Grid">
                 <Orders />
             </Panel>
-            <Panel
-                columns={3}
-                title="Grid Layout"
-                description="Drag and resize the tiles."
-            >
+            <Panel columns={3} label="Grid Layout">
                 <Dashboard />
             </Panel>
-            <Panel
-                columns={2}
-                title="Tree · Splitter"
-                description="Resize the rule; expand the folders."
-            >
+            <Panel columns={2} label="Tree · Splitter">
                 <Explorer />
             </Panel>
         </div>
@@ -156,12 +148,19 @@ const money = new Intl.NumberFormat("en-US", {
 function Orders() {
     const { action } = useTone();
     const columns: Column<Order>[] = [
-        { key: "id", name: "Order", width: 90, sortable: true },
-        { key: "customer", name: "Customer", width: 130, sortable: true },
+        { key: "id", name: "Order", width: 80, flex: 1, sortable: true },
+        {
+            key: "customer",
+            name: "Customer",
+            width: 110,
+            flex: 2,
+            sortable: true,
+        },
         {
             key: "status",
             name: "Status",
             width: 110,
+            flex: 1,
             sortable: true,
             renderCell: ({ row }) => (
                 <Badge
@@ -175,23 +174,29 @@ function Orders() {
         {
             key: "total",
             name: "Total",
-            width: 120,
+            width: 110,
+            flex: 1,
             sortable: true,
             renderCell: ({ row }) => money.format(row.total),
         },
     ];
     const features = [navigation(), sorting(), rowSelection(), pagination()];
     const local = useLocalRows(ORDERS, columns, { features, pageSize: 25 });
+    // The grid fills the panel above its pager: the body scrolls, the pager
+    // stays inside the panel, on the panel's inset (`px-3`). The columns flex (`flex` shares over their
+    // base `width`), so they span the whole width at any panel size.
     return (
-        <DataGrid.Template.Simple
-            features={features}
-            {...local.props}
-            columns={columns}
-            rowKey={(order) => order.id}
-            rowSelection="multiple"
-            aria-label="Orders"
-            className="h-full"
-        />
+        <div className="flex h-full flex-col [&>[data-slot=data-grid-pagination]]:px-3">
+            <DataGrid.Template.Simple
+                features={features}
+                {...local.props}
+                columns={columns}
+                rowKey={(order) => order.id}
+                rowSelection="multiple"
+                aria-label="Orders"
+                className="min-h-0 flex-1 rounded-none border-0 border-b"
+            />
+        </div>
     );
 }
 
@@ -216,7 +221,7 @@ function Dashboard() {
     return (
         <GridLayout.Template.Simple
             defaultLayout={TILES}
-            rowHeight={56}
+            rowHeight={66}
             itemTitle={(item) => WIDGETS[item.id]?.[0] ?? item.id}
             aria-label="Dashboard"
             className="w-full"
@@ -272,9 +277,7 @@ const PROJECT: TreeJson<Files> = {
 function Explorer() {
     const { control } = useTone();
     return (
-        <Splitter.Template.Simple
-            className={`${control} h-full rounded-md border border-palette-line`}
-        >
+        <Splitter.Template.Simple className={`${control} h-full`}>
             <Splitter.Panel
                 id="files"
                 defaultSize="45%"

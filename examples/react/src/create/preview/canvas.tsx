@@ -120,7 +120,7 @@ export function Canvas({
                             offsets — the canvas does not move under the modal. */}
                     <div
                         data-stage=""
-                        className="palette-canvas h-dvh w-dvw overflow-auto bg-palette-base text-palette-contrast"
+                        className="palette-surface h-dvh w-dvw overflow-auto bg-palette-base text-palette-contrast"
                     >
                         <div className="flex w-max flex-col gap-4 p-6">
                             {band}

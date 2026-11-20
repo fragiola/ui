@@ -22,7 +22,7 @@ it: a button, a field or a dialog reads the same tokens at every level.
 | Typography | `data-text` | `small`, **default**, `large` |
 | Elevation | `data-elevation` | `flat`, `subtle`, **default**, `raised` |
 | Motion | `data-motion` | `none`, `fast`, **default**, `expressive` |
-| Handle | `data-handle` | **`line`**, `grip`, `dots` |
+| Handle | `data-handle` | **`line`**, `grip`, `dots`, `ide` |
 
 The default level of an axis is the absence of its attribute. To return a
 subtree to the default, remove the attribute; there is no `"default"` value.
@@ -122,18 +122,20 @@ motion, the level is `none`, whatever `data-motion` says.
 
 ## Handle
 
-The handle sets the mark on every resize handle — a Splitter's separator, a
+The handle sets the look of every resize handle — a Splitter's separator, a
 Dockable splitter, a Grid Layout card's resize handles — which share one look.
 It is the only axis whose levels are shapes, not steps.
 
-| level | mark at rest |
-|---|---|
-| `line` (default) | none: the rule alone, the IDE look; a pill on hover, drag and focus |
-| `grip` | a faint pill |
-| `dots` | three dots |
+| level | at rest | on interaction |
+|---|---|---|
+| `line` (default) | the rule alone | a pill, and the rule in `ring` |
+| `grip` | a faint neutral pill, centred on the rule | the pill in `ring` |
+| `dots` | three neutral dots, centred on the rule | the dots in `ring` |
+| `ide` | a 1px rule, no mark; Dockable's tabsets meet with no gap | hover brightens the rule; dragging or focus draws a 3px `ring` bar over it |
 
-Hover, drag and keyboard focus light the mark in full `ring` at every level,
-and a disabled handle shows none.
+Under `ide` the thick bar is an overlay centred on the edge: the panes never
+move while you drag. A Grid Layout card has no rule on its edge, so it keeps
+its marks at every level. A disabled handle shows no mark.
 
 ## Popups and portals
 
