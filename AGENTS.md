@@ -123,8 +123,10 @@ holds it under 640px at 1152px). `palettes` is the landing's palette section
 and www embeds it by id: six preset colours on the "Invite your team" card,
 plus a hue that becomes `my-palette-1`, `my-palette-2`, … (and their surface
 twins) with the registry's generator (`lib/colour/palette`, the one Create
-uses, never a copy); only the classes and the new CSS rule change. Keep both
-ids.
+uses, never a copy). The code beside the card is only the class swap: the
+card's components in render order, each with its palette class, never the
+palette's CSS; at 1152px card and panel stand side by side at the same height,
+neither scrolling (`check:embeds` holds it). Keep both ids.
 
 **A modal example covers the site's page.** On fragiola.com a Dialog, an
 AlertDialog or a Drawer opened in an example (the Sidebar's mobile Drawer too)
