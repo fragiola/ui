@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 // generator, the registry's `colour` item: neither keeps a copy that could
 // drift from the other. The demo's behaviour (two hues become my-palette-1
 // and my-palette-2, and each repaints the card) is checked in a browser by
-// `check:embeds`.
+// `check:embeds`, which also checks the code panel's text and layout.
 
 const SRC = path.resolve(import.meta.dirname, "../src");
 const GENERATOR = /from\s+"#\/components\/lib\/colour\/palette"/;
@@ -27,5 +27,33 @@ describe("the palette generator", () => {
         expect(demo).not.toMatch(/function\s+generatePalette\b/);
         // the curves live in the generator: no lightness or chroma literal
         expect(demo).not.toMatch(/oklch\(\s*\d/);
+    });
+});
+
+describe("the palettes code panel", () => {
+    // The components that carry a palette class, as `<Name` tags.
+    const TAGS =
+        /<(Badge|Field\.Root|Switch\.Root|Checkbox\.Root|Progress\.Root|Clickable\.Button)\b/g;
+
+    it("outlines the card's components in the order the card renders them", async () => {
+        const demo = await read("examples/palettes.tsx");
+        const card = demo.slice(demo.indexOf("function InviteCard"));
+        const rendered = [...card.matchAll(TAGS)].map((m) => m[1]);
+        const outline = demo.slice(
+            demo.indexOf("function outline"),
+            demo.indexOf("function InviteCard"),
+        );
+        const listed = [...outline.matchAll(/\["([\w.]+)",/g)].map((m) => m[1]);
+        expect(listed).toEqual(rendered);
+        expect(listed).toHaveLength(7);
+    });
+
+    it("never shows the palette's CSS", async () => {
+        const demo = await read("examples/palettes.tsx");
+        const panel = demo.slice(
+            demo.indexOf("data-palette-code"),
+            demo.indexOf("function InviteCard"),
+        );
+        expect(panel).not.toMatch(/\.css\b|--palette-|:root/);
     });
 });
