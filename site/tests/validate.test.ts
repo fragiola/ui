@@ -683,6 +683,44 @@ describe("validate (v1.6)", () => {
     });
 });
 
+describe("validate (v1.7)", () => {
+    const linking = (href: string) => (i: ExportInput) => {
+        i.pages.set(
+            "atoms/button",
+            `${i.pages.get("atoms/button") ?? ""}\nAsk [your agent](${href}).\n`,
+        );
+    };
+
+    it.each(["/ai", "/ai#set-it-up-in-your-client"])(
+        "accepts the reserved AI agents link %s",
+        (href) => {
+            const input = fixture();
+            linking(href)(input);
+            expect(validate(input)).toEqual([]);
+        },
+    );
+
+    it.each(["/ai/docs/mcp", "/ai/x"])(
+        "rejects %s, a link below /ai",
+        (href) => {
+            const input = fixture();
+            linking(href)(input);
+            expect(validate(input)).toContainEqual(
+                expect.stringContaining("linked as /ai"),
+            );
+        },
+    );
+
+    it("accepts /ai as a Hero action", () => {
+        const input = fixture();
+        input.pages.set(
+            "index",
+            `---\ntitle: "Fragiola UI — React components"\ndescription: "${DESCRIPTION}"\nlayout: "landing"\n---\n\n<Hero title="Fragiola UI" actions={[{ label: "Use with your AI agent", href: "/ai", variant: "secondary" }]} />\n`,
+        );
+        expect(validate(input)).toEqual([]);
+    });
+});
+
 describe("validate (v1.2)", () => {
     // withPage(): the frontmatter is lines 1–4, the body starts on line 6.
     const page =
