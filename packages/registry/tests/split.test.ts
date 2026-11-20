@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { dock } from "../registry/families/dock";
+import { handle } from "../registry/families/handle";
 import { split } from "../registry/families/split";
 
 // ─── The split family ───────────────────────────────────────────────────────
@@ -49,13 +50,17 @@ describe("split family", () => {
     });
 
     it("draws the separator as ui/separator.tsx's 1px line rule", async () => {
+        // The element is 1px (the engine measures it); the rule is its
+        // `::after` (the handle's), painted at rest in ui/separator.tsx's
+        // `line`.
         const separator = await readFile(
             path.join(REGISTRY, "ui/separator.tsx"),
             "utf-8",
         );
         const own = classes(split.separator);
+        expect(own).toContain("after:bg-palette-line");
+        expect(separator).toContain("bg-palette-line");
         for (const shared of [
-            "bg-palette-line",
             "data-[orientation=vertical]:w-px",
             "data-[orientation=horizontal]:h-px",
         ]) {
@@ -78,47 +83,45 @@ describe("split family", () => {
         expect(own.filter((c) => /before:.*\[/.test(c))).toEqual([]);
     });
 
-    it("shares dock.splitter's cursors, ring and stacking", () => {
-        // S4: the values that coincide are the same; the differences (a
-        // visible rule at rest, full ring on hover) are recorded in the
-        // family's header.
+    it("takes its look from the handle family, as dock.splitter does", () => {
+        // One definition (families/handle.ts): the separator extends the
+        // handle's target, the grip IS the handle's mark — so Splitter and
+        // Dockable cannot drift apart again.
         const own = classes(split.separator);
-        const docked = classes(dock.splitter);
-        for (const cursor of ["cursor-ew-resize", "cursor-ns-resize"]) {
-            expect(docked.some((c) => c.endsWith(`:${cursor}`))).toBe(true);
-            expect(own.some((c) => c.endsWith(`:${cursor}`))).toBe(true);
+        for (const shared of classes(handle.target)) {
+            expect(own, shared).toContain(shared);
         }
-        expect(docked).toContain("z-10");
-        expect(own).toContain("z-10");
-        expect(docked).toContain("data-dragging:after:bg-palette-ring");
-        expect(own).toContain("data-dragging:bg-palette-ring");
-        expect(own).toContain("focus-visible:after:bg-palette-ring");
+        expect(split.grip).toBe(handle.mark);
+        expect(dock.splitterMark).toBe(handle.mark);
     });
 
     it("never lights or turns a disabled separator", () => {
         const own = classes(split.separator);
-        expect(own).toContain("not-data-disabled:hover:bg-palette-ring");
+        expect(own).toContain("not-data-disabled:hover:after:bg-palette-ring");
         expect(own.filter((c) => /^hover:/.test(c))).toEqual([]);
         expect(
             own.filter((c) => /^data-\[orientation=[a-z]+\]:cursor-/.test(c)),
         ).toEqual([]);
         expect(classes(split.grip)).toContain(
-            "group-not-data-disabled/separator:group-hover/separator:opacity-100",
+            "group-not-data-disabled/handle:group-hover/handle:opacity-100",
+        );
+        expect(classes(split.grip)).toContain(
+            "group-data-disabled/handle:opacity-0",
         );
     });
 
-    it("lines the grip up through the separator's named group only", () => {
-        // A nested group carries `data-orientation` too: an unscoped
-        // orientation rule on the grip would read the wrong element.
+    it("lines the grip up with its own separator only", () => {
+        // A nested group carries `data-orientation` too: the grip reads its
+        // DIRECT parent (the handle-vertical / handle-horizontal variants),
+        // never an ancestor's orientation.
         const unscoped = classes(split.grip).filter((c) =>
-            /(?:^|:)(?:in-|group-)?data-\[orientation/.test(
-                c.replace(/group-data-\[[^\]]+\]\/separator:/g, ""),
-            ),
+            /data-\[orientation/.test(c),
         );
         expect(unscoped).toEqual([]);
-        expect(classes(split.separator)).toContain("group/separator");
+        expect(classes(split.separator)).toContain("group/handle");
         expect(classes(split.grip)).toContain("pointer-events-none");
-        expect(classes(split.grip)).toContain("opacity-0");
+        expect(classes(split.grip)).toContain("handle-vertical:h-6");
+        expect(classes(split.grip)).toContain("handle-horizontal:w-6");
         // The drawer handle's shape, so the radius axis reaches it.
         expect(classes(split.grip)).toContain("rounded-pill");
     });

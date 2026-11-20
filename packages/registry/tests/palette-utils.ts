@@ -56,6 +56,7 @@ export type Theme = (typeof THEMES)[number];
 // accent/85 assertion.
 export const SURFACE_TIER = [
     "surface",
+    "canvas",
     "raised",
     "surface-blue",
     "surface-purple",

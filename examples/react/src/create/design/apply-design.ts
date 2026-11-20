@@ -1,4 +1,4 @@
-import { AXIS_NAMES, type Resolved } from "./design";
+import { AXIS_DEFAULTS, AXIS_NAMES, type Resolved } from "./design";
 
 // Applies a design to THIS document: the axes, the scheme and the direction
 // on <html>, the generated palettes in one <style>. Only the preview document
@@ -7,7 +7,7 @@ export function applyDesign({ design, css }: Resolved) {
     const root = document.documentElement;
     for (const axis of AXIS_NAMES) {
         const level = design.axes[axis];
-        if (level === "default") delete root.dataset[axis];
+        if (level === AXIS_DEFAULTS[axis]) delete root.dataset[axis];
         else root.dataset[axis] = level;
     }
     root.dataset.theme = design.scheme;

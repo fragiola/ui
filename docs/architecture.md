@@ -78,6 +78,16 @@ unrelated scopes. "Optional token" does not exist here.
 another exists only to fit one case, and the next case will ask for another
 exception. The tell: a role with no coherent source.
 
+### The neutral surfaces
+
+`surface` is the floor, `raised` a card, a popup or a dialog a step above it, and
+`canvas` the ground a page lays its cards on inside a frame — the Create page's
+preview, where the frame, the canvas and the cards are three tones. In dark `canvas`
+sits between the floor and the frame (L 0.18, against `surface`'s 0.15), so cards on
+the plain `surface` read apart from it without being `raised`; in light it is a
+near-white grey under white cards. All three are achromatic: their chart series step
+lightness, not hue (`global.css`).
+
 ### Surface-ring palettes
 
 "The number of palettes is free; the number of roles is not" extends sideways as
@@ -137,13 +147,24 @@ The sidebar is the largest one so far: its items are `menu`'s navigation members
 `data-active` instead of focus. Everything else in it is `Clickable`, `Badge`, `Skeleton`,
 `Separator`, `Field`, `Tooltip` and `Drawer`, and it adds no stylesheet and no token.
 
+`handle` is the resize handle the split views share: `target`, the element a pointer
+grabs (cursors, `z-10`, the rule as its `::after` — `ring` on hover, drag and focus,
+widening into a 3px focus bar), and `mark`, the decoration on it, drawn by the
+`data-handle` axis (§4). Splitter's separator and Dockable's splitter extend `target`;
+Splitter's grip, Dockable's splitter mark and Grid Layout's resize mark are `mark`.
+What stays each consumer's is geometry: Splitter's 1px rule, painted in `line` at rest,
+with a 13px hit area; Dockable's 6px gap, whose rule stays transparent at rest because
+the bordered tabsets already draw the edge; Grid Layout's handles inside a card's edge,
+whose mark keeps a 40% floor at rest. `tests/handle.test.ts` fails when a file other
+than the family spells the mark.
+
 `split` is the second family over a published package (Splitter, §5): group, panel,
 separator, grip, and two members for a panel's content (`expanded`, `collapsed`). Unlike
 `dock` it declares **no** palette: groups nest, and a default palette on each would be
 redeclared by a nested group and swallow a swap on the outer one, so the parts paint from
 the palette in scope. Its separator is `ui/separator.tsx`'s 1px `line` rule with an
-invisible hit area from the spacing scale; it shares `dock.splitter`'s cursors, `ring` on
-drag and focus, and `z-10`, and records why the rest differs (`families/split.ts`).
+invisible hit area from the spacing scale; its look is the `handle` family's, shared
+with `dock.splitter` (`families/split.ts`).
 
 `tree` is the third (Tree, §5): root, item, row, toggle, label, group, the drop
 indicator and the live region, plus members for what the package leaves to the app — a
@@ -166,8 +187,8 @@ part**: an item is a card on `palette-raised` with `layer.panel`'s values (line,
 fill, text, `shadow-lg` while held), as a dialog is; the root, cells and placeholder
 paint from the palette in scope, so a palette class on the root tints the dots, the
 placeholder and the drop outline, and one on an item replaces `raised`. The placeholder
-is `dock.dropIndicator`'s box, dashed, and a resize handle's mark is `split.grip`'s pill
-with `split.separator`'s cursors. The engine places every item, cell and the placeholder
+is `dock.dropIndicator`'s box, dashed, and a resize handle's mark is the `handle` family's
+(Splitter's grip) with `split.separator`'s cursors. The engine places every item, cell and the placeholder
 with an inline `transform`, so a held item lifts with the separate `scale` property and
 no member sets geometry on them. A refused drop is `palette-danger`, which a variant
 cannot switch (a palette is a plain class): `Root` and `DragPreview` add the `refused`
@@ -342,11 +363,12 @@ a second scale means two live systems. Odd values from a design use arbitrary va
 
 Radius and control height **are** design-system decisions and stay as tokens.
 
-### Five design axes, set per subtree
+### Six design axes, set per subtree
 
-Spacing, radius, typography, elevation and motion are **axes**: a `data-*` attribute
-on any element, inherited by its subtree, with a few named levels. The default level
-is the absence of the attribute and keeps the values the library had before the axes.
+Spacing, radius, typography, elevation, motion and the resize handle are **axes**: a
+`data-*` attribute on any element, inherited by its subtree, with a few named levels.
+The default level is the absence of the attribute and keeps the values the library had
+before the axes.
 
 | axis | attribute | levels | token |
 |---|---|---|---|
@@ -355,6 +377,7 @@ is the absence of the attribute and keeps the values the library had before the 
 | typography | `data-text` | small, default, large | `--text-scale` (every `text-*`, and the icon sizes) |
 | elevation | `data-elevation` | flat, subtle, default, raised | `--elevation-*` (behind `--shadow-*`) |
 | motion | `data-motion` | none, fast, default, expressive | `--motion-scale` (every duration) |
+| handle | `data-handle` | line (default), grip, dots | `--handle-rest`, `--handle-mask` (the resize handle's mark) |
 
 This is the answer to shadcn's styles (`style-vega.css`, `style-lyra.css`, ...): eight
 files of about 1,800 lines, each redefining every component's `cn-*` classes. Each one
@@ -401,6 +424,19 @@ The field box caps `--radius-control` at half the control height, so a textarea 
 becomes a stadium. Nested radii have a floor at zero. Dockable's header keeps a fixed
 `2.25rem` floor instead of `min-h-control`, because edge docking needs about 30px at any
 density.
+
+**The handle axis.** Splitter, Dockable and Grid Layout draw one resize handle (the
+`handle` family, §2), and `data-handle` chooses its mark: `line`, the IDE look (the rule
+alone at rest, a pill on hover, drag and focus); `grip`, the pill shown at rest; `dots`,
+three dots. It is the only axis with three levels that are shapes rather than steps, and
+the only one whose default has a name: `line` is written out too, so a subtree under
+another level can return to it (absent still renders `line`). Like every axis it only
+sets tokens — `--handle-rest`, the mark's opacity at rest, and `--handle-mask`, an image
+that cuts the pill into three dots (`radial-gradient` in a `mask-size` of a third of the
+mark's length) or `none` — and both reach the mark as `var()`, so no React reads the
+attribute and a level re-draws every handle under it without a render. The mark lines up
+with its bar through two custom variants, `handle-vertical` and `handle-horizontal`, that
+read its direct parent's `data-orientation` (or a Grid Layout `data-side`).
 
 **Icons follow the text axis**, not spacing. The `--size-icon*` tokens (`size-icon-xs`,
 `size-icon-sm`, `size-icon` and `size-icon-lg`, equal to `size-3`, `size-3.5`, `size-4`

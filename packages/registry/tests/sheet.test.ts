@@ -224,7 +224,6 @@ describe("sheet family", () => {
         for (const shared of [
             "w-px",
             "before:-inset-x-1.5",
-            "after:-inset-x-px",
             "hover:bg-palette-ring",
             "focus-visible:bg-palette-ring",
             "focus-visible:after:bg-palette-ring",
@@ -242,6 +241,10 @@ describe("sheet family", () => {
                 shared,
             ).toBe(true);
         }
+        // Its 3px focus bar is its own `::after` around the rule; the
+        // separator's rule is the handle family's `::after` (out of scope
+        // for the column resizer, a column edge, not a split view).
+        expect(own).toContain("after:-inset-x-px");
         expect(own).toContain("data-resizing:bg-palette-ring");
         // logical sides only: the boundary with the columns that scroll
         expect(own).toContain("data-[edge=end]:end-0");

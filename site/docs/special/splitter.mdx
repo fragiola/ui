@@ -70,13 +70,15 @@ The primitives emit their state as `data-*` attributes and the family reads them
 |---|---|---|
 | a separator between side by side panels | `data-orientation="vertical"` on the separator | a 1px vertical rule, `ew-resize` cursor |
 | a separator between stacked panels | `data-orientation="horizontal"` | a 1px horizontal rule, `ns-resize` cursor |
-| hovered | `:hover`, unless `data-disabled` | the rule turns `ring`, the grip appears |
+| hovered | `:hover`, unless `data-disabled` | the rule turns `ring`, the grip lights |
 | dragged | `data-dragging` on the separator (and its group) | the rule turns `ring`, the grip stays; text selection stops in the group |
 | focused from the keyboard | `:focus-visible` | a 3px `ring` bar and the grip |
-| disabled | `data-disabled` on the separator or the group | the rule stays, with no resize cursor and no hover |
+| disabled | `data-disabled` on the separator or the group | the rule stays, with no resize cursor, no hover and no grip |
 | collapsed | `data-collapsed` on the panel | the panel steps to the `soft` fill |
 
 The rule is the `line` role at 1px, the values of [Separator](/docs/display/separator). The pointer finds a wider area: an invisible strip 6px on each side (a spacing step, so it follows the density), above the panels' content. The engine measures 1px, so the panels touch.
+
+The grip is the resize handle's mark, the same as Dockable's splitter and Grid Layout's resize handles, and the `data-handle` [design axis](/docs/architecture/design-axes#handle) chooses it: hidden until hover under `line` (the default), a faint pill under `grip`, three dots under `dots`.
 
 Two members help a panel's content follow its state: `split.expanded()` hides an element while its panel is collapsed (from sight and from assistive technology), and `split.collapsed()` shows one only then. To dim the panels while a separator drags, read the group's state from a panel: `group-data-dragging/splitter:opacity-70`.
 

@@ -26,9 +26,15 @@ and it changes everywhere.
 | tier | what | treatment |
 |---|---|---|
 | floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
+| canvas | the ground a page lays its cards on, inside a frame (the Create preview) | `palette-canvas`, `bg-palette-base`: in dark a step lighter than the floor, in light a near-white grey, so cards on the plain floor colour stand apart from it |
 | panel | a container on the floor: an accordion, a collapsible, a data grid, a dock panel | the floor's `bg-palette-base`, a `line` border, `rounded-lg` (`panel`) |
 | raised | a card that stands on the floor: a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-sm` |
 | overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-lg` (`overlay`; the elevation axis scales it) |
+
+Three tones in a row — a frame, a canvas inside it, cards on the canvas — are three
+palettes, never `soft` as a fill: the frame's mix of `soft` and `base` (the docs'
+inset frame), `palette-canvas`, and the cards on `palette-surface`. In dark the
+lightness steps down from the frame to the cards; in light the cards are white.
 
 A container never paints with `soft`. `soft` is a **state** (hover, highlighted,
 selected) or a recessed adornment inside a control: a field's addon, a table's header,
@@ -129,6 +135,24 @@ Icons follow the text axis. `size-icon` is the default beside `text-sm`, `size-i
 goes in a dense row, `size-icon-xs` in a badge or a check mark, and `size-icon-lg` is
 for a standalone illustration. A secondary icon (a chevron, a search glass) is
 `accent/85`.
+
+## The resize handle (`handle`)
+
+Every split view resizes from the same handle: Splitter's separator, Dockable's
+splitter and Grid Layout's resize handles compose the `handle` family. The bar shows
+the `ring` rule on hover, drag and focus (3px on focus); its mark is a `ring` pill —
+the drawer handle's shape, shorter — lit fully on hover, drag and focus and never on a
+disabled handle. The `data-handle` axis chooses the mark at rest:
+
+| level | at rest | on interaction |
+|---|---|---|
+| `line` (default) | the rule alone, the IDE look | the `ring` rule and the pill |
+| `grip` | a faint pill (`ring` at 50%) | the pill in full `ring` |
+| `dots` | three dots (`ring` at 70%) | the dots in full `ring` |
+
+Geometry stays each component's: Splitter's rule is a 1px `line` at rest, Dockable's
+6px gap between bordered tabsets has no rule at rest, and a dashboard card's resize
+marks keep a 40% floor while the card is hovered.
 
 ## Motion
 

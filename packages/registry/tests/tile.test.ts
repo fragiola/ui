@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { dock } from "../registry/families/dock";
+import { handle } from "../registry/families/handle";
 import { layer } from "../registry/families/layer";
 import { split } from "../registry/families/split";
 import { tile } from "../registry/families/tile";
@@ -177,13 +178,22 @@ describe("tile family", () => {
         expect(own).toContain("rounded-lg");
     });
 
-    it("marks a resize handle with split.grip's pill and cursors (S4)", () => {
+    it("marks a resize handle with the handle family's mark and split's cursors (S4)", () => {
+        // The mark is Splitter's grip (handle.mark), so the data-handle axis
+        // draws it too, with a 40% floor at rest: the handle itself only
+        // shows while its card is hovered or held.
         const own = classes(tile.resizeHandle);
-        expect(classes(split.grip)).toContain("rounded-pill");
-        expect(own).toContain("after:rounded-pill");
-        expect(own).toContain("after:bg-palette-ring/40");
-        expect(own).toContain("hover:after:bg-palette-ring");
-        expect(own).toContain("data-resizing:after:bg-palette-ring");
+        const mark = classes(tile.resizeMark);
+        expect(own).toContain("group/handle");
+        expect(mark).toContain("rounded-pill");
+        expect(mark).toContain("opacity-[max(0.4,var(--handle-rest,0))]");
+        expect(mark).not.toContain("opacity-[var(--handle-rest,0)]");
+        expect(mark).toContain("group-data-resizing/handle:opacity-100");
+        for (const shared of classes(handle.mark).filter(
+            (c) => !c.startsWith("opacity-"),
+        )) {
+            expect(mark, shared).toContain(shared);
+        }
         for (const cursor of ["cursor-ew-resize", "cursor-ns-resize"]) {
             expect(
                 classes(split.separator).some((c) => c.endsWith(cursor)),

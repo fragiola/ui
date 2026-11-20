@@ -1,6 +1,7 @@
 import { DicesIcon, ExternalLinkIcon, RotateCcwIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Clickable } from "#/components/atoms/clickable";
+import { Separator } from "#/components/ui/separator";
 import { Tooltip } from "#/components/ui/tooltip";
 import { Customizer } from "../customizer/customizer";
 import {
@@ -15,8 +16,9 @@ import { GetCode } from "../output/get-code";
 import { usePreviewPromotion } from "./preview-promotion";
 
 // The Create page: fragiola.com serves it full-page at /ui/create/ (contract
-// v1.6). It is drawn like the docs — a frame, the customizer on the frame
-// where the docs sidebar sits, and an inset panel above it — and the page
+// v1.6). It is drawn like the docs — a frame, the panel on the frame where
+// the docs sidebar sits, and an inset panel beside it (www's
+// `.docs-inset-panel`: a 0.5rem margin, a 0.75rem radius) — and the page
 // itself never scrolls: the inset holds the preview, which scrolls inside.
 //
 // The preview is another document (create-preview.html in an iframe), so a
@@ -113,93 +115,116 @@ export function CreateShell() {
         return () => window.removeEventListener("keydown", onKey);
     }, []);
 
+    const reset = () => {
+        schemeChosen.current = false;
+        setDesign((d) => ({
+            ...INITIAL,
+            scheme: hostScheme(),
+            dir: d.dir,
+        }));
+    };
+
+    // No header: the panel on the frame holds everything, top to bottom —
+    // the links, a rule, Randomize and Reset, the controls (which scroll)
+    // and Get code, pinned at the bottom. The inset takes the full height,
+    // with the docs' 0.5rem margin on every side.
     return (
         <Tooltip.Provider>
-            <div className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklab,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast">
-                <header className="flex h-12 shrink-0 items-center gap-3 px-4">
-                    <a
-                        href={SITE}
-                        target="_top"
-                        className="text-sm font-semibold text-palette-contrast"
+            <div
+                data-frame=""
+                className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklch,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast md:flex-row"
+            >
+                <aside
+                    aria-label="Customize the theme"
+                    className="flex max-h-[38dvh] shrink-0 flex-col md:max-h-none md:w-72"
+                >
+                    <nav
+                        data-panel="links"
+                        aria-label="Fragiola UI"
+                        className="flex flex-col gap-1 px-4 pt-4"
                     >
-                        Fragiola UI
-                    </a>
-                    <span className="text-sm text-palette-accent/85">/</span>
-                    <span className="text-sm font-medium">Create</span>
-                    <nav className="ms-4 hidden items-center gap-1 md:flex">
-                        <Clickable.Link
-                            href={`${SITE}docs/getting-started/introduction`}
-                            target="_top"
-                            variant="ghost"
-                            size="sm"
-                        >
-                            Docs
-                        </Clickable.Link>
-                        <Clickable.Link
-                            href={`${SITE}examples`}
-                            target="_top"
-                            variant="ghost"
-                            size="sm"
-                        >
-                            Examples
-                        </Clickable.Link>
-                        <Clickable.Link
-                            href={REPOSITORY}
-                            target="_blank"
-                            rel="noreferrer"
-                            variant="ghost"
-                            size="sm"
-                        >
-                            GitHub
-                            <ExternalLinkIcon />
-                        </Clickable.Link>
+                        <div className="flex items-center gap-2 text-sm">
+                            <a
+                                href={SITE}
+                                target="_top"
+                                className="font-semibold text-palette-contrast"
+                            >
+                                Fragiola UI
+                            </a>
+                            <span className="text-palette-accent/85">/</span>
+                            <span className="font-medium">Create</span>
+                        </div>
+                        <div className="-ms-2.5 flex items-center gap-0.5">
+                            <Clickable.Link
+                                href={`${SITE}docs/getting-started/introduction`}
+                                target="_top"
+                                variant="ghost"
+                                size="sm"
+                            >
+                                Docs
+                            </Clickable.Link>
+                            <Clickable.Link
+                                href={`${SITE}examples`}
+                                target="_top"
+                                variant="ghost"
+                                size="sm"
+                            >
+                                Examples
+                            </Clickable.Link>
+                            <Clickable.Link
+                                href={REPOSITORY}
+                                target="_blank"
+                                rel="noreferrer"
+                                variant="ghost"
+                                size="sm"
+                            >
+                                GitHub
+                                <ExternalLinkIcon />
+                            </Clickable.Link>
+                        </div>
                     </nav>
-                    <div className="ms-auto flex items-center gap-1.5">
+                    <Separator className="mx-4 my-3 w-auto" />
+                    <div
+                        data-panel="actions"
+                        className="flex items-center gap-1.5 px-4"
+                    >
                         <Action
                             label="Randomize (R)"
                             onClick={() => setDesign((d) => randomize(d))}
                         >
                             <DicesIcon />
                         </Action>
-                        <Action
-                            label="Reset"
-                            onClick={() => {
-                                schemeChosen.current = false;
-                                setDesign((d) => ({
-                                    ...INITIAL,
-                                    scheme: hostScheme(),
-                                    dir: d.dir,
-                                }));
-                            }}
-                        >
+                        <Action label="Reset" onClick={reset}>
                             <RotateCcwIcon />
                         </Action>
-                        <GetCode resolved={resolved} />
                     </div>
-                </header>
-
-                <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-                    <aside
-                        aria-label="Customize the theme"
-                        className="max-h-[38dvh] shrink-0 overflow-auto px-4 pb-4 md:max-h-none md:w-72 md:pt-2"
+                    <div
+                        data-panel="controls"
+                        className="min-h-0 flex-1 overflow-auto px-4 py-4"
                     >
                         <Customizer design={design} set={set} />
-                    </aside>
-                    <main className="min-h-0 min-w-0 flex-1 p-2 pt-0 md:ps-0">
-                        <div className="h-full overflow-hidden rounded-xl border border-palette-line bg-palette-base shadow-sm">
-                            <iframe
-                                ref={frame}
-                                title="Theme preview"
-                                src={PREVIEW}
-                                className={
-                                    promoted
-                                        ? "fixed inset-0 z-50 block size-full border-0"
-                                        : "block size-full border-0"
-                                }
-                            />
-                        </div>
-                    </main>
-                </div>
+                    </div>
+                    <div data-panel="code" className="shrink-0 px-4 pt-1 pb-4">
+                        <GetCode resolved={resolved} />
+                    </div>
+                </aside>
+                <main className="min-h-0 min-w-0 flex-1 p-2">
+                    <div
+                        data-inset=""
+                        className="h-full overflow-hidden rounded-[0.75rem] border border-palette-line bg-palette-base shadow-sm"
+                    >
+                        <iframe
+                            ref={frame}
+                            title="Theme preview"
+                            src={PREVIEW}
+                            className={
+                                promoted
+                                    ? "fixed inset-0 z-50 block size-full border-0"
+                                    : "block size-full border-0"
+                            }
+                        />
+                    </div>
+                </main>
             </div>
         </Tooltip.Provider>
     );

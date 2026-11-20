@@ -38,6 +38,29 @@
     &:has(.field-control:focus-within)
 );
 
+/* Handle orientation (families/handle.ts). A resize handle's mark lines up
+   with the bar it sits on, and the libraries spell that bar's direction
+   differently: Splitter and Dockable carry `data-orientation` (`vertical`
+   between side-by-side panels), a Grid Layout resize handle `data-side`
+   (`start`/`end` are vertical edges). The variants read the mark's DIRECT
+   parent — a nested Splitter group carries an orientation too. */
+@custom-variant handle-vertical (
+    :where(
+            [data-orientation="vertical"],
+            [data-side="start"],
+            [data-side="end"]
+        )
+        > &
+);
+@custom-variant handle-horizontal (
+    :where(
+            [data-orientation="horizontal"],
+            [data-side="top"],
+            [data-side="bottom"]
+        )
+        > &
+);
+
 @theme inline {
     /* Motion (the `data-motion` axis). Every duration is Tailwind's times
        `--motion-scale`, inlined into the utility so a subtree's level reaches
@@ -251,6 +274,8 @@
 :root {
     --text-scale: 1;
     --motion-scale: 1;
+    --handle-rest: 0;
+    --handle-mask: none;
     --elevation-2xs: 0 1px rgb(0 0 0 / 0.05);
     --elevation-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --elevation-sm:
@@ -385,6 +410,25 @@
     --motion-scale: 1.5;
 }
 
+/* Handle — `data-handle` (families/handle.ts). The mark on a resize handle:
+   its opacity at rest, and a mask that cuts the pill into three dots. The
+   one axis whose default level has a name: `line`, today's IDE look, is
+   also written out so a subtree can return to it under another level. */
+[data-handle="line"] {
+    --handle-rest: 0;
+    --handle-mask: none;
+}
+
+[data-handle="grip"] {
+    --handle-rest: 0.5;
+    --handle-mask: none;
+}
+
+[data-handle="dots"] {
+    --handle-rest: 0.7;
+    --handle-mask: radial-gradient(circle closest-side, #000 62%, #0000 74%);
+}
+
 /* Reduced motion always wins: `none` whatever `data-motion` says. Same
    specificity as the levels, and later, so it overrides them. The
    `motion-reduce:` variants on the components still apply as well. */
@@ -465,13 +509,14 @@
 /* Achromatic palettes derive ACHROMATIC series. The derivation above
    rotates hue from the palette's base and lifts its chroma to at least
    0.14 — right for a colour, wrong for a neutral: on `palette-neutral`,
-   `palette-surface` and `palette-raised` (base chroma ~0.01, hue 250) it drew
+   `palette-surface`, `palette-canvas` and `palette-raised` (base chroma
+   ~0.01, hue 250) it drew
    every chart a pale blue. These palettes step lightness instead, with no
    chroma: the series stay apart by contrast, as a neutral design's should.
    Same specificity as the blocks above and declared after them, so they win
    for exactly these classes; every other palette keeps its derivation. */
 :root[data-theme="light"]
-:is(.palette-neutral, .palette-surface, .palette-raised) {
+:is(.palette-neutral, .palette-surface, .palette-canvas, .palette-raised) {
     --chart-1: oklch(0.25 0 0);
     --chart-2: oklch(0.55 0 0);
     --chart-3: oklch(0.4 0 0);
@@ -485,7 +530,7 @@
 }
 
 :root[data-theme="dark"]
-    :is(.palette-neutral, .palette-surface, .palette-raised) {
+    :is(.palette-neutral, .palette-surface, .palette-canvas, .palette-raised) {
     --chart-1: oklch(0.92 0 0);
     --chart-2: oklch(0.62 0 0);
     --chart-3: oklch(0.78 0 0);

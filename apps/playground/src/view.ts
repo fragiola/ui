@@ -51,7 +51,11 @@ export function parseView(search: string): View {
         axes: Object.fromEntries(
             AXIS_NAMES.map((name) => [
                 name,
-                oneOf<string>(AXES[name].levels, params.get(name), "default"),
+                oneOf<string>(
+                    AXES[name].levels,
+                    params.get(name),
+                    AXES[name].fallback,
+                ),
             ]),
         ) as Axes,
         code: params.get("code") === "1",
@@ -66,7 +70,9 @@ export function toSearch(view: View): string {
     }
     if (view.dir !== "ltr") params.set("dir", view.dir);
     for (const name of AXIS_NAMES) {
-        if (view.axes[name] !== "default") params.set(name, view.axes[name]);
+        if (view.axes[name] !== AXES[name].fallback) {
+            params.set(name, view.axes[name]);
+        }
     }
     if (view.code) params.set("code", "1");
     const query = params.toString();
@@ -82,7 +88,7 @@ export function applyView(view: View) {
     applyTheme(resolveTheme(view.theme));
     root.dir = view.dir;
     for (const name of AXIS_NAMES) {
-        if (view.axes[name] === "default") delete root.dataset[name];
+        if (view.axes[name] === AXES[name].fallback) delete root.dataset[name];
         else root.dataset[name] = view.axes[name];
     }
 }

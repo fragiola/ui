@@ -32,6 +32,20 @@
             ]
         },
         {
+            "name": "palette-canvas",
+            "type": "registry:file",
+            "title": "Canvas palette",
+            "description": "The ground a page lays its cards on: a neutral surface between a frame and the cards on it. Both themes, all six roles.",
+            "registryDependencies": ["@fragiola/theme"],
+            "files": [
+                {
+                    "path": "registry/styles/palettes/canvas.css",
+                    "type": "registry:file",
+                    "target": "styles/palettes/canvas.css"
+                }
+            ]
+        },
+        {
             "name": "palette-raised",
             "type": "registry:file",
             "title": "Raised palette",
@@ -321,6 +335,21 @@
                     "path": "registry/families/foundation.ts",
                     "type": "registry:lib",
                     "target": "@components/families/foundation.ts"
+                }
+            ]
+        },
+        {
+            "name": "handle",
+            "type": "registry:lib",
+            "title": "handle family",
+            "description": "The resize handle Splitter, Dockable and Grid Layout share: the target a pointer grabs (cursors, stacking, a ring rule on hover, drag and focus) and its mark, drawn by the data-handle axis (line, grip, dots). Zero variants.",
+            "registryDependencies": ["@fragiola/theme"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/handle.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/handle.ts"
                 }
             ]
         },
@@ -1023,7 +1052,8 @@
                 "@fragiola/clickable",
                 "@fragiola/icon-size",
                 "@fragiola/dropdown-menu",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/handle"
             ],
             "dependencies": [
                 "@fragiola/dockable-react@^0.3.0",
@@ -1067,8 +1097,12 @@
             "name": "splitter",
             "type": "registry:ui",
             "title": "Splitter",
-            "description": "Resizable split views — pointer and keyboard resizing, nested groups, collapsible panels, size constraints in any unit, RTL — from @fragiola/splitter-react, styled by the split family. A special component: the package's Group, Panel and Separator under the same names, each wearing its split member, plus a Grip for a separator. A 1px line rule with a wider invisible hit area, ring on hover, drag and focus; panels paint from the palette in scope, so a palette class on a group re-tints it. No tokens of its own. Splitter.Template.Simple puts a separator with a grip between the panels it is given. The model API is imported from the package.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "description": "Resizable split views — pointer and keyboard resizing, nested groups, collapsible panels, size constraints in any unit, RTL — from @fragiola/splitter-react, styled by the split family. A special component: the package's Group, Panel and Separator under the same names, each wearing its split member, plus a Grip for a separator. A 1px line rule with a wider invisible hit area, ring on hover, drag and focus, and the handle family's mark (the data-handle axis: line, grip, dots); panels paint from the palette in scope, so a palette class on a group re-tints it. No tokens of its own. Splitter.Template.Simple puts a separator with a grip between the panels it is given. The model API is imported from the package.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/handle"
+            ],
             "dependencies": [
                 "@fragiola/splitter-react@^0.1.0",
                 "tailwind-variants"
@@ -1161,7 +1195,8 @@
                 "@fragiola/palette-raised",
                 "@fragiola/palette-danger",
                 "@fragiola/icon-size",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/handle"
             ],
             "dependencies": [
                 "@fragiola/grid-layout-react@^0.1.0",

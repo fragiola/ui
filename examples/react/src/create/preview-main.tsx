@@ -62,7 +62,6 @@ function Preview() {
             action={resolved.action}
             control={resolved.control}
             version={version}
-            scheme={resolved.design.scheme}
             band={<SpecialBand />}
         />
     );
