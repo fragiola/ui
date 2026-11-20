@@ -97,7 +97,7 @@ export const examples: Example[] = [
         ],
         docs: "/docs/architecture/palettes",
         layout: "flow",
-        height: 544,
+        height: 540,
         load: () => import("./palettes.tsx"),
     },
     {

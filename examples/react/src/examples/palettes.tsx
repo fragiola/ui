@@ -39,7 +39,9 @@ import { Switch } from "#/components/ui/switch";
 //
 // The picker, the hue and the added palettes are this demo's own state; the
 // card below it is what you would copy. Only the strings in `tone` change
-// when you pick, plus the new CSS rule for a palette you added.
+// when you pick, and the code beside the card shows exactly that: the card's
+// components in the order they render, each with its palette class and
+// nothing else (no text, no styling, never the palette's CSS).
 const COLOURS = [
     "neutral",
     "blue",
@@ -49,8 +51,8 @@ const COLOURS = [
     "rose",
 ] as const;
 
-/** A palette made from a hue: its two classes and their CSS. */
-type Added = { name: string; surface: string; hue: number; css: string[] };
+/** A palette made from a hue: its class and the CSS of both tiers. */
+type Added = { name: string; css: string[] };
 
 function tone(colour: string) {
     if (colour === "neutral")
@@ -84,8 +86,6 @@ function makePalette(index: number, hue: number): Added {
     const palette = generatePalette({ name, hue });
     return {
         name,
-        surface,
-        hue,
         css: [
             ...rules(name, palette.solid),
             ...rules(surface, palette.surface),
@@ -102,7 +102,6 @@ export default function PalettesDemo() {
     const [hue, setHue] = useState(160);
     const [added, setAdded] = useState<Added[]>([]);
     const { action, control } = tone(colour);
-    const current = added.find((p) => p.name === colour);
 
     function add() {
         const palette = makePalette(added.length + 1, hue);
@@ -175,28 +174,33 @@ export default function PalettesDemo() {
                 ))}
             </div>
 
-            <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start">
+            <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-stretch">
                 <InviteCard action={action} control={control} />
                 <pre
                     data-palette-code=""
-                    className="overflow-x-auto rounded-lg bg-palette-soft p-4 font-mono text-xs leading-relaxed text-palette-accent"
+                    className="h-full overflow-x-auto rounded-lg bg-palette-soft p-4 font-mono text-xs leading-relaxed text-palette-accent"
                 >
-                    <code>
-                        {current
-                            ? `/* palettes.css — ${current.name}, hue ${current.hue} */\n${current.css.slice(0, 2).join("\n")}\n/* + .${current.surface}, its surface twin, the same shape */\n\n`
-                            : ""}
-                        {`<Clickable.Button className="${action}">
-<Badge className="${action}">
-<Progress.Root className="${action}">
-
-<Field.Root className="${control}">
-<Switch.Root className="${control}">
-<Checkbox.Root className="${control}">`}
-                    </code>
+                    <code>{outline(action, control)}</code>
                 </pre>
             </div>
         </div>
     );
+}
+
+/** The card's components in render order, each with only its palette class. */
+function outline(action: string, control: string) {
+    const lines = [
+        ["Badge", action],
+        ["Field.Root", control],
+        ["Switch.Root", control],
+        ["Checkbox.Root", control],
+        ["Progress.Root", action],
+        ["Clickable.Button", ""],
+        ["Clickable.Button", action],
+    ].map(([name, palette]) =>
+        palette ? `  <${name} className="${palette}" />` : `  <${name} />`,
+    );
+    return ["<Card>", ...lines, "</Card>"].join("\n");
 }
 
 function InviteCard({ action, control }: { action: string; control: string }) {
@@ -228,8 +232,12 @@ function InviteCard({ action, control }: { action: string; control: string }) {
                 </Field.Row>
             </Field.Root>
 
-            <Field.ChoiceRoot className={control}>
-                <Switch.Root id="invite-welcome" defaultChecked>
+            <Field.ChoiceRoot>
+                <Switch.Root
+                    id="invite-welcome"
+                    defaultChecked
+                    className={control}
+                >
                     <Switch.Thumb />
                 </Switch.Root>
                 <Field.Label htmlFor="invite-welcome">
@@ -237,8 +245,8 @@ function InviteCard({ action, control }: { action: string; control: string }) {
                 </Field.Label>
             </Field.ChoiceRoot>
 
-            <Field.ChoiceRoot className={control}>
-                <Checkbox.Root id="invite-admin">
+            <Field.ChoiceRoot>
+                <Checkbox.Root id="invite-admin" className={control}>
                     <Checkbox.Indicator />
                 </Checkbox.Root>
                 <Field.Label htmlFor="invite-admin">Make admin</Field.Label>
