@@ -33,7 +33,10 @@ const css = serializePalette(
         <Dialog.Root>
             <Dialog.Trigger
                 render={
-                    <Clickable.Button size="sm" className="palette-neutral" />
+                    <Clickable.Button
+                        size="sm"
+                        className="palette-neutral w-full"
+                    />
                 }
             >
                 <CodeIcon />
