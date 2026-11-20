@@ -32,8 +32,8 @@ import { chromium, type Frame, type Page } from "playwright";
 //   - the panel: no <header>; the links, the actions, the controls and Get
 //     code, in that order in the DOM and top to bottom; Get code visible
 //     without scrolling, and still there once the controls are scrolled
-//   - the handle axis: the Handle control reaches the preview's <html>, and
-//     Get code's HTML carries `data-handle` once it is not the default
+//   - the handle axis: the Handle control offers `ide`, which reaches the
+//     preview's <html>, and Get code's HTML carries `data-handle="ide"`
 //
 // Needs a Chromium: `pnpm exec playwright install chromium`.
 
@@ -598,12 +598,12 @@ for (const [width, height] of [
                 `the preview did not apply the design: ${JSON.stringify(applied)}`,
             );
         }
-        await choose(page, create, "Handle", "dots");
+        await choose(page, create, "Handle", "ide");
         await page.keyboard.press("Escape");
         const handle = await preview.evaluate(
             () => document.documentElement.dataset.handle ?? null,
         );
-        if (handle !== "dots")
+        if (handle !== "ide")
             problems.push(
                 `the Handle control did not reach the preview: ${handle}`,
             );
@@ -614,7 +614,7 @@ for (const [width, height] of [
                 .getByRole("tabpanel", { name: "HTML" })
                 .locator("pre")
                 .textContent()) ?? "";
-        if (!/data-handle="dots"/.test(html))
+        if (!/data-handle="ide"/.test(html))
             problems.push(
                 `Get code's HTML does not carry data-handle: ${html}`,
             );

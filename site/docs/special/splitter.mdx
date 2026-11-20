@@ -78,7 +78,7 @@ The primitives emit their state as `data-*` attributes and the family reads them
 
 The rule is the `line` role at 1px, the values of [Separator](/docs/display/separator). The pointer finds a wider area: an invisible strip 6px on each side (a spacing step, so it follows the density), above the panels' content. The engine measures 1px, so the panels touch.
 
-The grip is the resize handle's mark, the same as Dockable's splitter and Grid Layout's resize handles, and the `data-handle` [design axis](/docs/architecture/design-axes#handle) chooses it: hidden until hover under `line` (the default), a faint pill under `grip`, three dots under `dots`.
+The grip is the resize handle's mark, the same as Dockable's splitter and Grid Layout's resize handles, and the `data-handle` [design axis](/docs/architecture/design-axes#handle) chooses it: hidden until hover under `line` (the default), a faint pill under `grip`, three dots under `dots`, and none under `ide`, where the 1px rule brightens on hover and thickens into a 3px bar while dragged.
 
 Two members help a panel's content follow its state: `split.expanded()` hides an element while its panel is collapsed (from sight and from assistive technology), and `split.collapsed()` shows one only then. To dim the panels while a separator drags, read the group's state from a panel: `group-data-dragging/splitter:opacity-70`.
 

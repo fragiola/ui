@@ -140,19 +140,23 @@ for a standalone illustration. A secondary icon (a chevron, a search glass) is
 
 Every split view resizes from the same handle: Splitter's separator, Dockable's
 splitter and Grid Layout's resize handles compose the `handle` family. The bar shows
-the `ring` rule on hover, drag and focus (3px on focus); its mark is a `ring` pill —
-the drawer handle's shape, shorter — lit fully on hover, drag and focus and never on a
-disabled handle. The `data-handle` axis chooses the mark at rest:
+the `ring` rule on hover, drag and focus (3px on focus); its mark is a pill — the
+drawer handle's shape, shorter — centred on the rule, neutral (`accent`) at rest and
+`ring` on hover, drag and focus, never on a disabled handle. The `data-handle` axis
+chooses the look:
 
 | level | at rest | on interaction |
 |---|---|---|
-| `line` (default) | the rule alone, the IDE look | the `ring` rule and the pill |
-| `grip` | a faint pill (`ring` at 50%) | the pill in full `ring` |
-| `dots` | three dots (`ring` at 70%) | the dots in full `ring` |
+| `line` (default) | the rule alone | the `ring` rule and the pill |
+| `grip` | a faint pill (`accent` at 50%) | the pill in `ring` |
+| `dots` | three dots (`accent` at 70%) | the dots in `ring` |
+| `ide` | a 1px `line` seam, no gap, no mark | hover: the rule brightens (`line` towards `contrast`); drag and focus: a 3px `ring` bar over the edge |
 
-Geometry stays each component's: Splitter's rule is a 1px `line` at rest, Dockable's
-6px gap between bordered tabsets has no rule at rest, and a dashboard card's resize
-marks keep a 40% floor while the card is hovered.
+Geometry stays each component's: Splitter's rule is a 1px `line` at rest; Dockable's
+6px gap between bordered tabsets has no rule at rest, and under `ide` closes to a 1px
+seam between frameless tabsets; a dashboard card's resize marks sit on its border,
+keep a 40% floor while the card is hovered, and stay at every level (a card's edge has
+no rule to stand in for them).
 
 ## Motion
 
