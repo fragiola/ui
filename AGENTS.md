@@ -119,10 +119,12 @@ linked from the docs.
 landing's showcase (`site/docs/index.mdx`, right after the Hero), and www's
 home slide for Fragiola UI is derived from it: real components in Create's
 first design, within a showcase's height at a landing's width (`check:embeds`
-holds it under 640px at 1152px). `palette-maker` is the landing's palette
-section and www embeds it by id: a hue becomes `my-palette-1`, `my-palette-2`,
-… with the registry's generator (`lib/colour/palette`, the one Create uses,
-never a copy), and only the class and the new CSS rule change. Keep both ids.
+holds it under 640px at 1152px). `palettes` is the landing's palette section
+and www embeds it by id: six preset colours on the "Invite your team" card,
+plus a hue that becomes `my-palette-1`, `my-palette-2`, … (and their surface
+twins) with the registry's generator (`lib/colour/palette`, the one Create
+uses, never a copy); only the classes and the new CSS rule change. Keep both
+ids.
 
 **A modal example covers the site's page.** On fragiola.com a Dialog, an
 AlertDialog or a Drawer opened in an example (the Sidebar's mobile Drawer too)

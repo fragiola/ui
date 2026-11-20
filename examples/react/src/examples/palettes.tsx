@@ -1,13 +1,21 @@
 "use client";
 
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "#/components/atoms/badge";
 import { Clickable } from "#/components/atoms/clickable";
 import { Input } from "#/components/atoms/fields";
 import { Text } from "#/components/atoms/text";
+import {
+    cssValue,
+    generatePalette,
+    ROLES,
+    type Themed,
+} from "#/components/lib/colour/palette";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Field } from "#/components/ui/field";
 import { Progress } from "#/components/ui/progress";
+import { Slider } from "#/components/ui/slider";
 import { Switch } from "#/components/ui/switch";
 
 // One class, and the colour changes. Nothing in a component is a colour
@@ -21,8 +29,17 @@ import { Switch } from "#/components/ui/switch";
 // `palette-surface-blue`: still a neutral box, with the colour only where it
 // is "on" or focused. The default is the neutral pair.
 //
-// The picker is this demo's own state; the card below it is what you would
-// copy. Only the strings in `tone` change when you pick.
+// A new colour is one more palette, never a variant. Pick a hue and "Add
+// palette": the registry's generator (`lib/colour/palette`, the one the
+// Create page uses) turns it into both tiers, six roles in both themes, and
+// the demo registers them as real CSS classes — `my-palette-1` and its twin
+// `my-palette-surface-1`, then `my-palette-2`, … — in a <style> of this
+// document, the way an app adds a palette file. It is then one more colour
+// to pick, and the card repaints from its classes exactly like a preset.
+//
+// The picker, the hue and the added palettes are this demo's own state; the
+// card below it is what you would copy. Only the strings in `tone` change
+// when you pick, plus the new CSS rule for a palette you added.
 const COLOURS = [
     "neutral",
     "blue",
@@ -31,26 +48,116 @@ const COLOURS = [
     "orange",
     "rose",
 ] as const;
-type Colour = (typeof COLOURS)[number];
 
-function tone(colour: Colour) {
-    return colour === "neutral"
-        ? { action: "palette-neutral", control: "palette-surface" }
-        : { action: `palette-${colour}`, control: `palette-surface-${colour}` };
+/** A palette made from a hue: its two classes and their CSS. */
+type Added = { name: string; surface: string; hue: number; css: string[] };
+
+function tone(colour: string) {
+    if (colour === "neutral")
+        return { action: "palette-neutral", control: "palette-surface" };
+    if (colour.startsWith("my-palette-"))
+        return {
+            action: colour,
+            control: colour.replace("my-palette-", "my-palette-surface-"),
+        };
+    return {
+        action: `palette-${colour}`,
+        control: `palette-surface-${colour}`,
+    };
 }
 
+/** One palette class in both themes, all six roles: [light, dark]. */
+function rules(name: string, roles: Themed) {
+    return (["light", "dark"] as const).map((theme) => {
+        const lines = ROLES.map(
+            (role) => `    --palette-${role}: ${cssValue(roles[theme][role])};`,
+        );
+        return `:root[data-theme="${theme}"] .${name} {\n${lines.join("\n")}\n}`;
+    });
+}
+
+function makePalette(index: number, hue: number): Added {
+    const name = `my-palette-${index}`;
+    const surface = `my-palette-surface-${index}`;
+    // The solid tier (button, badge, progress) and its surface twin (field,
+    // switch, checkbox), as the shipped palettes come in pairs.
+    const palette = generatePalette({ name, hue });
+    return {
+        name,
+        surface,
+        hue,
+        css: [
+            ...rules(name, palette.solid),
+            ...rules(surface, palette.surface),
+        ],
+    };
+}
+
+/** The hue's colour, as the generator makes it: the light theme's base. */
+const swatch = (hue: number) =>
+    cssValue(generatePalette({ hue }).solid.light.base);
+
 export default function PalettesDemo() {
-    const [colour, setColour] = useState<Colour>("neutral");
+    const [colour, setColour] = useState<string>("neutral");
+    const [hue, setHue] = useState(160);
+    const [added, setAdded] = useState<Added[]>([]);
     const { action, control } = tone(colour);
+    const current = added.find((p) => p.name === colour);
+
+    function add() {
+        const palette = makePalette(added.length + 1, hue);
+        setAdded([...added, palette]);
+        setColour(palette.name);
+    }
 
     return (
         <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
+            {/* The added palettes, registered as CSS — what a palette file is. */}
+            <style data-palettes-added="">
+                {added.flatMap((p) => p.css).join("\n")}
+            </style>
+
+            <div className="flex flex-wrap items-end justify-center gap-4">
+                <Slider.Root
+                    className="w-full max-w-xs"
+                    min={0}
+                    max={359}
+                    value={hue}
+                    onValueChange={(v) =>
+                        setHue(Array.isArray(v) ? (v[0] ?? 0) : v)
+                    }
+                >
+                    <div className="flex items-center justify-between">
+                        <Slider.Label>Hue</Slider.Label>
+                        <span className="flex items-center gap-2 text-sm tabular-nums">
+                            <span
+                                aria-hidden
+                                data-hue-swatch=""
+                                className="size-4 rounded-full border border-palette-line"
+                                style={{ background: swatch(hue) }}
+                            />
+                            {hue}°
+                        </span>
+                    </div>
+                    <Slider.Control>
+                        <Slider.Track>
+                            <Slider.Indicator />
+                            <Slider.Thumb aria-label="Hue" />
+                        </Slider.Track>
+                    </Slider.Control>
+                </Slider.Root>
+                <Clickable.Button variant="outline" onClick={add}>
+                    <PlusIcon />
+                    Add palette
+                </Clickable.Button>
+            </div>
+
             <div
                 role="radiogroup"
                 aria-label="Colour"
                 className="flex flex-wrap items-center justify-center gap-2"
             >
-                {COLOURS.map((name) => (
+                {[...COLOURS, ...added.map((p) => p.name)].map((name) => (
                     <Clickable.Button
                         key={name}
                         role="radio"
@@ -70,8 +177,14 @@ export default function PalettesDemo() {
 
             <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start">
                 <InviteCard action={action} control={control} />
-                <pre className="overflow-x-auto rounded-lg bg-palette-soft p-4 font-mono text-xs leading-relaxed text-palette-accent">
+                <pre
+                    data-palette-code=""
+                    className="overflow-x-auto rounded-lg bg-palette-soft p-4 font-mono text-xs leading-relaxed text-palette-accent"
+                >
                     <code>
+                        {current
+                            ? `/* palettes.css — ${current.name}, hue ${current.hue} */\n${current.css.slice(0, 2).join("\n")}\n/* + .${current.surface}, its surface twin, the same shape */\n\n`
+                            : ""}
                         {`<Clickable.Button className="${action}">
 <Badge className="${action}">
 <Progress.Root className="${action}">
@@ -88,7 +201,10 @@ export default function PalettesDemo() {
 
 function InviteCard({ action, control }: { action: string; control: string }) {
     return (
-        <section className="flex flex-col gap-5 rounded-lg border border-palette-line p-5">
+        <section
+            data-palette-target=""
+            className="flex flex-col gap-5 rounded-lg border border-palette-line p-5"
+        >
             <header className="flex items-start justify-between gap-3">
                 <div className="flex flex-col gap-1">
                     <Text.Heading as="h3" className="text-base">
