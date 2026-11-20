@@ -179,18 +179,20 @@ describe("tile family", () => {
     });
 
     it("marks a resize handle with the handle family's mark and split's cursors (S4)", () => {
-        // The mark is Splitter's grip (handle.mark), so the data-handle axis
-        // draws it too, with a 40% floor at rest: the handle itself only
-        // shows while its card is hovered or held.
+        // The mark is the handle family's edge mark: Splitter's grip
+        // (handle.mark) with a 40% floor at rest — the handle itself only
+        // shows while its card is hovered or held — lit fully on interaction
+        // at every level, `ide` included (a card's edge has no rule).
         const own = classes(tile.resizeHandle);
         const mark = classes(tile.resizeMark);
+        expect(tile.resizeMark).toBe(handle.edgeMark);
         expect(own).toContain("group/handle");
         expect(mark).toContain("rounded-pill");
         expect(mark).toContain("opacity-[max(0.4,var(--handle-rest,0))]");
         expect(mark).not.toContain("opacity-[var(--handle-rest,0)]");
         expect(mark).toContain("group-data-resizing/handle:opacity-100");
         for (const shared of classes(handle.mark).filter(
-            (c) => !c.startsWith("opacity-"),
+            (c) => !/(?:^|:)opacity-/.test(c),
         )) {
             expect(mark, shared).toContain(shared);
         }
@@ -200,6 +202,21 @@ describe("tile family", () => {
             ).toBe(true);
             expect(own.some((c) => c.endsWith(cursor))).toBe(true);
         }
+    });
+
+    it("centres a side's hit area on the card's border, which it does not clip", () => {
+        // 8px centred on the 1px border: the mark sits on the edge, not
+        // beside it. The card clips nothing, so the half outside shows; its
+        // content rounds and clips itself.
+        const own = classes(tile.resizeHandle);
+        for (const side of ["top", "bottom", "start", "end"]) {
+            expect(own, side).toContain(`data-[side=${side}]:-${side}-[4.5px]`);
+        }
+        expect(classes(tile.item)).not.toContain("overflow-hidden");
+        expect(classes(tile.content)).toContain("overflow-auto");
+        expect(
+            classes(tile.content).some((c) => c.startsWith("rounded-b-")),
+        ).toBe(true);
     });
 
     it("places resize handles on logical sides, mirrored corners", () => {

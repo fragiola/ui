@@ -97,13 +97,15 @@ describe("split family", () => {
 
     it("never lights or turns a disabled separator", () => {
         const own = classes(split.separator);
-        expect(own).toContain("not-data-disabled:hover:after:bg-palette-ring");
+        const hover = own.filter((c) => /(?:^|:)hover:after:bg-/.test(c));
+        expect(hover).toHaveLength(1);
+        expect(hover[0]).toMatch(/^not-data-disabled:/);
         expect(own.filter((c) => /^hover:/.test(c))).toEqual([]);
         expect(
             own.filter((c) => /^data-\[orientation=[a-z]+\]:cursor-/.test(c)),
         ).toEqual([]);
         expect(classes(split.grip)).toContain(
-            "group-not-data-disabled/handle:group-hover/handle:opacity-100",
+            "group-not-data-disabled/handle:group-hover/handle:opacity-[calc(1_-_var(--handle-seam,0))]",
         );
         expect(classes(split.grip)).toContain(
             "group-data-disabled/handle:opacity-0",

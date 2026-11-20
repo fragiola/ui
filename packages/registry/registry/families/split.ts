@@ -85,8 +85,9 @@ const separator = tv({
 
 // The grip: the handle's mark (families/handle.ts), drawn by the
 // `data-handle` axis — hidden at rest under `line`, a faint pill under
-// `grip`, three dots under `dots`; lit while the separator is hovered
-// (unless disabled), dragged or focused. It lets the pointer through.
+// `grip`, three dots under `dots`, never under `ide`; `ring` while the
+// separator is hovered (unless disabled), dragged or focused. It lets the
+// pointer through.
 const grip = handle.mark;
 
 // Content a collapsed panel hides (a label beside a rail's icon, a list):

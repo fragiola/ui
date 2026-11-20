@@ -105,14 +105,33 @@ const AXES: Record<string, Axis> = {
         // The one axis whose default level has a name (`line`), written out
         // so a subtree can return to it; no attribute renders the same.
         attribute: "data-handle",
-        defaults: { "--handle-rest": "0", "--handle-mask": "none" },
+        defaults: {
+            "--handle-rest": "0",
+            "--handle-mask": "none",
+            "--handle-seam": "0",
+        },
         levels: {
-            line: { "--handle-rest": "0", "--handle-mask": "none" },
-            grip: { "--handle-rest": "0.5", "--handle-mask": "none" },
+            line: {
+                "--handle-rest": "0",
+                "--handle-mask": "none",
+                "--handle-seam": "0",
+            },
+            grip: {
+                "--handle-rest": "0.5",
+                "--handle-mask": "none",
+                "--handle-seam": "0",
+            },
             dots: {
                 "--handle-rest": "0.7",
                 "--handle-mask":
                     "radial-gradient(circle closest-side, #000 62%, #0000 74%)",
+                "--handle-seam": "0",
+            },
+            // The IDE look: no mark, no gap, the seam is the handle.
+            ide: {
+                "--handle-rest": "0",
+                "--handle-mask": "none",
+                "--handle-seam": "1",
             },
         },
     },
@@ -199,6 +218,19 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
         "mask-image",
         "var(--handle-mask,none)",
     ],
+    // `ide`'s seam reaches the mark, the tabsets' frames and radius as an
+    // expression over the token, never a value.
+    "opacity-\\[calc\\(1_-_var\\(--handle-seam\\,0\\)\\)\\]": [
+        "opacity",
+        "calc(1 - var(--handle-seam,0))",
+    ],
+    "border-\\[length\\:calc\\(\\(1_-_var\\(--handle-seam\\,0\\)\\)_\\*_1px\\)\\]":
+        ["border-width", "calc((1 - var(--handle-seam,0)) * 1px)"],
+    "rounded-\\[calc\\(var\\(--radius-md\\)_\\*_\\(1_-_var\\(--handle-seam\\,0\\)\\)\\)\\]":
+        [
+            "border-radius",
+            "calc(var(--radius-md) * (1 - var(--handle-seam,0)))",
+        ],
     ...Object.fromEntries(
         Object.entries(ICON_SIZES).map(([name, rem]) => [
             name,

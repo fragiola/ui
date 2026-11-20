@@ -276,6 +276,7 @@
     --motion-scale: 1;
     --handle-rest: 0;
     --handle-mask: none;
+    --handle-seam: 0;
     --elevation-2xs: 0 1px rgb(0 0 0 / 0.05);
     --elevation-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --elevation-sm:
@@ -411,22 +412,34 @@
 }
 
 /* Handle — `data-handle` (families/handle.ts). The mark on a resize handle:
-   its opacity at rest, and a mask that cuts the pill into three dots. The
-   one axis whose default level has a name: `line`, today's IDE look, is
-   also written out so a subtree can return to it under another level. */
+   its opacity at rest, and a mask that cuts the pill into three dots; and
+   the seam: 1 under `ide`, where panels meet and the handle is the 1px
+   edge between them (no gap, no mark, a rule that brightens on hover and
+   thickens while dragged — expressions over it in families/handle.ts and
+   families/dock.ts). The one axis whose default level has a name: `line`
+   is also written out so a subtree can return to it under another level. */
 [data-handle="line"] {
     --handle-rest: 0;
     --handle-mask: none;
+    --handle-seam: 0;
 }
 
 [data-handle="grip"] {
     --handle-rest: 0.5;
     --handle-mask: none;
+    --handle-seam: 0;
 }
 
 [data-handle="dots"] {
     --handle-rest: 0.7;
     --handle-mask: radial-gradient(circle closest-side, #000 62%, #0000 74%);
+    --handle-seam: 0;
+}
+
+[data-handle="ide"] {
+    --handle-rest: 0;
+    --handle-mask: none;
+    --handle-seam: 1;
 }
 
 /* Reduced motion always wins: `none` whatever `data-motion` says. Same
