@@ -1,0 +1,24 @@
+/* Canvas — the ground a page lays its cards on.
+   A neutral surface one step from the floor, between a frame and the cards
+   that stand on it: in dark it is lighter than `surface` (cards on the plain
+   floor colour read as set into it, the frame around it lighter still); in
+   light it is a near-white grey, so white cards stand out from it. Fully
+   neutral, like surface and raised; both themes declare all six roles. */
+
+:root[data-theme="light"] .palette-canvas {
+    --palette-base: oklch(0.985 0.002 250);
+    --palette-soft: oklch(0.95 0.004 250);
+    --palette-line: oklch(0.85 0.005 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.3 0.01 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-canvas {
+    --palette-base: oklch(0.18 0.01 250);
+    --palette-soft: oklch(0.27 0.012 250);
+    --palette-line: oklch(0.32 0.012 250);
+    --palette-contrast: oklch(0.95 0.005 250);
+    --palette-accent: oklch(0.88 0.005 250);
+    --palette-ring: var(--palette-accent);
+}

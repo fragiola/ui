@@ -24,6 +24,7 @@ const customTwMerge = extendTailwindMerge<"palette">({
                 {
                     palette: [
                         "surface",
+                        "canvas",
                         "raised",
                         "neutral",
                         "danger",
