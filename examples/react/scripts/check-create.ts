@@ -20,6 +20,17 @@ import { chromium, type Frame, type Page } from "playwright";
 //   - isolation: setting extreme levels, the dark scheme and RTL from the
 //     customizer changes the preview's <html> and leaves every computed
 //     style of the customizer as it was
+//   - three tones, in both schemes: the frame, the canvas (`[data-stage]`)
+//     and the cards are three colours — in dark the lightness steps down
+//     from the frame to the cards, in light the cards are white and the
+//     canvas lies between them and the frame — and no card is raised
+//   - the inset: rounded at every corner, the docs' 0.5rem margin on all
+//     four sides
+//   - the panel: no <header>; the links, the actions, the controls and Get
+//     code, in that order in the DOM and top to bottom; Get code visible
+//     without scrolling, and still there once the controls are scrolled
+//   - the handle axis: the Handle control reaches the preview's <html>, and
+//     Get code's HTML carries `data-handle` once it is not the default
 //
 // Needs a Chromium: `pnpm exec playwright install chromium`.
 
@@ -144,7 +155,15 @@ async function size(frame: Frame | Page) {
 async function settle(frame: Frame) {
     await frame.evaluate(async () => {
         await new Promise((r) => setTimeout(r, 100));
-        await Promise.all(document.getAnimations().map((a) => a.finished));
+        // Transitions only: the preview runs infinite animations (a
+        // skeleton's pulse, an indeterminate progress) that never finish.
+        await Promise.all(
+            document
+                .getAnimations()
+                .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+                // A cancelled one rejects: it is settled too.
+                .map((a) => a.finished.catch(() => undefined)),
+        );
     });
 }
 
@@ -153,7 +172,7 @@ async function settle(frame: Frame) {
 async function fingerprint(create: Frame) {
     await settle(create);
     return create.evaluate(() =>
-        [...document.querySelectorAll("header *, aside *")].map((el) => {
+        [...document.querySelectorAll("aside *")].map((el) => {
             const s = getComputedStyle(el);
             return [
                 `${el.tagName.toLowerCase()}${el.getAttribute("aria-label") ? `[${el.getAttribute("aria-label")}]` : ""}`,
@@ -167,6 +186,168 @@ async function fingerprint(create: Frame) {
             ].join("|");
         }),
     );
+}
+
+// The background of the first element matching `selector`, as sRGB bytes:
+// a 1px canvas paints the computed colour (oklch, color-mix…) and reads it
+// back, so colours from any space compare.
+async function background(frame: Frame, selector: string) {
+    return frame.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d");
+        if (!context) return null;
+        context.fillStyle = getComputedStyle(el).backgroundColor;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+    }, selector);
+}
+
+// WCAG relative luminance of sRGB bytes: enough to order three greys.
+function luminance([r = 0, g = 0, b = 0]: number[]) {
+    const lin = (c: number) => {
+        const v = c / 255;
+        return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+async function tones(create: Frame, preview: Frame, scheme: string) {
+    await settle(create);
+    await settle(preview);
+    const frame = await background(create, "[data-frame]");
+    const canvas = await background(preview, "[data-stage]");
+    const card = await background(preview, "[data-stage] section");
+    if (!frame || !canvas || !card) {
+        problems.push(`${scheme}: a tone is missing (frame, canvas or card)`);
+        return;
+    }
+    const [f, c, k] = [frame, canvas, card].map(luminance) as [
+        number,
+        number,
+        number,
+    ];
+    const keys = new Set([frame, canvas, card].map((rgb) => rgb.join(",")));
+    if (keys.size !== 3) {
+        problems.push(
+            `${scheme}: frame, canvas and card are not three colours (${[frame, canvas, card].map((x) => x.join(",")).join(" / ")})`,
+        );
+    }
+    if (scheme === "dark" && !(f > c && c > k)) {
+        problems.push(
+            `dark: the lightness is not frame > canvas > card (${f.toFixed(4)} / ${c.toFixed(4)} / ${k.toFixed(4)})`,
+        );
+    }
+    if (scheme === "light") {
+        if (card.join(",") !== "255,255,255")
+            problems.push(`light: the card is not white (${card.join(",")})`);
+        if (!(c < k && c > f))
+            problems.push(
+                `light: the canvas is not between the card and the frame (${f.toFixed(4)} / ${c.toFixed(4)} / ${k.toFixed(4)})`,
+            );
+    }
+    const raised = await preview.evaluate(
+        () => document.querySelectorAll("section.palette-raised").length,
+    );
+    if (raised > 0) problems.push(`${scheme}: ${raised} cards are raised`);
+}
+
+// The shell's layout: the inset and the panel (see the header).
+async function layout(create: Frame, at: string) {
+    const report = await create.evaluate(() => {
+        const rect = (sel: string) =>
+            document.querySelector(sel)?.getBoundingClientRect() ?? null;
+        const inset = document.querySelector<HTMLElement>("[data-inset]");
+        const style = inset ? getComputedStyle(inset) : null;
+        const parts = [
+            "[data-panel=links]",
+            "[data-panel=actions]",
+            "[data-panel=controls]",
+            "[data-panel=code]",
+        ].map((sel) => document.querySelector(sel));
+        const domOrder = parts.every(
+            (el, i) =>
+                el &&
+                (i === 0 ||
+                    (parts[i - 1]?.compareDocumentPosition(el) ?? 0) &
+                        Node.DOCUMENT_POSITION_FOLLOWING),
+        );
+        const tops = parts.map((el) => el?.getBoundingClientRect().top ?? 0);
+        const code = [...document.querySelectorAll("button")].find((b) =>
+            /Get code/.test(b.textContent ?? ""),
+        );
+        const codeRect = code?.getBoundingClientRect() ?? null;
+        const controls = document.querySelector<HTMLElement>(
+            "[data-panel=controls]",
+        );
+        if (controls) controls.scrollTop = controls.scrollHeight;
+        const codeAfter = code?.getBoundingClientRect() ?? null;
+        if (controls) controls.scrollTop = 0;
+        return {
+            headers: document.querySelectorAll("header").length,
+            radii: style
+                ? [
+                      style.borderTopLeftRadius,
+                      style.borderTopRightRadius,
+                      style.borderBottomRightRadius,
+                      style.borderBottomLeftRadius,
+                  ]
+                : [],
+            inset: rect("[data-inset]"),
+            aside: rect("aside"),
+            viewport: [window.innerWidth, window.innerHeight],
+            domOrder,
+            visualOrder: tops.every(
+                (top, i) => i === 0 || top > (tops[i - 1] ?? 0),
+            ),
+            code: codeRect,
+            codeMoved:
+                codeRect && codeAfter ? codeRect.top !== codeAfter.top : true,
+        };
+    });
+    if (report.headers > 0) problems.push(`${at}: the page has a <header>`);
+    if (
+        report.radii.length !== 4 ||
+        report.radii.some((r) => !(Number.parseFloat(r) > 0))
+    ) {
+        problems.push(
+            `${at}: the inset is not rounded (${report.radii.join(" ")})`,
+        );
+    }
+    const [vw = 0, vh = 0] = report.viewport;
+    if (report.inset && report.aside) {
+        const margins = [
+            report.inset.top,
+            vw - report.inset.right,
+            vh - report.inset.bottom,
+            report.inset.left - report.aside.right,
+        ].map((m) => Math.round(m));
+        if (margins.some((m) => m !== 8)) {
+            problems.push(
+                `${at}: the inset's margins are not 0.5rem on every side (${margins.join(" ")})`,
+            );
+        }
+    } else problems.push(`${at}: no inset or no panel`);
+    if (!report.domOrder)
+        problems.push(
+            `${at}: the panel is not links → actions → controls → Get code in the DOM`,
+        );
+    if (!report.visualOrder)
+        problems.push(
+            `${at}: the panel is not links → actions → controls → Get code top to bottom`,
+        );
+    if (
+        !report.code ||
+        report.code.top < 0 ||
+        report.code.bottom > vh ||
+        report.codeMoved
+    ) {
+        problems.push(
+            `${at}: Get code is not pinned in view at the panel's bottom`,
+        );
+    }
 }
 
 async function choose(
@@ -222,6 +403,9 @@ for (const [width, height] of [
         );
     }
 
+    await layout(create, at);
+    if (width === 1440) await tones(create, preview, "light");
+
     if (width === 1440) {
         await page.evaluate(() =>
             (window as unknown as { sendTheme(t: string): void }).sendTheme(
@@ -236,6 +420,8 @@ for (const [width, height] of [
         ) {
             problems.push("the theme message did not reach the Create page");
         }
+        // The preview follows the host's theme until a scheme is chosen.
+        await tones(create, preview, "dark");
 
         const before = await fingerprint(create);
         await choose(page, create, "Radius", "full");
@@ -279,6 +465,29 @@ for (const [width, height] of [
                 `the preview did not apply the design: ${JSON.stringify(applied)}`,
             );
         }
+        await choose(page, create, "Handle", "dots");
+        await page.keyboard.press("Escape");
+        const handle = await preview.evaluate(
+            () => document.documentElement.dataset.handle ?? null,
+        );
+        if (handle !== "dots")
+            problems.push(
+                `the Handle control did not reach the preview: ${handle}`,
+            );
+        await create.getByRole("button", { name: "Get code" }).click();
+        await create.getByRole("tab", { name: "HTML" }).click();
+        const html =
+            (await create
+                .getByRole("tabpanel", { name: "HTML" })
+                .locator("pre")
+                .textContent()) ?? "";
+        if (!/data-handle="dots"/.test(html))
+            problems.push(
+                `Get code's HTML does not carry data-handle: ${html}`,
+            );
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(300);
+
         const shellAxes = await create.evaluate(() => ({
             radius: document.documentElement.dataset.radius ?? null,
             dir: document.documentElement.dir || "ltr",
