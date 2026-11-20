@@ -82,40 +82,23 @@ export const examples: Example[] = [
         id: "palettes",
         title: "Palettes",
         description:
-            "One class, and the colour changes: pick a colour and the same card re-colours, while the only code that changes is each element's palette-* class.",
+            "One class, and the colour changes: pick a colour and the same card re-colours, while the only code that changes is each element's palette-* class. Pick a hue and add it: the generator Create uses makes it my-palette-1, my-palette-2, …, one more colour to pick.",
         level: "atoms",
         order: 3,
         features: [
             "palette-neutral",
             "palette-surface-blue",
             "palette-blue",
+            "generatePalette",
+            "my-palette-1",
             "Clickable.Button",
             "Field",
             "Switch",
         ],
         docs: "/docs/architecture/palettes",
         layout: "flow",
-        height: 472,
+        height: 544,
         load: () => import("./palettes.tsx"),
-    },
-    {
-        id: "palette-maker",
-        title: "Palette maker",
-        description:
-            "A new colour is a new palette: pick a hue, add it as my-palette-1, my-palette-2, … with the generator Create uses, and the button, its ring, the badge and the progress bar take its class. Only the class and the new CSS rule change.",
-        level: "atoms",
-        order: 4,
-        features: [
-            "generatePalette",
-            "my-palette-1",
-            "Clickable.Button",
-            "Badge",
-            "Progress",
-        ],
-        docs: "/docs/architecture/palettes",
-        layout: "flow",
-        height: 362,
-        load: () => import("./palette-maker.tsx"),
     },
     {
         id: "component-showcase",
@@ -123,7 +106,7 @@ export const examples: Example[] = [
         description:
             "An app's cards in real components, the way Create previews them: a sign-up form with a select, switches, tabs over a chart, badges, progress and a team list whose Invite opens a Dialog.",
         level: "atoms",
-        order: 5,
+        order: 4,
         features: [
             "Field",
             "Select",
