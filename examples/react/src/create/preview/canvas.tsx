@@ -6,7 +6,7 @@ import {
     useState,
 } from "react";
 import { Tooltip } from "#/components/ui/tooltip";
-import { DesignVersion, Surface, Tone } from "./card";
+import { DesignVersion, Tone } from "./card";
 import * as charts from "./cards/charts";
 import * as data from "./cards/data";
 import * as forms from "./cards/forms";
@@ -103,35 +103,31 @@ export function Canvas({
     action,
     control,
     version,
-    scheme,
     band,
 }: {
     action: string;
     control: string;
     version: string;
-    scheme: "light" | "dark";
     band?: ReactNode;
 }) {
     return (
         <Tone.Provider value={{ action, control }}>
             <DesignVersion.Provider value={version}>
-                <Surface.Provider value={scheme}>
-                    <Tooltip.Provider>
-                        {/* The stage is the scroller, not the document: overlay
+                <Tooltip.Provider>
+                    {/* The stage is the scroller, not the document: overlay
                             promotion pins it where it is while a modal covers
                             the page, and a pinned element keeps its scroll
                             offsets — the canvas does not move under the modal. */}
-                        <div
-                            data-stage=""
-                            className={`palette-surface h-dvh w-dvw overflow-auto text-palette-contrast ${scheme === "dark" ? "bg-palette-base" : "bg-palette-soft"}`}
-                        >
-                            <div className="flex w-max flex-col gap-4 p-6">
-                                {band}
-                                <Masonry cards={CARDS} measureKey={version} />
-                            </div>
+                    <div
+                        data-stage=""
+                        className="palette-canvas h-dvh w-dvw overflow-auto bg-palette-base text-palette-contrast"
+                    >
+                        <div className="flex w-max flex-col gap-4 p-6">
+                            {band}
+                            <Masonry cards={CARDS} measureKey={version} />
                         </div>
-                    </Tooltip.Provider>
-                </Surface.Provider>
+                    </div>
+                </Tooltip.Provider>
             </DesignVersion.Provider>
         </Tone.Provider>
     );

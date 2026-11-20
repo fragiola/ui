@@ -318,6 +318,49 @@ describe("design axes", () => {
         expect(inlined).toEqual([]);
     });
 
+    it("every rounded-* step the sources write is on the radius scale", async () => {
+        // `--radius-*: initial` leaves only the steps global.css defines, so
+        // a `rounded-xl` compiles to nothing at all: no error, square
+        // corners (rule 8). That is how the Create page's inset lost its
+        // radius. Arbitrary values (`rounded-b-[…]`) are explicit and pass.
+        const theme = await readFile(
+            path.join(REGISTRY_DIR, "styles", "global.css"),
+            "utf-8",
+        );
+        const steps = new Set([
+            "none",
+            ...[...theme.matchAll(/^\s*--radius-([a-z]+):/gm)].map(
+                ([, step]) => step,
+            ),
+        ]);
+        expect([...steps].sort()).toEqual(
+            ["control", "full", "lg", "md", "none", "pill", "sm"].sort(),
+        );
+        const dirs = [
+            REGISTRY_DIR,
+            path.resolve(ROOT, "../../examples/react/src"),
+            path.resolve(ROOT, "../../apps/playground/src"),
+        ];
+        const offenders: string[] = [];
+        for (const dir of dirs) {
+            for (const file of await sourceFiles(dir)) {
+                const text = (await readFile(file, "utf-8"))
+                    .replace(/\/\*[\s\S]*?\*\//g, "")
+                    .replace(/\/\/.*$/gm, "");
+                for (const [, step] of text.matchAll(
+                    /(?<![\w-])rounded(?:-(?:[tblrse]|ss|se|es|ee|tl|tr|bl|br|x|y))?-([a-z0-9]+)(?![\w[-])/g,
+                )) {
+                    if (!steps.has(step ?? "")) {
+                        offenders.push(
+                            `${path.relative(ROOT, file)}: rounded-…-${step}`,
+                        );
+                    }
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
     it("no icon default in the registry is spacing-based", async () => {
         const spacingIcons: string[] = [];
         for (const file of await sourceFiles(REGISTRY_DIR)) {

@@ -115,7 +115,7 @@ export function CreateShell() {
 
     return (
         <Tooltip.Provider>
-            <div className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklab,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast">
+            <div className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklch,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast">
                 <header className="flex h-12 shrink-0 items-center gap-3 px-4">
                     <a
                         href={SITE}
@@ -186,7 +186,10 @@ export function CreateShell() {
                         <Customizer design={design} set={set} />
                     </aside>
                     <main className="min-h-0 min-w-0 flex-1 p-2 pt-0 md:ps-0">
-                        <div className="h-full overflow-hidden rounded-xl border border-palette-line bg-palette-base shadow-sm">
+                        <div
+                            data-inset=""
+                            className="h-full overflow-hidden rounded-[0.75rem] border border-palette-line bg-palette-base shadow-sm"
+                        >
                             <iframe
                                 ref={frame}
                                 title="Theme preview"
