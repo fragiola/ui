@@ -12,7 +12,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1.6, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.7, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
@@ -33,16 +33,17 @@ import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
 //
-// v1.1 to v1.6 keep `"contract": 1` (CONTRACT.md, the changelog), so CONTRACT
-// stays 1 while the rules are v1.6's: CONTRACT_REVISION. v1.4 and v1.5 add
+// v1.1 to v1.7 keep `"contract": 1` (CONTRACT.md, the changelog), so CONTRACT
+// stays 1 while the rules are v1.7's: CONTRACT_REVISION. v1.4 and v1.5 add
 // optional fields this project does not use (sidebar icons, adapters); v1.6
 // adds the Create page (`create` in project.json, embed/<fw>/create.html,
-// the `/create` link), which it does.
+// the `/create` link), which it does; v1.7 reserves the `/ai` link (the
+// site's AI agents docs), which the landing's Hero uses.
 // v1.3 adds runtime messages only (overlay promotion, §5.4) — nothing in an
 // export to check; `check:embeds` drives them in a real browser.
 
 export const CONTRACT = 1;
-export const CONTRACT_REVISION = "1.6";
+export const CONTRACT_REVISION = "1.7";
 
 /** v1.2: the lengths of titles, descriptions and keywords (§2, §3.2). */
 export const LIMITS = {
@@ -664,6 +665,12 @@ export function validate(input: ExportInput): string[] {
             return anchor ? "the landing has no anchors" : null;
         if (pathname === "/examples") {
             return allExampleIds.size > 0 ? null : "there are no examples";
+        }
+        // v1.7: the site's AI agents docs, reserved and base-free, the same
+        // for every project; an anchor is a heading www owns, unchecked.
+        if (pathname === "/ai") return null;
+        if (pathname.startsWith("/ai/")) {
+            return "the AI agents docs are linked as /ai (optionally /ai#anchor), nothing below it (§3.3, v1.7)";
         }
         if (pathname === "/create") {
             return project.create

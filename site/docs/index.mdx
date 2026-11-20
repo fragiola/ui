@@ -10,11 +10,13 @@ layout: "landing"
     description="A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes — scope one to a page, a card, or a single button."
     background="grid"
     actions={[
-        { label: "Read the documentation", href: "/docs/getting-started/introduction", variant: "primary", icon: "arrow" },
-        { label: "Create your theme", href: "/create", variant: "secondary" },
-        { label: "How theming works", href: "/docs/architecture/theming", variant: "ghost" },
+        { label: "Create your theme", href: "/create", variant: "primary", icon: "arrow" },
+        { label: "Use with your AI agent", href: "/ai", variant: "secondary" },
+        { label: "Read the documentation", href: "/docs/getting-started/introduction", variant: "ghost" },
     ]}
 />
+
+<Example id="component-showcase" variant="showcase" />
 
 <Section
     eyebrow="Why it exists"
@@ -80,9 +82,9 @@ layout: "landing"
 <Section
     eyebrow="The demonstration"
     title="One class, and the colour changes"
-    description="Pick a colour. The card re-colours, and the only code that changes is a class: no component has a colour variant, so there is nothing else to change. A new colour is a new palette file — write one, swap the class."
+    description="Pick a hue and add it: it becomes a new palette, my-palette-1, then my-palette-2. Give its class to the button and the button, its ring, the badge and the progress bar repaint. No component has a colour variant, so the class and the new CSS rule are all that change."
 >
-    <Example id="palettes" variant="bleed" />
+    <Example id="palette-maker" variant="bleed" />
 
-    Want your own colour? [Create](/create) generates the palette from a hue, and shows it with the six design axes on dozens of the registry's components.
+    Want your own colour for the whole app? [Create](/create) generates the palette from a hue with the same generator, and shows it with the six design axes on dozens of the registry's components.
 </Section>

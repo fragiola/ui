@@ -75,6 +75,9 @@ const OVERLAYS: Record<string, Opener> = {
     // The overflow menu of the narrow tabset (a DropdownMenu); the other
     // header buttons open no popup.
     dockable: "click",
+    // The sign-up card's plan Select; its Invite Dialog is promoted
+    // (MODALS) and only its box is checked here.
+    "component-showcase": "click",
 };
 
 // The examples whose rows are dragged in the frame: a row, and the folder it
@@ -200,6 +203,88 @@ const GRID_USES: Record<string, (frame: Frame) => Promise<boolean>> = {
     },
 };
 
+// The examples a landing shows as its showcase (contract §3.5): at the
+// width of a landing's content their content stays within a showcase's
+// height, with nothing wider than the frame — fragiola.com's home page
+// shows Fragiola UI's at that size, one slide, no scrolling.
+const SHOWCASES: Record<string, { width: number; maxHeight: number }> = {
+    "component-showcase": { width: 1152, maxHeight: 640 },
+};
+
+// The palette maker, used: two hues added become `my-palette-1` and
+// `my-palette-2`, real CSS rules in the document; selecting each hands its
+// class to the target, whose button, focus ring, badge and progress bar
+// repaint; the code panel names the selected class and its rule.
+async function drivePaletteMaker(frame: Frame): Promise<string[]> {
+    const problems: string[] = [];
+    const target = frame.locator("[data-palette-target]");
+    const code = frame.locator("[data-palette-code]");
+    const paints = () =>
+        target.evaluate((root) => {
+            const style = (selector: string) => {
+                const el = root.querySelector<HTMLElement>(selector);
+                return el ? getComputedStyle(el) : null;
+            };
+            return {
+                button: style("button")?.backgroundColor,
+                ring: style('button[aria-hidden="true"]')?.outlineColor,
+                badge: style('[data-slot="badge"]')?.backgroundColor,
+                bar: style('[data-slot="progress-indicator"]')?.backgroundColor,
+            };
+        });
+    const before = await paints();
+    const hue = frame.getByRole("slider", { name: "Hue" });
+    const add = frame.getByRole("button", { name: "Add palette" });
+    const seen: Array<Awaited<ReturnType<typeof paints>>> = [];
+    // Hue 0, then hue 120: Home, then twelve large steps of 10.
+    for (const [n, steps] of [
+        [1, 0],
+        [2, 12],
+    ] as const) {
+        await hue.focus();
+        await frame.page().keyboard.press("Home");
+        for (let i = 0; i < steps; i++)
+            await frame.page().keyboard.press("PageUp");
+        await add.click();
+        await frame.waitForTimeout(400);
+        const name = `my-palette-${n}`;
+        const ruled = await frame.evaluate(
+            (name) =>
+                [...document.styleSheets].some((sheet) =>
+                    [...sheet.cssRules].some(
+                        (rule) =>
+                            rule instanceof CSSStyleRule &&
+                            rule.selectorText.endsWith(`.${name}`),
+                    ),
+                ),
+            name,
+        );
+        if (!ruled) problems.push(`no CSS rule for .${name}`);
+        const radio = frame.getByRole("radio", { name });
+        if ((await radio.getAttribute("aria-checked")) !== "true")
+            problems.push(`${name} is not selected after it is added`);
+        const text = (await code.textContent()) ?? "";
+        if (
+            !text.includes(`className="${name}"`) ||
+            !text.includes(`.${name} {`)
+        )
+            problems.push(`the code panel does not show ${name}`);
+        seen.push(await paints());
+    }
+    const [first, second] = seen;
+    for (const part of ["button", "ring", "badge", "bar"] as const) {
+        if (!first?.[part] || first[part] === before[part])
+            problems.push(`my-palette-1 did not repaint the ${part}`);
+        if (!second?.[part] || second[part] === first?.[part])
+            problems.push(`my-palette-2 did not repaint the ${part}`);
+    }
+    await frame.getByRole("radio", { name: "my-palette-1" }).click();
+    await frame.waitForTimeout(400);
+    if ((await paints()).button !== first?.button)
+        problems.push("selecting my-palette-1 again did not repaint it");
+    return problems;
+}
+
 type ManifestExample = {
     id: string;
     layout: "fill" | "flow";
@@ -256,7 +341,9 @@ frame.src = src.href;
 // the viewport it is about to fill; on `armed` (or after 500 ms) the frame
 // goes to the top layer at the viewport's size and `promoted` follows, in
 // the same task; on `overlay` closed it goes back. The frame sits below and
-// beside a spacer so `rect` is not the origin. Every animation frame,
+// beside a spacer so `rect` is not the origin, with the rest of a page
+// below it: a frame scrolled to (a trigger below the fold) keeps its place
+// while the frame's height settles back after the promotion. Every animation frame,
 // `window.samples` records the frame's box, the stage content's box in the
 // page and every modal popup's box in the page.
 const HOST_V13 = `<!doctype html>
@@ -269,6 +356,7 @@ const HOST_V13 = `<!doctype html>
 <div id="wrapper" style="margin-left:40px">
 <iframe id="frame" popover="manual"></iframe>
 </div>
+<div style="height:1200px"></div>
 <script>
 const params = new URLSearchParams(location.search);
 const frame = document.getElementById("frame");
@@ -408,12 +496,12 @@ async function open(
     page: Page,
     id: string,
     floor: number,
-    options: { theme?: string } = {},
+    options: { theme?: string; width?: number } = {},
 ): Promise<Frame> {
     const query = new URLSearchParams({
         id,
         floor: String(floor),
-        width: String(WIDTH),
+        width: String(options.width ?? WIDTH),
     });
     if (options.theme !== undefined) query.set("theme", options.theme);
     await page.goto(`${origin}/host.html?${query}`);
@@ -734,6 +822,30 @@ for (const example of selected) {
         if (gridDrag && !(await dragGrid(page, frame, gridDrag)))
             say(`dragging in ${example.id} changed nothing`);
 
+        // The palette maker, used (drivePaletteMaker).
+        if (example.id === "palette-maker") {
+            for (const p of await drivePaletteMaker(frame)) say(p);
+        }
+
+        const showcase = SHOWCASES[example.id];
+        if (showcase) {
+            const f = await open(page, example.id, example.height, {
+                theme: "light",
+                width: showcase.width,
+            });
+            const wide = await contentHeight(page);
+            if (wide > showcase.maxHeight)
+                say(
+                    `at ${showcase.width}px: content ${wide}px, over the showcase's ${showcase.maxHeight}px`,
+                );
+            const overflow = await f.evaluate(
+                () =>
+                    document.documentElement.scrollWidth >
+                    document.documentElement.clientWidth,
+            );
+            if (overflow) say(`at ${showcase.width}px: wider than the frame`);
+        }
+
         // Data Grid in the frame: a sort and a page, or a filter, answer.
         const gridUse = GRID_USES[example.id];
         if (gridUse && !(await gridUse(frame)))
@@ -849,6 +961,7 @@ const MODALS: Record<string, { width?: number; slot: string }> = {
     dialog: { slot: "dialog-trigger" },
     "alert-dialog": { slot: "alert-dialog-trigger" },
     drawer: { slot: "drawer-trigger" },
+    "component-showcase": { slot: "dialog-trigger" },
     sidebar: { width: 400, slot: "sidebar-trigger" },
 };
 const PAGE = { width: 1200, height: 900 };
@@ -900,9 +1013,15 @@ for (const example of promotionChecked) {
         if (count === 0) say("no modal trigger");
         for (let i = 0; i < count; i++) {
             const label = `trigger ${i + 1}`;
+            // A trigger below the page's fold (the showcase's last card):
+            // scrolled to first, so the click does not move the page.
+            await triggers.nth(i).scrollIntoViewIfNeeded();
             await resetSamples(page);
             await page.waitForTimeout(100);
-            const before = (await samplesOf(page)).at(-1)?.content;
+            const start = (await samplesOf(page)).at(-1);
+            const before = start?.content;
+            // where the inline frame is in the viewport (40, 120 unscrolled)
+            const home = start?.frame ?? { x: 40, y: 120 };
             await triggers.nth(i).click();
             await frame
                 .locator('[role="dialog"], [role="alertdialog"]')
@@ -924,7 +1043,7 @@ for (const example of promotionChecked) {
                 near(popup.y, 0) ||
                 near(popup.x + popup.width, PAGE.width) ||
                 near(popup.y + popup.height, PAGE.height);
-            if (example.id === "dialog" || example.id === "alert-dialog") {
+            if (/^(alert-)?dialog-/.test(modal.slot)) {
                 if (!centred) say(`${label}: popup not centred in the page`);
             } else if (!atEdge) {
                 say(`${label}: drawer not against an edge of the page`);
@@ -1007,7 +1126,7 @@ for (const example of promotionChecked) {
             const end = samples.at(-1);
             if (!end || end.promoted)
                 say(`${label}: still promoted after closing`);
-            else if (!near(end.frame.x, 40) || !near(end.frame.y, 120)) {
+            else if (!near(end.frame.x, home.x) || !near(end.frame.y, home.y)) {
                 say(`${label}: the frame did not go back in place`);
             }
         }

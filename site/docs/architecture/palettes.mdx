@@ -10,6 +10,11 @@ while its focus states the theme's colour. Plus the two neutral surfaces that
 everything sits on. Every palette declares all six roles in both light and
 dark.
 
+The two tiers on one card: the button, the badge and the progress bar carry the
+chromatic palette, the field, the switch and the checkbox its surface twin.
+
+<Example id="palettes" />
+
 ## The neutral surfaces
 
 ### Surface
@@ -139,3 +144,8 @@ const palette = generatePalette({ name: "brand", hue: 160, chroma: "vivid" });
 palette.pass; // every pair clears AA
 const css = serializePalette(palette); // inject in a <style>, or write to a file
 ```
+
+A new colour is one more palette, not a variant: pick a hue, add it, and give
+its class to whatever should wear it.
+
+<Example id="palette-maker" />
