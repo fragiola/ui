@@ -132,6 +132,10 @@ describe("handle family", () => {
         );
         expect(target).toContain("[--handle-bar:1px]");
         expect(target).toContain("focus-visible:[--handle-bar:3px]");
+        // A focused bar keeps its 3px while dragged.
+        expect(target).toContain(
+            "focus-visible:data-dragging:[--handle-bar:3px]",
+        );
         // Dragged: 1px, or the 3px bar under `ide` (seam 1).
         expect(target).toContain(
             "data-dragging:[--handle-bar:calc(1px_+_2px_*_var(--handle-seam,0))]",

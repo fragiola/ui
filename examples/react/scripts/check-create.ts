@@ -223,7 +223,7 @@ async function tones(create: Frame, preview: Frame, scheme: string) {
     const frame = await background(create, "[data-frame]");
     const inset = await background(create, "[data-inset]");
     const canvas = await background(preview, "[data-stage]");
-    const card = await background(preview, "[data-stage] section");
+    const card = await background(preview, "[data-stage] [data-card-box]");
     if (!frame || !inset || !canvas || !card) {
         problems.push(
             `${scheme}: a tone is missing (frame, inset, canvas or card)`,
@@ -248,7 +248,7 @@ async function tones(create: Frame, preview: Frame, scheme: string) {
     if (scheme === "dark" && !(luminance(frame) > luminance(canvas)))
         problems.push("dark: the frame is not lighter than the canvas");
     const border = await preview.evaluate(() => {
-        const el = document.querySelector("[data-stage] section");
+        const el = document.querySelector("[data-stage] [data-card-box]");
         if (!el) return null;
         const style = getComputedStyle(el);
         const canvas = document.createElement("canvas");
@@ -271,7 +271,8 @@ async function tones(create: Frame, preview: Frame, scheme: string) {
     if (!border || border.width < 1 || !border.visible)
         problems.push(`${scheme}: the cards have no visible border`);
     const raised = await preview.evaluate(
-        () => document.querySelectorAll("section.palette-raised").length,
+        () =>
+            document.querySelectorAll("[data-card-box].palette-raised").length,
     );
     if (raised > 0) problems.push(`${scheme}: ${raised} cards are raised`);
 }
@@ -607,6 +608,42 @@ for (const [width, height] of [
             problems.push(
                 `the Handle control did not reach the preview: ${handle}`,
             );
+        // Under ide Dockable's tabsets meet: every splitter is a 1px seam
+        // (the engine measured it), the root row has no gutter, and a
+        // tabset draws no frame of its own.
+        await settle(preview);
+        const seam = await preview.evaluate(() => {
+            const dock = document.querySelector(
+                "[data-band-panel] [data-slot=dockable]",
+            );
+            if (!dock) return "no Dockable in the band";
+            const splitters = [
+                ...dock.querySelectorAll<HTMLElement>(
+                    "[data-slot=dockable-splitter]",
+                ),
+            ].map((el) => {
+                const r = el.getBoundingClientRect();
+                return Math.round(Math.min(r.width, r.height));
+            });
+            const row = dock.querySelector<HTMLElement>(
+                "[data-slot=dockable-row][data-root]",
+            );
+            const tabset = dock.querySelector<HTMLElement>(
+                "[data-slot=dockable-tabset]",
+            );
+            const margin = row ? getComputedStyle(row).marginTop : "?";
+            const border = tabset
+                ? getComputedStyle(tabset).borderTopWidth
+                : "?";
+            return splitters.length > 0 &&
+                splitters.every((t) => t === 1) &&
+                margin === "0px" &&
+                border === "0px"
+                ? null
+                : `splitters ${splitters.join(",")}px, gutter ${margin}, tabset border ${border}`;
+        });
+        if (seam)
+            problems.push(`ide: Dockable's tabsets do not meet (${seam})`);
         await create.getByRole("button", { name: "Get code" }).click();
         await create.getByRole("tab", { name: "HTML" }).click();
         const html =

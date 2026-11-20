@@ -27,6 +27,7 @@ export function Card({
 }) {
     return (
         <section
+            data-card-box=""
             className={`palette-surface ${foundation.panel()} flex flex-col overflow-hidden shadow-sm ${className ?? ""}`}
         >
             {(title || action) && (

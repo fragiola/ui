@@ -74,7 +74,9 @@
 import { tv } from "tailwind-variants";
 
 // The element a pointer grabs (see the header). Its thickness, its hit area
-// and the rule's length are the consumer's geometry. The hover fill is kept
+// and the rule's length are the consumer's geometry. A focused bar keeps
+// its 3px while dragged (`focus-visible:data-dragging:`, which outranks
+// `data-dragging:`). The hover fill is kept
 // off a dragged or focused bar, whose `ring` wins.
 const target = tv({
     base: `
@@ -83,6 +85,7 @@ const target = tv({
         [--handle-bar:1px]
         data-dragging:[--handle-bar:calc(1px_+_2px_*_var(--handle-seam,0))]
         focus-visible:[--handle-bar:3px]
+        focus-visible:data-dragging:[--handle-bar:3px]
         after:absolute after:transition-colors
         not-data-disabled:not-data-dragging:not-focus-visible:hover:after:bg-[color-mix(in_oklch,var(--palette-ring)_calc((1_-_var(--handle-seam,0))_*_100%),color-mix(in_oklch,var(--palette-contrast)_40%,var(--palette-line)))]
         data-dragging:after:bg-palette-ring

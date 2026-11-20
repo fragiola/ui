@@ -155,7 +155,8 @@ separator and Dockable's splitter extend `target`; Splitter's grip and Dockable'
 splitter mark are `mark`, Grid Layout's resize mark is `edgeMark`. What stays each
 consumer's is geometry: Splitter's 1px rule, painted in `line` at rest, with a 13px hit
 area; Dockable's 6px gap, whose rule stays transparent at rest because the bordered
-tabsets already draw the edge (a 1px seam under `ide`); Grid Layout's handles centred
+tabsets already draw the edge (a 1px seam under `ide`), with a hit area of at least 9px
+(a `::before` overlay that reaches 1.5px into each tabset by default, 4px under `ide`); Grid Layout's handles centred
 on a card's border, which the card no longer clips. `tests/handle.test.ts` fails when a file other
 than the family spells the mark.
 
