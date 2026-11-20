@@ -80,13 +80,12 @@ exception. The tell: a role with no coherent source.
 
 ### The neutral surfaces
 
-`surface` is the floor, `raised` a card, a popup or a dialog a step above it, and
-`canvas` the ground a page lays its cards on inside a frame — the Create page's
-preview, where the frame, the canvas and the cards are three tones. In dark `canvas`
-sits between the floor and the frame (L 0.18, against `surface`'s 0.15), so cards on
-the plain `surface` read apart from it without being `raised`; in light it is a
-near-white grey under white cards. All three are achromatic: their chart series step
-lightness, not hue (`global.css`).
+`surface` is the floor and `raised` a card, a popup or a dialog a step above it. A
+frame around a page of cards (the Create page) is `raised`, and the cards and the
+ground under them share `surface`: the cards stand apart by their line and shadow.
+A third neutral for that ground (`palette-canvas`, Epic #127) was tried and removed
+(Epic #133): between two neighbours this close it read as a muddy step, not a tone.
+Both are achromatic: their chart series step lightness, not hue (`global.css`).
 
 ### Surface-ring palettes
 

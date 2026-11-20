@@ -26,15 +26,15 @@ and it changes everywhere.
 | tier | what | treatment |
 |---|---|---|
 | floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
-| canvas | the ground a page lays its cards on, inside a frame (the Create preview) | `palette-canvas`, `bg-palette-base`: in dark a step lighter than the floor, in light a near-white grey, so cards on the plain floor colour stand apart from it |
 | panel | a container on the floor: an accordion, a collapsible, a data grid, a dock panel | the floor's `bg-palette-base`, a `line` border, `rounded-lg` (`panel`) |
 | raised | a card that stands on the floor: a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-sm` |
 | overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-lg` (`overlay`; the elevation axis scales it) |
 
-Three tones in a row — a frame, a canvas inside it, cards on the canvas — are three
-palettes, never `soft` as a fill: the frame's mix of `soft` and `base` (the docs'
-inset frame), `palette-canvas`, and the cards on `palette-surface`. In dark the
-lightness steps down from the frame to the cards; in light the cards are white.
+A frame with cards inside it — the Create page — is two tones, never three and never
+`soft` as a fill: the frame is `palette-raised`, a step above the floor; inside it the
+canvas and the cards share `palette-surface`, and a card stands apart by its `line`
+border and its shadow, not by a colour of its own. A third neutral between them read
+as a muddy grey in both schemes, and was removed (`palette-canvas`, Epic #133).
 
 A container never paints with `soft`. `soft` is a **state** (hover, highlighted,
 selected) or a recessed adornment inside a control: a field's addon, a table's header,

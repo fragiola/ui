@@ -4,10 +4,9 @@ import { foundation } from "#/components/families/foundation";
 import { Chart, type ChartProps } from "#/components/ui/chart";
 
 // The preview's card: a panel on the floor (the foundation's `panel`), on
-// `palette-surface` in both schemes — the plain floor colour, which stands
-// apart from the canvas under it (`palette-canvas`, preview/canvas.tsx), so
-// its shadow (the elevation axis) can be seen. With
-// a header, a body and an optional footer separated by `line` rules — the
+// `palette-surface` in both schemes — the same surface as the canvas under
+// it (preview/canvas.tsx), set apart by its `line` border and its shadow
+// (the elevation axis), never by a tone of its own. With a header, a body and an optional footer separated by `line` rules — the
 // container every sample is drawn in. Built from the registry, not a
 // component of it: the registry has no Card, an app composes one.
 

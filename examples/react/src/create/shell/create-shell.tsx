@@ -128,11 +128,15 @@ export function CreateShell() {
     // the links, a rule, Randomize and Reset, the controls (which scroll)
     // and Get code, pinned at the bottom. The inset takes the full height,
     // with the docs' 0.5rem margin on every side.
+    //
+    // Two tones: the frame is `palette-raised`, a step above the floor; the
+    // inset, the preview's canvas inside it and its cards share
+    // `palette-surface`, the cards set apart by their line and shadow.
     return (
         <Tooltip.Provider>
             <div
                 data-frame=""
-                className="palette-surface flex h-dvh flex-col overflow-hidden bg-[color-mix(in_oklch,var(--palette-soft)_55%,var(--palette-base))] text-palette-contrast md:flex-row"
+                className="palette-raised flex h-dvh flex-col overflow-hidden bg-palette-base text-palette-contrast md:flex-row"
             >
                 <aside
                     aria-label="Customize the theme"
@@ -211,7 +215,7 @@ export function CreateShell() {
                 <main className="min-h-0 min-w-0 flex-1 p-2">
                     <div
                         data-inset=""
-                        className="h-full overflow-hidden rounded-[0.75rem] border border-palette-line bg-palette-base shadow-sm"
+                        className="palette-surface h-full overflow-hidden rounded-[0.75rem] border border-palette-line bg-palette-base shadow-sm"
                     >
                         <iframe
                             ref={frame}
