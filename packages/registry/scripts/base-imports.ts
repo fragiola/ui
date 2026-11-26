@@ -16,7 +16,8 @@ import {
 // - A listed component wraps a Fragiola Primitives entry Base UI does not
 //   ship (its `entry`); one Base UI ships is a per-base pair instead. Beside
 //   it, it imports no entry Base UI ships (only `render` and `direction`). The
-//   bridge (no `entry`) imports only the direction entry.
+//   bridge (no `entry`) imports only those two: the direction it hands on,
+//   and `mergeProps` for the state its wrappers mark (`renderMarked`).
 //
 // Pure: the test feeds it the registry's files, and planted ones.
 // Erasable syntax only (Node type stripping).
@@ -110,10 +111,10 @@ export function baseImportProblems({
             .filter((specifier) => packageOf(specifier) === PRIMITIVES_PACKAGE)
             .map((specifier) => specifier.slice(PRIMITIVES_PACKAGE.length + 1));
         if (entry.entry === undefined) {
-            const others = entries.filter((name) => name !== "direction");
+            const others = entries.filter((name) => !SHARED_ENTRIES.has(name));
             if (others.length) {
                 problems.push(
-                    `registry/${relative} is the bridge and may import only ${PRIMITIVES_PACKAGE}/direction (it imports ${others.join(", ")})`,
+                    `registry/${relative} is the bridge and may import only ${PRIMITIVES_PACKAGE}/direction and /render (it imports ${others.join(", ")})`,
                 );
             }
             continue;

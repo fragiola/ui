@@ -342,7 +342,7 @@ describe("the bases guard", () => {
         ]);
     });
 
-    it("lets the bridge import only the direction entry", () => {
+    it("lets the bridge import only the direction and render entries", () => {
         const bridge = {
             file: "registry/lib/primitives-backed.tsx",
             reason: "the bridge",
@@ -352,13 +352,13 @@ describe("the bases guard", () => {
                 [
                     [
                         "lib/primitives-backed.tsx",
-                        `import { DirectionProvider } from "@fragiola/primitives-react/direction";\nimport { Dialog } from "@fragiola/primitives-react/dialog";`,
+                        `import { DirectionProvider } from "@fragiola/primitives-react/direction";\nimport { mergeProps } from "@fragiola/primitives-react/render";\nimport { Dialog } from "@fragiola/primitives-react/dialog";`,
                     ],
                 ],
                 [...listed, bridge],
             ),
         ).toEqual([
-            "registry/lib/primitives-backed.tsx is the bridge and may import only @fragiola/primitives-react/direction (it imports dialog)",
+            "registry/lib/primitives-backed.tsx is the bridge and may import only @fragiola/primitives-react/direction and /render (it imports dialog)",
         ]);
     });
 });

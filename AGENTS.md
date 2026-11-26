@@ -74,7 +74,7 @@ the others at `r/<base>/`. Do not "fix" these:
   `bases.ts` with its reason and its Fragiola Primitives entry. Its item gets
   `@fragiola/primitives-react@0.2.0` on every base (the build) and registry-depends on
   `@fragiola/primitives-backed` (`lib/primitives-backed.tsx`: the base's direction,
-  `PrimitivesProps`). A component Base UI also has is a per-base pair. Every base
+  `PrimitivesProps`, `renderMarked`). A component Base UI also has is a per-base pair. Every base
   offers the same catalog; the guard refuses any other shared or Base UI file that
   imports Fragiola Primitives, and a listed file whose entry Base UI ships.
 - **The UI adapts; a base library is never changed** to match another. A base file

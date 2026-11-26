@@ -139,6 +139,7 @@ sheet       the data grid          data-grid
 calendar    the date grids         every calendar, and the pickers' popups
 toast       the notification stack toast
 color       the colour controls    color area, wheel, slider, swatch, swatch picker, color picker
+chip        a value as a small tag combobox chips, tags input, tag group
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -254,6 +255,18 @@ the slider's and the wheel's thumb is itself the slider (`focus`). A swatch pick
 `checked` (a `ring` frame), mapped from the primitive's `data-selected` as the calendar's dates are.
 The Color Field and the picker's controls add nothing to it: a field is `field`'s, the popover
 `popup.content`. Every one of these components is primitives-backed (§5).
+
+`chip` is a value shown as a small tag (Epic #172): a Combobox's chosen items, a Tags Input's
+tags and a Tag Group's tags are one chip, so the Combobox's chip moved from an in-place class
+string into the family instead of being copied (`tests/chip.test.ts` holds the users to it).
+`group` is the wrapping row; `item` the soft badge with the badge's type (`text-xs font-medium`),
+the standalone focus ring (a chip takes DOM focus) and the nested ring around a Tags Input's
+in-place edit (`input`); `tag` an item a Tag Group selects, `checked` when chosen (the wrapper maps
+the primitive's `data-selected` onto `data-checked` through the bridge's `renderMarked`, as the
+swatch picker does) and `disabled`; `remove` what a chip's remove button adds to the ghost square
+Clickable (the inline end, the chip's own text colour, so it reads on a checked tag). Editable
+and Rating add no family: Editable's area is `field.row` stroked only while editing, and a
+Rating's filled star is "on" (`ring`) over an empty one in `line`.
 
 `dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
@@ -583,7 +596,8 @@ so the base is the registry's only dimension.
   per-base pair). The list's bridge, `lib/primitives-backed.tsx` (the `primitives-backed`
   item), hands them the base's direction — on Base UI, the direction of Base UI's
   `DirectionProvider` (`useProvidedDirection` in each base's adapter) — and types their
-  props alike on every base (`PrimitivesProps`). On Base UI, Base UI's `Field` does not
+  props alike on every base (`PrimitivesProps`); `renderMarked` lets a wrapper mark a state the
+  foundation reads (a chosen swatch's or tag's `data-checked`) while keeping the consumer's `render`. On Base UI, Base UI's `Field` does not
   reach a Fragiola Primitives control: its page says how to name it.
 - **A behaviour a base decided differently stays its own**, documented under "Bases"
   on the component's page. Fragiola Primitives follows the APG first: menus and

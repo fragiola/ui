@@ -1,13 +1,13 @@
 "use client";
 
 import { ColorSwatchPicker as ColorSwatchPickerPrimitive } from "@fragiola/primitives-react/color-swatch-picker";
-import { mergeProps } from "@fragiola/primitives-react/render";
-import * as React from "react";
+import type * as React from "react";
 import { color } from "#/families/color";
 import { cn } from "#/lib/cn";
 import {
     PrimitivesDirection,
     type PrimitivesProps,
+    renderMarked,
 } from "#/lib/primitives-backed";
 import { ColorSwatch } from "#/ui/color-swatch";
 
@@ -34,17 +34,6 @@ import { ColorSwatch } from "#/ui/color-swatch";
 //   Template.Simple  an option per colour of `colors`.
 
 type P = typeof ColorSwatchPickerPrimitive;
-
-type AnyRef = React.Ref<unknown> | undefined;
-
-function mergeRefs(...refs: unknown[]): React.RefCallback<unknown> {
-    return (node) => {
-        for (const ref of refs as AnyRef[]) {
-            if (typeof ref === "function") ref(node);
-            else if (ref) (ref as React.RefObject<unknown>).current = node;
-        }
-    };
-}
 
 function ColorSwatchPickerRoot({
     className,
@@ -75,33 +64,13 @@ function ColorSwatchPickerItem({
         <ColorSwatchPickerPrimitive.Item
             data-slot="color-swatch-picker-item"
             className={cn(color.swatchItem(), className as string)}
-            render={(
-                itemProps: Record<string, unknown>,
-                state: { selected: boolean },
-            ) => {
-                const marked: Record<string, unknown> = {
-                    ...itemProps,
+            render={renderMarked(
+                render,
+                (state: { selected: boolean }) => ({
                     "data-checked": state.selected ? "" : undefined,
-                };
-                if (typeof render === "function") {
-                    return (
-                        render as (p: unknown, s: unknown) => React.ReactNode
-                    )(marked, state);
-                }
-                if (React.isValidElement(render)) {
-                    const own = render.props as Record<string, unknown>;
-                    // Both refs: the primitive's registers the option (the
-                    // roving focus, the rows), the consumer's is theirs.
-                    return React.cloneElement(
-                        render as React.ReactElement<Record<string, unknown>>,
-                        {
-                            ...mergeProps(marked, own),
-                            ref: mergeRefs(marked.ref, own.ref),
-                        },
-                    );
-                }
-                return <div {...marked} />;
-            }}
+                }),
+                (marked) => <div {...marked} />,
+            )}
             {...props}
         >
             {children ?? <ColorSwatch color={props.value} />}

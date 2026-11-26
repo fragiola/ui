@@ -1381,6 +1381,94 @@
             ]
         },
         {
+            "name": "tags-input",
+            "type": "registry:ui",
+            "title": "Tags Input",
+            "description": "A text input that turns what is typed into tags: Enter, the delimiter or a paste adds them, Backspace at the start and the arrows move the focus onto the tags, Backspace or Delete removes one, and with editable Enter or a double press edits a tag in place; max, duplicates, validate and blurBehavior decide what is kept, and one hidden input per tag submits them. Primitives-backed: Base UI has no tags input, so one shared file wraps Fragiola Primitives' on every base. Root is the field's box (field.row), Control its wrapping area of chips and the bare Input; a tag is the chip family's item, the same chip as a Combobox's. TagsInput.Template.Simple is every tag with its remove button, the Input and a clear button.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/chip",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/tags-input.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tags-input.tsx"
+                }
+            ]
+        },
+        {
+            "name": "tag-group",
+            "type": "registry:ui",
+            "title": "Tag Group",
+            "description": "A focusable group of tags that stays on the page (labels, categories, filters): one tab stop, the arrows, Home and End move through them, Space, Enter or a press selects one or several, and Delete, Backspace or a tag's remove button asks the app to remove it. Primitives-backed: Base UI has no tag group, so one shared file wraps Fragiola Primitives' on every base. A tag is the chip family's tag: the soft chip, checked (ring) when chosen. TagGroup.Template.Simple is a label and a tag per entry, removable with onRemove.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/chip",
+                "@fragiola/clickable",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/tag-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/tag-group.tsx"
+                }
+            ]
+        },
+        {
+            "name": "editable",
+            "type": "registry:ui",
+            "title": "Editable",
+            "description": "A text edited in place: a focus, a press or a double press on the preview (activationMode), or the edit button, shows the field with the text selected; Enter, leaving it or the save button commits (submitMode), Escape or the cancel button reverts, and the focus returns where the edit started. The Input is the form control. Primitives-backed: Base UI has no editable, so one shared file wraps Fragiola Primitives' on every base. The Area is the field's box (field.row), stroked only while editing, so the text does not move; the Preview takes the hover fill, the Input is the bare field control, the triggers are ghost square Clickables. Editable.Template.Simple is the area and its three buttons.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/clickable",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/editable.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/editable.tsx"
+                }
+            ]
+        },
+        {
+            "name": "rating",
+            "type": "registry:ui",
+            "title": "Rating",
+            "description": "A score chosen among stars, the APG's rating radio group: one tab stop, the arrows (swapped in RTL), Home and End move the value; a mouse previews the value under it, a press chooses it; allowHalf steps by halves, allowClear clears on a second press, readOnly shows a score that stays focusable; the hidden input submits it. Primitives-backed: Base UI has no rating, so one shared file wraps Fragiola Primitives' on every base. A filled star is ring (on), an empty one line, a half star both; the colour is the palette in scope. Rating.Template.Simple names each star by its score.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/rating.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/rating.tsx"
+                }
+            ]
+        },
+        {
             "name": "calendar",
             "type": "registry:ui",
             "title": "Calendar",
@@ -2087,12 +2175,28 @@
             ]
         },
         {
+            "name": "chip",
+            "type": "registry:lib",
+            "title": "chip family",
+            "description": "A value shown as a small tag: a Combobox's chosen items, a Tags Input's tags, a Tag Group's tags. Five members, zero variants: group (the wrapping row), item (a soft badge with the badge's type, the standalone focus ring, and the nested ring while a Tags Input edits it in place), tag (an item a Tag Group selects: checked when chosen, disabled), remove (what a chip's remove button adds to the ghost square Clickable: the inline end, the chip's text colour) and input (the in-place edit).",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/chip.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/chip.ts"
+                }
+            ]
+        },
+        {
             "name": "combobox",
             "type": "registry:ui",
             "title": "Combobox",
-            "description": "The second recombination test. This component is field + popup + menu, and it declares no new style. The input is a field control (field.row + field-control marker); the trigger and clear buttons are Clickable.Button; the content is popup.content; items are menu.selectableItem; the item indicator is menu.itemIndicator; group labels are menu.label; separators are menu.separator. If this file contains a class that does not come from a family, the recombination claim is wrong. It does not. Supports single and multiple selection (with chips).",
+            "description": "The second recombination test. This component is field + popup + menu, and it declares no new style. The input is a field control (field.row + field-control marker); the trigger and clear buttons are Clickable.Button; the content is popup.content; items are menu.selectableItem; the item indicator is menu.itemIndicator; group labels are menu.label; separators are menu.separator. If this file contains a class that does not come from a family, the recombination claim is wrong. It does not. Supports single and multiple selection (with chips: the chip family's group, item and remove, the same chip as a Tags Input's tag).",
             "registryDependencies": [
                 "@fragiola/field",
+                "@fragiola/chip",
                 "@fragiola/popup",
                 "@fragiola/menu",
                 "@fragiola/clickable",
@@ -2114,6 +2218,7 @@
             "title": "Combobox Virtual",
             "description": "A Combobox over thousands of items that renders only the matching options in view, the ends, the highlighted and the selected one pinned. Primitives-backed: Fragiola Primitives' Combobox on every base, beside the base's own, and its twin part for part (field + popup + menu).",
             "registryDependencies": [
+                "@fragiola/chip",
                 "@fragiola/field",
                 "@fragiola/popup",
                 "@fragiola/menu",
