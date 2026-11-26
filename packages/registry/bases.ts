@@ -98,6 +98,49 @@ export function baseFilePath(
     return path.join(root, BASES_DIR, base.name, rest);
 }
 
+// ─── Primitives-backed shared files ─────────────────────────────────────────
+// A component Base UI also has is a per-base file pair (above). A component
+// only Fragiola Primitives has is ONE shared file that imports
+// `@fragiola/primitives-react` on every base, the way shadcn's Calendar uses
+// react-day-picker on every base, so every base offers the same catalog.
+// Its item gets `PRIMITIVES_BACKED_DEPENDENCIES` on every base (the build).
+//
+// The list is explicit and only these files may import the package outside
+// the primitives base (tests/bases.test.ts). A component entry names the
+// Fragiola Primitives entry it wraps (`segmented-control`), and the guard
+// refuses it when Base UI ships an entry of that name: then the component is
+// a per-base pair, not an exception.
+
+export type PrimitivesBackedFile = {
+    /** The shared file's logical path (`registry/ui/segmented-control.tsx`). */
+    file: string;
+    /** The `@fragiola/primitives-react/<entry>` it wraps; none for the bridge. */
+    entry?: string;
+    /** Why it is shared and primitives-backed. */
+    reason: string;
+};
+
+export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
+    {
+        file: "registry/lib/primitives-backed.tsx",
+        reason: "the bridge: carries the base's reading direction into the primitives-backed components, and types their props alike on every base",
+    },
+    {
+        file: "registry/ui/segmented-control.tsx",
+        entry: "segmented-control",
+        reason: "Base UI has no segmented control",
+    },
+];
+
+/** What a primitives-backed item depends on, on every base. */
+export const PRIMITIVES_BACKED_DEPENDENCIES: string[] =
+    findBase("primitives").dependencies;
+
+/** Whether a logical path is a primitives-backed shared file. */
+export function isPrimitivesBacked(logicalPath: string): boolean {
+    return PRIMITIVES_BACKED.some((entry) => entry.file === logicalPath);
+}
+
 /** Every package any base brings (the build swaps them per base). */
 export const BASE_PACKAGES: Set<string> = new Set(
     BASES.flatMap((base) =>

@@ -217,7 +217,7 @@
             "name": "base",
             "type": "registry:lib",
             "title": "Base primitives",
-            "description": "The base's unstyled primitives the registry does not wrap: DirectionProvider (the direction the primitives read in RTL) and CollapsiblePrimitive (for compositions such as a collapsible sidebar menu). The same names on every base.",
+            "description": "The base's unstyled primitives the registry does not wrap: DirectionProvider (the direction the primitives read in RTL), useProvidedDirection (that direction, for the primitives-backed components) and CollapsiblePrimitive (for compositions such as a collapsible sidebar menu). The same names on every base.",
             "files": [
                 {
                     "path": "registry/lib/base.ts",
@@ -226,6 +226,20 @@
                 }
             ],
             "registryDependencies": []
+        },
+        {
+            "name": "primitives-backed",
+            "type": "registry:lib",
+            "title": "Primitives-backed bridge",
+            "description": "What a component only Fragiola Primitives has needs on every base: PrimitivesDirection, which hands the base's DirectionProvider direction to the Fragiola Primitives component inside it (on the Base UI base too), and PrimitivesProps, its wrapper's props typed alike on every base. Depends on @fragiola/primitives-react on every base.",
+            "registryDependencies": ["@fragiola/base"],
+            "files": [
+                {
+                    "path": "registry/lib/primitives-backed.tsx",
+                    "type": "registry:lib",
+                    "target": "@lib/primitives-backed.tsx"
+                }
+            ]
         },
         {
             "name": "cn",
@@ -902,6 +916,26 @@
                     "path": "registry/ui/tabs.tsx",
                     "type": "registry:ui",
                     "target": "@ui/tabs.tsx"
+                }
+            ]
+        },
+        {
+            "name": "segmented-control",
+            "type": "registry:ui",
+            "title": "Segmented Control",
+            "description": "One value of a few, side by side, with a mark that slides to the checked segment: a radio group (APG) whose arrows move and check, RTL included. Primitives-backed: Base UI has no segmented control, so one shared file wraps Fragiola Primitives' on every base. The root is the foundation's control box, the checked segment is current (soft, contrast, font-medium) and the sliding fill is the same current fill. No variants; colour is the palette in scope.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/segmented-control.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/segmented-control.tsx"
                 }
             ]
         },
