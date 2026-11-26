@@ -1,0 +1,43 @@
+---
+title: "Empty"
+description: "What a list, a table or a search shows when it has nothing to show: an icon, a title, a description and actions."
+---
+
+<InstallCommand item="empty" />
+
+<Example id="empty" />
+
+An empty state says why there is nothing here and what to do about it. The **Header** holds the
+**Icon**, the **Title** and the **Description**; the **Actions** follow it. The Root is a centred
+column that draws no box of its own, so it sits in a [Card](/docs/display/card), a panel or
+straight on the floor. Give it `border border-dashed border-palette-line rounded-lg` for an
+outlined area, as the first example does.
+
+## The look
+
+It adds no family. The Icon is a [Featured Icon](/docs/display/featured-icon) at `size-12`, so
+its colour is the palette class it carries; the Title is [`Text.Heading`](/docs/atoms/text) (an
+`h3` by default; pass `as` for another level); the Description is secondary text (`accent/85`),
+its width kept readable. The Actions are the [Clickables](/docs/atoms/clickable) you pass, the
+primary one `palette-neutral`. Untitled UI's background patterns and illustrations are not part
+of it. Spacing comes from the spacing scale, so the density axis reaches it.
+
+The [Tree](/docs/special/tree)'s empty row and the [Data Grid](/docs/special/data-grid)'s empty
+cell keep their own look: the tree's is a row inside the tree, and `DataGrid.Empty` renders its
+children, so put an `Empty.Root` in it for a grid with nothing to show.
+
+## Bases
+
+**Markup only.** Empty imports no primitive, so it is one shared file (`ui/empty.tsx`), the
+same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | `div`, a centred column |
+| `Header` | `div` |
+| `Icon` | `FeaturedIcon`, `size-12` |
+| `Title` | `Text.Heading` (`h3`) |
+| `Description` | `p` + `foundation.secondary()` |
+| `Actions` | `div`, a row |

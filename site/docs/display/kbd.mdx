@@ -1,0 +1,38 @@
+---
+title: "Kbd"
+description: "A key, or a combination of keys, to press: the keyboard-hint type on a key cap."
+---
+
+<InstallCommand item="kbd" />
+
+<Example id="kbd" />
+
+`Kbd` is one key; `KbdGroup` holds the keys of a combination side by side. Both render `<kbd>`,
+nested the way HTML nests a combination, so a screen reader reads the keys as keyboard input. Write
+the key as the platform names it (`⌘`, `Ctrl`, `Shift`, `↓`).
+
+A menu's and a [Command](/docs/menus/command)'s shortcuts are not Kbds: they are the menu
+family's `shortcut`, secondary text at the row's inline end, because a key cap in every row
+would be noise. A Kbd is the standalone hint: in a field, in help text, in a list of shortcuts,
+on the button that opens a command palette.
+
+## The look
+
+It adds no family. The keyboard-hint type of the visual language (`text-xs font-medium`, the
+[Badge](/docs/display/badge)'s) on a key cap drawn with roles: a `line` stroke around a `soft`
+adornment, its text in `accent`. `soft` here is a recessed adornment, as a field's addon or inline
+code, never a container. The cap is the badge's line high, so it sits in a line of text without
+moving it, and a field's addon and inset round a Kbd that is their direct child to the field's
+radius.
+
+## Bases
+
+**Markup only.** Kbd imports no primitive, so it is one shared file (`ui/kbd.tsx`), the same on
+both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Kbd` | `kbd`, the key cap |
+| `KbdGroup` | `kbd`, a row of `Kbd` |

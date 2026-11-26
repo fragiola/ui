@@ -1,0 +1,51 @@
+---
+title: "Alert"
+description: "A message that stays in the page: an icon, a title, a description and actions, coloured only by its palette class."
+---
+
+<InstallCommand item="alert" />
+
+<Example id="alert" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+An alert says something about the page it is on: a trial that ends, a setting that affects
+everyone, a form that could not be saved. It stays until the page changes; for a message that
+comes and goes, use a [Toast](/docs/overlays/toast), and for one that asks for a decision before
+anything else, an [Alert Dialog](/docs/overlays/alert-dialog).
+
+The Root has no live role: an alert rendered with the page is read with the page. For one you
+insert in response to an action (a form that could not be saved), pass `role="alert"`, so a screen
+reader announces it at once, or `role="status"` for a polite announcement; keep `role="alert"` for
+what is urgent, since several assertive regions on one page compete. The **Icon** sits at the inline start and is hidden from assistive
+technology; the **Title**, the **Description** and the **Actions** take the column after it, or
+start at the padding when there is no icon.
+
+## The look
+
+It adds no family. The Root is the **control box** (`foundation.box`): a `line` stroke on a
+transparent ground, its text in `accent`, the box a field and an outline button are. So its colour
+arrives the way an invalid field's does: `palette-danger` on the Root makes it a red stroke with
+red text and a red icon, never a red block, and the Description (secondary, `accent/85`) follows.
+A palette class on `Alert.Icon` alone colours only the mark, the [Toast](/docs/overlays/toast)'s
+look. The Title is the label type (`font-medium`).
+
+## Bases
+
+**Markup only.** The alert imports no primitive, so it is one shared file (`ui/alert.tsx`), the
+same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | `div` + `foundation.box()` |
+| `Icon` | `span`, `aria-hidden` |
+| `Title` | `div`, the label type |
+| `Description` | `div` + `foundation.secondary()` |
+| `Actions` | `div`, a row |

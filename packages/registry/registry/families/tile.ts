@@ -28,7 +28,7 @@
 // do not follow the density axis (a package limit, in the port report).
 //
 // ─── PALETTES ───────────────────────────────────────────────────────────────
-// An item is a card on the raised tier: `palette-raised`, the values of
+// An item is a card on the raised tier (`foundation.raised`): `palette-raised`, the values of
 // `layer.panel` where they coincide (`bg-palette-base`, `text-palette-contrast`,
 // `rounded-lg`, `border border-palette-line`), with a lighter shadow at rest
 // (`shadow-sm`: a dashboard shows many cards at once) and `layer.panel`'s
@@ -124,10 +124,9 @@ const cells = tv({
 const item = tv({
     base: [
         foundation.focus(),
+        foundation.raised(),
         `
-        group/tile-item palette-raised flex flex-col
-        rounded-lg border border-palette-line bg-palette-base
-        text-sm text-palette-contrast shadow-sm
+        group/tile-item flex flex-col text-sm
         not-data-dragging:not-data-resizing:transition-[transform,width,height,scale,box-shadow,opacity]
         not-data-dragging:not-data-resizing:duration-200
         not-data-dragging:not-data-resizing:ease-out

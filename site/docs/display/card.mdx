@@ -1,0 +1,45 @@
+---
+title: "Card"
+description: "A group of content that stands on the floor: a title, a description, an action, content and a footer, on the raised tier."
+---
+
+<InstallCommand item="card" />
+
+<Example id="card" />
+
+A card groups what belongs together on a page: a plan, a setting, a summary. Its **Header**
+holds the **Title** and the **Description**, with an optional **Action** (a badge, a button, a
+menu) at the inline end across both rows; the **Content** is the body, and the **Footer** a row of
+buttons. Every part pads its own inline sides, so an image or a table that should reach the
+card's edges goes straight in the Root.
+
+## The look
+
+It adds no family. The Root is the visual language's **raised** tier
+(`foundation.raised`): `palette-raised`, a `line` stroke, `rounded-lg` and `shadow-sm`, the tier
+a Grid Layout tile and the inset sidebar stand on. A card stands apart from the floor by its edge
+and its shadow, not by a colour of its own. A surface-tier palette class on the Root
+(`palette-surface-*`) replaces `raised`; a chromatic one would put the Description's secondary text
+on a coloured ground, below AA. There is no colour variant. The Title is [`Text.Heading`](/docs/atoms/text) (an `h3` by default; pass
+`as` for another level), the Description secondary text (`accent/85`). Spacing comes from the
+spacing scale, so the density axis reaches it, and the shadow follows the elevation axis.
+
+A card is not a tile: a [Grid Layout](/docs/special/grid-layout) tile is a card the user drags
+and resizes, with its own header and handles. Both compose `foundation.raised`.
+
+## Bases
+
+**Markup only.** The card imports no primitive, so it is one shared file (`ui/card.tsx`), the
+same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | `div` + `foundation.raised()`, a column |
+| `Header` | `div`, a grid with the Action's column when there is one |
+| `Title` | `Text.Heading` (`h3`) |
+| `Description` | `p` + `foundation.secondary()` |
+| `Action` | `div`, at the header's inline end |
+| `Content` | `div` |
+| `Footer` | `div`, a row |

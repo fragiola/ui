@@ -1,0 +1,39 @@
+---
+title: "Featured Icon"
+description: "An icon in a tinted shape, the mark that leads an empty state, a confirmation or a feature row."
+---
+
+<InstallCommand item="featured-icon" />
+
+<Example id="featured-icon" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A featured icon draws the eye to what a block is about: it leads an [Empty](/docs/display/empty)
+state, a confirmation, a row of features. Pass the icon as its child. It is decorative by
+default (`aria-hidden`), because the text beside it says what it means; when it stands alone,
+give it an `aria-label`: it becomes an image (`role="img"`), no longer hidden.
+
+## The look
+
+It adds no family. A circle filled with the palette's `soft` tint, with the icon in its `accent`:
+the soft [Badge](/docs/display/badge)'s pair of roles. On the floor it is a neutral grey; under a
+chromatic palette, that palette's tint. The size is a class (`size-10` by default, `size-12` in
+Empty, `size-14` above), and the icon is the standalone illustration size (`size-icon-lg`, which
+follows the typography axis) unless it sets its own. There is no size or colour variant.
+
+## Bases
+
+**Markup only.** The featured icon imports no primitive, so it is one shared file
+(`ui/featured-icon.tsx`), the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `FeaturedIcon` | `span`, `aria-hidden`; `role="img"` when labelled |

@@ -340,7 +340,8 @@ focus is drawn, what "on" and "selected" are. Before the visual-language pass ea
 family answered them in its own words, and the registry read as several designs. The
 answers are written down in **[`visual-language.md`](visual-language.md)**. They live
 in one family, `foundation`, whose members (`focus`, `focusInset`, `fieldFocus`,
-`box`, `hover`, `highlighted`, `checked`, `rail`, `knob`, `disabled`, `secondary`)
+`box`, `hover`, `highlighted`, `checked`, `rail`, `knob`, `disabled`, `secondary`, and the
+surface tiers `panel`, `raised`, `overlay`)
 every other family composes inside its own `tv()`:
 
 ```ts
