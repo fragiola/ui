@@ -1,0 +1,34 @@
+---
+title: "Calendar Preset"
+description: "Buttons that set a calendar's value to a known date or range: Today, Last 7 days."
+---
+
+<InstallCommand item="calendar-preset" />
+
+<Example id="calendar-preset" />
+
+A preset sets a calendar's value in one press. It goes anywhere inside a Calendar or a Range
+Calendar Root (the example puts a column of them beside the grid, Untitled UI's layout), or in a
+picker's popup, where a press is a choice: the value is set and the popup closes. Its `value` is
+a date, a range, or a function of today returning one, read when it renders and when it is
+pressed; a range shows whole (the visible months move to it). A preset is disabled while the
+calendar is disabled or read-only, or while its value could not be chosen in the grid.
+
+The preset whose value is the calendar's is `selected` (`soft`, `contrast` text) — the primitive's
+`data-selected`, read by the foundation's member as a tree's or a grid's selected row is. A preset
+is no toggle: pressing it again keeps the value.
+
+## Bases
+
+**Primitives-backed.** Base UI has no calendar preset, so this is one shared file (`ui/calendar-preset.tsx`) that wraps
+Fragiola Primitives' `CalendarPreset` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `List` | a column of presets (`calendar.presets`); name it (`aria-label`) |
+| `Item` | primitive `CalendarPreset` + `calendar.preset`: a ghost row, `selected`, `hover`, `focus` |

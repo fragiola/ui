@@ -1,0 +1,36 @@
+---
+title: "Range Calendar"
+description: "A range of dates: the first choice starts it, the second ends it, and the band joins them, in LTR and RTL."
+---
+
+<InstallCommand item="range-calendar" />
+
+<Example id="range-calendar" />
+
+A range calendar chooses a start and an end. The first choice (a press, Enter or Space) starts
+the range, and the dates between it and the pointer or the focus preview it; the second choice
+ends it, swapped when it comes first, and `onValueChange` fires once with `{ start, end }`.
+Escape cancels a started range before an enclosing popup or dialog closes. Its keys, bounds and
+locale are the [Calendar](/docs/dates/calendar)'s.
+
+## The range
+
+It is the `calendar` family's: the start and the end are `checked` (the `ring` box); the dates
+between are one `soft` band drawn behind the boxes, from the start's centre to the end's, and
+rounded at a week's ends. The band uses logical insets (`start-1/2`, `rounded-s-*`), so in a
+right-to-left page it joins the same way, mirrored — the example's `rtl` row. While a new range is
+being chosen, the committed band hides and the preview (half of `soft`) follows the pointer; the
+committed ends keep their box until the new range is chosen.
+
+## Bases
+
+**Primitives-backed.** Base UI has no range calendar, so this is one shared file (`ui/range-calendar.tsx`) that wraps
+Fragiola Primitives' `RangeCalendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+The [Calendar](/docs/dates/calendar)'s parts, named `range-calendar-*`, with its own `Root`
+(primitive `RangeCalendar.Root`) and `Template.Simple`.

@@ -151,6 +151,48 @@
             ]
         },
         {
+            "label": "Dates",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Calendar",
+                    "path": "dates/calendar"
+                },
+                {
+                    "label": "Range Calendar",
+                    "path": "dates/range-calendar"
+                },
+                {
+                    "label": "Multiple Calendar",
+                    "path": "dates/multiple-calendar"
+                },
+                {
+                    "label": "Month Calendar",
+                    "path": "dates/month-calendar"
+                },
+                {
+                    "label": "Year Calendar",
+                    "path": "dates/year-calendar"
+                },
+                {
+                    "label": "Month Range Calendar",
+                    "path": "dates/month-range-calendar"
+                },
+                {
+                    "label": "Year Range Calendar",
+                    "path": "dates/year-range-calendar"
+                },
+                {
+                    "label": "Calendar Preset",
+                    "path": "dates/calendar-preset"
+                },
+                {
+                    "label": "Calendar View",
+                    "path": "dates/calendar-view"
+                }
+            ]
+        },
+        {
             "label": "Menus",
             "collapsible": true,
             "pages": [
