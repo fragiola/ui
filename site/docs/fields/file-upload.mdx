@@ -1,0 +1,73 @@
+---
+title: "File Upload"
+description: "A form control holding a list of files: drop, paste or pick them, see each one's preview, size, progress or error."
+---
+
+<InstallCommand item="file-upload" />
+
+<Example id="file-upload" />
+
+A file upload holds the files a form will submit. They arrive through the dialog (the
+**Trigger**, the **Label**, or a press on the **Dropzone**), a drop or a paste on the Dropzone.
+Each new file is checked, in order, by `accept`, `maxFileSize`, `minFileSize`, `validate` (your
+own reasons) and `maxFiles`: it joins the value (`value`, `onValueChange`) or the rejected list
+with its reasons (`invalid-type`, `too-large`, `too-small`, `too-many`, yours), reported by
+`onFileReject`. One file (`maxFiles` 1, the default) is a single file input: a new pick replaces
+it. The **HiddenInput** carries the files to the form (`name`, `required`, a form reset), and
+`announcement` returns the text a polite live region reads after each pick. A delete button
+removes its file and moves the focus to the next one.
+
+**It does not upload.** Read the value (or the form's `FormData`) and send the files; the
+example simulates the transport with a timer and shows each file's progress with a
+[Progress](/docs/display/progress), on the `track` family, and a failed upload with the
+`palette-danger` class.
+
+`FileUpload.Template.Simple` is the Label (`label`), the Dropzone with its icon, "Click to upload
+or drag and drop" and `hint`, the hidden input, and every file (accepted, then rejected with its
+first reason in English) with its delete button (`aria-label="Delete photo.png"` for a file "photo.png"). Every Root prop is
+forwarded; `className` goes to the root.
+
+## The look
+
+It is the `file` family's, after Untitled UI's file upload. The **Dropzone** is the
+[Drop Zone](/docs/fields/drop-zone)'s target: a dashed `line` box, and the dashed `ring` drop
+outline while files are dragged over it. A file (**Item**) is a control box (`foundation.box`):
+a `line` stroke on a transparent background, with its **ItemPreview** (an image's thumbnail) or
+**ItemIcon** in a recessed `soft` square, its **ItemName** and its **ItemSizeText** (in the
+locale's units) or **ItemError**, and an **ItemDeleteTrigger**, a ghost square
+[Clickable](/docs/atoms/clickable). A rejected file gets `palette-danger` from its state, as an
+invalid field does: a red stroke with red text, never a red block. **ClearTrigger** removes every
+file and hides while there is none.
+
+## Bases
+
+**Primitives-backed.** Base UI has no file upload, so this is one shared file
+(`ui/file-upload.tsx`) that wraps Fragiola Primitives' `FileUpload` on **both** bases, and the
+item depends on `@fragiola/primitives-react@0.2.0` on both.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the group with `FileUpload.Label`, and pass `name`, `required` and `disabled` to the Root.
+On Fragiola Primitives it is also a `Field` control. The files reach the form by assigning them
+to the hidden input: verified in Chromium; Firefox and Safari accept the same assignment by
+the HTML standard.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `FileUpload.Root` (a `group`), a column |
+| `Label` | primitive `FileUpload.Label` + `field.label()` |
+| `Dropzone` | primitive `FileUpload.Dropzone` + `file.dropZone()` |
+| `DropzoneIcon` | `file.icon()` |
+| `Trigger` | primitive `FileUpload.Trigger` + `clickable()` outline |
+| `HiddenInput` | primitive `FileUpload.HiddenInput` |
+| `ItemGroup` | primitive `FileUpload.ItemGroup` + `file.list()` |
+| `Item` | primitive `FileUpload.Item` + `file.item()`; `file.rejected()` from its state |
+| `ItemPreview`, `ItemPreviewImage` | primitive parts + `file.preview()`, `file.image()` |
+| `ItemIcon` | `file.preview()`; a file icon by default |
+| `ItemText` | `file.text()` |
+| `ItemName`, `ItemSizeText` | primitive parts + `file.name()`, `file.meta()` |
+| `ItemError` | `file.meta()` |
+| `ItemDeleteTrigger` | primitive `FileUpload.ItemDeleteTrigger` + `clickable()`; a bin by default |
+| `ClearTrigger` | primitive `FileUpload.ClearTrigger` + `clickable()` ghost |
+| `Template.Simple` | the label, the dropzone, the hidden input and every file |

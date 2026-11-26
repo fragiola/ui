@@ -1,0 +1,53 @@
+---
+title: "Clipboard"
+description: "A button that copies a text and shows, and announces, that it did."
+---
+
+<InstallCommand item="clipboard" />
+
+<Example id="clipboard" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A clipboard copies its Root's `value` when the **Trigger** is pressed, with the browser's
+Clipboard API (a secure context: `https:` or `localhost`). For `timeout` milliseconds (3000)
+every part carries `data-copied` (or `data-failed`), `onStatusChange` reports the status, the
+**Indicator** turns its copy icon into a check, and the Root writes your `announcement` ("Copied
+to clipboard") into a polite live region, so a screen reader hears it while the focus stays on
+the button. A failed copy writes `failedAnnouncement` and, with an **Input**, focuses it with its
+text selected, to copy by hand.
+
+`Clipboard.Template.Simple` is the read-only value in the field's box with a copy button at its
+inline end ("Copy"), announcing "Copied to clipboard". Every Root prop is forwarded;
+`className` goes to the row; `id` and `aria-label` name the value.
+
+## The look
+
+It adds no family. **Control** is the field's box (`field.row`) around the **Input**, the bare
+control (`field.control`, monospace). The **Trigger** is a ghost square
+[Clickable](/docs/atoms/clickable) whose content is the Indicator by default; while copied it is
+`ring`, the "on" colour, so the check reads as done. Give the Trigger text (and
+`className="aspect-auto px-3"`) for a labelled button, and the Indicator a function of the state
+(`({ copied }) => ...`) to say "Copied" in it.
+
+## Bases
+
+**Primitives-backed.** Base UI has no clipboard, so this is one shared file
+(`ui/clipboard.tsx`) that wraps Fragiola Primitives' `Clipboard` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. It is no form control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Clipboard.Root`, a row; renders the live region |
+| `Control` | `field.row()` |
+| `Input` | primitive `Clipboard.Input` (read-only) + `field.control()` |
+| `Trigger` | primitive `Clipboard.Trigger` + `clickable()`; `ring` while copied |
+| `Indicator` | primitive `Clipboard.Indicator`; a copy icon, a check while copied |
+| `Template.Simple` | the value in the box with its copy button |

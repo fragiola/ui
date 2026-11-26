@@ -85,6 +85,10 @@
                 {
                     "label": "Toolbar",
                     "path": "actions/toolbar"
+                },
+                {
+                    "label": "Clipboard",
+                    "path": "actions/clipboard"
                 }
             ]
         },
@@ -183,6 +187,14 @@
                 {
                     "label": "Rating",
                     "path": "fields/rating"
+                },
+                {
+                    "label": "Drop Zone",
+                    "path": "fields/drop-zone"
+                },
+                {
+                    "label": "File Upload",
+                    "path": "fields/file-upload"
                 }
             ]
         },

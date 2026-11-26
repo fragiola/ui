@@ -1,0 +1,44 @@
+---
+title: "Drop Zone"
+description: "A target files are dropped on, pasted on or picked for: the dashed ring drop outline, and an announcement."
+---
+
+<InstallCommand item="drop-zone" />
+
+<Example id="drop-zone" />
+
+A drop zone is a button files arrive through: dragged from the desktop and dropped on it, pasted
+on it (**Ctrl** or **Cmd+V** while it has the focus), or picked in the browser's file dialog,
+which a press opens (**Enter**, **Space**, a click). `accept` filters them (MIME types, wildcards
+and extensions, as an input's `accept`); `multiple={false}` rejects a drop of several. Every
+arrival calls `onFileDrop` with `acceptedFiles`, `rejectedFiles` and its `reason` (`drop`,
+`input-paste`, `input-change`), and `announcement` returns the text a polite live region reads
+("2 files added, 1 rejected"). It keeps no files: list them yourself, or use a
+[File Upload](/docs/fields/file-upload), the form control with a list built on the same target.
+
+`DropZone.Template.Simple` is the icon, a line of copy (its `children`, "Drop files here or
+click to choose" by default) and an optional `hint`. Every Root prop is forwarded; `className`
+goes to the target. The content names the button; an icon-only zone takes an `aria-label`.
+
+## The look
+
+The target is the `file` family's `dropZone`: a dashed `line` box with secondary text, the
+`hover` fill and the standalone focus ring. While files are dragged over it
+(`data-drop-target`) it is the libraries' drop outline: a dashed `ring` stroke over a `ring/15`
+fill, the Grid Layout placeholder's. A disabled zone is dimmed. **Icon** is the featured icon at
+its top (`file.icon`), an upload cloud by default.
+
+## Bases
+
+**Primitives-backed.** Base UI has no drop zone, so this is one shared file
+(`ui/drop-zone.tsx`) that wraps Fragiola Primitives' `DropZone` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. It is native file drag only; dragging the
+page's own elements is another library's.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DropZone.Root` (a button) + `file.dropZone()`; renders the live region |
+| `Icon` | `file.icon()`; an upload cloud by default |
+| `Template.Simple` | the icon, a line of copy and a hint |
