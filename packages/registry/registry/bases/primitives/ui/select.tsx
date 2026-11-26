@@ -22,10 +22,9 @@ import { cn } from "#/lib/cn";
 // recombination claim is wrong. It does not.
 
 // Items as Base UI takes them: a list of `{ value, label }`, or a map of
-// value to label (Fragiola Primitives takes the list).
-type SelectItems =
-    | SelectRootProps["items"]
-    | Readonly<Record<string, React.ReactNode>>;
+// value to label (Fragiola Primitives takes the list). A label is text here:
+// Fragiola Primitives' Value shows an item's label as a string.
+type SelectItems = SelectRootProps["items"] | Readonly<Record<string, string>>;
 
 function selectItems(items: SelectItems): SelectRootProps["items"] {
     if (items === undefined || Array.isArray(items)) {
@@ -33,7 +32,7 @@ function selectItems(items: SelectItems): SelectRootProps["items"] {
     }
     return Object.entries(items).map(([value, label]) => ({
         value,
-        label: String(label),
+        label,
     }));
 }
 

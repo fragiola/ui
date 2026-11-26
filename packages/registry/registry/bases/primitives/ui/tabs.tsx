@@ -1,6 +1,8 @@
 "use client";
 
+import { mergeProps } from "@fragiola/primitives-react/render";
 import { Tabs as TabsPrimitive } from "@fragiola/primitives-react/tabs";
+import * as React from "react";
 import { foundation } from "#/families/foundation";
 import type { PrimitiveProps } from "#/lib/base";
 import { cn } from "#/lib/cn";
@@ -60,8 +62,14 @@ function TabsList({
 
 function TabsTab({
     className,
+    render,
     ...props
 }: PrimitiveProps<typeof TabsPrimitive.Tab, "button">) {
+    // Fragiola Primitives marks the selected tab `data-selected` (and
+    // `aria-selected`); `foundation.current()` keys on `data-active`, Base
+    // UI's name for it. The render function adds it, then renders the
+    // consumer's `render` or the default button.
+    //
     // The trigger: no typography of its own (the consumer's text is the
     // label). `highlighted` covers :focus and [data-highlighted]. The active
     // state is `bg-palette-soft` (a role), not a colour. Focus ring is
@@ -81,6 +89,23 @@ function TabsTab({
                 "data-[orientation=vertical]:-ms-px data-[orientation=vertical]:rounded-e-none",
                 className as string,
             )}
+            render={(tabProps, state) => {
+                const active = {
+                    ...tabProps,
+                    "data-active": state.selected ? "" : undefined,
+                };
+                if (typeof render === "function") return render(active, state);
+                if (React.isValidElement(render)) {
+                    return React.cloneElement(
+                        render,
+                        mergeProps(
+                            active,
+                            render.props as Record<string, unknown>,
+                        ),
+                    );
+                }
+                return <button type="button" {...active} />;
+            }}
             {...props}
         />
     );

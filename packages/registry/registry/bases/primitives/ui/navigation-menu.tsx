@@ -125,7 +125,7 @@ function NavigationMenuContent({
                 "data-starting-style:opacity-0 data-ending-style:opacity-0",
                 "data-starting-style:data-[activation-direction=left]:-translate-x-8",
                 "data-starting-style:data-[activation-direction=right]:translate-x-8",
-                "data-ending-style:data-activation-direction:hidden",
+                "data-ending-style:not-data-[activation-direction=none]:data-activation-direction:hidden",
                 className as string,
             )}
             {...props}

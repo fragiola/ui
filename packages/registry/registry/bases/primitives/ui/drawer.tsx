@@ -155,7 +155,7 @@ function DrawerPopup({
                 // the transition is off while the finger is down.
                 "ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform",
                 "data-swiping:duration-0 data-swiping:select-none",
-                "data-ending-style:duration-[calc(var(--drawer-swipe-strength)*300ms*var(--motion-scale,1))]",
+                "data-ending-style:duration-[calc(var(--drawer-swipe-strength,1)*300ms*var(--motion-scale,1))]",
                 // sizing + radius per anchored edge. Radius is removed on the
                 // ANCHORED edge (the one touching the screen); the free edges
                 // keep it. left/right use PHYSICAL radius (rounded-r/l), not
