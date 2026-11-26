@@ -1,0 +1,26 @@
+---
+title: "Year Range Calendar"
+description: "A range of years: two choices, the years between one band."
+---
+
+<InstallCommand item="year-range-calendar" />
+
+<Example id="year-range-calendar" />
+
+A year range calendar chooses a first and a last year on pages of 12 years, as a [Month Range
+Calendar](/docs/dates/month-range-calendar) chooses months: the ends are `checked`, the years
+between the Calendar's band.
+
+## Bases
+
+**Primitives-backed.** Base UI has no year range calendar, so this is one shared file (`ui/year-range-calendar.tsx`) that wraps
+Fragiola Primitives' `YearRangeCalendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+The [Month Calendar](/docs/dates/month-calendar)'s parts, named `year-range-calendar-*`, with its
+own `Root` (primitive `YearRangeCalendar.Root`) and `Template.Simple`; the page buttons are named
+"Previous years", "Next years".

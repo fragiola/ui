@@ -1,0 +1,26 @@
+---
+title: "Year Calendar"
+description: "One year in a page of 12 years that never shifts its rows."
+---
+
+<InstallCommand item="year-calendar" />
+
+<Example id="year-calendar" />
+
+A year calendar chooses a year. A page holds 12 years starting at a multiple of 12 (2016 to
+2027 holds 2026), so paging never shifts the rows; the heading is the page's span, from `Intl`.
+Its keys, bounds and cells are the [Month Calendar](/docs/dates/month-calendar)'s, by years.
+
+## Bases
+
+**Primitives-backed.** Base UI has no year calendar, so this is one shared file (`ui/year-calendar.tsx`) that wraps
+Fragiola Primitives' `YearCalendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+The [Month Calendar](/docs/dates/month-calendar)'s parts, named `year-calendar-*`, with its own
+`Root` (primitive `YearCalendar.Root`) and `Template.Simple`; the page buttons are named
+"Previous years", "Next years".

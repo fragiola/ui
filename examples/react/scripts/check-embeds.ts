@@ -88,6 +88,16 @@ const OVERLAYS: Record<string, Opener> = {
     // The sign-up card's plan Select; its Invite Dialog is promoted
     // (MODALS) and only its box is checked here.
     "component-showcase": "click",
+    // The pickers: each trigger opens its calendar in a non-modal dialog
+    // (the date pickers' input variants from their icon button).
+    "date-picker": "click",
+    "date-picker-input": "click",
+    "date-range-picker": "click",
+    "date-range-picker-input": "click",
+    "month-picker": "click",
+    "month-range-picker": "click",
+    "year-picker": "click",
+    "year-range-picker": "click",
 };
 
 // The examples whose rows are dragged in the frame: a row, and the folder it

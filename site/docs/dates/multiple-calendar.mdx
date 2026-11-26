@@ -1,0 +1,29 @@
+---
+title: "Multiple Calendar"
+description: "Several dates: each press toggles a date, each chosen date its own box."
+---
+
+<InstallCommand item="multiple-calendar" />
+
+<Example id="multiple-calendar" />
+
+A multiple calendar chooses any number of dates: a press, Enter or Space toggles one, and the
+value is the sorted list of chosen dates. `maxSelected` caps it (a date that would exceed it is
+not added; chosen ones can still be removed), and `name` submits one hidden input per date, as a
+`<select multiple>`. Every key, bound and the locale are the [Calendar](/docs/dates/calendar)'s.
+
+Each chosen date is `checked` on its own: two chosen neighbours are two boxes, never a band — a
+range is a [Range Calendar](/docs/dates/range-calendar).
+
+## Bases
+
+**Primitives-backed.** Base UI has no multiple-date calendar, so this is one shared file (`ui/multiple-calendar.tsx`) that wraps
+Fragiola Primitives' `MultipleCalendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+The [Calendar](/docs/dates/calendar)'s parts, named `multiple-calendar-*`, with its own `Root`
+(primitive `MultipleCalendar.Root`) and `Template.Simple`.

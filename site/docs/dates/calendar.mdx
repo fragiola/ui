@@ -1,0 +1,74 @@
+---
+title: "Calendar"
+description: "A month grid for choosing one date: the APG date grid, with today, unavailable dates, bounds and several months side by side."
+---
+
+<InstallCommand item="calendar" />
+
+<Example id="calendar" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A calendar chooses one date. Its grid is the APG date grid: Tab enters at the focused date (the
+value, else today), the arrows move by a day, Up and Down by a week, Page Up and Page Down by a
+month (with Shift, a year), Home and End to the week's ends, and Enter or Space chooses. In RTL
+Left and Right are swapped. `min` and `max` disable the dates outside them (they cannot even be
+focused); `isDateUnavailable` marks dates that can be focused but never chosen;
+`visibleMonths` shows months side by side, and the page buttons move them all. Dates are plain
+`{ year, month, day }` values with no time zone; the heading, the weekday names and each date's
+name come from `Intl` in the calendar's `locale` (the document's `lang` by default).
+
+`Calendar.Template.Simple` is the whole calendar: a header and a grid for each visible month,
+the page buttons on the outer ones, every Root prop forwarded. A different layout composes the
+parts — the example of [Calendar Preset](/docs/dates/calendar-preset) puts presets beside one.
+
+## The calendar family
+
+The calendar adds one family, `calendar` (`families/calendar.tsx`), shared by every calendar and
+picker of the Dates section. It has no variant: every state of a cell is a member of the
+foundation.
+
+| State | Member |
+|---|---|
+| the chosen date, a range's start and end | `checked` — the `ring` box, its text in `base` |
+| today | `current` — `soft`, `contrast` text, `font-medium` |
+| unavailable, out of bounds, outside the month | `disabled` (unavailable is also struck through) |
+| a range's middle | the `band`: one `soft` strip joined to the ends, rounded at a week's ends |
+| a range being chosen | the `preview`: half of `soft` |
+| focus | `focusInset` on the cell |
+
+A cell is the primitive's `td`, the focus target and the band's ground; the date's box inside it
+carries the states. The wrapper reads the cell's state and gives the box the attributes the
+members key on (`data-checked`, `data-active`, `data-disabled`), so a cell never spells a state's
+classes itself (`tests/foundation.test.ts`, `tests/calendar.test.ts`). A cell is the control's
+size (`size-9`, nine steps of the spacing scale) and radius, so the density and radius axes reach
+it.
+
+## Bases
+
+**Primitives-backed.** Base UI has no calendar, so this is one shared file (`ui/calendar.tsx`)
+that wraps Fragiola Primitives' `Calendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too (`lib/primitives-backed.tsx`), and `dir="rtl"` without one.
+A calendar has no form value and joins no `Field`: name it with `aria-label` or
+`aria-labelledby` when its heading is not enough. Its pickers have the form
+([Date Picker](/docs/dates/date-picker)).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Calendar.Root` + `calendar.root` |
+| `Months`, `Month` | the visible months side by side, one month (`calendar.months`, `calendar.month`) |
+| `Header` | the heading between the page buttons (`calendar.header`) |
+| `Heading` | primitive `Calendar.Heading` + `calendar.heading` |
+| `PrevButton`, `NextButton` | primitive page buttons, a small icon `Clickable`; named "Previous month", "Next month" |
+| `Grid` | primitive `Calendar.Grid` (a whole month when it has no children) |
+| `GridHeader`, `HeaderCell` | the weekday row, secondary text |
+| `GridBody`, `Row`, `Cell` | the weeks; `Cell` renders the date's box and the range band |
+| `Template.Simple` | every visible month, from the Root's props |

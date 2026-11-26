@@ -5,7 +5,8 @@
 // and picks this file. `pnpm registry:smoke` fails if that regresses.
 //
 // Family `field` — input control (root, choiceRoot, row, body, control,
-// addon, inset, label, description, error).
+// addon, inset, label, description, error; segments, segment, separator for
+// the date and time fields).
 // Origin: three ways of writing a field in shadcn (Input, Field, InputGroup)
 // reduced to one. Root cause: Input carried its own body (border, background,
 // height), which forced a second borderless input for InputGroup.
@@ -208,6 +209,41 @@ const error = tv({
     base: "data-disabled:opacity-50",
 });
 
+// ─── SEGMENTS ──────────────────────────────────────────────────────────────
+// A date or time typed in segments (DateField, TimeField, their ranges and
+// the typed pickers) is only its middle too: the row is the box, and the
+// segments are `control`'s text.
+//
+//   segments  the group of one value's segments: `control`'s marker, type
+//             and padding, laid out INLINE (a block of inline spans, never
+//             flex): the primitive keeps each numeric segment one
+//             left-to-right run, and inline layout keeps the locale's order
+//             in a right-to-left page, where flex items would reverse.
+//   segment   one segment: the focused one is `highlighted` (soft, contrast);
+//             a placeholder and a literal are secondary text (the wrapper
+//             adds `foundation.secondary()`). No outline of its own: the
+//             row draws the ring (`field-control` on `segments`).
+//   separator the dash between a range's two ends, secondary.
+const segments = tv({
+    extend: control,
+    base: "self-center w-auto cursor-text whitespace-nowrap tabular-nums",
+});
+
+const segment = tv({
+    base: [
+        foundation.highlighted(),
+        `
+        inline-block rounded-sm px-0.5 caret-transparent outline-none
+        transition-colors duration-150
+        data-[type=literal]:px-0
+        `,
+    ],
+});
+
+const separator = tv({
+    base: [foundation.secondary(), "self-center px-1 text-sm"],
+});
+
 export const field = {
     root,
     choiceRoot,
@@ -219,4 +255,7 @@ export const field = {
     label,
     description,
     error,
+    segments,
+    segment,
+    separator,
 };

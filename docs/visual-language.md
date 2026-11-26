@@ -99,6 +99,12 @@ library spells these states its own way (`data-active`, `aria-current`, `aria-pr
 `data-selected`, `data-state="selected"`), and the variant reads them all, so every set is lit the same
 way.
 
+**A calendar speaks the same states.** The chosen date (and a range's start and end) is
+`checked`, the `ring` box; today is `current`; an unavailable date, one out of bounds or outside
+the shown month is `disabled` (unavailable is also struck through); a range's middle is one
+`soft` band joined to its ends; a preset matching the value is `selected`. The date fields'
+focused segment is `highlighted`, and an empty segment is secondary text, as every placeholder.
+
 **"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
 palette that palette's colour, and on a chromatic palette its deeper tone. The checked
 box, the selected radio, the switch, the slider's fill and the progress bar are one

@@ -1,0 +1,39 @@
+---
+title: "Date Range Picker"
+description: "A trigger and a popup holding a range calendar, presets beside it."
+---
+
+<InstallCommand item="date-range-picker" />
+
+<Example id="date-range-picker" />
+
+A date range picker is a [Date Picker](/docs/dates/date-picker) over a [Range
+Calendar](/docs/dates/range-calendar): the first choice in the popup starts the range, the second
+sets it, closes the popup and returns the focus to the trigger. A [preset](/docs/dates/calendar-preset)
+in the popup is a choice too. `name` submits one entry, the ISO 8601 interval (`start/end`).
+The example shows Untitled UI's layout: presets in a column beside two months.
+
+## Bases
+
+**Primitives-backed.** Base UI has no date range picker, so this is one shared file (`ui/date-range-picker.tsx`) that wraps
+Fragiola Primitives' `DateRangePicker` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name the trigger with `aria-labelledby` (the label's `id` and the trigger's own, so its name
+holds the value, as the example does) or `aria-label`, and pass `name`, `disabled` and `required`
+to the Root. On Fragiola Primitives the picker is also a `Field` control.
+
+**Inside a Base UI dialog.** On the Base UI base, the picker's popup is Fragiola Primitives'
+inside Base UI's focus trap: `scenarios/overlays/date-picker-in-dialog` checks that the popup
+takes the focus, that Escape and an outside press close only the popup, returning the focus to
+the trigger, and that the next Escape closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DateRangePicker.Root`: the picker's state, no element |
+| `Trigger` | primitive `DateRangePicker.Trigger` + `field.row` (the `field-control` marker): a calendar icon, then your content |
+| `Content` | primitive `DateRangePicker.Portal`, `.Positioner` and `.Popup` in one: `popup.content`, below the trigger at its start |

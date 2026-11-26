@@ -1,0 +1,38 @@
+---
+title: "Month Calendar"
+description: "One month in a page of the year's 12 months, in rows of columns."
+---
+
+<InstallCommand item="month-calendar" />
+
+<Example id="month-calendar" />
+
+A month calendar chooses a month. A page is the 12 months of a year in rows of `columns` (3
+by default); the arrows move by a month, Up and Down by a row, Page Up and Page Down by a year,
+and the page buttons by a year. `min` and `max` disable the months outside them and
+`isUnavailable` marks months that can be focused, never chosen. A month's text is its long name
+in the calendar's `locale`.
+
+Its cells are the [Calendar](/docs/dates/calendar)'s, wider (`calendar.monthCell`): the same box
+and the same states — the chosen month `checked`, this month `current`, a disabled or unavailable
+month `disabled`. A page has no cells outside it.
+
+## Bases
+
+**Primitives-backed.** Base UI has no month calendar, so this is one shared file (`ui/month-calendar.tsx`) that wraps
+Fragiola Primitives' `MonthCalendar` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `MonthCalendar.Root` + `calendar.root` |
+| `Header`, `Heading`, `PrevButton`, `NextButton` | as the Calendar's; the buttons are named "Previous year", "Next year" |
+| `Grid`, `GridBody`, `Row`, `Cell` | the page; `Cell` is the Calendar's cell in `calendar.monthCell` |
+| `Template.Simple` | the page, from the Root's props |
+
+Year Calendar, Month Range Calendar and Year Range Calendar have the same parts, written once
+(`monthCalendarParts.create`) over their own namespace.

@@ -151,6 +151,96 @@
             ]
         },
         {
+            "label": "Dates",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Calendar",
+                    "path": "dates/calendar"
+                },
+                {
+                    "label": "Range Calendar",
+                    "path": "dates/range-calendar"
+                },
+                {
+                    "label": "Multiple Calendar",
+                    "path": "dates/multiple-calendar"
+                },
+                {
+                    "label": "Month Calendar",
+                    "path": "dates/month-calendar"
+                },
+                {
+                    "label": "Year Calendar",
+                    "path": "dates/year-calendar"
+                },
+                {
+                    "label": "Month Range Calendar",
+                    "path": "dates/month-range-calendar"
+                },
+                {
+                    "label": "Year Range Calendar",
+                    "path": "dates/year-range-calendar"
+                },
+                {
+                    "label": "Calendar Preset",
+                    "path": "dates/calendar-preset"
+                },
+                {
+                    "label": "Calendar View",
+                    "path": "dates/calendar-view"
+                },
+                {
+                    "label": "Date Field",
+                    "path": "dates/date-field"
+                },
+                {
+                    "label": "Date Range Field",
+                    "path": "dates/date-range-field"
+                },
+                {
+                    "label": "Time Field",
+                    "path": "dates/time-field"
+                },
+                {
+                    "label": "Time Range Field",
+                    "path": "dates/time-range-field"
+                },
+                {
+                    "label": "Date Picker",
+                    "path": "dates/date-picker"
+                },
+                {
+                    "label": "Date Picker Input",
+                    "path": "dates/date-picker-input"
+                },
+                {
+                    "label": "Date Range Picker",
+                    "path": "dates/date-range-picker"
+                },
+                {
+                    "label": "Date Range Picker Input",
+                    "path": "dates/date-range-picker-input"
+                },
+                {
+                    "label": "Month Picker",
+                    "path": "dates/month-picker"
+                },
+                {
+                    "label": "Month Range Picker",
+                    "path": "dates/month-range-picker"
+                },
+                {
+                    "label": "Year Picker",
+                    "path": "dates/year-picker"
+                },
+                {
+                    "label": "Year Range Picker",
+                    "path": "dates/year-range-picker"
+                }
+            ]
+        },
+        {
             "label": "Menus",
             "collapsible": true,
             "pages": [

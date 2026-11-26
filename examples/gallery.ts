@@ -27,6 +27,7 @@ export const LEVELS = [
     { id: "atoms", title: "Atoms" },
     { id: "actions", title: "Actions" },
     { id: "fields", title: "Fields" },
+    { id: "dates", title: "Dates" },
     { id: "menus", title: "Menus" },
     { id: "overlays", title: "Overlays" },
     { id: "disclosure", title: "Disclosure" },

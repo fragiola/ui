@@ -136,6 +136,7 @@ split       the split view         splitter
 tree        the tree view          tree
 tile        the dashboard grid     grid-layout
 sheet       the data grid          data-grid
+calendar    the date grids         every calendar, and the pickers' popups
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -212,6 +213,19 @@ cell, and holds the pinned ones sticky: the family sets no geometry and no `over
 them, only the pinned cells' stacking, which the package leaves to the app. Its pieces
 **compose more registry items** than Tree's — `Checkbox`, `Field` + `Input`, `Select`,
 `Pagination` — and each renders only when the grid's model has its feature installed.
+
+`calendar` is the date grids' family (Epic #162): every calendar (day, range, multiple,
+month, year and their ranges), the presets and the view trigger, and through them the pickers'
+popups (a picker is `field.row` + `popup.content` + a calendar, no family of its own). A cell is
+two elements: the primitive's `td`, the focus target (`focusInset`) and a range's ground, and the
+date's box inside it, which carries the states. The wrapper maps the cell's state onto the
+attributes the foundation's members already read — a chosen date or a range's end gets
+`data-checked` (`checked`), today `data-active` (`current`), a disabled, unavailable or
+outside-month date `data-disabled` (`disabled`) — so no state is written in the family's own
+words. A range's middle is one `soft` band behind the boxes, drawn with logical insets from the
+start's centre to the end's and rounded at a week's ends, so it joins the same way in RTL. The
+date and time fields are `field`'s (`segments`, `segment`, `separator`): the control is only its
+middle. Every one of these components is primitives-backed (§5).
 
 `dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —

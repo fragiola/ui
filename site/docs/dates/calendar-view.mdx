@@ -1,0 +1,37 @@
+---
+title: "Calendar View"
+description: "A calendar's grid switched between days, months and years, from its heading."
+---
+
+<InstallCommand item="calendar-view" />
+
+<Example id="calendar-view" />
+
+A calendar view lets a reader go far in time without paging month by month: the heading is a
+button that goes one view up — days, then months, then years — and a choice goes back down: a
+year shows its months, a month its days. A view only navigates; the date is chosen in the day
+grid. After each switch the new view's focused cell takes the focus. It goes inside a Calendar,
+Range Calendar or Multiple Calendar Root, inline or in a picker's popup, where Escape still
+closes the popup in every view and reopening shows the day view again.
+
+`CalendarView.Template.Simple` is the three views: the day grid and the
+[Month](/docs/dates/month-calendar) and [Year](/docs/dates/year-calendar) calendars, each headed
+by the Trigger holding its heading. The Trigger is `calendar.viewTrigger`: the heading's type with
+a chevron, the `hover` fill and the `focus` ring; in the year view it is disabled and stays a
+heading.
+
+## Bases
+
+**Primitives-backed.** Base UI has no calendar view, so this is one shared file (`ui/calendar-view.tsx`) that wraps
+Fragiola Primitives' `CalendarView` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `CalendarView.Root`: the view state, no element; children see `{ view }` |
+| `Trigger` | primitive `CalendarView.Trigger` + `calendar.viewTrigger`, with a chevron; put the view's `Heading` in it, rendered as a `span` |
+| `Template.Simple` | the three views; `view`, `defaultView` and `onViewChange` are forwarded |

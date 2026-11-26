@@ -1,0 +1,44 @@
+---
+title: "Date Picker Input"
+description: "A date picker typed into segments: type the date or pick it, one value either way."
+---
+
+<InstallCommand item="date-picker-input" />
+
+<Example id="date-picker-input" />
+
+A date picker input types the date into a [Date Field](/docs/dates/date-field)'s segments, with
+a trigger in the same row that opens the calendar. The two stay bound both ways: typing sets the
+value once the date is complete and valid (the calendar then opens on it), an incomplete or
+invalid entry makes the value `null` (the segments show `data-invalid`), and a choice in the
+calendar fills the segments. One value, one form input; `granularity` adds the time's segments
+(the calendar chooses the date part).
+
+The control is only its middle: the `Field.Row` holds the `Segments` (the Date Field's) and the
+`Trigger`, a small ghost icon button at the row's inline end named "Choose date". The popup is
+the Date Picker's, aligned to the trigger's end.
+
+## Bases
+
+**Primitives-backed.** Base UI has no typed date picker, so this is one shared file (`ui/date-picker-input.tsx`) that wraps
+Fragiola Primitives' `DatePickerInput` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name `Segments` with `aria-labelledby` (the label's `id`, as the example does), and pass `name`, `disabled` and `required`
+to the Root. On Fragiola Primitives the picker is also a `Field` control.
+
+**Inside a Base UI dialog.** The popup is the Date Picker's, whose probe
+(`scenarios/overlays/date-picker-in-dialog`) checks it inside the base's Dialog: the popup takes
+the focus, Escape and a choice close only the popup and return the focus to the trigger, and the
+next Escape closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DatePickerInput.Root`: the picker's and the segments' state |
+| `Segments`, `Segment` | the Date Field's Input and Segment over the primitive's |
+| `Trigger` | primitive `DatePicker.Trigger` + a small ghost icon `Clickable` |
+| `Content` | the Date Picker's popup, `align="end"` |

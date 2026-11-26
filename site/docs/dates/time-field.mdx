@@ -1,0 +1,36 @@
+---
+title: "Time Field"
+description: "A time typed in segments — hours, minutes, seconds and the day period — inside a field row."
+---
+
+<InstallCommand item="time-field" />
+
+<Example id="time-field" />
+
+A time field types a time as the [Date Field](/docs/dates/date-field) types a date: hours and
+minutes (`granularity="second"` adds seconds) and, on the locale's 12-hour clock, the day period
+(type the first letter of AM or PM). `hourCycle` forces 12 or 24 hours. The value is a
+`{ hour, minute, second, millisecond }`; `min` and `max` make a time outside them invalid.
+Its segments are the Date Field's: the focused one `highlighted`, a placeholder secondary.
+
+## Bases
+
+**Primitives-backed.** Base UI has no time field, so this is one shared file (`ui/time-field.tsx`) that wraps
+Fragiola Primitives' `TimeField` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
+it: name the group with `aria-labelledby` (the label's `id`, as the example does) or `aria-label`,
+and pass `name`, `disabled` and `required` to the Root. On Fragiola Primitives it is also a
+`Field` control: the label names the group, a press on the label focuses the first segment, and
+the Field's description, `disabled` and validation reach it.
+
+**Invalid.** The field's own invalid state (`data-invalid` on its parts) turns its segments
+`palette-danger` by inheritance; the row's stroke follows when the `Field` itself is invalid —
+pass `invalid` to `Field.Root`, which works on both bases.
+
+## Parts
+
+The [Date Field](/docs/dates/date-field)'s parts, named `time-field-*`, with its own `Root`
+(primitive `TimeField.Root`).
