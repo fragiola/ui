@@ -330,6 +330,16 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "color-swatch-picker",
         reason: "Base UI has no color swatch picker",
     },
+    {
+        file: "registry/ui/color-picker.tsx",
+        entry: "color-picker",
+        reason: "Base UI has no color picker",
+    },
+    {
+        file: "registry/ui/color-picker-popover.tsx",
+        entry: "color-picker-popover",
+        reason: "Base UI has no color picker: its popup is Fragiola Primitives' opt-in popover entry",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */
