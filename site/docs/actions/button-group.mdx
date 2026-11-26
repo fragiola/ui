@@ -1,0 +1,55 @@
+---
+title: "Button Group"
+description: "Clickables joined into one row or column, with logical borders and radii, right in RTL."
+---
+
+<InstallCommand item="button-group" />
+
+<Example id="button-group" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A button group joins buttons that belong together: Previous, Today and Next; a split button, its
+action and its menu. Put [Clickables](/docs/atoms/clickable) in `ButtonGroup.Root` (a link or a
+menu trigger rendered as a Clickable too); they keep their own look, focus ring and palette.
+`orientation="vertical"` stacks them. Solid buttons have no stroke to share, so put a
+`ButtonGroup.Separator` between them.
+
+The Root is a `role="group"`: name it with `aria-label`. It has **no keyboard behaviour**: each
+button stays its own tab stop.
+
+## Button Group or Toolbar
+
+A [Toolbar](/docs/actions/toolbar) is the behavioural sibling: a `role="toolbar"` that is **one**
+tab stop, with the arrow keys moving between its items (roving focus, the APG pattern), and
+groups, separators, toggles and inputs inside it. Use a Toolbar for a row of tools a keyboard
+user moves through as one control (an editor's formatting bar); use a Button Group to join a few
+buttons visually, each reached with Tab. For a set of options where one or more is chosen, use a
+[Toggle Group](/docs/actions/toggle-group) or a [Segmented Control](/docs/fields/segmented-control):
+Untitled UI's button group is a toggle group, which Fragiola UI already has.
+
+## The look
+
+It adds no family. Every child but the first loses its start radius and its start border (an
+outline button's stroke is shared with its neighbour's), and every child but the last its end
+radius. Those are logical properties (`rounded-s-none`, `rounded-e-none`, `border-s-0`), so under
+`dir="rtl"` the row and its rounded ends mirror; vertically, the block axis stays physical (top
+and bottom). A focused child rises above its neighbours, so its ring is never covered. The
+Separator is a `line` rule.
+
+## Bases
+
+**Markup only.** Button Group imports no primitive, so it is one shared file
+(`ui/button-group.tsx`), the same on both bases; the Clickables inside are each base's.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | `div`, `role="group"`, `data-orientation` |
+| `Separator` | `div`, a `line` rule, `aria-hidden` |

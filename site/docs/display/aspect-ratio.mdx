@@ -1,0 +1,32 @@
+---
+title: "Aspect Ratio"
+description: "Keeps its content at a width-to-height ratio: an image, a video, a map."
+---
+
+<InstallCommand item="aspect-ratio" />
+
+<Example id="aspect-ratio" />
+
+`ratio` is the width over the height (`16 / 9`; `1` by default, and `1` when it is not a positive
+number). The box takes the width the layout gives it and its height follows, through the CSS
+`aspect-ratio` property the primitive sets as its structural style, with `min-height: 0`. A child
+taller than the box overflows it: fit an image with `object-cover` and `size-full`.
+
+## The look
+
+It adds no family and draws nothing: it clips its content (`overflow-hidden`) and is `relative`,
+so a `rounded-*` on it rounds the image inside and an absolutely placed overlay (a play button, a
+caption) sits on it.
+
+## Bases
+
+**Primitives-backed.** Base UI has no aspect ratio, so this is one shared file
+(`ui/aspect-ratio.tsx`) that wraps Fragiola Primitives' `AspectRatio` on **both** bases, and the
+item depends on `@fragiola/primitives-react@0.2.0` on both. It has no direction, no state and no
+behaviour, so it behaves the same on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `AspectRatio` | primitive `AspectRatio` (`ratio`) + `relative overflow-hidden` |

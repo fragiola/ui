@@ -89,6 +89,10 @@
                 {
                     "label": "Clipboard",
                     "path": "actions/clipboard"
+                },
+                {
+                    "label": "Button Group",
+                    "path": "actions/button-group"
                 }
             ]
         },
@@ -501,6 +505,18 @@
                 {
                     "label": "Featured Icon",
                     "path": "display/featured-icon"
+                },
+                {
+                    "label": "Spinner",
+                    "path": "display/spinner"
+                },
+                {
+                    "label": "Kbd",
+                    "path": "display/kbd"
+                },
+                {
+                    "label": "Aspect Ratio",
+                    "path": "display/aspect-ratio"
                 }
             ]
         },

@@ -1,0 +1,42 @@
+---
+title: "Spinner"
+description: "Something is loading and its length is unknown: a circle with a gap that turns, on the motion axis."
+---
+
+<InstallCommand item="spinner" />
+
+<Example id="spinner" />
+
+A spinner says that something is happening and you cannot tell for how long: a button that is
+saving, a list that is fetching. When you know how far along it is, use a
+[Progress](/docs/display/progress) bar; when you know the shape of what is coming, a
+[Skeleton](/docs/display/skeleton).
+
+It is `role="status"` named "Loading". Pass another `aria-label` for a more precise name, or
+`aria-hidden` when the text beside it already says what happens (a button that reads "Saving…").
+
+## The look
+
+It adds no family. A circle with a gap (Lucide's `LoaderCircle`) in the text colour it sits in
+(`currentColor`), at the icon size beside `text-sm` (`size-icon`, which follows the typography
+axis): in a [Clickable](/docs/atoms/clickable) it is the button's colour and size. A size is a
+class (`size-icon-xs` in a [Badge](/docs/display/badge), `size-icon-lg` on its own); there is no
+variant.
+
+## Motion
+
+`animate-spin` turns once per second times `--motion-scale` (the [motion axis](/docs/architecture/design-axes)):
+slower when `expressive`, faster when `fast`, and still at `none`, where the open circle alone
+still reads as "loading". `prefers-reduced-motion` forces `--motion-scale: 0`, so a reader who
+asked for less motion sees it still too.
+
+## Bases
+
+**Markup only.** The spinner imports no primitive, so it is one shared file (`ui/spinner.tsx`),
+the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Spinner` | Lucide's `LoaderCircleIcon` + `animate-spin`, `role="status"` |

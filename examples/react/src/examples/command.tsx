@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Clickable } from "#/components/atoms/clickable";
 import { Command, type CommandActionGroup } from "#/components/ui/command";
 import { Dialog } from "#/components/ui/dialog";
+import { Kbd } from "#/components/ui/kbd";
 
 // A project tool's command palette, twice: on the page, and in a dialog
 // opened by its button or by Cmd/Ctrl+K (the app's own shortcut). Typing
@@ -91,9 +92,7 @@ export default function CommandDemo() {
                     >
                         <SearchIcon />
                         Search…
-                        <kbd className="font-sans text-xs text-palette-accent/85">
-                            ⌘K
-                        </kbd>
+                        <Kbd>⌘K</Kbd>
                     </Dialog.Trigger>
                     <Dialog.Portal>
                         <Dialog.Backdrop />

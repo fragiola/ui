@@ -1909,6 +1909,50 @@ export const examples: Example[] = [
         load: () => import("./featured-icon.tsx"),
     },
     {
+        id: "spinner",
+        title: "Spinner",
+        description:
+            "A Save button that is saving, an export, a sync badge and a list that is loading, announced as a status; then the icon sizes. It follows the motion axis: still at none and under prefers-reduced-motion.",
+        level: "display",
+        order: 17,
+        features: ["Spinner", "animate-spin", "--motion-scale", "role=status"],
+        docs: "/docs/display/spinner",
+        layout: "flow",
+        height: 260,
+        load: () => import("./spinner.tsx"),
+    },
+    {
+        id: "kbd",
+        title: "Kbd",
+        description:
+            "A search field with its shortcut in the field's inset, a key in a line of help text, and a shortcuts list of KbdGroups. The keyboard-hint type on a key cap.",
+        level: "display",
+        order: 18,
+        features: ["Kbd", "KbdGroup", "Field.Inset", "text-xs font-medium"],
+        docs: "/docs/display/kbd",
+        layout: "flow",
+        height: 320,
+        load: () => import("./kbd.tsx"),
+    },
+    {
+        id: "aspect-ratio",
+        title: "Aspect Ratio",
+        description:
+            "A lesson's video frame at 16:9 with its play button, its height following its width; then 1:1, 4:3 and 16:9 side by side. Primitives-backed: one shared file on every base.",
+        level: "display",
+        order: 19,
+        features: [
+            "AspectRatio",
+            "ratio",
+            "overflow-hidden",
+            "primitives-backed",
+        ],
+        docs: "/docs/display/aspect-ratio",
+        layout: "flow",
+        height: 460,
+        load: () => import("./aspect-ratio.tsx"),
+    },
+    {
         id: "drop-zone",
         title: "Drop Zone",
         description:
@@ -1965,5 +2009,24 @@ export const examples: Example[] = [
         layout: "flow",
         height: 380,
         load: () => import("./clipboard.tsx"),
+    },
+    {
+        id: "button-group",
+        title: "Button Group",
+        description:
+            "A calendar header's Previous, Today and Next joined into one outline group, a split button with a separator, a vertical group and the same group in RTL; then one row of palettes. Logical radii and borders; each button its own tab stop.",
+        level: "actions",
+        order: 5,
+        features: [
+            "ButtonGroup.Root",
+            "ButtonGroup.Separator",
+            "rounded-s-none",
+            "border-s-0",
+            "dir=rtl",
+        ],
+        docs: "/docs/actions/button-group",
+        layout: "flow",
+        height: 360,
+        load: () => import("./button-group.tsx"),
     },
 ];
