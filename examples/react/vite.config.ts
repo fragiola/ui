@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import {
     exampleThemes,
     REGISTRY_PUBLIC,
+    registryBases,
     registryResolve,
 } from "./vite.shared.ts";
 
@@ -14,7 +15,7 @@ import {
 //   EMBED_OUT_DIR   where the build lands (default dist/)
 export default defineConfig({
     base: process.env.EMBED_BASE ?? "/",
-    plugins: [react(), tailwindcss(), exampleThemes()],
+    plugins: [registryBases(), react(), tailwindcss(), exampleThemes()],
     resolve: registryResolve,
     publicDir: REGISTRY_PUBLIC,
     build: {

@@ -17,6 +17,10 @@ The `select-none` on `ContextMenu.Trigger` stops text selection on right-click. 
 
 Installing `dropdown-menu` pulls `menu` and `popup`. Installing `context-menu` afterwards writes **one file** — `context-menu.tsx` itself. The shared families are already on disk. This is the distribution-level proof that the duplication claim holds.
 
+## Bases
+
+On Fragiola Primitives (the default base) a context menu is non-modal by default; pass `modal` to `ContextMenu.Root` for Base UI's default. Parts, classes and `data-slot` names are the same on both bases.
+
 ## Parts
 
 Identical to `dropdown-menu` — same factory, same members. See the [dropdown-menu parts table](/docs/menus/dropdown-menu#parts).

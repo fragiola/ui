@@ -193,7 +193,10 @@ export const examples: Example[] = [
         ],
         docs: "/docs/fields/select",
         layout: "flow",
-        height: 480,
+        // Fragiola Primitives opens the list below the trigger (Base UI
+        // aligns it over the selected item): the last row's lists need
+        // 496px (`check:embeds --floors`).
+        height: 496,
         load: () => import("./select.tsx"),
     },
     {

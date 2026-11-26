@@ -20,11 +20,15 @@ The input is a field control — `field.row` provides the box (border, backgroun
 
 The component declares no new style: every class comes from a family. If this file contained a class that did not come from a family, the recombination claim would be wrong. It does not.
 
+## Bases
+
+Fragiola Primitives (the default base) has no `Combobox.Label` part: `Combobox.Label` is a `label` with the field's label style, which you associate yourself (`htmlFor`). Inside a `Field`, use `Field.Label`, as the example does on both bases. Items, values and the render functions of `Combobox.List` and `Combobox.Value` are typed as loosely as on Base UI, so the same code compiles on both.
+
 ## Parts
 
 | Part | Source |
 |---|---|
-| `Root` | Base UI `Combobox.Root` |
+| `Root` | primitive `Combobox.Root` |
 | `InputGroup` | `field.row()` + layout |
 | `Input` | `field-control` marker + layout |
 | `Trigger` / `Clear` | `Clickable.Button` |

@@ -2,8 +2,14 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "#/components/*": ["../../packages/registry/registry/*"],
-            "#/*": ["../../packages/registry/registry/*"]
+            "#/components/*": [
+                "../../packages/registry/registry/bases/primitives/*",
+                "../../packages/registry/registry/*"
+            ],
+            "#/*": [
+                "../../packages/registry/registry/bases/primitives/*",
+                "../../packages/registry/registry/*"
+            ]
         },
         "types": ["node", "vite/client"]
     },

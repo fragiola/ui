@@ -213,7 +213,7 @@ them, only the pinned cells' stacking, which the package leaves to the app. Its 
 **compose more registry items** than Tree's — `Checkbox`, `Field` + `Input`, `Select`,
 `Pagination` — and each renders only when the grid's model has its feature installed.
 
-`dock` dresses a third-party headless package (Dockable, see §5) instead of Base UI:
+`dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —
 reading the package's `data-*` state with Tailwind's data variants. It paints the
 whole layout from **one** palette, the root's, so a palette class on the root
@@ -302,11 +302,11 @@ Behavior and accessibility come from the library; appearance comes from the desi
 system; `render` stitches them. Fusing both into a CSS class is what produces 17
 title classes.
 
-**`render`, never `asChild`** — one polymorphism mechanism, matching Base UI.
+**`render`, never `asChild`** — one polymorphism mechanism, matching both bases (§5, "Bases").
 
 ### When parts are identical, share the wrapper
 
-Some primitives are literally the same object across components — in Base UI,
+Some primitives are literally the same object across components — on both bases,
 `ContextMenu.Item === Menu.Item`, with only `Root` and `Trigger` differing. There,
 write the wrappers once as a factory and **inject the namespace**:
 
@@ -454,8 +454,8 @@ and `size-6` at the default) scale with `--text-scale`. The `--size-*` namespace
 generates only `size-*`, never `p-`, `gap-` or `w-`. `cn.ts` registers them, and the
 `control` and `pill` radii, with tailwind-merge.
 
-**Motion.** `none` makes every transition and enter/exit animation instant (Base UI
-unmounts on the next frame), and `prefers-reduced-motion: reduce` forces `none`
+**Motion.** `none` makes every transition and enter/exit animation instant (both bases
+unmount on the next frame), and `prefers-reduced-motion: reduce` forces `none`
 whatever the attribute says. An element animated by tw-animate-css carries a
 `duration-*` so its animation scales too (tw-animate reads `--tw-duration`).
 
@@ -500,6 +500,43 @@ palettes as `registry:file`. The label is lost, the behavior is not. And the for
 versioning, therefore no update** — whoever installs keeps a frozen copy. That is
 inherent to copy-paste distribution; if it becomes a real problem, that is when to
 consider our own CLI, not before.
+
+### Bases
+
+Like shadcn/ui, which offers its components on Base UI, Radix and React Aria,
+Fragiola UI offers them on more than one primitive library: its **bases**
+(`packages/registry/bases.ts`). **Fragiola Primitives** (`@fragiola/primitives-react`)
+is the default and is served at `r/{name}.json`. **Base UI** (`@base-ui/react`) is
+served at `r/base/{name}.json`. The namespace is `@fragiola` on both, and the
+registry URL selects the base, the way shadcn's `style` does. Fragiola has one style,
+so the base is the registry's only dimension.
+
+- **Only what imports a primitive is per base.** Such a file is written once per base at
+  `registry/bases/<base>/<its path>` (`registry/bases/primitives/ui/dialog.tsx`).
+  Families, styles, palettes, lib, hooks and the special components stay shared, so
+  the "duplicated components" answer holds. shadcn copies every component, example
+  and block per base; here about 30 files are.
+- **One registry.json, every base.** Items name a file by its logical path
+  (`registry/ui/dialog.tsx`). The build writes every item once per base, reading the
+  base's copy and adding the base's package to the item's `dependencies`. The
+  examples, the playground and `tsc` resolve `#/` the same way (the base's copy,
+  else the shared file), and `FRAGIOLA_BASE` selects the base.
+- **The UI adapts, the base never does.** A base file differs from its twins only in
+  primitive wiring: imports, prop and type mapping, and a part rebuilt from the
+  base's own parts. Classes, families and `data-slot` names never differ. A base
+  library is never changed to match another, which is what lets Radix and React Aria
+  join later. Each base's adapter is `lib/base.ts` (the `base` item): one set of names
+  (`DirectionProvider`, `CollapsiblePrimitive`, `PrimitiveProps`, `RenderComponentProps`,
+  `POSITIONER_DEFAULTS`, `controlText`), one implementation per base.
+- **A behaviour a base decided differently stays its own**, documented under "Bases"
+  on the component's page. Fragiola Primitives follows the APG first: menus and
+  selects are non-modal by default, a select's list opens below its trigger, and
+  tabs activate on focus.
+- **Parity is tested, not promised.** `tests/bases.test.ts` fails when a base lacks
+  a file, an export, a namespace or factory member, or a `data-slot` the default base
+  has; when a file imports another base's library; and when an item's `#/` imports
+  are not shipped by the item or its registry dependencies on some base. Typecheck,
+  `registry:smoke` and `check:embeds` run on every base (CI's "Bases" job).
 
 ### Special components
 

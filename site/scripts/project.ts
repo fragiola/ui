@@ -6,7 +6,7 @@ export const PROJECT: ProjectJson = {
     slug: "ui",
     title: "Fragiola UI",
     description:
-        "A copy-paste component library built on Base UI and Tailwind v4. Six colour roles, any number of palettes.",
+        "A copy-paste component library on Fragiola Primitives (or Base UI) and Tailwind v4. Six colour roles, any number of palettes.",
     frameworks: ["react"],
     defaultFramework: "react",
     registry: { namespace: "@fragiola" },
@@ -16,6 +16,7 @@ export const PROJECT: ProjectJson = {
         "react components",
         "design system",
         "shadcn registry",
+        "fragiola primitives",
         "base ui",
         "tailwind css",
         "theming",

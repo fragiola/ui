@@ -15,12 +15,16 @@ The indicator uses the primitive's CSS variables (`--active-tab-*`), not React m
 
 Tabs, navigation-menu and pagination are all "a strip of triggers", but the overlap is thinner than it first looks. Tabs and navigation-menu share state normalisation (the `highlighted` custom variant) but differ in cursor, rounding and state-specific treatments. Pagination is `Clickable` in a `<nav>`. No family was created — the negative result is recorded in the port report.
 
+## Bases
+
+On Fragiola Primitives (the default base) a tab is selected when it receives focus (automatic activation, which the APG recommends when panels show without latency); `activation="manual"` on `Tabs.Root` selects on Enter or Space instead. On Base UI focus moves without selecting unless `Tabs.List` has `activateOnFocus`. Each prop belongs to its base.
+
 ## Parts
 
 | Part | Source |
 |---|---|
-| `Root` | Base UI `Tabs.Root` |
+| `Root` | primitive `Tabs.Root` |
 | `List` | layout + `border-palette-line` |
 | `Tab` | `highlighted` + `palette-ring` + layout |
 | `Indicator` | primitive CSS variables + `bg-palette-base` |
-| `Panel` | Base UI `Tabs.Panel` |
+| `Panel` | primitive `Tabs.Panel` |

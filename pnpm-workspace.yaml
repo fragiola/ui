@@ -16,7 +16,8 @@ allowBuilds:
 # supply-chain guard). These are this organisation's own packages, consumed
 # by the special items the day they are published (Dockable 0.3.0: Epic #85;
 # Splitter 0.1.0: Epic #88; Tree 0.1.0: Epic #91;
-# Grid Layout 0.1.0: Epic #94; Data Grid 0.1.0: Epic #98); exact versions, so the
+# Grid Layout 0.1.0: Epic #94; Data Grid 0.1.0: Epic #98; Primitives 0.2.0, the
+# primitives base: Epic #150); exact versions, so the
 # guard still covers anything else.
 minimumReleaseAgeExclude:
   - '@fragiola/dockable-react@0.3.0'
@@ -29,4 +30,6 @@ minimumReleaseAgeExclude:
   - '@fragiola/grid-layout@0.1.0'
   - '@fragiola/data-grid-react@0.1.0'
   - '@fragiola/data-grid@0.1.0'
+  - '@fragiola/primitives-react@0.2.0'
+  - '@fragiola/primitives@0.2.0'
 verifyDepsBeforeRun: false

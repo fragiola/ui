@@ -1,7 +1,11 @@
 import { defineConfig } from "vitest/config";
-import { registryResolve } from "../../examples/react/vite.shared.ts";
+import {
+    registryBases,
+    registryResolve,
+} from "../../examples/react/vite.shared.ts";
 
 export default defineConfig({
+    plugins: [registryBases()],
     resolve: registryResolve,
     test: {
         include: ["tests/**/*.test.ts"],

@@ -14,9 +14,6 @@ importers:
 
   apps/playground:
     dependencies:
-      '@base-ui/react':
-        specifier: ^1.7.0
-        version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/data-grid-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -75,9 +72,6 @@ importers:
 
   examples/react:
     dependencies:
-      '@base-ui/react':
-        specifier: ^1.7.0
-        version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/data-grid-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -157,6 +151,9 @@ importers:
       '@fragiola/grid-layout-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@fragiola/primitives-react':
+        specifier: 0.2.0
+        version: 0.2.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fragiola/splitter-react':
         specifier: ^0.1.0
         version: 0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -203,6 +200,9 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      rolldown:
+        specifier: 1.2.5
+        version: 1.2.5
       shadcn:
         specifier: 4.21.0
         version: 4.21.0(typescript@7.0.2)
@@ -685,6 +685,15 @@ packages:
 
   '@fragiola/grid-layout@0.1.0':
     resolution: {integrity: sha512-PlRdmfZg/LKTQNA8eI9L9UbQqOZ8yevV2RDrVURt0LGS+JhMO05F5tzBCoMRwozZJPIUwT9POE6kqPgMDPqelQ==}
+
+  '@fragiola/primitives-react@0.2.0':
+    resolution: {integrity: sha512-MqtxRUiMR5QKyYKqfs7Ui6PzjZ2XhiKPIJOtUmCOdnjsYuI58IOOGHpvJUebW7DTmyX445iyGzduPZyxNbpghg==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@fragiola/primitives@0.2.0':
+    resolution: {integrity: sha512-rWOab3SuT8IchC7z45zwltvIUW8X3hiVxlkVxffsblw3iF09U2GXevkWtoTUj1A6S7UbUBqeo/yxBkdvcQo9Tg==}
 
   '@fragiola/splitter-react@0.1.0':
     resolution: {integrity: sha512-SFBbutr71u372NKbETihcn13a4XuJ7PuN5qieknWXk4ikCp6Ctrqt218WAcraK0gU1yaMHZHzLMfP2QlkPRJVw==}
@@ -3413,6 +3422,16 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
 
   '@fragiola/grid-layout@0.1.0': {}
+
+  '@fragiola/primitives-react@0.2.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@fragiola/primitives': 0.2.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
+  '@fragiola/primitives@0.2.0':
+    dependencies:
+      '@floating-ui/dom': 1.8.0
 
   '@fragiola/splitter-react@0.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:

@@ -35,6 +35,44 @@ and point at any static server rooted at `packages/registry/dist`:
 }
 ```
 
+## Bases
+
+Fragiola UI offers every component on two primitive libraries, its **bases**,
+as shadcn/ui does with Base UI, Radix and React Aria:
+
+| base | primitives | registry URL |
+|---|---|---|
+| **Fragiola Primitives** (default) | `@fragiola/primitives-react` | `https://fragiola.com/r/{name}.json` |
+| Base UI | `@base-ui/react` | `https://fragiola.com/r/base/{name}.json` |
+
+Both bases ship the same items under the same names: the same parts, classes,
+`data-slot` names and composition, so code written against one runs on the
+other. Only the primitive wiring inside each component differs, and where the
+two libraries behave differently by design, the component's page says so
+under **Bases**. The namespace stays `@fragiola` on both; the URL chooses the
+base. For Base UI:
+
+```json
+{
+  "registries": {
+    "@fragiola": {
+      "url": "https://fragiola.com/r/base/{name}.json"
+    }
+  }
+}
+```
+
+Base UI's items are built at `packages/registry/dist/r/base/` by
+`pnpm registry:build`; fragiola.com serves them once the site's base switch
+ships.
+
+### Installed before Fragiola Primitives was the default?
+
+Items installed before this change are Base UI's. To keep them on Base UI,
+point the namespace at the Base UI URL above before adding anything else. To
+move to Fragiola Primitives, add the items again with the default URL: the
+CLI asks before it overwrites a file you have edited.
+
 ## Install an item
 
 ```bash

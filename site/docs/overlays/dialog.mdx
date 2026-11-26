@@ -9,7 +9,7 @@ description: "A modal layer: a centred panel over a scrim. It shares the `layer`
 
 ## Style families
 
-`dialog`, `alert-dialog` and `drawer` render from the same `layer` source — `backdrop`, `panel`, `header`, `body`, `footer`, `title`, `description`. The parts factory (`createLayerParts`) takes a Base UI namespace and returns the styled wrappers. Installing `alert-dialog` after `dialog` writes exactly one file.
+`dialog`, `alert-dialog` and `drawer` render from the same `layer` source — `backdrop`, `panel`, `header`, `body`, `footer`, `title`, `description`. The parts factory (`createLayerParts`) takes the base's namespace and returns the styled wrappers. Installing `alert-dialog` after `dialog` writes exactly one file.
 
 ## Title and description point at Text
 
@@ -19,7 +19,7 @@ description: "A modal layer: a centred panel over a scrim. It shares the `layer`
 
 | Part | Source |
 |---|---|
-| `Root` / `Trigger` / `Portal` | Base UI `Dialog` |
+| `Root` / `Trigger` / `Portal` | primitive `Dialog` |
 | `Backdrop` | `layer.backdrop()` (bg-scrim) |
 | `Content` | `layer.panel()` + centring transform |
 | `Header` / `Body` / `Footer` | `layer.header/body/footer()` |

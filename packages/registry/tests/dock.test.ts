@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { dock } from "../registry/families/dock";
 import { foundation } from "../registry/families/foundation";
+import { everyBase } from "./base-sources";
 
 // ─── The dock family ────────────────────────────────────────────────────────
 // ui/dockable dresses Dockable's headless primitives with `dock`. A class that
@@ -118,10 +119,9 @@ describe("dock family", () => {
         // (`focusInset`, and `selected` / `current` — one fill under each
         // library's vocabulary); the rest is pinned on both sides, and drift
         // on either fails here.
-        const tabs = await readFile(
-            path.join(REGISTRY, "ui/tabs.tsx"),
-            "utf-8",
-        );
+        const tabs = (await everyBase("ui/tabs.tsx"))
+            .map(({ source }) => source)
+            .join("\n");
         const tab = classes(dock.tab);
         for (const shared of [
             "rounded-md",

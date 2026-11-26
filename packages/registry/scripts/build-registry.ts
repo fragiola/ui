@@ -1,12 +1,27 @@
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { mkdir, readdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
-import { ecosystemRangeProblems } from "./dependencies.ts";
+import {
+    BASE_PACKAGES,
+    BASES,
+    type Base,
+    baseFilePath,
+    baseOutputDir,
+    resolveBaseFile,
+} from "../bases.ts";
+import { ecosystemRangeProblems, splitDependency } from "./dependencies.ts";
 import { rootTargetRefused } from "./targets.ts";
 
 // `node scripts/build-registry.ts [--out <dir>]` — validates registry.json and
-// writes one JSON file per item plus index.json. The output defaults to
+// writes, once per base (bases.ts), one JSON file per item plus index.json:
+// the default base at <out>/, every other base at <out>/<base>/. Every base
+// gets every item, under the same names and registryDependencies, so a
+// reader switches base by pointing the @fragiola namespace at another URL.
+// A file is read from the base's copy when it has one (resolveBaseFile), and
+// an item with a base-dependent file gets the base's packages as
+// dependencies; registry.json names neither. The output defaults to
 // dist/r; callers pass their own (the site export ships it as r/). A relative --out is resolved against the working
 // directory, so each caller names a path of its own.
 //
@@ -180,13 +195,31 @@ async function buildRegistry() {
         }
     }
 
-    // Check npm dependencies: an ecosystem package carries the range this
-    // package builds against (see scripts/dependencies.ts).
+    // Check npm dependencies: the base's packages are the build's to add, and
+    // an ecosystem package carries the range this package builds against
+    // (see scripts/dependencies.ts) — checked on every base's items.
+    for (const item of items) {
+        for (const dep of item.dependencies ?? []) {
+            if (BASE_PACKAGES.has(splitDependency(dep).name)) {
+                console.error(
+                    `Item "${item.name}" lists "${dep}", a base's package. ` +
+                        `The build adds the base's packages to an item with a ` +
+                        `base-dependent file (bases.ts); remove it from registry.json.`,
+                );
+                process.exit(1);
+            }
+        }
+    }
     const manifest = JSON.parse(
         await readFile(path.join(ROOT, "package.json"), "utf-8"),
     ) as { dependencies?: Record<string, string> };
-    const rangeProblems = items.flatMap((item) =>
-        ecosystemRangeProblems(item, manifest.dependencies ?? {}),
+    const rangeProblems = BASES.flatMap((base) =>
+        items.flatMap((item) =>
+            ecosystemRangeProblems(
+                { name: item.name, dependencies: dependenciesFor(item, base) },
+                manifest.dependencies ?? {},
+            ),
+        ),
     );
     if (rangeProblems.length) {
         for (const problem of rangeProblems) console.error(problem);
@@ -196,44 +229,72 @@ async function buildRegistry() {
     // Check for dependency cycles
     checkCycles(items);
 
-    // Build each item
-    await mkdir(OUTPUT_DIR, { recursive: true });
+    for (const base of BASES) {
+        await writeBase(items, base);
+    }
+    console.log(`\nRegistry built to ${OUTPUT_DIR}`);
+}
 
-    // Clean previous output
-    try {
-        const existing = await readdir(OUTPUT_DIR);
-        for (const file of existing) {
-            const filePath = path.join(OUTPUT_DIR, file);
-            const { unlink } = await import("node:fs/promises");
-            await unlink(filePath);
-        }
-    } catch {
-        // directory doesn't exist yet
+async function writeBase(items: Item[], base: Base): Promise<void> {
+    const dir = path.join(OUTPUT_DIR, baseOutputDir(base));
+    await mkdir(dir, { recursive: true });
+
+    // Clean the previous output: this base's files, never another base's
+    // folder (the default base's output is the root, the others' parent).
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+        if (entry.isFile()) await unlink(path.join(dir, entry.name));
     }
 
     const index: Item[] = [];
-
     for (const item of items) {
-        const built = await buildItem(item);
-        const outPath = path.join(OUTPUT_DIR, `${item.name}.json`);
+        const built = await buildItem(item, base);
         await writeFile(
-            outPath,
-            JSON.stringify(built, null, 2) + "\n",
+            path.join(dir, `${item.name}.json`),
+            `${JSON.stringify(built, null, 2)}\n`,
             "utf-8",
         );
         index.push(stripContent(built));
-        console.log(`  ✓ ${item.name}`);
     }
 
-    // Write index
-    const indexPath = path.join(OUTPUT_DIR, "index.json");
     await writeFile(
-        indexPath,
-        JSON.stringify({ name: "fragiola", items: index }, null, 2) + "\n",
+        path.join(dir, "index.json"),
+        `${JSON.stringify({ name: "fragiola", items: index }, null, 2)}\n`,
         "utf-8",
     );
-    console.log(`  ✓ index (${items.length} items)`);
-    console.log(`\nRegistry built to ${OUTPUT_DIR}`);
+    console.log(
+        `  ✓ ${base.name}${base.default ? " (default)" : ""}: ${items.length} items → ${path.relative(OUTPUT_DIR, dir) || "."}`,
+    );
+}
+
+/** Whether one of an item's files has a copy in the base. */
+function isBaseDependent(item: Item, base: Base): boolean {
+    return (item.files ?? []).some((file) =>
+        existsSync(baseFilePath(ROOT, base, file.path)),
+    );
+}
+
+/** An item's dependencies on a base: the base's packages first when it needs them. */
+function dependenciesFor(item: Item, base: Base): string[] | undefined {
+    if (!isBaseDependent(item, base)) return item.dependencies;
+    return [...base.dependencies, ...(item.dependencies ?? [])];
+}
+
+// An item's keys keep registry.json's order; `dependencies`, when the item
+// only gets the base's, goes after the item's description.
+function withDependencies(
+    item: Item,
+    dependencies: string[] | undefined,
+): Item {
+    if (!dependencies || "dependencies" in item) {
+        return dependencies ? { ...item, dependencies } : item;
+    }
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(item)) {
+        result[key] = value;
+        if (key === "description") result.dependencies = dependencies;
+    }
+    if (!("dependencies" in result)) result.dependencies = dependencies;
+    return result as Item;
 }
 
 function stripContent(item: Item): Item {
@@ -243,10 +304,10 @@ function stripContent(item: Item): Item {
     };
 }
 
-async function buildItem(item: Item): Promise<Item> {
+async function buildItem(item: Item, base: Base): Promise<Item> {
     const files: FileEntry[] = [];
     for (const file of item.files ?? []) {
-        const srcPath = path.join(ROOT, file.path);
+        const srcPath = resolveBaseFile(ROOT, base, file.path);
         let content: string;
         try {
             content = await readFile(srcPath, "utf-8");
@@ -259,7 +320,7 @@ async function buildItem(item: Item): Promise<Item> {
             content: rewriteImports(content),
         });
     }
-    return { ...item, files };
+    return withDependencies({ ...item, files }, dependenciesFor(item, base));
 }
 
 function checkCycles(items: Item[]): void {

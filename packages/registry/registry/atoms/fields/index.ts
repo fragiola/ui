@@ -1,7 +1,7 @@
-import { Input as InputControl } from "./input";
-import { Numeric } from "./numeric";
+import { Input as InputControl } from "#/atoms/fields/input";
+import { Numeric } from "#/atoms/fields/numeric";
+import { Textarea } from "#/atoms/fields/textarea";
 import { Template } from "./templates";
-import { Textarea } from "./textarea";
 
 // Input is the bare control (function) + the Template namespace attached.
 // Access: <Input />, <Input.Template.Simple label="..." />

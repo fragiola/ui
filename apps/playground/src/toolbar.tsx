@@ -1,3 +1,4 @@
+import { BASE, BASES } from "virtual:registry-bases";
 import { Clickable } from "#/components/atoms/clickable";
 import { LEVELS, THEMES } from "../../../examples/gallery.ts";
 import { AXES, AXIS_NAMES, type AxisName } from "./axes";
@@ -28,6 +29,12 @@ export function Toolbar({ view, entry, onChange }: ToolbarProps) {
                     </span>
                 )}
             </div>
+            <Choice
+                label="Base"
+                options={BASES.map((b) => ({ value: b.name, label: b.title }))}
+                value={BASE}
+                onChange={switchBase}
+            />
             <Choice
                 label="Theme"
                 options={THEMES.map((t) => ({ value: t.name, label: t.title }))}
@@ -71,6 +78,17 @@ export function Toolbar({ view, entry, onChange }: ToolbarProps) {
             </Clickable.Button>
         </header>
     );
+}
+
+// The base is the dev server's, not the URL's: the server resolves `#/`
+// against it (examples/react/vite.shared.ts, registryBases), so switching
+// reloads the page on the new base.
+async function switchBase(name: string) {
+    if (name === BASE) return;
+    const response = await fetch(
+        `/__fragiola-base?name=${encodeURIComponent(name)}`,
+    );
+    if (response.ok) window.location.reload();
 }
 
 const PRESSED =

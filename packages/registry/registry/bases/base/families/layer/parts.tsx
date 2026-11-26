@@ -26,8 +26,8 @@ import { XIcon } from "lucide-react";
 import type * as React from "react";
 import { Clickable } from "#/atoms/clickable";
 import { Text } from "#/atoms/text";
+import { layer } from "#/families/layer";
 import { cn } from "#/lib/cn";
-import { layer } from "../layer";
 
 // Structural type of the namespace — only the parts the factory consumes.
 // Root and Trigger are deliberately excluded: they differ between Dialog and

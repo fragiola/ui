@@ -6,11 +6,10 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "node ../../packages/registry/scripts/typecheck-bases.ts",
         "test": "vitest run"
     },
     "dependencies": {
-        "@base-ui/react": "^1.7.0",
         "@fragiola/data-grid-react": "^0.1.0",
         "@fragiola/dockable-react": "^0.3.0",
         "@fragiola/grid-layout-react": "^0.1.0",

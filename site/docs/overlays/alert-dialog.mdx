@@ -9,7 +9,7 @@ description: "A modal layer that only an explicit action dismisses: no backdrop 
 
 ## One file
 
-Installing `alert-dialog` after `dialog` writes exactly one file — this one. The `layer` family and the `createLayerParts` factory are already on disk. AlertDialog reuses Dialog's `Backdrop`, `Popup`, `Title`, `Description`, `Close` and `Portal` at runtime; the factory injects the namespace so each component inherits its own divergence if Base UI ever splits them.
+Installing `alert-dialog` after `dialog` writes exactly one file — this one. The `layer` family and the `createLayerParts` factory are already on disk. AlertDialog reuses Dialog's `Backdrop`, `Popup`, `Title`, `Description`, `Close` and `Portal` at runtime; the factory injects the namespace so each component inherits its own divergence if a base ever splits them.
 
 ## What differs
 
@@ -19,5 +19,5 @@ Only three things: the primitive namespace, the absence of a close button (`show
 
 | Part | Source |
 |---|---|
-| `Root` / `Trigger` / `Portal` | Base UI `AlertDialog` |
+| `Root` / `Trigger` / `Portal` | primitive `AlertDialog` |
 | `Backdrop` / `Content` / `Header` / `Body` / `Footer` / `Title` / `Description` / `Close` | `layer` via `createLayerParts` |

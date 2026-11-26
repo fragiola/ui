@@ -1,6 +1,5 @@
 "use client";
 
-import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
 import {
     BookOpenIcon,
     ChevronRightIcon,
@@ -18,6 +17,7 @@ import { Collapsible } from "#/components/ui/collapsible";
 import { DropdownMenu } from "#/components/ui/dropdown-menu";
 import { Separator } from "#/components/ui/separator";
 import { Sidebar } from "#/components/ui/sidebar";
+import { CollapsiblePrimitive } from "#/lib/base";
 
 // An app shell. The sidebar is palette-raised; the page beside it (the Inset)
 // is palette-surface, its content placeholders panels (a `line` border, no

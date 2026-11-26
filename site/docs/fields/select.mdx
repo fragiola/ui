@@ -24,13 +24,17 @@ If this file contained a class that did not come from a family, the recombinatio
 
 Installing `select` after `dropdown-menu` and `field` writes exactly one file — `select.tsx` itself. The three families it depends on are already on disk.
 
+## Bases
+
+On Fragiola Primitives (the default base) the list opens below the trigger (the APG's select-only combobox); Base UI aligns it over the selected item. Give the list room below the trigger: the example's frame is 496px for its last row. DOM focus stays on the trigger while the list is open (`aria-activedescendant`), Tab chooses the highlighted option, and a printable key opens the list on the matching option. `items` takes the same list of `{ value, label }` or map of value to label on both bases, and a select is non-modal by default (`modal` restores Base UI's).
+
 ## Parts
 
 | Part | Source |
 |---|---|
-| `Root` | Base UI `Select.Root` |
+| `Root` | primitive `Select.Root` |
 | `Trigger` | `field.row()` + layout |
-| `Value` | Base UI `Select.Value` |
+| `Value` | primitive `Select.Value` |
 | `Content` | `popup.content()` |
 | `Item` | `menu.selectableItem()` |
 | `Label` | `menu.label()` |

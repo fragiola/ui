@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { BASES } from "../../packages/registry/bases.ts";
 
 const root = join(import.meta.dirname, "../..");
 const read = (path: string) => readFileSync(join(root, path), "utf8");
@@ -26,5 +27,14 @@ describe("the CI workflow", () => {
         expect(read(".github/workflows/ci.yml")).not.toContain(
             "playwright install",
         );
+    });
+
+    it("runs the per-base job on every base of the registry", () => {
+        const matrix = read(".github/workflows/ci.yml").match(
+            /^ {8}base: \[([^\]]*)\]$/m,
+        );
+        expect(matrix, "the bases job's matrix").not.toBeNull();
+        const listed = (matrix?.[1] ?? "").split(",").map((b) => b.trim());
+        expect(listed.sort()).toEqual(BASES.map((base) => base.name).sort());
     });
 });

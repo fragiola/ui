@@ -5,7 +5,7 @@ description: "How components compose: `render` instead of `asChild`, one wrapper
 
 ## `render`, never `asChild`
 
-One polymorphism mechanism, matching Base UI. A dialog title is not a new
+One polymorphism mechanism, matching both bases. A dialog title is not a new
 class — it is the text primitive wearing the dialog's a11y wiring:
 
 ```tsx
@@ -20,7 +20,7 @@ produces 17 title classes in the baseline.
 
 ## When parts are identical, share the wrapper
 
-Some primitives are literally the same object across components — in Base UI,
+Some primitives are literally the same object across components — on both bases,
 `ContextMenu.Item === Menu.Item`, with only `Root` and `Trigger` differing.
 There, write the wrappers once as a factory and inject the namespace:
 

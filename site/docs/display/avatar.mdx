@@ -7,4 +7,9 @@ description: "A profile picture with a fallback for when the image is loading or
 
 <Example id="avatar" />
 
-Base UI's primitive runs the loading-status state machine. No family — just palette roles and layout.
+The base's primitive runs the loading-status state machine. No family — just palette roles and layout.
+
+## Bases
+
+On Fragiola Primitives (the default base) a loaded image appears at once: its parts carry no state attributes, so the fade-in keyed on Base UI's `data-starting-style` does not run. The fallback and the loading states are the same on both bases.
+

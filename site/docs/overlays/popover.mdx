@@ -15,11 +15,15 @@ A popover is positioned by a floating-ui positioner and sized by `--available-he
 
 `Popover.Title` is `Text.Heading as="h2"` wearing the primitive's a11y wiring, stitched with `render`. `Popover.Description` is `Text.Paragraph`. The close affordance is `Clickable.Button variant="icon"`, positioned with logical properties.
 
+## Bases
+
+On Fragiola Primitives (the default base) the popover focuses its first tabbable element when it opens, or the popup when it has none (the APG's dialog pattern); `initialFocus` overrides it. After a press outside, focus returns to the trigger unless the press landed on a focusable element, as on Base UI. Placement and collision padding are the same on both bases.
+
 ## Parts
 
 | Part | Source |
 |---|---|
-| `Root` / `Trigger` | Base UI `Popover` |
+| `Root` / `Trigger` | primitive `Popover` |
 | `Content` | `popup.content()` + Portal + Positioner |
 | `Title` | `Text.Heading as="h2"` via `render` |
 | `Description` | `Text.Paragraph` via `render` |

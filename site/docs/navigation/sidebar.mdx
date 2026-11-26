@@ -91,10 +91,10 @@ useEffect(() => localStorage.setItem("sidebar_state", String(open)), [open]);
 
 ## Collapsible groups and sub-menus
 
-Base UI's `Collapsible` gives the behaviour, the sidebar part is its trigger through `render`, and `Collapsible.Panel` brings the height animation:
+The base's unstyled `Collapsible` (`CollapsiblePrimitive` from the `base` item, `npx shadcn@latest add @fragiola/base`) gives the behaviour, the sidebar part is its trigger through `render`, and `Collapsible.Panel` brings the height animation:
 
 ```tsx
-import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
+import { CollapsiblePrimitive } from "@/lib/base";
 
 <CollapsiblePrimitive.Root defaultOpen render={<Sidebar.MenuItem />}>
     <CollapsiblePrimitive.Trigger render={<Sidebar.MenuButton />}>
@@ -112,7 +112,7 @@ The styled `Collapsible.Root` and `Collapsible.Trigger` are not used here. They 
 
 ## RTL
 
-`side` is `start` or `end`, not `left` or `right`: a `start` sidebar is on the right in Arabic, its Drawer opens from the right, its edge line, sub-menu line, badges and actions all flip, and icon-mode tooltips open on the inline-end side. The Drawer reads the direction from Base UI's `DirectionProvider`.
+`side` is `start` or `end`, not `left` or `right`: a `start` sidebar is on the right in Arabic, its Drawer opens from the right, its edge line, sub-menu line, badges and actions all flip, and icon-mode tooltips open on the inline-end side. The Drawer reads the direction from the base's `DirectionProvider` (`DirectionProvider` from the `base` item).
 
 ## Keyboard
 

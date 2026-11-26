@@ -1,6 +1,10 @@
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import {
+    baseFromEnv,
+    resolveBaseFile,
+} from "../../../packages/registry/bases.ts";
 import { LEVELS } from "../../gallery.ts";
 import { examples } from "../src/examples/index.ts";
 
@@ -23,6 +27,7 @@ import { examples } from "../src/examples/index.ts";
 const APP = path.resolve(import.meta.dirname, "..");
 const EXAMPLES_DIR = path.join(APP, "src", "examples");
 const REGISTRY = path.resolve(APP, "../../packages/registry");
+const BASE = baseFromEnv(process.env);
 const OUT = path.resolve(APP, process.env.EMBED_OUT_DIR ?? "dist");
 
 type RegistryJson = {
@@ -41,12 +46,13 @@ const itemNames = new Set(registry.items.map((item) => item.name));
 
 // `#/components/ui/select` is what the reader writes as
 // `@/components/ui/select`; the registry ships it from `registry/ui/select`.
-// Same mapping as the vite alias.
+// Same mapping as the vite plugin: the file may be the base's own copy
+// (registry/bases/<base>/…), but the item ships it by its logical path.
 function registryFile(specifier: string): string | undefined {
     const rest = specifier.replace(/^#\/(components\/)?/, "");
     for (const ext of [".tsx", ".ts", "/index.tsx", "/index.ts"]) {
         const file = `registry/${rest}${ext}`;
-        if (existsSync(path.join(REGISTRY, file))) return file;
+        if (existsSync(resolveBaseFile(REGISTRY, BASE, file))) return file;
     }
     return undefined;
 }

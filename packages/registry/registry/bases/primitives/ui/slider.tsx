@@ -1,0 +1,157 @@
+"use client";
+
+import {
+    Slider as SliderPrimitive,
+    type SliderRootProps,
+} from "@fragiola/primitives-react/slider";
+import { Text } from "#/atoms/text";
+import { field } from "#/families/field";
+import { foundation } from "#/families/foundation";
+import { track } from "#/families/track";
+import type { PrimitiveProps } from "#/lib/base";
+import { cn } from "#/lib/cn";
+
+// Slider — a field control. This is the thesis test of the control/body rule
+// (architecture.md §3): a control that is NOT a text input underneath. The
+// slider carries no border, no background box, no height, no focus ring on a
+// box, no invalid state and no theme of its own. All of that arrives from
+// `field.row` when it is composed inside `Field`, exactly as it does for
+// `input`, `textarea`, `numeric` and `select`.
+//
+// The interactive element (Control) carries the `field-control` marker class,
+// which is what the `field-focus` custom variant in global.css matches. Without
+// it, the row's outline will not fire on focus — and it will fail silently.
+//
+// The thumb's own focus ring uses `palette-ring`. The fill grows from the
+// inline start and inverts under RTL — the primitive sets `inset-inline-start`
+// inline (a logical property), which is what makes that automatic. Vertical
+// orientation is behaviour from the primitive (`data-orientation=vertical`),
+// not a style variant.
+//
+// `track` is the family shared with `progress` (rail + fill). Installing
+// `slider` after `progress` writes exactly one file — `slider.tsx` itself.
+
+function SliderRoot({ className, ...props }: SliderRootProps) {
+    // Disabled like every control: the foundation's `disabled` on the root,
+    // which Fragiola Primitives marks `data-disabled`.
+    return (
+        <SliderPrimitive.Root
+            data-slot="slider"
+            className={cn(foundation.disabled(), className as string)}
+            {...props}
+        />
+    );
+}
+
+function SliderLabel({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Label, "label">) {
+    return (
+        <SliderPrimitive.Label
+            data-slot="slider-label"
+            render={<Text.Label />}
+            className={cn(field.label(), className as string)}
+            {...props}
+        />
+    );
+}
+
+function SliderValue({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Value, "div">) {
+    return (
+        <SliderPrimitive.Value
+            data-slot="slider-value"
+            className={cn(
+                "text-sm text-palette-accent/85",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+function SliderControl({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Control, "input">) {
+    // `field-control` is the marker the `field-focus` variant matches — the
+    // row's outline fires when this is focused. `touch-none` disables the
+    // browser's touch scrolling so a drag does not pan the page. The cross-axis
+    // padding gives the thumb room; the inline axis is governed by the rail.
+    // No border, no background, no height of its own — the row owns the box.
+    return (
+        <SliderPrimitive.Control
+            data-slot="slider-control"
+            className={cn(
+                "field-control relative flex w-full touch-none items-center py-2.5 outline-none",
+                "data-[orientation=vertical]:h-full data-[orientation=vertical]:w-fit data-[orientation=vertical]:flex-col data-[orientation=vertical]:px-2.5 data-[orientation=vertical]:py-2.5",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+function SliderTrack({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Track, "div">) {
+    return (
+        <SliderPrimitive.Track
+            data-slot="slider-track"
+            className={cn(track.rail(), className as string)}
+            {...props}
+        />
+    );
+}
+
+function SliderIndicator({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Indicator, "div">) {
+    return (
+        <SliderPrimitive.Indicator
+            data-slot="slider-indicator"
+            className={cn(track.fill(), className as string)}
+            {...props}
+        />
+    );
+}
+
+function SliderThumb({
+    className,
+    ...props
+}: PrimitiveProps<typeof SliderPrimitive.Thumb, "div">) {
+    // The thumb is the foundation's `knob` (the palette's `base` over a light
+    // shadow — the switch's thumb too) ringed in `ring`, the fill's colour, so
+    // it reads as the tip of the fill on any palette. Its focus is
+    // `focusNested`: the focusable is the primitive's hidden range input.
+    // The primitive positions the thumb absolutely and sets the translate
+    // inline, so no positioning class is needed here.
+    return (
+        <SliderPrimitive.Thumb
+            data-slot="slider-thumb"
+            className={cn(
+                foundation.knob(),
+                foundation.focusNested(),
+                "absolute block size-4 rounded-full border-2 border-palette-ring",
+                "transition-transform duration-150 data-[dragging]:scale-110",
+                className as string,
+            )}
+            {...props}
+        />
+    );
+}
+
+export const Slider = {
+    Root: SliderRoot,
+    Label: SliderLabel,
+    Value: SliderValue,
+    Control: SliderControl,
+    Track: SliderTrack,
+    Indicator: SliderIndicator,
+    Thumb: SliderThumb,
+};
