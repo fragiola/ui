@@ -147,6 +147,30 @@
                 {
                     "label": "Autocomplete",
                     "path": "fields/autocomplete"
+                },
+                {
+                    "label": "Listbox",
+                    "path": "fields/listbox"
+                },
+                {
+                    "label": "Cascade Select",
+                    "path": "fields/cascade-select"
+                },
+                {
+                    "label": "Select Virtual",
+                    "path": "fields/select-virtual"
+                },
+                {
+                    "label": "Combobox Virtual",
+                    "path": "fields/combobox-virtual"
+                },
+                {
+                    "label": "Autocomplete Virtual",
+                    "path": "fields/autocomplete-virtual"
+                },
+                {
+                    "label": "Listbox Virtual",
+                    "path": "fields/listbox-virtual"
                 }
             ]
         },
@@ -255,6 +279,14 @@
                 {
                     "label": "Menubar",
                     "path": "menus/menubar"
+                },
+                {
+                    "label": "Command",
+                    "path": "menus/command"
+                },
+                {
+                    "label": "Command Virtual",
+                    "path": "menus/command-virtual"
                 }
             ]
         },

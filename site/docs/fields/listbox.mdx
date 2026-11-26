@@ -1,0 +1,28 @@
+---
+title: "Listbox"
+description: "A list of options that stays on the page, for one value or several: roving focus, typeahead, ranges with Shift and Ctrl+A. It submits in a form."
+---
+
+<InstallCommand item="listbox" />
+
+<Example id="listbox" />
+
+## The look
+
+A listbox is a control, so its root is the control box (`menu.list`: `foundation.box` with a panel's radius). Its options take the DOM focus (a roving tab stop), so the focus and the choice are two things: the focused option draws the ring inside (`focusInset`), a chosen one is `selected` (soft, contrast) with a check, and hover is half of soft (`hoverRow`), as in every selectable list. Give the root a height (`max-h-*`) to make it scroll.
+
+## Keyboard
+
+Tab enters on the first chosen option, else the first. The arrows, Home, End, Page Up and Page Down move the focus; typing jumps to a label; Space chooses. With `multiple` (the APG's recommended model), Space toggles, Shift with an arrow or a press extends a range, and Ctrl+A chooses every option. `selectionBehavior="replace"` makes the choice follow the focus.
+
+## Bases
+
+Primitives-backed: Base UI has no listbox, so this one shared file wraps Fragiola Primitives' on every base. On Base UI, Base UI's `Field` does not reach it: name the list with `aria-labelledby` (the label's `id`) or `aria-label`, as the example does on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Root` + `menu.list()` |
+| `Item` | primitive `Item` + `menu.option()`, its indicator `menu.itemIndicator()` |
+| `Group` / `GroupLabel` / `Separator` | primitive parts + `menu.label()` / `menu.separator()` |

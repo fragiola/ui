@@ -102,6 +102,12 @@ const OVERLAYS: Record<string, Opener> = {
     "month-range-picker": "click",
     "year-picker": "click",
     "year-range-picker": "click",
+    // The selects of thousands of items and the cascade: each opens its
+    // list (the virtual ones render the rows in view).
+    "cascade-select": "click",
+    "select-virtual": "click",
+    "combobox-virtual": "click",
+    "autocomplete-virtual": "click",
 };
 
 // The examples whose rows are dragged in the frame: a row, and the folder it
@@ -757,13 +763,19 @@ async function popups(frame: Frame, anchor: Locator): Promise<Popup[]> {
                     return r.width > 0 && r.height > 0;
                 })
                 .map((el) => {
-                    const r = el.getBoundingClientRect();
+                    // A virtual list (its options carry their place in the
+                    // set) is as tall as all its rows and scrolls in its
+                    // popup by design: the popup is what must fit.
+                    const virtual = el.querySelector("[aria-setsize]") !== null;
+                    const r = (
+                        (virtual && el.closest('[data-slot$="-content"]')) ||
+                        el
+                    ).getBoundingClientRect();
                     const role = el.getAttribute("role");
                     let hidden: string | null = null;
-                    for (const node of [
-                        el,
-                        ...el.querySelectorAll<HTMLElement>("*"),
-                    ]) {
+                    for (const node of virtual
+                        ? []
+                        : [el, ...el.querySelectorAll<HTMLElement>("*")]) {
                         if (getComputedStyle(node).overflowY === "visible")
                             continue;
                         if (node.scrollHeight > node.clientHeight + 1) {
@@ -1166,6 +1178,8 @@ const MODALS: Record<string, { width?: number; slot: string }> = {
     "alert-dialog": { slot: "alert-dialog-trigger" },
     drawer: { slot: "drawer-trigger" },
     "component-showcase": { slot: "dialog-trigger" },
+    // The command palette in a dialog (Epic #166).
+    command: { slot: "dialog-trigger" },
     sidebar: { width: 400, slot: "sidebar-trigger" },
 };
 const PAGE = { width: 1200, height: 900 };

@@ -1,0 +1,23 @@
+---
+title: "Select Virtual"
+description: "A select over thousands of items that renders only the options in view, with the same trigger, popup and options as Select."
+---
+
+<InstallCommand item="select-virtual" />
+
+<Example id="select-virtual" />
+
+## Select's twin
+
+The parts are Select's, part for part, with the same family members in the same places (field + popup + menu), so the two look the same. The Root takes flat `items` (a virtual list has no groups), and `SelectVirtual.List` calls its function for each item in view, returning a `SelectVirtual.Item`. The highlighted option (and the chosen one, the ends) stays rendered and scrolls into view, so every key behaves as with all the items in the DOM; each option carries its place in the set (`aria-setsize`, `aria-posinset`). `onLoadMore` runs when the last row comes into view (with `loading` while a page loads). Give the popup a height (`max-h-80` on `Content`).
+
+## Bases
+
+Primitives-backed. Base UI's Select has no virtual list of its own, so a virtual select is Fragiola Primitives' Select on **every** base, beside the base's own Select, which stays as it is. On the Base UI base it therefore behaves as Fragiola Primitives' Select (see the Bases note of the [Select](/docs/fields/select#bases) page), and Base UI's `Field` does not reach it: name it with `aria-labelledby`, as the example does on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `List` | primitive `SelectVirtual.List`, with Select's List classes |
+| every other part | [Select's](/docs/fields/select#parts) |

@@ -1,0 +1,23 @@
+---
+title: "Command Virtual"
+description: "A command palette over thousands of actions that renders only the matches in view, with the same input, rows and keys as Command."
+---
+
+<InstallCommand item="command-virtual" />
+
+<Example id="command-virtual" />
+
+## Command's twin
+
+Every part is Command's but the `List`: it takes the actions as `items` (`{ value, keywords?, disabled? }`, plus anything of the app's), filters them with the Root's text and `filter`, and calls its function for each match in view, which returns a `CommandVirtual.Item`. The highlighted action, its neighbours, the best match and both ends stay rendered, so the arrows, Home, End and Enter behave as with every action in the DOM. The list is flat (no groups) and scrolls itself (`max-h-80`, Command's List).
+
+## Bases
+
+Primitives-backed, like Command: Fragiola Primitives' palette on every base, the same behaviour on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `List` | primitive `CommandVirtual.List`, with Command's List classes |
+| every other part | [Command's](/docs/menus/command#parts) |

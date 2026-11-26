@@ -658,8 +658,14 @@ in the remaining surface:
   the reason above: its items' resting text is secondary text. See
   `docs/port-report-epic-60.md`.
 - **`calendar`** has ~9 states per cell, but they are *state*, already covered.
-- **`command`** brings a third state vocabulary, which joins the `highlighted`
-  variant.
+- **`command`** — settled in Epic #166: Fragiola Primitives' Command marks its highlighted
+  action `data-highlighted`, which the `highlighted` variant already reads, so its rows are
+  `menu.item` with no new vocabulary. A standing Listbox, whose options take the DOM focus, is
+  the other case: its rows are the `menu` family's `option` member (`selected` with a check,
+  `hoverRow`, the ring inside), never lit by focus alone. The virtual lists (Select, Combobox,
+  Autocomplete, Listbox and Command over thousands of items) are primitives-backed twins:
+  Fragiola Primitives' component on every base, dressed part for part like the base's own
+  (`tests/virtual.test.ts`).
 - **`dockable`** — settled in Epic #66, the first special component (§5): the `dock`
   family, the styled parts, `Template.Simple`, no token and no palette added. One
   limit is open: the overflow menu is a `DropdownMenu`, whose popup portals into the

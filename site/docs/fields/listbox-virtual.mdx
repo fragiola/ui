@@ -1,0 +1,23 @@
+---
+title: "Listbox Virtual"
+description: "A listbox of thousands of options that renders only the rows in view; every key, range and the form value still reach every option."
+---
+
+<InstallCommand item="listbox-virtual" />
+
+<Example id="listbox-virtual" />
+
+## Listbox's twin
+
+The Root takes `items` (`{ value, label, disabled? }`, every option in the list's order) and a function returning a `ListboxVirtual.Item` for each one in view; the root is `menu.list` and the rows are `Listbox.Item`, so it looks like a Listbox. End, Page Up and Page Down, the typeahead, Shift ranges and Ctrl+A work over every item, each option carries its place in the set (`aria-setsize`, `aria-posinset`), and the hidden inputs submit every chosen value. `onLoadMore` runs when the last row comes into view (with `loading` while a page loads). The list is flat and vertical, and scrolls itself: give it a height.
+
+## Bases
+
+Primitives-backed, like Listbox: the same behaviour on both bases. Name it with `aria-labelledby` or `aria-label` on Base UI.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ListboxVirtual.Root` + `menu.list()` |
+| `Item` | [Listbox's](/docs/fields/listbox#parts) |
