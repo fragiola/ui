@@ -1,0 +1,54 @@
+---
+title: "Toast"
+description: "Brief notifications stacked in a corner: announced, closed by a timer, a swipe or Escape, reached with F6. A neutral card coloured by its icon's palette."
+---
+
+<InstallCommand item="toast" />
+
+<Example id="toast" />
+
+<Callout type="info">
+**No colour variants.** A toast is a neutral overlay card; its status is the palette class on its `Icon` (`palette-green`, `palette-danger`, …), which colours the icon through `accent`. The `palettes` row above changes nothing but that class. A new status colour is a new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never changes.
+</Callout>
+
+## The queue
+
+Toasts live in a queue outside the components. Put a `Toast.Provider` around the app and `Toast.Template.Simple` once inside it, then add toasts from any component with `Toast.useToastManager()` (`add`, `update`, `close`, `promise`), or create the queue in a plain module with `Toast.createToastManager()` and give it to the Provider (`toastManager`), so code outside React can add toasts too.
+
+`Toast.Template.Simple` renders every toast of the queue: the `title`, the `description`, and from the toast's `data` (`ToastData`) its `icon`, the icon's `palette` and one `action` (`{ label, onClick }`, which also closes the toast). A toast of `type: "loading"` (a `promise` in flight) never closes by itself.
+
+## The `toast` family
+
+The stack is a new idea, so it has a family of its own (`families/toast.tsx`, shipped by this item):
+
+- `viewport` — the fixed corner the stack grows from: the bottom, on the inline end (bottom right in LTR, bottom left in RTL).
+- `root` — one toast: an overlay (`foundation.overlay`). Collapsed, the older toasts peek above the frontmost one, scaled down a tenth per step; hovering the stack or reaching it with F6 spreads it out and pauses every timer. It reads only the variables and attributes both bases set (`--toast-index`, `--toast-offset-y`, `--toast-height`, `--toast-swipe-movement-*`, `data-expanded`, `data-limited`, `data-swipe-direction`, …).
+- `content` — the card's row, which clips and fades out while the toast is behind the frontmost one.
+- `icon`, `title` (the label type), `description` (secondary text), `actions` and `close` (Popover's icon button, on the inline end).
+
+## Not promoted on fragiola.com
+
+A toast is not a modal layer: the page stays usable under it. So, like the other non-modal popups, an example's toasts show in the corner of the example's frame on fragiola.com, not over the whole page.
+
+## Bases
+
+The component is Base UI's Toast on the Base UI base and Fragiola Primitives' on the default one; the queue's API (`add`, `update`, `close`, `promise`, `createToastManager`) is the same. Recorded differences:
+
+- **Swipe.** A toast dismisses with a swipe towards the right on Fragiola Primitives, and down or right on Base UI (each base's default `swipeDirection`; pass it to `Toast.Root` to choose).
+- **Title and description.** Fragiola Primitives takes strings; Base UI also takes React nodes.
+- **An action.** Base UI's toasts also take `actionProps`; on both bases `Toast.Template.Simple` reads its action from `data.action`.
+- **Close and assistive technology.** Base UI hides a toast's Close from assistive technology (`aria-hidden`) while the stack is collapsed; Fragiola Primitives keeps it named. Both keep it focusable, and Escape closes the focused toast on both.
+- **Behind the frontmost.** Base UI's `Content` part marks a toast behind the frontmost one (`data-behind`); Fragiola Primitives has no Content part, so `Toast.Content` is a `div` that the Root marks from the toast's index. The look is the same.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Provider` | primitive `Provider` |
+| `Viewport` | `toast.viewport()` + Portal + Viewport |
+| `Root` | `toast.root()` (`foundation.overlay()`) |
+| `Content` | `toast.content()` (Base UI: its `Content`) |
+| `Icon`, `Body`, `Actions` | `toast.icon()`, `toast.body()`, `toast.actions()` |
+| `Title` / `Description` | `toast.title()`, `toast.description()` |
+| `Action` / `Close` | `Clickable.Button` via `render` |
+| `Template.Simple` | the whole stack, from the Provider's queue |

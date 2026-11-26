@@ -1,0 +1,28 @@
+---
+title: "Hover Card"
+description: "A preview of what is behind a link, shown while it is hovered or focused. Not modal, never takes the focus, stays open under the pointer."
+---
+
+<InstallCommand item="hover-card" />
+
+<Example id="hover-card" />
+
+## `popup.content`
+
+The card is the floating box every popup shares (`popup.content`), with a card's width and padding. The trigger is the link itself, an `<a>`: wear `Text.Link` through `render`, or any element. The card is supplementary: it holds nothing a reader needs that the link's destination does not have, since a touch never opens it.
+
+## Behaviour
+
+Hovering the link, or reaching it with Tab, opens the card after `delay` (600ms); leaving both the link and the card closes it after `closeDelay` (300ms). The pointer can cross the gap to the card without closing it, so a link inside the card can be followed. Escape and a press outside close it; the focus stays where it was.
+
+## Bases
+
+The component is Base UI's Preview Card on the Base UI base and Fragiola Primitives' Hover Card on the default one. `delay` and `closeDelay` are the Root's on both bases (Fragiola Primitives' API): Base UI takes them on its Trigger, so the Base UI file hands them down, and a Trigger's own value still wins there. On Fragiola Primitives, focus leaving the card for an element outside it also closes it. Parts, classes and `data-slot` names are the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `HoverCard` (Base UI: `PreviewCard`) |
+| `Trigger` | primitive `Trigger` (an `<a>`) |
+| `Content` | `popup.content()` + Portal + Positioner |

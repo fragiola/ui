@@ -462,6 +462,24 @@ export const examples: Example[] = [
         height: 340,
         load: () => import("./context-menu.tsx"),
     },
+    {
+        id: "menubar",
+        title: "Menubar",
+        description:
+            "A document editor's File, Edit, View and Help: one tab stop, the arrows move along the bar and from one open menu to the next, each menu the dropdown's list from the shared factory.",
+        level: "menus",
+        order: 3,
+        features: [
+            "Menubar.Menu",
+            "Menubar.Trigger",
+            "menu.barItem",
+            "createMenuParts",
+        ],
+        docs: "/docs/menus/menubar",
+        layout: "flow",
+        height: 420,
+        load: () => import("./menubar.tsx"),
+    },
 
     // ─── Overlays ───────────────────────────────────────────────────────────
     {
@@ -543,6 +561,42 @@ export const examples: Example[] = [
         layout: "flow",
         height: 140,
         load: () => import("./tooltip.tsx"),
+    },
+    {
+        id: "hover-card",
+        title: "Hover card",
+        description:
+            "A byline whose author link previews the profile while it is hovered or focused; the card stays open under the pointer and never takes the focus.",
+        level: "overlays",
+        order: 6,
+        features: [
+            "HoverCard.Trigger",
+            "HoverCard.Content",
+            "popup.content",
+            "render",
+        ],
+        docs: "/docs/overlays/hover-card",
+        layout: "flow",
+        height: 260,
+        load: () => import("./hover-card.tsx"),
+    },
+    {
+        id: "toast",
+        title: "Toast",
+        description:
+            "An editor's notifications in a stack at the corner: a saved draft with Undo, a publish that waits for its upload, an assertive alert, and a row of the same toast with each status palette on its icon.",
+        level: "overlays",
+        order: 7,
+        features: [
+            "Toast.Template.Simple",
+            "Toast.useToastManager",
+            "promise",
+            "palette-green",
+        ],
+        docs: "/docs/overlays/toast",
+        layout: "flow",
+        height: 420,
+        load: () => import("./toast.tsx"),
     },
 
     // ─── Disclosure ─────────────────────────────────────────────────────────
@@ -812,6 +866,23 @@ export const examples: Example[] = [
         layout: "flow",
         height: 206,
         load: () => import("./meter.tsx"),
+    },
+    {
+        id: "scroll-area",
+        title: "Scroll area",
+        description:
+            "A release list that scrolls down and a row of covers that scrolls sideways, each with thin scrollbars of its own over native scrolling.",
+        level: "display",
+        order: 10,
+        features: [
+            "ScrollArea.Template.Simple",
+            "ScrollArea.Scrollbar",
+            "rail",
+        ],
+        docs: "/docs/display/scroll-area",
+        layout: "flow",
+        height: 320,
+        load: () => import("./scroll-area.tsx"),
     },
     // ─── Special ────────────────────────────────────────────────────────────
     {

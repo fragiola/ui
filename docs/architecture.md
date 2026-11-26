@@ -126,8 +126,8 @@ Components sharing a visual skeleton share a **family** — one source of style,
 consumed by all of them.
 
 ```
-popup       the floating box       dropdown, context, select, combobox, popover, tooltip
-menu        the option list        dropdown, context, select, combobox, sidebar
+popup       the floating box       dropdown, context, menubar, select, combobox, popover, tooltip, hover card
+menu        the option list        dropdown, context, menubar, select, combobox, sidebar
 field       the input control      input, textarea, select trigger
 layer       backdrop + panel       dialog, alert-dialog, drawer
 disclosure  expand/collapse        accordion, collapsible
@@ -137,6 +137,7 @@ tree        the tree view          tree
 tile        the dashboard grid     grid-layout
 sheet       the data grid          data-grid
 calendar    the date grids         every calendar, and the pickers' popups
+toast       the notification stack toast
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -226,6 +227,18 @@ words. A range's middle is one `soft` band behind the boxes, drawn with logical 
 start's centre to the end's and rounded at a week's ends, so it joins the same way in RTL. The
 date and time fields are `field`'s (`segments`, `segment`, `separator`): the control is only its
 middle. Every one of these components is primitives-backed (§5).
+
+`toast` is the notification stack's family (Epic #166): the viewport in the page's corner
+(bottom, inline end), the toast card (`foundation.overlay`), its content row, icon, title,
+description, actions and close. Both bases describe the stack with the same CSS variables and
+attributes (`--toast-index`, `--toast-offset-y`, `--toast-height`, `--toast-swipe-movement-*`,
+`--toast-frontmost-height`, `data-expanded`, `data-limited`, `data-swipe-direction`), so the family
+reads only those: collapsed, the older toasts peek above the frontmost one and their content fades
+(`data-behind`); expanded, each stands at its offset. A toast's status is the palette class on its
+icon, never on the card. A Menubar adds no family: its menus are the menu factory's, and its items
+are the `menu` family's `barItem` member. The popup box carries its own `z-50 outline-none`:
+passed as a string argument (`popup.content("…")`), tailwind-variants dropped them, and
+`tests/popup.test.ts` now refuses a family member called with a string.
 
 `dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —

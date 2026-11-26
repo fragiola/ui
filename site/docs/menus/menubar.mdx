@@ -1,0 +1,34 @@
+---
+title: "Menubar"
+description: "An application's bar of menus (File, Edit, View): one tab stop, arrows along the bar and between open menus. Its menus come from the dropdown's factory."
+---
+
+<InstallCommand item="menubar" />
+
+<Example id="menubar" />
+
+## Style families
+
+A menubar's menus are ordinary menus, so everything below a `Trigger` comes from the `menu` parts factory, injected with the base's `Menu` namespace — the same source as `dropdown-menu` and `context-menu`. Installed after `dropdown-menu`, it writes one file. What is the bar's own:
+
+- `Menubar.Root` is a panel (`foundation.panel`) packing its items 4px apart, as the Toolbar does.
+- `Menubar.Trigger` is the menu family's `barItem` member: the popup item's row a step taller, in the label weight, lit by hover and by its open menu (`data-popup-open`). The arrows move the focus along the bar without opening anything, so focus alone is the ring (`focusInset`), never the fill.
+- `Menubar.Content` is the factory's `Content`. Its side follows the bar's orientation: below a horizontal bar, beside a vertical one (`orientation="vertical"` on the Root).
+
+## Keyboard
+
+Tab enters the bar on its last focused item and leaves it. The arrows along the bar move between the items (Left and Right swap in RTL), Home and End reach the ends; Down, Enter and Space open a menu on its first item, Up on its last. With a menu open, the bar's arrows close it and open the next one, and hovering another item switches to it. A disabled item stays focusable and opens nothing.
+
+## Bases
+
+On Fragiola Primitives (the default base) a menubar is non-modal by default, as the APG menubar is: the page keeps scrolling and the pointer reaches it while a menu is open. Base UI's `Menubar` is modal by default; pass `modal` to `Menubar.Root` for the same behaviour on either base. With a menu open, the bar's arrow moves to the next menu on both bases, but on Fragiola Primitives the focus stays on the bar's item (the APG's recommendation; Down then enters the menu), while Base UI moves it into the next menu, on its first item. Parts, classes and `data-slot` names are the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | the primitive's `Menubar` + `foundation.panel()` |
+| `Menu` | the primitive's `Menu.Root` |
+| `Trigger` | the primitive's `Menu.Trigger` + `menu.barItem()` |
+| `Content` / `SubContent` | the factory's `Content` (`popup.content()`) |
+| `Item`, `CheckboxItem`, `RadioGroup`, `RadioItem`, `Group`, `Label`, `Separator`, `Shortcut`, `Sub`, `SubTrigger` | the menu parts factory — see the [dropdown-menu parts table](/docs/menus/dropdown-menu#parts) |

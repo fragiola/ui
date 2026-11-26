@@ -1,0 +1,33 @@
+---
+title: "Scroll Area"
+description: "A box that scrolls natively — wheel, keys, touch, find in page — with thin scrollbars of its own in place of the browser's."
+---
+
+<InstallCommand item="scroll-area" />
+
+<Example id="scroll-area" />
+
+## The foundation
+
+The box adds no role, key or focus stop of its own: the content scrolls natively and the browser's scrollbars are replaced by parts that a pointer drags (the thumb) and presses (the track).
+
+- The track is transparent and thin, shown while the pointer is over the box or it scrolls (`data-hovering`, `data-scrolling`).
+- The thumb is a pill in `line`, the foundation's `rail`: the ground of every track, which stands out on any floor. The `knob` (`base` over a shadow) would vanish on the floor it sits on.
+- When the viewport is a tab stop — its content overflows and holds nothing focusable — its ring is `focusInset`, drawn inside since the box clips it. Name it then (`aria-label`, which `Template.Simple` turns into a named region).
+
+`ScrollArea.Template.Simple` is the common box: the viewport, its content, both scrollbars and the corner. Give it a height (or a `max-h-*`) and a `className` for the frame.
+
+## Bases
+
+The component is Base UI's Scroll Area on the Base UI base and Fragiola Primitives' on the default one: the same parts, attributes and CSS variables. Parts, classes and `data-slot` names are the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Root` |
+| `Viewport` | primitive `Viewport` + `foundation.focusInset()` |
+| `Content` | primitive `Content` |
+| `Scrollbar` | primitive `Scrollbar` + its `Thumb` (`foundation.rail()`) |
+| `Corner` | primitive `Corner` |
+| `Template.Simple` | the whole box |

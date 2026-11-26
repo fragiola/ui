@@ -251,6 +251,10 @@
                 {
                     "label": "Context Menu",
                     "path": "menus/context-menu"
+                },
+                {
+                    "label": "Menubar",
+                    "path": "menus/menubar"
                 }
             ]
         },
@@ -277,6 +281,14 @@
                 {
                     "label": "Tooltip",
                     "path": "overlays/tooltip"
+                },
+                {
+                    "label": "Hover Card",
+                    "path": "overlays/hover-card"
+                },
+                {
+                    "label": "Toast",
+                    "path": "overlays/toast"
                 }
             ]
         },
@@ -359,6 +371,10 @@
                 {
                     "label": "Chart",
                     "path": "display/chart"
+                },
+                {
+                    "label": "Scroll Area",
+                    "path": "display/scroll-area"
                 }
             ]
         },
