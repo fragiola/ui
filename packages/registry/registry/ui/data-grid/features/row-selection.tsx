@@ -62,7 +62,11 @@ function SelectCell({
                 const event = details.event;
                 model.run("selected-rows.toggle", {
                     rowIndex,
-                    extend: "shiftKey" in event && event.shiftKey === true,
+                    // A base may leave the event out of a programmatic change.
+                    extend:
+                        event !== undefined &&
+                        "shiftKey" in event &&
+                        event.shiftKey === true,
                 });
                 onCheckedChange?.(checked, details);
             }}
