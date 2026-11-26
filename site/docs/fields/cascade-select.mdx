@@ -1,0 +1,33 @@
+---
+title: "Cascade Select"
+description: "One path through a tree of options from a button whose popup shows a list per level, side by side. It submits the path in a form."
+---
+
+<InstallCommand item="cascade-select" />
+
+<Example id="cascade-select" />
+
+## Behaviour
+
+The focus stays on the trigger (the APG select-only combobox). Up and Down move within a level; Right (Left in RTL), Enter or Space open a parent's level, and hovering a parent opens it after a short delay; Left closes the deepest level. Choosing a leaf sets the path and closes; with `changeOnSelect`, a parent can be chosen too and the popup stays open on it. The value is the path of values (`["europe", "portugal", "lisbon"]`), submitted joined by `valueSeparator` (`/`).
+
+`CascadeSelect.Template.Simple` renders the trigger and one level per depth of the tree. `separator` shows the whole path in the trigger ("Europe / Portugal / Lisbon"); without it, the last label.
+
+## Style families
+
+Select's recombination, field + popup + menu: the trigger is a field row (`field.row`) with the chevron, the popup `popup.content` with its levels side by side (a `line` rule between them, on the inline axis), and an item `menu.selectableItem`. The chosen path and an open parent are lit like a submenu's trigger; a parent shows a chevron at the inline end (mirrored in RTL), a chosen leaf the check.
+
+## Bases
+
+Primitives-backed: Base UI has no cascader, so this one shared file wraps Fragiola Primitives' on every base. On Base UI, name the trigger with `aria-labelledby` (Base UI's `Field` does not reach it).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Root` |
+| `Trigger` / `Value` | primitive parts + `field.row()` |
+| `Content` | `popup.content()` + Portal + Positioner |
+| `Level` | primitive `Level`, one per depth |
+| `Item` | primitive `Item` + `menu.selectableItem()` |
+| `Template.Simple` | every level of the tree |

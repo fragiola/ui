@@ -77,6 +77,10 @@ const OVERLAYS: Record<string, Opener> = {
     "context-menu": "contextmenu",
     popover: "click",
     tooltip: "hover",
+    // The author link's card (no role: supplementary content of the link).
+    "hover-card": "hover",
+    // Every menu of the bar, each from its item.
+    menubar: "click",
     "navigation-menu": "click",
     // The team switcher, the user menu and each project's actions. Its own
     // Trigger opens nothing on desktop (it collapses the column); it comes
@@ -98,6 +102,12 @@ const OVERLAYS: Record<string, Opener> = {
     "month-range-picker": "click",
     "year-picker": "click",
     "year-range-picker": "click",
+    // The selects of thousands of items and the cascade: each opens its
+    // list (the virtual ones render the rows in view).
+    "cascade-select": "click",
+    "select-virtual": "click",
+    "combobox-virtual": "click",
+    "autocomplete-virtual": "click",
 };
 
 // The examples whose rows are dragged in the frame: a row, and the folder it
@@ -106,6 +116,50 @@ const DRAGS: Record<string, { row: string; folder: string }> = {
     tree: { row: "README.md", folder: "components" },
     "tree-file-explorer": { row: "README.md", folder: "docs" },
 };
+
+// Adds two toasts from the example's buttons and checks that each one lies
+// inside the frame, the region is named, and the frontmost is the newest.
+async function driveToasts(page: Page, frame: Frame): Promise<string[]> {
+    const found: string[] = [];
+    await frame.getByRole("button", { name: "Save draft" }).click();
+    await page.waitForTimeout(400);
+    await frame.getByRole("button", { name: "Go offline" }).click();
+    await page.waitForTimeout(600);
+    if (
+        (await frame.getByRole("region", { name: "Notifications" }).count()) !==
+        1
+    )
+        found.push("no region named Notifications");
+    const toasts = await frame.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('[data-slot="toast"]')].map(
+            (el) => {
+                const r = el.getBoundingClientRect();
+                return {
+                    text: el.textContent ?? "",
+                    inView:
+                        r.left >= 0 &&
+                        r.top >= 0 &&
+                        r.right <= window.innerWidth &&
+                        r.bottom <= window.innerHeight,
+                    top: r.top,
+                };
+            },
+        ),
+    );
+    if (toasts.length !== 2) found.push(`${toasts.length} toasts, not 2`);
+    for (const toast of toasts)
+        if (!toast.inView)
+            found.push(`toast "${toast.text.slice(0, 20)}" outside the frame`);
+    const [newest, older] = toasts;
+    if (newest && older && !newest.text.includes("Connection lost"))
+        found.push("the newest toast is not first");
+    if (newest && older && older.top >= newest.top)
+        found.push("the older toast does not peek above the newest");
+    // By its slot: Base UI hides a toast's Close from assistive technology
+    // while the stack is collapsed (aria-hidden).
+    await frame.locator('[data-slot="toast-close"]').first().click();
+    return found;
+}
 
 // Drags a tree row onto the middle of a folder's row with the mouse, and
 // tells whether the row is now inside the folder (an expanded one: a
@@ -683,7 +737,7 @@ const theme = (frame: Frame) =>
 // frame's viewport, and whether any box inside it hides content (scrolls or
 // clips — what a squeezed popup does).
 const POPUPS =
-    '[role="menu"], [role="listbox"], [role="dialog"], [role="alertdialog"], [data-slot="tooltip-content"], [data-slot="navigation-menu-popup"]';
+    '[role="menu"], [role="listbox"], [role="dialog"], [role="alertdialog"], [data-slot="tooltip-content"], [data-slot="navigation-menu-popup"], [data-slot="hover-card-content"]';
 
 type Popup = {
     name: string;
@@ -709,13 +763,19 @@ async function popups(frame: Frame, anchor: Locator): Promise<Popup[]> {
                     return r.width > 0 && r.height > 0;
                 })
                 .map((el) => {
-                    const r = el.getBoundingClientRect();
+                    // A virtual list (its options carry their place in the
+                    // set) is as tall as all its rows and scrolls in its
+                    // popup by design: the popup is what must fit.
+                    const virtual = el.querySelector("[aria-setsize]") !== null;
+                    const r = (
+                        (virtual && el.closest('[data-slot$="-content"]')) ||
+                        el
+                    ).getBoundingClientRect();
                     const role = el.getAttribute("role");
                     let hidden: string | null = null;
-                    for (const node of [
-                        el,
-                        ...el.querySelectorAll<HTMLElement>("*"),
-                    ]) {
+                    for (const node of virtual
+                        ? []
+                        : [el, ...el.querySelectorAll<HTMLElement>("*")]) {
                         if (getComputedStyle(node).overflowY === "visible")
                             continue;
                         if (node.scrollHeight > node.clientHeight + 1) {
@@ -977,6 +1037,12 @@ for (const example of selected) {
                 say(p);
         }
 
+        // The toasts show in the frame's corner, whole, and stack: a toast is
+        // no modal layer, so it is not promoted (AGENTS.md).
+        if (example.id === "toast") {
+            for (const p of await driveToasts(page, frame)) say(p);
+        }
+
         const showcase = SHOWCASES[example.id];
         if (showcase) {
             const f = await open(page, example.id, example.height, {
@@ -1112,6 +1178,8 @@ const MODALS: Record<string, { width?: number; slot: string }> = {
     "alert-dialog": { slot: "alert-dialog-trigger" },
     drawer: { slot: "drawer-trigger" },
     "component-showcase": { slot: "dialog-trigger" },
+    // The command palette in a dialog (Epic #166).
+    command: { slot: "dialog-trigger" },
     sidebar: { width: 400, slot: "sidebar-trigger" },
 };
 const PAGE = { width: 1200, height: 900 };

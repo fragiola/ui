@@ -425,6 +425,104 @@ export const examples: Example[] = [
         height: 520,
         load: () => import("./autocomplete.tsx"),
     },
+    {
+        id: "listbox",
+        title: "Listbox",
+        description:
+            "A plan chosen from a few and the notification channels, several at once with ranges, in lists that stay on the page; the focus draws its ring, the choice is soft with a check.",
+        level: "fields",
+        order: 15,
+        features: [
+            "Listbox.Root",
+            "multiple",
+            "menu.option",
+            "palette-surface-blue",
+        ],
+        docs: "/docs/fields/listbox",
+        layout: "flow",
+        height: 660,
+        load: () => import("./listbox.tsx"),
+    },
+    {
+        id: "cascade-select",
+        title: "Cascade select",
+        description:
+            "A shipping destination chosen level by level — a region, a country, a city — in lists side by side, the whole path in the trigger and in the form value.",
+        level: "fields",
+        order: 16,
+        features: [
+            "CascadeSelect.Template.Simple",
+            "separator",
+            "changeOnSelect",
+            "popup.content",
+        ],
+        docs: "/docs/fields/cascade-select",
+        layout: "flow",
+        height: 280,
+        load: () => import("./cascade-select.tsx"),
+    },
+    {
+        id: "select-virtual",
+        title: "Select virtual",
+        description:
+            "A select over 10,000 products that renders only the options in view: End reaches the last, typing jumps to a name; the same look as Select.",
+        level: "fields",
+        order: 17,
+        features: [
+            "SelectVirtual.List",
+            "items",
+            "aria-setsize",
+            "menu.selectableItem",
+        ],
+        docs: "/docs/fields/select-virtual",
+        layout: "flow",
+        height: 460,
+        load: () => import("./select-virtual.tsx"),
+    },
+    {
+        id: "combobox-virtual",
+        title: "Combobox virtual",
+        description:
+            "A combobox over 10,000 cities that renders only the matches in view; the same input box, popup and options as Combobox.",
+        level: "fields",
+        order: 18,
+        features: [
+            "ComboboxVirtual.List",
+            "items",
+            "filter",
+            "menu.selectableItem",
+        ],
+        docs: "/docs/fields/combobox-virtual",
+        layout: "flow",
+        height: 460,
+        load: () => import("./combobox-virtual.tsx"),
+    },
+    {
+        id: "autocomplete-virtual",
+        title: "Autocomplete virtual",
+        description:
+            "A search box suggesting from 10,000 tags that renders only the matches in view; the same box, popup and rows as Autocomplete.",
+        level: "fields",
+        order: 19,
+        features: ["AutocompleteVirtual.List", "items", "menu.item"],
+        docs: "/docs/fields/autocomplete-virtual",
+        layout: "flow",
+        height: 460,
+        load: () => import("./autocomplete-virtual.tsx"),
+    },
+    {
+        id: "listbox-virtual",
+        title: "Listbox virtual",
+        description:
+            "A list of 10,000 customers that renders only the rows in view; End, Page Down, typing and Ctrl+A reach every one, kept in the form value.",
+        level: "fields",
+        order: 20,
+        features: ["ListboxVirtual.Root", "multiple", "aria-posinset"],
+        docs: "/docs/fields/listbox-virtual",
+        layout: "flow",
+        height: 410,
+        load: () => import("./listbox-virtual.tsx"),
+    },
     // ─── Menus ──────────────────────────────────────────────────────────────
     {
         id: "dropdown-menu",
@@ -461,6 +559,55 @@ export const examples: Example[] = [
         layout: "flow",
         height: 340,
         load: () => import("./context-menu.tsx"),
+    },
+    {
+        id: "menubar",
+        title: "Menubar",
+        description:
+            "A document editor's File, Edit, View and Help: one tab stop, the arrows move along the bar and from one open menu to the next, each menu the dropdown's list from the shared factory.",
+        level: "menus",
+        order: 3,
+        features: [
+            "Menubar.Menu",
+            "Menubar.Trigger",
+            "menu.barItem",
+            "createMenuParts",
+        ],
+        docs: "/docs/menus/menubar",
+        layout: "flow",
+        height: 340,
+        load: () => import("./menubar.tsx"),
+    },
+    {
+        id: "command",
+        title: "Command",
+        description:
+            "A project tool's command palette on the page and in a dialog opened by Cmd/Ctrl+K: typing filters and highlights the best match, the arrows move, Enter runs.",
+        level: "menus",
+        order: 4,
+        features: [
+            "Command.Template.Simple",
+            "Command.Shortcut",
+            "Dialog",
+            "keywords",
+        ],
+        docs: "/docs/menus/command",
+        layout: "flow",
+        height: 500,
+        load: () => import("./command.tsx"),
+    },
+    {
+        id: "command-virtual",
+        title: "Command virtual",
+        description:
+            "A go-to-file palette over 10,000 files that renders only the matches in view; the same input and rows as Command.",
+        level: "menus",
+        order: 5,
+        features: ["CommandVirtual.List", "items", "keywords"],
+        docs: "/docs/menus/command-virtual",
+        layout: "flow",
+        height: 520,
+        load: () => import("./command-virtual.tsx"),
     },
 
     // ─── Overlays ───────────────────────────────────────────────────────────
@@ -543,6 +690,42 @@ export const examples: Example[] = [
         layout: "flow",
         height: 140,
         load: () => import("./tooltip.tsx"),
+    },
+    {
+        id: "hover-card",
+        title: "Hover card",
+        description:
+            "A byline whose author link previews the profile while it is hovered or focused; the card stays open under the pointer and never takes the focus.",
+        level: "overlays",
+        order: 6,
+        features: [
+            "HoverCard.Trigger",
+            "HoverCard.Content",
+            "popup.content",
+            "render",
+        ],
+        docs: "/docs/overlays/hover-card",
+        layout: "flow",
+        height: 260,
+        load: () => import("./hover-card.tsx"),
+    },
+    {
+        id: "toast",
+        title: "Toast",
+        description:
+            "An editor's notifications in a stack at the corner: a saved draft with Undo, a publish that waits for its upload, an assertive alert, and a row of the same toast with each status palette on its icon.",
+        level: "overlays",
+        order: 7,
+        features: [
+            "Toast.Template.Simple",
+            "Toast.useToastManager",
+            "promise",
+            "palette-green",
+        ],
+        docs: "/docs/overlays/toast",
+        layout: "flow",
+        height: 420,
+        load: () => import("./toast.tsx"),
     },
 
     // ─── Disclosure ─────────────────────────────────────────────────────────
@@ -671,6 +854,37 @@ export const examples: Example[] = [
         layout: "fill",
         height: 640,
         load: () => import("./sidebar.tsx"),
+    },
+    {
+        id: "steps",
+        title: "Steps",
+        description:
+            "A workspace setup in three linear steps — complete, current and to come — whose next step opens once the current one is valid, then an order's steps vertical.",
+        level: "navigation",
+        order: 6,
+        features: [
+            "Steps.Template.Simple",
+            "linear",
+            "isStepValid",
+            "orientation",
+        ],
+        docs: "/docs/navigation/steps",
+        layout: "flow",
+        height: 470,
+        load: () => import("./steps.tsx"),
+    },
+    {
+        id: "link",
+        title: "Link",
+        description:
+            "A docs page's navigation with the current page and a disabled link, in Text.Link's look.",
+        level: "navigation",
+        order: 7,
+        features: ["Link", "current", "disabled", "render"],
+        docs: "/docs/navigation/link",
+        layout: "flow",
+        height: 90,
+        load: () => import("./link.tsx"),
     },
 
     // ─── Display ────────────────────────────────────────────────────────────
@@ -812,6 +1026,41 @@ export const examples: Example[] = [
         layout: "flow",
         height: 206,
         load: () => import("./meter.tsx"),
+    },
+    {
+        id: "scroll-area",
+        title: "Scroll area",
+        description:
+            "A release list that scrolls down and a row of covers that scrolls sideways, each with thin scrollbars of its own over native scrolling.",
+        level: "display",
+        order: 10,
+        features: [
+            "ScrollArea.Template.Simple",
+            "ScrollArea.Scrollbar",
+            "rail",
+        ],
+        docs: "/docs/display/scroll-area",
+        layout: "flow",
+        height: 360,
+        load: () => import("./scroll-area.tsx"),
+    },
+    {
+        id: "carousel",
+        title: "Carousel",
+        description:
+            "Featured projects a slide a page with arrows, dots and a rotation that stops on focus, then two slides a page; it swipes, drags and runs right to left in RTL.",
+        level: "display",
+        order: 11,
+        features: [
+            "Carousel.Viewport",
+            "Carousel.Indicator",
+            "slidesPerPage",
+            "defaultPlaying",
+        ],
+        docs: "/docs/display/carousel",
+        layout: "flow",
+        height: 660,
+        load: () => import("./carousel.tsx"),
     },
     // ─── Special ────────────────────────────────────────────────────────────
     {

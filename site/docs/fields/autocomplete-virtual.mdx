@@ -1,0 +1,23 @@
+---
+title: "Autocomplete Virtual"
+description: "A autocomplete over thousands of items that renders only the options in view, with the same trigger, popup and options as Autocomplete."
+---
+
+<InstallCommand item="autocomplete-virtual" />
+
+<Example id="autocomplete-virtual" />
+
+## Autocomplete's twin
+
+The parts are Autocomplete's, part for part, with the same family members in the same places (field + popup + menu), so the two look the same. The Root takes flat `items` (a virtual list has no groups), and `AutocompleteVirtual.List` calls its function for each item in view, returning a `AutocompleteVirtual.Item`. The highlighted option (and the chosen one, the ends) stays rendered and scrolls into view, so every key behaves as with all the items in the DOM; each option carries its place in the set (`aria-setsize`, `aria-posinset`). `onLoadMore` runs when the last row comes into view (with `loading` while a page loads). Give the popup a height (`max-h-80` on `Content`).
+
+## Bases
+
+Primitives-backed. Base UI's Autocomplete has no virtual list of its own, so a virtual autocomplete is Fragiola Primitives' Autocomplete on **every** base, beside the base's own Autocomplete, which stays as it is. On the Base UI base it therefore behaves as Fragiola Primitives' Autocomplete (see the Bases note of the [Autocomplete](/docs/fields/autocomplete#bases) page), and Base UI's `Field` does not reach it: name it with `aria-labelledby`, as the example does on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `List` | primitive `AutocompleteVirtual.List`, with Autocomplete's List classes |
+| every other part | [Autocomplete's](/docs/fields/autocomplete#parts) |

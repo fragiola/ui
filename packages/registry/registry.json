@@ -387,7 +387,7 @@
             "name": "menu",
             "type": "registry:lib",
             "title": "menu family + parts factory",
-            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select, combobox and sidebar.",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, a menubar's barItem, a standing list's list and option, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, menubar, select, combobox and sidebar.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -442,6 +442,64 @@
                     "path": "registry/ui/context-menu.tsx",
                     "type": "registry:ui",
                     "target": "@ui/context-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "menubar",
+            "type": "registry:ui",
+            "title": "Menubar",
+            "description": "An application's bar of menus (File, Edit, View), the APG menubar: one tab stop, the arrows move along the bar and from one open menu to the next, hovering switches the open menu. Its menus come from the menu parts factory injected with the Menu namespace, as Dropdown Menu's; Root is a foundation panel, Trigger the menu family's barItem (lit by hover and its open menu). Installing after dropdown-menu writes one file.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/menu",
+                "@fragiola/popup",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/menubar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/menubar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "command",
+            "type": "registry:ui",
+            "title": "Command",
+            "description": "A command palette: a text field filtering a list of actions, always shown; the arrows move the highlight, typing highlights the best match, Enter runs it, Backspace goes back a page. Primitives-backed: Base UI has no command palette, so one shared file wraps Fragiola Primitives' on every base. Root a foundation panel, Item menu.item, Shortcut menu.shortcut, GroupLabel menu.label; in a Dialog it is a composition. Command.Template.Simple is the palette from groups of actions.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/command.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/command.tsx"
+                }
+            ]
+        },
+        {
+            "name": "command-virtual",
+            "type": "registry:ui",
+            "title": "Command Virtual",
+            "description": "A Command palette over thousands of actions that renders only the matches in view; the highlighted one, its neighbours, the best match and the ends stay rendered. Primitives-backed, Command's twin: every part is Command's but the List, which filters items and calls a function for each match in view.",
+            "registryDependencies": [
+                "@fragiola/command",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/command-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/command-virtual.tsx"
                 }
             ]
         },
@@ -605,6 +663,88 @@
             ]
         },
         {
+            "name": "select-virtual",
+            "type": "registry:ui",
+            "title": "Select Virtual",
+            "description": "A Select over thousands of items that renders only the options in view; the keys and typeahead reach every item and the highlighted option scrolls into view. Primitives-backed: Fragiola Primitives' Select on every base, beside the base's own, and its twin: field.row trigger, popup.content, menu.selectableItem options.",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/select-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/select-virtual.tsx"
+                }
+            ]
+        },
+        {
+            "name": "listbox",
+            "type": "registry:ui",
+            "title": "Listbox",
+            "description": "A list of options that stays on the page, for one value or several (the APG listbox): roving focus, typeahead, Shift ranges and Ctrl+A with multiple; it submits in a form. Primitives-backed: Base UI has no listbox. Root menu.list (the control box), Item menu.option (selected soft with a check, half-soft hover, the ring inside), GroupLabel menu.label.",
+            "registryDependencies": [
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/listbox.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/listbox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "listbox-virtual",
+            "type": "registry:ui",
+            "title": "Listbox Virtual",
+            "description": "A Listbox of thousands of options that renders only the ones in view: the keys, typeahead, ranges and form value reach every option, each with its place in the set. Primitives-backed, Listbox's twin: the same menu.list Root and Listbox.Item rows.",
+            "registryDependencies": [
+                "@fragiola/listbox",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/listbox-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/listbox-virtual.tsx"
+                }
+            ]
+        },
+        {
+            "name": "cascade-select",
+            "type": "registry:ui",
+            "title": "Cascade Select",
+            "description": "One path through a tree of options from a button whose popup shows a list per level, side by side (the APG select-only combobox): Right opens a parent's level, Left goes back, mirrored in RTL; it submits the path. Primitives-backed: Base UI has no cascader. Select's recombination: field.row trigger, popup.content, menu.selectableItem items with a chevron on parents. CascadeSelect.Template.Simple renders every level.",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/cascade-select.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/cascade-select.tsx"
+                }
+            ]
+        },
+        {
             "name": "layer",
             "type": "registry:lib",
             "title": "layer family + parts factory",
@@ -753,6 +893,68 @@
             ]
         },
         {
+            "name": "hover-card",
+            "type": "registry:ui",
+            "title": "Hover Card",
+            "description": "A preview of what is behind a link, shown while the link is hovered or keyboard-focused (Base UI's Preview Card): not modal, never takes the focus, stays open while hovered. Composes popup.content with a card's width and padding; delay and closeDelay are the Root's on every base.",
+            "registryDependencies": [
+                "@fragiola/popup",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/hover-card.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/hover-card.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toast",
+            "type": "registry:ui",
+            "title": "Toast",
+            "description": "Brief notifications in a stack at the page's corner: announced in live regions, closed by their timer, a swipe, Escape or Close, reached with F6; the queue lives outside React (createToastManager) or in the Provider (useToastManager). Ships the toast family: a neutral overlay card, collapsed into a pile and spread while hovered or focused, its status the palette class on its Icon, Title in the label type, Description secondary, Actions and a Close. Toast.Template.Simple renders the whole stack from the queue. No variants.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/base"
+            ],
+            "dependencies": ["lucide-react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/toast.tsx",
+                    "type": "registry:lib",
+                    "target": "@components/families/toast.tsx"
+                },
+                {
+                    "path": "registry/ui/toast.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toast.tsx"
+                }
+            ]
+        },
+        {
+            "name": "scroll-area",
+            "type": "registry:ui",
+            "title": "Scroll Area",
+            "description": "A box that scrolls natively (keyboard, wheel, touch, find in page) with thin scrollbars of its own: a transparent track shown while hovered or scrolling, a pill thumb in the foundation's rail; the viewport's ring is focusInset when it is a tab stop. ScrollArea.Template.Simple is the viewport, its content and both scrollbars.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/scroll-area.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/scroll-area.tsx"
+                }
+            ]
+        },
+        {
             "name": "disclosure",
             "type": "registry:lib",
             "title": "disclosure family",
@@ -836,6 +1038,25 @@
                     "path": "registry/ui/breadcrumb.tsx",
                     "type": "registry:ui",
                     "target": "@ui/breadcrumb.tsx"
+                }
+            ]
+        },
+        {
+            "name": "link",
+            "type": "registry:ui",
+            "title": "Link",
+            "description": "A link with the two states navigation gives it: current (aria-current=page) and disabled (focusable and announced, its press navigating nowhere, a router's included); the app's router link through render. Primitives-backed: Base UI has no link. Text.Link's look; the current page in the label weight, disabled the foundation's.",
+            "registryDependencies": [
+                "@fragiola/text",
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/link.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/link.tsx"
                 }
             ]
         },
@@ -1578,6 +1799,29 @@
             ]
         },
         {
+            "name": "autocomplete-virtual",
+            "type": "registry:ui",
+            "title": "Autocomplete Virtual",
+            "description": "An Autocomplete over thousands of suggestions that renders only the matches in view, the ends and the highlighted one pinned. Primitives-backed: Fragiola Primitives' Autocomplete on every base, beside the base's own, and its twin part for part (field + popup + menu).",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/autocomplete-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/autocomplete-virtual.tsx"
+                }
+            ]
+        },
+        {
             "name": "navigation-menu",
             "type": "registry:ui",
             "title": "Navigation Menu",
@@ -1619,6 +1863,46 @@
             ]
         },
         {
+            "name": "steps",
+            "type": "registry:ui",
+            "title": "Steps",
+            "description": "A process in a fixed number of steps: an ordered list whose current step is aria-current=step, the current step's content, Back and Next, and the completed content; linear makes a step reachable only once the ones before are valid. Primitives-backed: Base UI has no steps. A completed step's indicator is checked (the ring disc with a check), the current one current, one to come the control box; horizontal or vertical by orientation. Steps.Template.Simple is the whole process.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/steps.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/steps.tsx"
+                }
+            ]
+        },
+        {
+            "name": "carousel",
+            "type": "registry:ui",
+            "title": "Carousel",
+            "description": "Slides shown a page at a time (the APG carousel): Previous and Next, the slide picker's dots, an optional rotation that stops on focus; native scrolling with snapping, swipe and mouse drag, RTL. Primitives-backed: Base UI has no carousel. The arrows are outline icon buttons on the raised surface, a dot is the rail and checked (ring) on the current page.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/carousel.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/carousel.tsx"
+                }
+            ]
+        },
+        {
             "name": "combobox",
             "type": "registry:ui",
             "title": "Combobox",
@@ -1637,6 +1921,30 @@
                     "path": "registry/ui/combobox.tsx",
                     "type": "registry:ui",
                     "target": "@ui/combobox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "combobox-virtual",
+            "type": "registry:ui",
+            "title": "Combobox Virtual",
+            "description": "A Combobox over thousands of items that renders only the matching options in view, the ends, the highlighted and the selected one pinned. Primitives-backed: Fragiola Primitives' Combobox on every base, beside the base's own, and its twin part for part (field + popup + menu).",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/clickable",
+                "@fragiola/text",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/combobox-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/combobox-virtual.tsx"
                 }
             ]
         },

@@ -85,10 +85,7 @@ function SelectContent({
             >
                 <SelectPrimitive.Popup
                     data-slot="select-content"
-                    className={cn(
-                        popup.content("z-50 outline-none"),
-                        className as string,
-                    )}
+                    className={cn(popup.content(), className as string)}
                     {...props}
                 />
             </SelectPrimitive.Positioner>

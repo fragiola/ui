@@ -1,0 +1,29 @@
+---
+title: "Link"
+description: "A link with the two states navigation gives it: the current page and a disabled link that stays reachable. Text.Link's look; a router link through render."
+---
+
+<InstallCommand item="link" />
+
+<Example id="link" />
+
+## States
+
+- `current` marks the page the app is on (`aria-current="page"`): the underline takes the text's colour and the label weight.
+- `disabled` keeps the link in the tab order and announces it as unavailable (`aria-disabled="true"`); its press navigates nowhere and reaches no handler, a router's included. It is the foundation's `disabled`.
+
+A router's link goes through `render` (`render={<RouterLink to="/docs" />}`): the router keeps its navigation, and the app decides `current` from it.
+
+## The look
+
+`Text.Link`'s, shared through `LINK_TEXT` (the text atom): `contrast`, underlined in `line`, the underline taking the text's colour on hover. Use `Text.Link` for a plain link in running text, `Link` when the link has a state.
+
+## Bases
+
+Primitives-backed: Base UI has no link, so this one shared file wraps Fragiola Primitives' on every base, with the same behaviour on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Link` | primitive `Link` + `LINK_TEXT` + `foundation.disabled()` |

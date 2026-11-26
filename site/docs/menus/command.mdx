@@ -1,0 +1,42 @@
+---
+title: "Command"
+description: "A command palette: a field that filters a list of actions, always shown. Typing highlights the best match, the arrows move, Enter runs it."
+---
+
+<InstallCommand item="command" />
+
+<Example id="command" />
+
+## The palette
+
+The focus stays in the input; the highlighted action is announced through `aria-activedescendant` (the APG combobox with its list always displayed). Typing filters the actions by their `value` and `keywords` and highlights the best match, the arrows, Home and End move the highlight, Enter or a press runs the action (`onSelect`). A group with no match hides, and so does a separator while there is text. `Command.Empty` speaks when nothing matches, `Command.Loading` while `loading` results arrive (`filter={null}` when the app filters them). Nested pages are a stack of keys (`pages`); Backspace on an empty input goes back.
+
+`Command.Template.Simple` is the common palette: the input, the groups of actions (`groups`: each `{ label, actions }`, an action `{ value, label?, icon?, shortcut?, keywords?, disabled?, onSelect? }`) and the empty state.
+
+## In a dialog
+
+A palette in a dialog is a composition, not a part: a `Dialog.Content` (with `showClose={false}`) holding a visually hidden `Dialog.Title` and a `Command.Root` without its border. The input is the dialog's first tabbable element, so it takes the focus; Escape closes the dialog. The shortcut that opens it (Cmd/Ctrl+K) is the app's, as in the example. On fragiola.com the dialog is promoted over the page like every modal example.
+
+## Style families
+
+- `Root` is a panel (`foundation.panel`), a column that clips.
+- `Input` is the search row: a glass, then the input with no body of its own, over a `line` rule. The palette's focus is its highlighted item, so the input draws no ring.
+- `Item` is the popup item (`menu.item`), lit by `highlighted`; `Shortcut` is `menu.shortcut`, the keyboard hint at the inline end; `GroupLabel` is `menu.label`, `Separator` `menu.separator`.
+- `Empty` and `Loading` are secondary text.
+
+## Bases
+
+Primitives-backed: Base UI has no command palette, so this one shared file wraps Fragiola Primitives' Command on every base, and inside a Base UI `Dialog` on the Base UI base. Its behaviour is the same on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Root` + `foundation.panel()` |
+| `Input` | primitive `Input`, in the search row |
+| `List` | primitive `List` |
+| `Group` / `GroupLabel` / `Separator` | primitive parts + `menu.label()` / `menu.separator()` |
+| `Item` | primitive `Item` + `menu.item()` |
+| `Shortcut` | a `<kbd>` + `menu.shortcut()` |
+| `Empty` / `Loading` | primitive live regions, secondary text |
+| `Template.Simple` | the palette from groups of actions |

@@ -1,0 +1,41 @@
+---
+title: "Steps"
+description: "A process in a fixed number of steps — the list with the current step marked, its content, Back and Next — complete, current and to come."
+---
+
+<InstallCommand item="steps" />
+
+<Example id="steps" />
+
+## The states
+
+Every step is complete, current or to come, and each state is a foundation member, mapped onto the attributes the members read (as the calendar does):
+
+- a **complete** step's indicator is `checked` — the `ring` disc with a check — and the separator after it the `ring` fill on the `rail`;
+- the **current** step's indicator is `current` (soft, contrast, the label weight), and its title is in `contrast`;
+- a step **to come** is the control box (`box`), its number and title secondary text.
+
+The list is an ordered list whose current step carries `aria-current="step"`; its triggers are buttons that Tab reaches. Horizontal or vertical is `orientation`, never a variant: the parts read `data-orientation`, and a vertical separator runs under the indicator.
+
+## Linear
+
+With `linear`, a step is reached only once every step before it is valid (`isStepValid(index)`, the app's own state): the later triggers are disabled and dimmed, and Next waits for the current step. Past the last step the process is complete and `Steps.CompletedContent` shows.
+
+`Steps.Template.Simple` is the common process: the steps (`{ title, description?, content }`), each step's content, the completed content, Back and Next. Name the list with `aria-label`.
+
+## Bases
+
+Primitives-backed: Base UI has no steps, so this one shared file wraps Fragiola Primitives' on every base, with the same behaviour on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` / `List` / `Item` | primitive parts (`ol`, `li`) |
+| `Trigger` | primitive `Trigger` + `foundation.focus()` |
+| `Indicator` | `foundation.box()` + `current()` + `checked()` |
+| `Text` / `Title` / `Description` | the text beside the indicator; label type / `foundation.secondary()` |
+| `Separator` | `foundation.rail()` + `checked()` |
+| `Content` / `CompletedContent` | primitive parts |
+| `PrevTrigger` / `NextTrigger` / `Actions` | `Clickable.Button` via `render`; the row they sit in |
+| `Template.Simple` | the whole process |

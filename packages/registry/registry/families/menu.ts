@@ -1,5 +1,6 @@
 // Family `menu` — the option list (item, selectableItem, label, separator,
-// group, shortcut, sub-trigger, item-indicator, navItem, navSubItem).
+// group, shortcut, sub-trigger, item-indicator, barItem, list, option, navItem,
+// navSubItem).
 // Origin: ~12 parts repeated across dropdown/context/menubar/select/combobox,
 // and the same list rebuilt a third time by shadcn's sidebar.
 //
@@ -115,6 +116,55 @@ const itemIndicator = tv({
     base: "pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center",
 });
 
+// barItem — an item of a menubar (Menubar.Trigger): the button that opens
+// one of the bar's menus. The same row as the popup items, a step taller,
+// in the label weight, lit by hover and by its open menu
+// (`data-popup-open`, as `subTrigger`). The bar packs its items, so the ring
+// is drawn inside (`focusInset`); no `outline-none`, which would swallow it.
+// The arrows move the focus along the bar without opening a menu, so focus
+// alone is the ring, never the fill.
+const barItem = tv({
+    extend: itemSkeleton,
+    base: [
+        foundation.hover(),
+        foundation.focusInset(),
+        `
+        h-8 cursor-default px-2.5 font-medium
+        hover:text-palette-contrast
+        data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast
+    `,
+    ],
+});
+
+// list — a list of options that stays on the page (Listbox): the control
+// box (`foundation.box`), a panel's radius, packing its options 6px in (the
+// separator's bleed, so a rule meets the stroke). It
+// scrolls itself when given a height; its options draw their focus inside.
+const list = tv({
+    base: [
+        foundation.box(),
+        foundation.disabled(),
+        "flex flex-col gap-px overflow-y-auto rounded-lg p-1.5 outline-none",
+    ],
+});
+
+// option — an option of a list on the page (Listbox.Item). It takes the
+// DOM focus (a roving tab stop), so unlike `item` it draws the focus ring
+// (`focusInset`) and is never lit by focus alone: the chosen options are
+// `selected` (soft, contrast, with the check), and hover is half of soft
+// (`hoverRow`), never on a selected option — the selectable lists' hover
+// (tree, grid). No `outline-none`, which would swallow the ring. Space for
+// the check on the inline end, as `selectableItem`.
+const option = tv({
+    extend: itemSkeleton,
+    base: [
+        foundation.selected(),
+        foundation.hoverRow(),
+        foundation.focusInset(),
+        "cursor-default py-1.5 pe-8 ps-1.5",
+    ],
+});
+
 // navItem — an item of a navigation list (Sidebar.MenuButton). Lit by hover,
 // by `data-active` (the current page, which also takes the label weight) and
 // by an open MENU it triggers (a team switcher is a navigation item that
@@ -159,6 +209,9 @@ export const menu = {
     shortcut,
     subTrigger,
     itemIndicator,
+    barItem,
+    list,
+    option,
     navItem,
     navSubItem,
 };

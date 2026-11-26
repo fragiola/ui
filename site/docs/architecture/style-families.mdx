@@ -7,11 +7,12 @@ Components sharing a visual skeleton share a **family** — one source of
 style, consumed by all of them.
 
 ```text
-popup    the floating box       dropdown, context, menubar, select, combobox, popover
+popup    the floating box       dropdown, context, menubar, select, combobox, popover, hover card
 menu     the option list        dropdown, context, menubar, select, combobox, command
 field    the input control      input, textarea, select trigger
 layer    backdrop + panel       dialog, alert-dialog, sheet, drawer
 calendar the date grids         every calendar, and the pickers' popups
+toast    the notification stack toast
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` +

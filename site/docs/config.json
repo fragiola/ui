@@ -147,6 +147,30 @@
                 {
                     "label": "Autocomplete",
                     "path": "fields/autocomplete"
+                },
+                {
+                    "label": "Listbox",
+                    "path": "fields/listbox"
+                },
+                {
+                    "label": "Cascade Select",
+                    "path": "fields/cascade-select"
+                },
+                {
+                    "label": "Select Virtual",
+                    "path": "fields/select-virtual"
+                },
+                {
+                    "label": "Combobox Virtual",
+                    "path": "fields/combobox-virtual"
+                },
+                {
+                    "label": "Autocomplete Virtual",
+                    "path": "fields/autocomplete-virtual"
+                },
+                {
+                    "label": "Listbox Virtual",
+                    "path": "fields/listbox-virtual"
                 }
             ]
         },
@@ -251,6 +275,18 @@
                 {
                     "label": "Context Menu",
                     "path": "menus/context-menu"
+                },
+                {
+                    "label": "Menubar",
+                    "path": "menus/menubar"
+                },
+                {
+                    "label": "Command",
+                    "path": "menus/command"
+                },
+                {
+                    "label": "Command Virtual",
+                    "path": "menus/command-virtual"
                 }
             ]
         },
@@ -277,6 +313,14 @@
                 {
                     "label": "Tooltip",
                     "path": "overlays/tooltip"
+                },
+                {
+                    "label": "Hover Card",
+                    "path": "overlays/hover-card"
+                },
+                {
+                    "label": "Toast",
+                    "path": "overlays/toast"
                 }
             ]
         },
@@ -317,6 +361,14 @@
                 {
                     "label": "Sidebar",
                     "path": "navigation/sidebar"
+                },
+                {
+                    "label": "Steps",
+                    "path": "navigation/steps"
+                },
+                {
+                    "label": "Link",
+                    "path": "navigation/link"
                 }
             ]
         },
@@ -359,6 +411,14 @@
                 {
                     "label": "Chart",
                     "path": "display/chart"
+                },
+                {
+                    "label": "Scroll Area",
+                    "path": "display/scroll-area"
+                },
+                {
+                    "label": "Carousel",
+                    "path": "display/carousel"
                 }
             ]
         },

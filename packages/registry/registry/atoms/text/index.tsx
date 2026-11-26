@@ -68,23 +68,18 @@ const Paragraph = React.forwardRef<
     );
 });
 
+// The link's look (docs/visual-language.md, Type): `contrast`, underlined in
+// `line`, the underline taking the text's colour on hover. Shared with the
+// Link component (`ui/link.tsx`), which adds its states.
+const LINK_TEXT = `${foundation.focus()} rounded-sm text-palette-contrast text-sm underline decoration-palette-line underline-offset-4 transition-colors duration-150 hover:decoration-current`;
+
 // A plain <a>. Consumers wire Next's or TanStack's Link through `render` —
 // Fragiola ships one polymorphism mechanism and it is `render`, never asChild.
 const Link = React.forwardRef<
     HTMLAnchorElement,
     React.AnchorHTMLAttributes<HTMLAnchorElement>
 >(function Link({ className, ...rest }, ref) {
-    return (
-        <a
-            ref={ref}
-            className={cn(
-                foundation.focus(),
-                "rounded-sm text-palette-contrast text-sm underline decoration-palette-line underline-offset-4 transition-colors duration-150 hover:decoration-current",
-                className,
-            )}
-            {...rest}
-        />
-    );
+    return <a ref={ref} className={cn(LINK_TEXT, className)} {...rest} />;
 });
 
 const Clickable = React.forwardRef<
@@ -194,4 +189,4 @@ export const Text = {
     Clickable,
 };
 
-export { SECONDARY_TEXT };
+export { LINK_TEXT, SECONDARY_TEXT };

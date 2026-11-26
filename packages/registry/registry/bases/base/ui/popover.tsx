@@ -58,10 +58,7 @@ function PopoverContent({
             >
                 <PopoverPrimitive.Popup
                     data-slot="popover-content"
-                    className={cn(
-                        popup.content("z-50 outline-none"),
-                        className as string,
-                    )}
+                    className={cn(popup.content(), className as string)}
                     {...popupProps}
                 >
                     {showClose ? (
