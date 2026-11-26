@@ -140,6 +140,51 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "search-field",
         reason: "Base UI has no search field",
     },
+    {
+        file: "registry/ui/calendar.tsx",
+        entry: "calendar",
+        reason: "Base UI has no calendar",
+    },
+    {
+        file: "registry/ui/range-calendar.tsx",
+        entry: "range-calendar",
+        reason: "Base UI has no range calendar",
+    },
+    {
+        file: "registry/ui/multiple-calendar.tsx",
+        entry: "multiple-calendar",
+        reason: "Base UI has no multiple-date calendar",
+    },
+    {
+        file: "registry/ui/month-calendar.tsx",
+        entry: "month-calendar",
+        reason: "Base UI has no month calendar",
+    },
+    {
+        file: "registry/ui/year-calendar.tsx",
+        entry: "year-calendar",
+        reason: "Base UI has no year calendar",
+    },
+    {
+        file: "registry/ui/month-range-calendar.tsx",
+        entry: "month-range-calendar",
+        reason: "Base UI has no month range calendar",
+    },
+    {
+        file: "registry/ui/year-range-calendar.tsx",
+        entry: "year-range-calendar",
+        reason: "Base UI has no year range calendar",
+    },
+    {
+        file: "registry/ui/calendar-preset.tsx",
+        entry: "calendar-preset",
+        reason: "Base UI has no calendar presets",
+    },
+    {
+        file: "registry/ui/calendar-view.tsx",
+        entry: "calendar-view",
+        reason: "Base UI has no calendar views",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

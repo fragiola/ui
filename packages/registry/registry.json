@@ -1160,6 +1160,177 @@
             ]
         },
         {
+            "name": "calendar",
+            "type": "registry:ui",
+            "title": "Calendar",
+            "description": "A month grid for choosing one date (the APG date grid): arrows by a day, Up and Down by a week, Page Up and Down by a month (Shift: a year), RTL swapping Left and Right; visibleMonths shows months side by side. Primitives-backed: Base UI has no calendar, so one shared file wraps Fragiola Primitives' on every base. Ships the calendar family: every cell state is a foundation member (the chosen date checked, today current, unavailable disabled, a range's middle one soft band joined to its ends, logical in RTL). Calendar.Template.Simple is the whole calendar. No variants.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/calendar.tsx",
+                    "type": "registry:lib",
+                    "target": "@components/families/calendar.tsx"
+                },
+                {
+                    "path": "registry/ui/calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "range-calendar",
+            "type": "registry:ui",
+            "title": "Range Calendar",
+            "description": "A range of dates: the first choice starts it, the second ends it (swapped when it comes first), the dates between preview it; Escape cancels a started range. Primitives-backed: one shared file on every base, with the Calendar's parts. The ends are checked, the middle one soft band joined to them, rounded at a week's ends, logical in RTL.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/range-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/range-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "multiple-calendar",
+            "type": "registry:ui",
+            "title": "Multiple Calendar",
+            "description": "Several dates: a press, Enter or Space toggles one; maxSelected caps them and name submits one hidden input per date. Primitives-backed: one shared file on every base, with the Calendar's parts; each chosen date is checked on its own.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/multiple-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/multiple-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "month-calendar",
+            "type": "registry:ui",
+            "title": "Month Calendar",
+            "description": "One month in a page of the 12 months of a year: arrows by a month, Up and Down by a row (columns), Page Up and Down by a year. Primitives-backed: one shared file on every base. Its cells are the Calendar's (the same box, states and range band), wider.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/month-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/month-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "year-calendar",
+            "type": "registry:ui",
+            "title": "Year Calendar",
+            "description": "One year in a page of 12, a page starting at a multiple of 12. Primitives-backed: one shared file on every base, with the Month Calendar's parts.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/month-calendar",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/year-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/year-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "month-range-calendar",
+            "type": "registry:ui",
+            "title": "Month Range Calendar",
+            "description": "A range of months: two choices, the months between previewed. Primitives-backed: one shared file on every base, with the Month Calendar's parts; the ends checked, the months between the Calendar's band.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/month-calendar",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/month-range-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/month-range-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "year-range-calendar",
+            "type": "registry:ui",
+            "title": "Year Range Calendar",
+            "description": "A range of years: two choices, the years between previewed. Primitives-backed: one shared file on every base, with the Month Calendar's parts; the ends checked, the years between the Calendar's band.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/month-calendar",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/year-range-calendar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/year-range-calendar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "calendar-preset",
+            "type": "registry:ui",
+            "title": "Calendar Preset",
+            "description": "A button that sets a calendar's value to a known date or range (Today, Last 7 days), inline or in a picker's popup, where a press is a choice. Primitives-backed: one shared file on every base. List is a column beside the calendar; Item a ghost row, selected while its value is the calendar's.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/calendar-preset.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/calendar-preset.tsx"
+                }
+            ]
+        },
+        {
+            "name": "calendar-view",
+            "type": "registry:ui",
+            "title": "Calendar View",
+            "description": "A day calendar switched between days, months and years: the Trigger (the heading as a button) goes one view up, a choice goes back down, and the new view's focused cell takes the focus. Primitives-backed: one shared file on every base. CalendarView.Template.Simple is the three views.",
+            "registryDependencies": [
+                "@fragiola/calendar",
+                "@fragiola/month-calendar",
+                "@fragiola/year-calendar",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/calendar-view.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/calendar-view.tsx"
+                }
+            ]
+        },
+        {
             "name": "autocomplete",
             "type": "registry:ui",
             "title": "Autocomplete",
