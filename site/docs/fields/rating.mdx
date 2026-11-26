@@ -1,0 +1,62 @@
+---
+title: "Rating"
+description: "A score chosen among stars: the keys, a hover preview, half steps, read-only and RTL."
+---
+
+<InstallCommand item="rating" />
+
+<Example id="rating" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A rating is the APG's rating radio group: the **Root** is a `radiogroup` and each star a `radio`
+named by its score. It is one tab stop (the checked star, else the first); **ArrowRight** and
+**ArrowDown** raise the score one step, **ArrowLeft** and **ArrowUp** lower it (Left and Right
+swap in RTL, and wrap with `loopFocus`), **Home** and **End** go to the ends, and the focus
+follows the value. A mouse over the stars previews the value under it; a press chooses it.
+`allowHalf` steps by halves: the arrows step by 0.5, and a press on a star's inline-start half
+(its right half in RTL) chooses `index - 0.5`. `allowClear` lets a press on the current value
+clear it. `readOnly` shows a score that stays focusable, `disabled` takes it out of the tab
+order. The **HiddenInput** submits it (`name`, `required`), nothing while it is `0`.
+
+`Rating.Template.Simple` renders a star per step of `count` (5), named by its score in English
+("1 star", "2 stars", and "2.5 stars" on the star that holds a half value), and the HiddenInput.
+Every Root prop is forwarded; `className` goes to the row. Name it (`aria-label`, or
+`aria-labelledby` a label's `id`). Rendering the stars yourself, use the Root's children
+function, `({ items, value }) => ...`, and name each `Item`.
+
+## The look
+
+It adds no family. A filled star is "on", so it is `ring`, the colour of every checked control
+(the palette class recolours it); an empty one is the `line` ground, as a track's rail. An
+**Item**'s default mark is a star drawn empty, half or whole from its state (`highlighted`,
+`half`), so the hover preview and a half value draw the same way; give an Item children (a
+node, or a function of its state) for another mark. A half star is filled on its inline-start
+half, so it follows RTL. The focus is the standalone ring; a disabled rating is dimmed once, on
+the Root.
+
+## Bases
+
+**Primitives-backed.** Base UI has no rating, so this is one shared file (`ui/rating.tsx`) that
+wraps Fragiola Primitives' `Rating` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the rating with `aria-labelledby` (a label's `id`) or `aria-label`, and pass `name`,
+`required` and `disabled` to the Root. On Fragiola Primitives the rating is also a `Field`
+control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Rating.Root` (the `radiogroup`), a row; `disabled` |
+| `Item` | primitive `Rating.Item` (a `radio`) + `focus`; the star mark in `line` and `ring` |
+| `HiddenInput` | primitive `Rating.HiddenInput` |
+| `Template.Simple` | a named star per step, and the hidden input |

@@ -1,0 +1,59 @@
+---
+title: "Editable"
+description: "A text edited in place: it turns into the field's box, commits with Enter or a blur, reverts with Escape."
+---
+
+<InstallCommand item="editable" />
+
+<Example id="editable" />
+
+An editable shows a value as text and edits it in place. `activationMode` decides what starts an
+edit on the **Preview**: its focus (`"focus"`, the default: the preview is a tab stop),
+`"click"`, `"dblclick"`, or only the **EditTrigger** (`"none"`). The edit starts with the whole
+text selected. `submitMode` decides what commits it: **Enter**, leaving the field, both (the
+default) or only the **SubmitTrigger**; **Escape** or the **CancelTrigger** reverts it. The focus
+then returns to the EditTrigger, else the Preview. `onValueChange` reports every keystroke,
+`onValueCommit` the value an edit ends with, `onValueRevert` the value a revert goes back to.
+The **Input** is the form control (`name`, `required`, `maxLength`); `placeholder` shows while
+the value is empty; `readOnly` and `disabled` start no edit. For several lines, render a
+`textarea` through the Input's `render` (Ctrl or Cmd+Enter commits).
+
+`Editable.Template.Simple` is the Area with its Preview and Input, then an EditTrigger ("Edit"),
+a SubmitTrigger ("Save") and a CancelTrigger ("Cancel"). Every Root prop is forwarded;
+`className` goes to the root; `aria-label` and `aria-labelledby` name the input.
+
+## The look
+
+It is the [Field](/docs/fields/field)'s box, switched on in place. The **Area** is the box
+(`field.row`), with a transparent stroke while the Preview shows: the Preview's text sits where
+the Input's value will, at the control's height and padding, so starting an edit only draws the
+stroke around it (and the ring while the input has the focus). The **Preview** is body text
+(`contrast`) with the `hover` fill and the inset focus ring; its placeholder is secondary text.
+The **Input** is the bare control (`field.control`). The triggers are ghost square
+[Clickables](/docs/atoms/clickable), as tall as the box (a pencil, a check, a cross by default),
+each hidden while it does not apply. A disabled editable is dimmed once, on the Root.
+
+## Bases
+
+**Primitives-backed.** Base UI has no editable, so this is one shared file (`ui/editable.tsx`)
+that wraps Fragiola Primitives' `Editable` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the input with `aria-labelledby` (a label's `id`), `aria-label`, or give the Root an `id`
+and a label `htmlFor`, and pass `name`, `required` and `disabled` to the Root. On Fragiola
+Primitives the input is also a `Field` control. A label's press never starts an edit: its `for`
+names the input, hidden while the preview shows.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Editable.Root`, a row; `disabled` |
+| `Area` | primitive `Editable.Area` + `field.row()`, stroked while editing |
+| `Preview` | primitive `Editable.Preview` + `hover` + `focusInset` |
+| `Input` | primitive `Editable.Input` + `field.control()` |
+| `EditTrigger` | primitive `Editable.EditTrigger` + `clickable()`; a pencil by default |
+| `SubmitTrigger` | primitive `Editable.SubmitTrigger` + `clickable()`; a check by default |
+| `CancelTrigger` | primitive `Editable.CancelTrigger` + `clickable()`; a cross by default |
+| `Template.Simple` | the area and its three triggers |

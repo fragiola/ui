@@ -1,0 +1,74 @@
+---
+title: "Tags Input"
+description: "A text input that turns what is typed into tags: added by Enter, a delimiter or a paste, removed and edited by keyboard."
+---
+
+<InstallCommand item="tags-input" />
+
+<Example id="tags-input" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A tags input holds a list of strings. **Enter**, the `delimiter` (`,` by default; `null` for
+none) or a paste holding it adds the typed text as tags, each part trimmed. A part is refused when
+it repeats a tag (unless `allowDuplicates`), goes past `max`, or `validate` returns `false`:
+`onValueInvalid` reports it with its `cause` (`duplicate`, `max`, `invalid`), and the refused
+text stays in the input to be corrected. `blurBehavior` decides what leaving it does with the text
+(`"add"`, `"clear"`, or keep it, the default).
+
+The tags take the focus: **Backspace** at the start of the input or the previous arrow moves onto
+the last tag, the arrows move between tags (swapped in RTL), and **Backspace** or **Delete**
+removes the focused one. With `editable`, **Enter** or a double press on a tag edits it in place
+(`TagInput`): Enter saves it, Escape drops the edit, an empty text removes the tag. It is a form
+control: one hidden input per tag under `name`, `required` while there is no tag, and a form
+reset.
+
+`TagsInput.Template.Simple` renders every tag with its remove button (`aria-label="Remove react"` for the tag "react") and, with
+`editable`, its in-place edit ("Edit tag"), then the input (`placeholder`) and a clear button
+("Clear tags"). Every Root prop is forwarded; `className` goes to the box; `id`,
+`aria-label` and `aria-labelledby` name the input. Rendering the tags yourself, use the Root's
+children function, `({ value }) => ...`, and give each `Tag` its `index`.
+
+## The look
+
+A tags input is the field's box with chips inside. **Root** is the box itself (`field.row`): it
+rings while the input has the focus and is dimmed when disabled. **Control** is the control's
+area (`field.body`), a wrapping row of the tags (`chip.group`) and the **Input**, the bare
+control (`field.control`) filling the rest of the line; a press on the Control focuses the
+input. A **Tag** is the `chip` family's `item`, the very chip a
+[Combobox](/docs/fields/combobox)'s multiple selection shows: a soft badge with the badge's type,
+the standalone focus ring when focused, and the ring around its in-place edit (`chip.input`)
+while editing. **TagRemove** is a ghost square [Clickable](/docs/atoms/clickable) (`chip.remove`)
+and **ClearTrigger** a small ghost Clickable at the inline end, hidden while there is nothing to
+clear.
+
+## Bases
+
+**Primitives-backed.** Base UI has no tags input, so this is one shared file
+(`ui/tags-input.tsx`) that wraps Fragiola Primitives' `TagsInput` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the input with `aria-labelledby` (a label's `id`), `aria-label`, or an `id` and a label
+`htmlFor`, and pass `name`, `required` and `disabled` to the Root. On Fragiola Primitives the
+input is also a `Field` control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `TagsInput.Root` + `field.row()`; renders the hidden inputs |
+| `Control` | primitive `TagsInput.Control` + `field.body()` + `chip.group()` |
+| `Input` | primitive `TagsInput.Input` + `field.control()` |
+| `Tag` | primitive `TagsInput.Tag` + `chip.item()` |
+| `TagText` | primitive `TagsInput.TagText`, truncated |
+| `TagRemove` | primitive `TagsInput.TagRemove` + `clickable()` + `chip.remove()` |
+| `TagInput` | primitive `TagsInput.TagInput` + `chip.input()` |
+| `ClearTrigger` | primitive `TagsInput.ClearTrigger` + `clickable()` |
+| `Template.Simple` | the tags with their remove buttons, the input and the clear button |
