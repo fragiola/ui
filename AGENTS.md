@@ -62,11 +62,21 @@ These are deliberately tight. Do not "fix" them.
 `packages/registry/bases.ts` lists the bases; the default one is served at `r/`,
 the others at `r/<base>/`. Do not "fix" these:
 
-- **Only a file that imports a primitive library is per base**, at
+- **Only a file that imports a primitive library is per base** (except a
+  primitives-backed file, below), at
   `registry/bases/<base>/<its path>`, and it exists on **every** base. Everything
   else stays shared. Code reaches a base file through `#/` (never a relative
   import across the boundary), which resolves to the selected base's copy, else
   the shared file.
+- **A component Base UI lacks is primitives-backed**: one shared file that imports
+  `@fragiola/primitives-react` on every base (as shadcn's Calendar uses
+  react-day-picker on every base), on the explicit `PRIMITIVES_BACKED` list in
+  `bases.ts` with its reason and its Fragiola Primitives entry. Its item gets
+  `@fragiola/primitives-react@0.2.0` on every base (the build) and registry-depends on
+  `@fragiola/primitives-backed` (`lib/primitives-backed.tsx`: the base's direction,
+  `PrimitivesProps`). A component Base UI also has is a per-base pair. Every base
+  offers the same catalog; the guard refuses any other shared or Base UI file that
+  imports Fragiola Primitives, and a listed file whose entry Base UI ships.
 - **The UI adapts; a base library is never changed** to match another. A base file
   differs from its twins only in primitive wiring. Its exports, namespace and
   factory members, classes and `data-slot` names are identical
