@@ -102,6 +102,9 @@ const OVERLAYS: Record<string, Opener> = {
     "month-range-picker": "click",
     "year-picker": "click",
     "year-range-picker": "click",
+    // The color picker popover: its swatch trigger opens the picker's
+    // controls in a non-modal dialog.
+    "color-picker-popover": "click",
     // The selects of thousands of items and the cascade: each opens its
     // list (the virtual ones render the rows in view).
     "cascade-select": "click",

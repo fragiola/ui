@@ -300,6 +300,46 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "link",
         reason: "Base UI has no link with current and disabled states",
     },
+    {
+        file: "registry/ui/color-area.tsx",
+        entry: "color-area",
+        reason: "Base UI has no color area",
+    },
+    {
+        file: "registry/ui/color-wheel.tsx",
+        entry: "color-wheel",
+        reason: "Base UI has no color wheel",
+    },
+    {
+        file: "registry/ui/color-slider.tsx",
+        entry: "color-slider",
+        reason: "Base UI has no color slider: its Slider edits a number, not a color's channel",
+    },
+    {
+        file: "registry/ui/color-field.tsx",
+        entry: "color-field",
+        reason: "Base UI has no color field",
+    },
+    {
+        file: "registry/ui/color-swatch.tsx",
+        entry: "color-swatch",
+        reason: "Base UI has no color swatch",
+    },
+    {
+        file: "registry/ui/color-swatch-picker.tsx",
+        entry: "color-swatch-picker",
+        reason: "Base UI has no color swatch picker",
+    },
+    {
+        file: "registry/ui/color-picker.tsx",
+        entry: "color-picker",
+        reason: "Base UI has no color picker",
+    },
+    {
+        file: "registry/ui/color-picker-popover.tsx",
+        entry: "color-picker-popover",
+        reason: "Base UI has no color picker: its popup is Fragiola Primitives' opt-in popover entry",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

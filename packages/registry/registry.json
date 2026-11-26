@@ -1778,6 +1778,190 @@
             ]
         },
         {
+            "name": "color",
+            "type": "registry:lib",
+            "title": "color family",
+            "description": "The colour controls: the 2D area and its thumb, the hue wheel's ring, a channel slider's gradient track and thumb, a swatch over its transparency checkerboard and a swatch picker's option. The grounds are the colour being picked, read from the CSS variables each Fragiola Primitives part sets, never a palette role. Thumbs are the foundation's knob with the colour inside and a contrast hairline, readable over white, black and saturated colours; the area's thumb takes focusNested, the slider's and the wheel's focus. Zero variants.",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/color.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/color.ts"
+                }
+            ]
+        },
+        {
+            "name": "color-area",
+            "type": "registry:ui",
+            "title": "Color Area",
+            "description": "Two channels of a colour at once (saturation and brightness by default) on a 2D area: two APG sliders, one hidden range input per axis inside the thumb; a press moves and drags the thumb, the arrows move both axes and the focus follows the axis moved, RTL runs x from the right. Primitives-backed: Base UI has no colour area, so one shared file wraps Fragiola Primitives' on every base. The color family's area (the primitive's background layers) and areaThumb (knob, focusNested). ColorArea.Template.Simple is the area with both inputs named. Binds to a ColorPicker.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/color",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-area.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-area.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-wheel",
+            "type": "registry:ui",
+            "title": "Color Wheel",
+            "description": "A colour's hue on a ring: the thumb is an APG slider over 0–360°, a press on the ring moves and drags it, the arrows step and wrap. Primitives-backed: Base UI has no colour wheel, so one shared file wraps Fragiola Primitives' on every base. The color family's wheelTrack (the primitive's conic gradient masked into a ring) and wheelThumb (knob, focus). ColorWheel.Template.Simple is the ring and its thumb. Binds to a ColorPicker.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/color",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-wheel.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-wheel.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-slider",
+            "type": "registry:ui",
+            "title": "Color Slider",
+            "description": "One channel of a colour (hue, alpha, red, lightness, ...) on a track drawn in that channel's gradient: the thumb is an APG slider over the channel's range, RTL runs it from the right, vertical too. Primitives-backed: Base UI has no colour slider, so one shared file wraps Fragiola Primitives' on every base. The color family's sliderTrack (the primitive's gradient over a checkerboard for alpha) and sliderThumb (knob, focus); Label is the field's label, Output the channel's text, secondary. ColorSlider.Template.Simple is the whole slider. Binds to a ColorPicker.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/text",
+                "@fragiola/field",
+                "@fragiola/foundation",
+                "@fragiola/color",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-slider.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-slider.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-field",
+            "type": "registry:ui",
+            "title": "Color Field",
+            "description": "A colour typed as text: hex (rgb() and hsl() read too) committed on Enter or blur, the arrows stepping it; with channel, one channel as a spinbutton. A text that is no colour goes back to the value. Primitives-backed: Base UI has no colour field, so one shared file wraps Fragiola Primitives' on every base. The control is only its middle: Root is field.body, Input a bare field control; it goes in a Field.Row. Binds to a ColorPicker.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-swatch",
+            "type": "registry:ui",
+            "title": "Color Swatch",
+            "description": "A colour shown as a tile, its transparency over a checkerboard: an img named by the app, else by the colour's CSS text. Primitives-backed: Base UI has no colour swatch, so one shared file wraps Fragiola Primitives' on every base. The color family's swatch: the primitive's colour variable over the checkerboard, with a hairline edge. Shows a ColorPicker's colour when it has none.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/color",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-swatch.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-swatch.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-swatch-picker",
+            "type": "registry:ui",
+            "title": "Color Swatch Picker",
+            "description": "One colour of a palette of swatches: a listbox whose options take the focus, the arrows moving along a row and between the rows the layout wraps into, Space or Enter choosing, RTL swapping Left and Right; name submits the hex. Primitives-backed: Base UI has no swatch picker, so one shared file wraps Fragiola Primitives' on every base. The color family's swatchItem: the chosen option is checked (the ring frame), the others take the hover fill, focus is the standalone ring. ColorSwatchPicker.Template.Simple renders one option per colour. Binds to a ColorPicker.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/color",
+                "@fragiola/color-swatch",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-swatch-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-swatch-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-picker",
+            "type": "registry:ui",
+            "title": "Color Picker",
+            "description": "One colour edited by several controls at once: a Root that shares its colour with the Color Area, Wheel, Slider, Field, Swatch and Swatch Picker inside it (a control without a value of its own binds to it, so the parts stay in sync by pointer and keyboard), a format for the channel fields, an eyedropper where the browser has one, and its hex form value. Primitives-backed: Base UI has no colour picker, so one shared file wraps Fragiola Primitives' on every base. FormatSelect is a control box, EyeDropperTrigger an outline square Clickable. ColorPicker.Template.Simple is an area, a hue and an alpha slider, a swatch and hex field, and swatches.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/clickable",
+                "@fragiola/field",
+                "@fragiola/foundation",
+                "@fragiola/color-area",
+                "@fragiola/color-field",
+                "@fragiola/color-slider",
+                "@fragiola/color-swatch",
+                "@fragiola/color-swatch-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/color-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "color-picker-popover",
+            "type": "registry:ui",
+            "title": "Color Picker Popover",
+            "description": "A ColorPicker's controls in a non-modal popup opened from a swatch trigger: the focus moves into the popup, Escape closes it and returns the focus to the trigger, as an outside press does unless it focused something, Tab out closes it; the controls in the popup bind to the picker around them. Primitives-backed: one shared file wraps Fragiola Primitives' opt-in popover on every base. Trigger is an outline square Clickable holding the picker's swatch, Content the popup.content overlay. ColorPickerPopover.Template.Simple is the swatch trigger with the common picker in its popup.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/clickable",
+                "@fragiola/foundation",
+                "@fragiola/popup",
+                "@fragiola/color-picker",
+                "@fragiola/color-swatch",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/color-picker-popover.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/color-picker-popover.tsx"
+                }
+            ]
+        },
+        {
             "name": "autocomplete",
             "type": "registry:ui",
             "title": "Autocomplete",

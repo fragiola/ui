@@ -138,6 +138,7 @@ tile        the dashboard grid     grid-layout
 sheet       the data grid          data-grid
 calendar    the date grids         every calendar, and the pickers' popups
 toast       the notification stack toast
+color       the colour controls    color area, wheel, slider, swatch, swatch picker, color picker
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -239,6 +240,20 @@ icon, never on the card. A Menubar adds no family: its menus are the menu factor
 are the `menu` family's `barItem` member. The popup box carries its own `z-50 outline-none`:
 passed as a string argument (`popup.content("…")`), tailwind-variants dropped them, and
 `tests/popup.test.ts` now refuses a family member called with a string.
+
+`color` is the colour controls' family (Epic #169): the 2D area and its thumb, the hue wheel's
+ring, a channel slider's track and thumb, a swatch and a swatch picker's option. Their ground is the
+colour being picked, so it is never a palette role: each Fragiola Primitives part sets it as a CSS
+variable (`--color-area-background`, `--color-wheel-track-background`,
+`--color-slider-track-background`, `--color-swatch-color`, each thumb's `--color-*-thumb-color`)
+and the family only reads them. What shows through a transparent colour is a checkerboard in the
+palette's `line` and `base`. Every thumb is the foundation's `knob` with the colour inside it and a
+`contrast` hairline around it, so it reads over white, black and saturated colours in both themes
+(`scenarios/color/thumb-contrast`); the area's thumb holds two hidden range inputs (`focusNested`),
+the slider's and the wheel's thumb is itself the slider (`focus`). A swatch picker's chosen option is
+`checked` (a `ring` frame), mapped from the primitive's `data-selected` as the calendar's dates are.
+The Color Field and the picker's controls add nothing to it: a field is `field`'s, the popover
+`popup.content`. Every one of these components is primitives-backed (§5).
 
 `dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —

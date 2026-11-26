@@ -1,0 +1,59 @@
+---
+title: "Color Picker"
+description: "One colour edited by several controls at once: an area, sliders, fields and swatches that stay in sync."
+---
+
+<InstallCommand item="color-picker" />
+
+<Example id="color-picker" />
+
+A color picker holds one colour and shares it with the controls you place inside its `Root`: a
+[Color Area](/docs/color/color-area), a [Color Wheel](/docs/color/color-wheel),
+[Color Sliders](/docs/color/color-slider), [Color Fields](/docs/color/color-field), a
+[Color Swatch](/docs/color/color-swatch) and a [Color Swatch Picker](/docs/color/color-swatch-picker).
+A control with neither `value` nor `defaultValue` **binds** to the picker: it shows the picker's
+colour, and every change it makes, by pointer or keyboard, sets it, so the others follow at once.
+A control given its own value keeps its own state. `onValueChange` reports each change, in the
+space of the control that made it; `onValueCommit` fires once a change is complete (a drag ended,
+a key, a typed commit, a swatch chosen, an eyedropper's pick). `name` submits the colour as hex,
+`disabled` disables every control inside.
+
+`format` (`hex`, `rgb`, `hsl` or `hsb`) is the picker's state for the channel fields you show:
+`FormatSelect` is a native select of it, its options yours, and choosing `hsl` or `hsb` converts
+the value to that space so the channel fields edit it there (the colour does not change).
+`EyeDropperTrigger` picks a colour on the screen with the browser's EyeDropper API; it renders only
+where the browser has one (Chromium), else nothing.
+
+`ColorPicker.Template.Simple` is the common picker: an area (saturation and brightness), a hue and
+an alpha slider, the colour's swatch beside its hex field, and an option per colour of `swatches`.
+Every Root prop is forwarded; `className` goes to the root. For the same picker in a popup, see
+[Color Picker Popover](/docs/color/color-picker-popover).
+
+## The look
+
+It adds no family of its own. The Root is a column of its controls (`gap-3`), each dressed by the `color`
+family or the field's. The template's swatch-and-hex row is `color.pickerValue` (dimmed with a
+disabled picker) and its swatch `color.pickerSwatch`, as tall as the field. `FormatSelect` is a control box (`field.row` with the `field-control`
+marker: a native select that is its own box, as an OTP slot), and `EyeDropperTrigger` an outline
+square `Clickable` with a pipette icon.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color picker, so this is one shared file
+(`ui/color-picker.tsx`) that wraps Fragiola Primitives' `ColorPicker` on **both** bases, and the
+item depends on `@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name the picker's controls with `aria-label` or `aria-labelledby`, and pass `name` and
+`disabled` to the Root. On Fragiola Primitives the picker is also a `Field` control (a `group`
+named by the field's label).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorPicker.Root`, a column of its controls; renders the hidden input |
+| `FormatSelect` | primitive `ColorPicker.FormatSelect` + `field.row()` (the `field-control` marker) |
+| `EyeDropperTrigger` | primitive `ColorPicker.EyeDropperTrigger` + `Clickable` outline, square; a pipette by default |
+| `Template.Simple` | an area, a hue and an alpha slider, a swatch and hex field, and `swatches` |

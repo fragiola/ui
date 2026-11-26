@@ -1,0 +1,54 @@
+---
+title: "Color Slider"
+description: "One channel of a colour on a track drawn in that channel's gradient."
+---
+
+<InstallCommand item="color-slider" />
+
+<Example id="color-slider" />
+
+A color slider edits one channel of a colour: `channel` is `hue`, `saturation`, `lightness`,
+`brightness`, `red`, `green`, `blue` or `alpha`, and its range and steps are the channel's (0–360°
+by 1 for a hue, 0–100% for a saturation, 0–255 for a red, 0–100% by 1% for an alpha). The thumb
+is an APG slider: the arrows step it, Shift and Page Up / Page Down take the large step, Home and
+End go to the ends, a press on the track moves it there and drags it. In RTL a horizontal slider
+runs from the right; `orientation="vertical"` runs it from the bottom. `colorSpace` chooses the
+space the channel is edited in (a change reports the colour in it), and `name` submits the colour
+as hex.
+
+`Label` names the group and the thumb, and a press on it focuses the thumb; `Output` writes the
+channel's value (`120°`, `50%`). `ColorSlider.Template.Simple` is the label (the channel's name
+unless you give `label`), the value, the track and the thumb. Inside a
+[Color Picker](/docs/color/color-picker), a slider with neither `value` nor `defaultValue`
+**binds** to the picker's colour.
+
+## The look
+
+It composes the `color` family:
+
+- the **Track** is `color.sliderTrack`: the primitive's gradient from the channel's minimum to its
+  maximum (`--color-slider-track-background`), the colour's other channels kept. The ground is
+  the colour being picked, never a palette role. Under it is the checkerboard, seen only where
+  the gradient is transparent: the alpha channel.
+- the **Thumb** is `color.sliderThumb`: the knob with the colour inside and a `contrast` hairline,
+  as every colour thumb; it is the slider itself, so its ring is the standalone `focus`.
+- the **Label** is the field's label type, the **Output** secondary text.
+
+## Bases
+
+**Primitives-backed.** Base UI's Slider edits a number, not a colour's channel, and Base UI has no
+color slider, so this is one shared file (`ui/color-slider.tsx`) that wraps Fragiola Primitives'
+`ColorSlider` on **both** bases, and the item depends on `@fragiola/primitives-react@0.2.0` on
+both. It follows the direction of the base's `DirectionProvider` on Base UI too, and `dir="rtl"`
+without one. Its `Label` names it on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorSlider.Root` + `color.slider()`: the label and the value on one line, the track under them |
+| `Label` | primitive `ColorSlider.Label` rendering `Text.Label` + `field.label()` |
+| `Output` | primitive `ColorSlider.Output`, secondary text |
+| `Track` | primitive `ColorSlider.Track` + `color.sliderTrack()` |
+| `Thumb` | primitive `ColorSlider.Thumb` + `color.sliderThumb()` |
+| `Template.Simple` | the label, the value, the track and the thumb |

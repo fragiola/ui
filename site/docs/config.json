@@ -265,6 +265,44 @@
             ]
         },
         {
+            "label": "Color",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Color Area",
+                    "path": "color/color-area"
+                },
+                {
+                    "label": "Color Wheel",
+                    "path": "color/color-wheel"
+                },
+                {
+                    "label": "Color Slider",
+                    "path": "color/color-slider"
+                },
+                {
+                    "label": "Color Field",
+                    "path": "color/color-field"
+                },
+                {
+                    "label": "Color Swatch",
+                    "path": "color/color-swatch"
+                },
+                {
+                    "label": "Color Swatch Picker",
+                    "path": "color/color-swatch-picker"
+                },
+                {
+                    "label": "Color Picker",
+                    "path": "color/color-picker"
+                },
+                {
+                    "label": "Color Picker Popover",
+                    "path": "color/color-picker-popover"
+                }
+            ]
+        },
+        {
             "label": "Menus",
             "collapsible": true,
             "pages": [
