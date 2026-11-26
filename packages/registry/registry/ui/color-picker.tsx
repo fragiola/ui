@@ -4,6 +4,7 @@ import { ColorPicker as ColorPickerPrimitive } from "@fragiola/primitives-react/
 import { PipetteIcon } from "lucide-react";
 import type * as React from "react";
 import { clickable } from "#/atoms/clickable";
+import { color } from "#/families/color";
 import { field } from "#/families/field";
 import { foundation } from "#/families/foundation";
 import { cn } from "#/lib/cn";
@@ -52,7 +53,7 @@ function ColorPickerRoot({
             <ColorPickerPrimitive.Root
                 data-slot="color-picker"
                 className={cn(
-                    "flex w-full flex-col gap-3",
+                    "group/color-picker flex flex-col gap-3",
                     className as string,
                 )}
                 {...props}
@@ -124,10 +125,8 @@ function ColorPickerControls({ swatches }: { swatches?: Swatches }) {
                     <ColorSlider.Thumb aria-label="Alpha" />
                 </ColorSlider.Track>
             </ColorSlider.Root>
-            {/* dimmed with a disabled picker: the swatch and the row have
-                no disabled state of their own */}
-            <div className="flex items-center gap-2 in-data-disabled:opacity-50">
-                <ColorSwatch className="size-9" />
+            <div className={color.pickerValue()}>
+                <ColorSwatch className={color.pickerSwatch()} />
                 <Field.Row>
                     <ColorField.Root>
                         <ColorField.Input aria-label="Hex color" />

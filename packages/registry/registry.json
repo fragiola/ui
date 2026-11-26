@@ -1926,7 +1926,6 @@
                 "@fragiola/color-slider",
                 "@fragiola/color-swatch",
                 "@fragiola/color-swatch-picker",
-                "@fragiola/base",
                 "@fragiola/primitives-backed"
             ],
             "dependencies": ["lucide-react"],
@@ -1942,7 +1941,7 @@
             "name": "color-picker-popover",
             "type": "registry:ui",
             "title": "Color Picker Popover",
-            "description": "A ColorPicker's controls in a non-modal popup opened from a swatch trigger: the focus moves into the popup, Escape and an outside press close it and return the focus to the trigger, Tab out closes it; the controls in the popup bind to the picker around them. Primitives-backed: one shared file wraps Fragiola Primitives' opt-in popover on every base. Trigger is an outline square Clickable holding the picker's swatch, Content the popup.content overlay. ColorPickerPopover.Template.Simple is the swatch trigger with the common picker in its popup.",
+            "description": "A ColorPicker's controls in a non-modal popup opened from a swatch trigger: the focus moves into the popup, Escape closes it and returns the focus to the trigger, as an outside press does unless it focused something, Tab out closes it; the controls in the popup bind to the picker around them. Primitives-backed: one shared file wraps Fragiola Primitives' opt-in popover on every base. Trigger is an outline square Clickable holding the picker's swatch, Content the popup.content overlay. ColorPickerPopover.Template.Simple is the swatch trigger with the common picker in its popup.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",

@@ -17,7 +17,8 @@ changes.
 A color picker popover shows a [Color Picker](/docs/color/color-picker)'s controls in a popup. It
 lives inside a `ColorPicker.Root`: its `Trigger` is a square swatch of the picker's colour that
 toggles a non-modal dialog below it, aligned to its start. Opening it moves the focus to the
-popup's first control; Escape and a press outside close it and return the focus to the trigger;
+popup's first control; Escape closes it and returns the focus to the trigger, as a press outside
+does unless the press focused something else;
 Tab out of the popup closes it, and Shift+Tab from its first control returns to the trigger. The
 controls in the popup bind to the picker, as they do inline, and the picker's hidden input stays in
 the page while the popup is closed, so a form always has the value. A field beside the trigger,

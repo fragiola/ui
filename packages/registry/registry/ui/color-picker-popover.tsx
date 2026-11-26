@@ -14,8 +14,9 @@ import { ColorSwatch } from "#/ui/color-swatch";
 // ColorPickerPopover — a ColorPicker's controls in a popup opened from a
 // swatch (spec/color-picker.md, the opt-in popover): the Trigger shows the
 // picker's colour and toggles a non-modal dialog below it; on open the focus
-// moves to the popup's first control, Escape and an outside press close it
-// and return the focus to the trigger, Tab out of it closes it. It lives
+// moves to the popup's first control, Escape closes it and returns the focus
+// to the trigger, as an outside press does unless it focused something; Tab
+// out of it closes it. It lives
 // inside a ColorPicker.Root, whose colour the controls in the popup bind to;
 // the Root's hidden input stays in the page while the popup is closed.
 //
@@ -56,7 +57,7 @@ function ColorPickerPopoverTrigger({
             className={cn(
                 clickable({ variant: "outline", shape: "square" }),
                 foundation.disabled(),
-                "shrink-0 p-1.5",
+                "shrink-0 self-start p-1.5",
                 className as string,
             )}
             {...props}
@@ -126,7 +127,7 @@ function ColorPickerPopoverTemplateSimple({
     swatches?: Swatches;
 }) {
     return (
-        <ColorPicker.Root className="w-fit" {...props}>
+        <ColorPicker.Root {...props}>
             <ColorPickerPopoverPrimitive.Root>
                 <ColorPickerPopoverTrigger
                     id={id}

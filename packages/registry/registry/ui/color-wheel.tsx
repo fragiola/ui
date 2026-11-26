@@ -69,17 +69,26 @@ function ColorWheelThumb({
 }
 
 /**
- * The common wheel: the ring and its thumb, named `aria-label` (default
- * "Hue"). Every Root prop is forwarded; `className` goes to the box.
+ * The common wheel: the ring and its thumb. The thumb takes the name
+ * (`aria-label`, default "Hue", or `aria-labelledby`); every other Root prop
+ * is forwarded, and `className` goes to the box.
  */
 function ColorWheelTemplateSimple({
-    "aria-label": ariaLabel = "Hue",
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
     ...props
 }: PrimitivesProps<P["Root"], "div">) {
     return (
         <ColorWheelRoot {...props}>
             <ColorWheelTrack />
-            <ColorWheelThumb aria-label={ariaLabel} />
+            <ColorWheelThumb
+                aria-label={
+                    ariaLabelledby === undefined
+                        ? (ariaLabel ?? "Hue")
+                        : ariaLabel
+                }
+                aria-labelledby={ariaLabelledby}
+            />
         </ColorWheelRoot>
     );
 }

@@ -158,9 +158,11 @@ const swatch = tv({
 });
 
 // swatchPicker — the swatches' list, wrapping into rows (the primitive's
-// vertical arrows read the rows from the layout).
+// vertical arrows read the rows from the layout). A disabled list marks
+// every option disabled, and the options dim themselves: the list does not
+// dim again.
 const swatchPicker = tv({
-    base: [foundation.disabled(), "flex flex-wrap gap-1"],
+    base: "flex flex-wrap gap-1 data-disabled:cursor-not-allowed",
 });
 
 // swatchItem — one option: a frame around its swatch, `checked` (the `ring`
@@ -179,6 +181,22 @@ const swatchItem = tv({
     ],
 });
 
+// pickerValue — a picker's value row: its swatch beside its hex field. The
+// swatch and the field row have no disabled state of their own, so the row
+// dims with a disabled picker (`group/color-picker`, the picker's root).
+const pickerValue = tv({
+    base: `
+        flex items-center gap-2
+        group-data-disabled/color-picker:opacity-50
+    `,
+});
+
+// pickerSwatch — the swatch in that row, as tall as the field beside it
+// (`h-control` is 9 steps of the spacing).
+const pickerSwatch = tv({
+    base: [swatch(), "size-9"],
+});
+
 export const color = {
     area,
     areaThumb,
@@ -191,4 +209,6 @@ export const color = {
     swatch,
     swatchPicker,
     swatchItem,
+    pickerValue,
+    pickerSwatch,
 };

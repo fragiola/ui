@@ -31,8 +31,9 @@ Every Root prop is forwarded; `className` goes to the root. For the same picker 
 
 ## The look
 
-It adds no family. The Root is a column of its controls (`gap-3`), each dressed by the `color`
-family or the field's; `FormatSelect` is a control box (`field.row` with the `field-control`
+It adds no family of its own. The Root is a column of its controls (`gap-3`), each dressed by the `color`
+family or the field's. The template's swatch-and-hex row is `color.pickerValue` (dimmed with a
+disabled picker) and its swatch `color.pickerSwatch`, as tall as the field. `FormatSelect` is a control box (`field.row` with the `field-control`
 marker: a native select that is its own box, as an OTP slot), and `EyeDropperTrigger` an outline
 square `Clickable` with a pipette icon.
 

@@ -53,7 +53,7 @@ function ColorSliderRoot({
 function ColorSliderLabel({
     className,
     ...props
-}: PrimitivesProps<P["Label"], "div">) {
+}: PrimitivesProps<P["Label"], "label">) {
     return (
         <ColorSliderPrimitive.Label
             data-slot="color-slider-label"

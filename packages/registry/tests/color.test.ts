@@ -85,13 +85,13 @@ describe("color family", () => {
         }
     });
 
+    it("dims a disabled swatch list once, through its options", () => {
+        expect(contains(color.swatchPicker, foundation.disabled)).toBe(false);
+        expect(contains(color.swatchItem, foundation.disabled)).toBe(true);
+    });
+
     it("disables every root the foundation's way", () => {
-        for (const name of [
-            "area",
-            "wheel",
-            "slider",
-            "swatchPicker",
-        ] as const) {
+        for (const name of ["area", "wheel", "slider"] as const) {
             expect(contains(color[name], foundation.disabled), name).toBe(true);
         }
     });
