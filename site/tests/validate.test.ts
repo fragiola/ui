@@ -17,6 +17,7 @@ import {
     type ExportInput,
     type Manifest,
     validate,
+    validateBases,
     validateExport,
 } from "../scripts/validate.ts";
 
@@ -1119,5 +1120,66 @@ describe("validateExport", () => {
         } finally {
             await rm(dir, { recursive: true, force: true });
         }
+    });
+});
+
+describe("validateBases (v1.8, §2, §5.6, §7)", () => {
+    async function exportWithBases() {
+        const dir = await mkdtemp(path.join(tmpdir(), "ui-bases-"));
+        const write = async (file: string, content: string) => {
+            await mkdir(path.dirname(path.join(dir, file)), {
+                recursive: true,
+            });
+            await writeFile(path.join(dir, file), content);
+        };
+        await write("project.json", JSON.stringify(PROJECT));
+        const items = JSON.stringify({
+            items: [{ name: "cn" }, { name: "dialog" }],
+        });
+        const examples = JSON.stringify({ examples: [{ id: "dialog" }] });
+        await write("r/index.json", items);
+        await write("r/base/index.json", items);
+        await write("embed/react/manifest.json", examples);
+        await write("embed/react/base/manifest.json", examples);
+        await write(
+            "embed/react/base/index.html",
+            '<script type="module" src="/ui/embed/react/base/assets/index.js"></script>',
+        );
+        return { dir, write };
+    }
+
+    it("declares every base of the registry, the default first", () => {
+        expect(PROJECT.bases?.[0]).toMatchObject({ default: true });
+        expect(PROJECT.bases?.filter((base) => base.default)).toHaveLength(1);
+    });
+
+    it("passes a base with the same items and examples, built for its path", async () => {
+        const { dir } = await exportWithBases();
+        expect(await validateBases(dir)).toEqual([]);
+    });
+
+    it("fails on other items, other examples, a missing app or another path", async () => {
+        const { dir, write } = await exportWithBases();
+        await write(
+            "r/base/index.json",
+            JSON.stringify({ items: [{ name: "cn" }] }),
+        );
+        await write(
+            "embed/react/base/manifest.json",
+            JSON.stringify({ examples: [] }),
+        );
+        await write(
+            "embed/react/base/index.html",
+            '<script type="module" src="/ui/embed/react/assets/index.js"></script>',
+        );
+        expect(await validateBases(dir)).toEqual([
+            'r/base/index.json: the base "base" has other items than r/index.json (§7)',
+            'embed/react/base/manifest.json: the base "base" has other examples than embed/react/ (§5.6)',
+            'embed/react/base/index.html: "/ui/embed/react/assets/index.js" is outside the base\'s app: build it for embed/react/base/ (§5.6)',
+        ]);
+        await rm(path.join(dir, "embed/react/base/index.html"));
+        expect(await validateBases(dir)).toContain(
+            "embed/react/base/index.html: is missing (§5.6)",
+        );
     });
 });

@@ -6,6 +6,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { chromium, type Frame, type Locator, type Page } from "playwright";
+import {
+    baseFromEnv,
+    baseOutputDir,
+} from "../../../packages/registry/bases.ts";
 import { THEMES } from "../../gallery.ts";
 
 // `pnpm check:embeds [--width <px>] [--floors] [--screenshots <dir>] [id…]`
@@ -35,7 +39,10 @@ import { THEMES } from "../../gallery.ts";
 //
 // Needs a Chromium: `pnpm exec playwright install chromium`.
 const APP = path.resolve(import.meta.dirname, "..");
-const BASE = "/ui/embed/react/";
+// The selected base's app where a v1.8 host serves it (contract §5.6): the
+// default base at /ui/embed/react/, another at /ui/embed/react/<base>/.
+const BASE_DIR = baseOutputDir(baseFromEnv(process.env));
+const BASE = `/ui/embed/react/${BASE_DIR ? `${BASE_DIR}/` : ""}`;
 const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {

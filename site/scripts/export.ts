@@ -4,23 +4,27 @@ import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { LEVELS, type Scheme, THEMES } from "../../examples/gallery.ts";
+import { BASES, baseOutputDir } from "../../packages/registry/bases.ts";
 import { PROJECT } from "./project.ts";
 import {
     CONTRACT_REVISION,
     type ProjectJson,
+    validateBases,
     validateExport,
 } from "./validate.ts";
 
 // `pnpm site:export --base /<slug> --out <dir>` — the site export, contract
-// v1.7 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
+// v1.8 (../www/CONTRACT.md). fragiola.com is built elsewhere; this repo only
 // provides:
 //
 //   <out>/project.json      who this project is
 //   <out>/docs/             the pages and the sidebar, from site/docs
 //   <out>/examples.json     the gallery's levels and themes (examples/gallery.ts)
 //   <out>/embed/react/      the examples app and the Create page (create.html),
-//                           built for <base>/embed/react/
-//   <out>/r/                the registry, built from packages/registry
+//                           built for <base>/embed/react/ on the default base;
+//                           embed/react/<base>/ on each other base (v1.8)
+//   <out>/r/                the registry, built from packages/registry: the
+//                           default base at r/, each other base at r/<base>/
 //
 // The output is validated against the contract before the command succeeds
 // (validate.ts); any violation exits non-zero. Runs with Node's own type
@@ -84,10 +88,21 @@ run("node", [
 ]);
 
 // ─── embed/react ────────────────────────────────────────────────────────────
-run("pnpm", ["--filter", "examples-react", "build"], {
-    EMBED_BASE: `${base}/embed/react/`,
-    EMBED_OUT_DIR: path.join(out, "embed", "react"),
-});
+// The default base at embed/react/; every other base the same app, built on
+// that base, at embed/react/<base>/ (contract v1.8 §5.6).
+// The default base first: its build empties embed/react/, the others' folders
+// included.
+for (const registryBase of [
+    ...BASES.filter((entry) => entry.default),
+    ...BASES.filter((entry) => !entry.default),
+]) {
+    const dir = baseOutputDir(registryBase);
+    run("pnpm", ["--filter", "examples-react", "build"], {
+        FRAGIOLA_BASE: registryBase.name,
+        EMBED_BASE: `${base}/embed/react/${dir ? `${dir}/` : ""}`,
+        EMBED_OUT_DIR: path.join(out, "embed", "react", dir),
+    });
+}
 
 // ─── docs ───────────────────────────────────────────────────────────────────
 await cp(path.join(ROOT, "site", "docs"), path.join(out, "docs"), {
@@ -143,7 +158,10 @@ await writeFile(
 );
 
 // ─── Validate ───────────────────────────────────────────────────────────────
-const problems = await validateExport(out);
+const problems = [
+    ...(await validateExport(out)),
+    ...(await validateBases(out)),
+];
 if (problems.length > 0) {
     console.error(
         `\nsite:export — ${problems.length} problem(s) against the site export contract v${CONTRACT_REVISION}:`,

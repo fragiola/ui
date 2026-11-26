@@ -1,3 +1,4 @@
+import { BASES } from "../../packages/registry/bases.ts";
 import { CONTRACT, type ProjectJson } from "./validate.ts";
 
 // <out>/project.json (contract §2).
@@ -29,4 +30,14 @@ export const PROJECT: ProjectJson = {
             "Build your theme: pick a colour and the five design axes, see dozens of components follow live, then copy the CSS.",
         framework: "react",
     },
+    // v1.8: the registry's bases (packages/registry/bases.ts), the default
+    // first; the others export r/<base>/ and embed/react/<base>/ (§5.6, §7)
+    bases: [
+        ...BASES.filter((base) => base.default),
+        ...BASES.filter((base) => !base.default),
+    ].map(({ name, title, default: isDefault }) => ({
+        name,
+        title,
+        ...(isDefault ? { default: true } : {}),
+    })),
 };

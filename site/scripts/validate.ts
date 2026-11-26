@@ -12,7 +12,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 
-// Checks a site export against the contract (v1.7, ../www/CONTRACT.md) — the
+// Checks a site export against the contract (v1.8, ../www/CONTRACT.md) — the
 // same things `www` checks on every build (§8), so a violation fails here,
 // in this repo, instead of in the site's deploy:
 //
@@ -33,8 +33,8 @@ import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 // it in memory, which is what the tests use. Both return the problems found,
 // one line each; empty means the export is valid.
 //
-// v1.1 to v1.7 keep `"contract": 1` (CONTRACT.md, the changelog), so CONTRACT
-// stays 1 while the rules are v1.7's: CONTRACT_REVISION. v1.4 and v1.5 add
+// v1.1 to v1.8 keep `"contract": 1` (CONTRACT.md, the changelog), so CONTRACT
+// stays 1 while the rules are v1.8's: CONTRACT_REVISION. v1.4 and v1.5 add
 // optional fields this project does not use (sidebar icons, adapters); v1.6
 // adds the Create page (`create` in project.json, embed/<fw>/create.html,
 // the `/create` link), which it does; v1.7 reserves the `/ai` link (the
@@ -43,7 +43,7 @@ import { LineCounter, parseDocument, parse as parseYaml } from "yaml";
 // export to check; `check:embeds` drives them in a real browser.
 
 export const CONTRACT = 1;
-export const CONTRACT_REVISION = "1.7";
+export const CONTRACT_REVISION = "1.8";
 
 /** v1.2: the lengths of titles, descriptions and keywords (§2, §3.2). */
 export const LIMITS = {
@@ -68,6 +68,8 @@ export type ProjectJson = {
     keywords?: string[];
     /** v1.6: a full-page tool served at /<slug>/create/ (§2). */
     create?: { title: string; description: string; framework: string };
+    /** v1.8: the primitive libraries the components are offered on (§2). */
+    bases?: { name: string; title: string; default?: boolean }[];
 };
 
 type ConfigPage =
@@ -1437,4 +1439,76 @@ export async function validateExport(dir: string): Promise<string[]> {
             registry,
         }),
     ];
+}
+
+/**
+ * The bases of an export (v1.8, §2, §5.6, §7): for every non-default base
+ * project.json declares, `r/<base>/` lists the same items as `r/`, and
+ * `embed/react/<base>/` holds the app built for its own base, with the same
+ * examples as `embed/react/`.
+ */
+export async function validateBases(dir: string): Promise<string[]> {
+    const problems: string[] = [];
+    const project = JSON.parse(
+        await readFile(path.join(dir, "project.json"), "utf-8"),
+    ) as ProjectJson;
+    const bases = project.bases ?? [];
+    if (bases.length === 0) return problems;
+    if (bases.filter((base) => base.default).length !== 1) {
+        problems.push(
+            "project.json: bases: exactly one base is the default (§2)",
+        );
+    }
+    const names = async (file: string, key: "items" | "examples") => {
+        const full = path.join(dir, file);
+        if (!existsSync(full)) {
+            problems.push(`${file}: is missing (§5.6, §7)`);
+            return undefined;
+        }
+        const value = JSON.parse(await readFile(full, "utf-8")) as Record<
+            string,
+            { name?: string; id?: string }[]
+        >;
+        return new Set(
+            (value[key] ?? []).map((entry) => entry.name ?? entry.id),
+        );
+    };
+    const items = await names("r/index.json", "items");
+    const examples = await names("embed/react/manifest.json", "examples");
+    const same = (a: Set<unknown> | undefined, b: Set<unknown> | undefined) =>
+        !a || !b || (a.size === b.size && [...a].every((name) => b.has(name)));
+    for (const base of bases.filter((entry) => !entry.default)) {
+        const baseItems = await names(`r/${base.name}/index.json`, "items");
+        if (!same(items, baseItems)) {
+            problems.push(
+                `r/${base.name}/index.json: the base "${base.name}" has other items than r/index.json (§7)`,
+            );
+        }
+        const app = `embed/react/${base.name}`;
+        const baseExamples = await names(`${app}/manifest.json`, "examples");
+        if (!same(examples, baseExamples)) {
+            problems.push(
+                `${app}/manifest.json: the base "${base.name}" has other examples than embed/react/ (§5.6)`,
+            );
+        }
+        const index = path.join(dir, app, "index.html");
+        if (existsSync(index)) {
+            const html = await readFile(index, "utf-8");
+            const outside = [...html.matchAll(/\b(?:src|href)="(\/[^"]*)"/g)]
+                .map((match) => match[1] ?? "")
+                .find(
+                    (url) =>
+                        !url.startsWith("//") &&
+                        !url.includes(`/embed/react/${base.name}/`),
+                );
+            if (outside) {
+                problems.push(
+                    `${app}/index.html: "${outside}" is outside the base's app: build it for embed/react/${base.name}/ (§5.6)`,
+                );
+            }
+        } else {
+            problems.push(`${app}/index.html: is missing (§5.6)`);
+        }
+    }
+    return problems;
 }
