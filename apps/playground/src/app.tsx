@@ -1,6 +1,6 @@
-import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Text } from "#/components/atoms/text";
+import { DirectionProvider } from "#/lib/base";
 import { findEntry, sections } from "./catalog";
 import { Sidebar } from "./sidebar";
 import { SourcePanel } from "./source-panel";
@@ -13,7 +13,7 @@ import { applyView, parseView, toSearch, type View } from "./view";
 // surface — an unpainted part of the shell is itself a bug worth seeing.
 //
 // Direction is set twice on purpose: `dir` on <html> flips the CSS, and
-// DirectionProvider tells Base UI, which reads direction from context for
+// DirectionProvider tells the base (#/lib/base), which reads direction from context for
 // keyboard navigation, slider direction and submenu sides.
 export function App() {
     const [view, setView] = useState(() => parseView(window.location.search));

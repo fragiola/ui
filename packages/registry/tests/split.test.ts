@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { dock } from "../registry/families/dock";
 import { handle } from "../registry/families/handle";
 import { split } from "../registry/families/split";
+import { everyBase } from "./base-sources";
 
 // ─── The split family ───────────────────────────────────────────────────────
 // ui/splitter dresses Splitter's headless primitives with `split`. A class
@@ -53,10 +54,9 @@ describe("split family", () => {
         // The element is 1px (the engine measures it); the rule is its
         // `::after` (the handle's), painted at rest in ui/separator.tsx's
         // `line`.
-        const separator = await readFile(
-            path.join(REGISTRY, "ui/separator.tsx"),
-            "utf-8",
-        );
+        const separator = (await everyBase("ui/separator.tsx"))
+            .map(({ source }) => source)
+            .join("\n");
         const own = classes(split.separator);
         expect(own).toContain("after:bg-palette-line");
         expect(separator).toContain("bg-palette-line");

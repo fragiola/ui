@@ -4,6 +4,7 @@ import { defineConfig, type Plugin } from "vite";
 import {
     exampleThemes,
     REGISTRY_PUBLIC,
+    registryBases,
     registryResolve,
 } from "../../examples/react/vite.shared.ts";
 import { AXES } from "./src/axes.ts";
@@ -20,7 +21,13 @@ const designAxes = (): Plugin => ({
 // module. It is never deployed; `build` exists so CI catches a playground
 // that no longer compiles.
 export default defineConfig({
-    plugins: [react(), tailwindcss(), exampleThemes(), designAxes()],
+    plugins: [
+        registryBases(),
+        react(),
+        tailwindcss(),
+        exampleThemes(),
+        designAxes(),
+    ],
     resolve: registryResolve,
     publicDir: REGISTRY_PUBLIC,
     build: {

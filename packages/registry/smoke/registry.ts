@@ -17,10 +17,14 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { BASES, baseOutputDir } from "../bases.ts";
 import { splitDependency } from "../scripts/dependencies.ts";
 
 const PACKAGE = path.resolve(import.meta.dirname, "..");
 const BUILT_R = path.join(PACKAGE, "dist", "r");
+// The base being installed: every base is served from its own output
+// (bases.ts), the default at dist/r, the others at dist/r/<base>.
+let served = BUILT_R;
 const SHADCN_BIN = path.join(PACKAGE, "node_modules", ".bin", "shadcn");
 const KEEP = process.argv.includes("--keep");
 
@@ -91,7 +95,7 @@ function registryServer(missing: string[]): Server {
             return;
         }
         try {
-            const body = await readFile(path.join(BUILT_R, name));
+            const body = await readFile(path.join(served, name));
             res.writeHead(200, { "content-type": "application/json" }).end(
                 body,
             );
@@ -330,14 +334,18 @@ async function main() {
         await readFile(path.join(PACKAGE, "registry.json"), "utf-8"),
     ) as { items: RegistryItem[] };
     const items = registry.items;
-    const npmDependencies = [
-        ...new Set(
-            items.flatMap((item) => [
-                ...(item.dependencies ?? []),
-                ...(item.devDependencies ?? []),
-            ]),
-        ),
-    ];
+    // Every base's npm dependencies: the scaffolds declare them all, so the
+    // CLI installs only the pinned ranges whichever base it adds.
+    const builtItems = new Map<string, RegistryItem[]>();
+    for (const base of BASES) {
+        const index = JSON.parse(
+            await readFile(
+                path.join(BUILT_R, baseOutputDir(base), "index.json"),
+                "utf-8",
+            ),
+        ) as { items: RegistryItem[] };
+        builtItems.set(base.name, index.items);
+    }
 
     const missing: string[] = [];
     const external: string[] = [];
@@ -379,111 +387,136 @@ async function main() {
         PATH: `${bin}${path.delimiter}${env.PATH ?? ""}`,
         FRAGIOLA_SMOKE_NPM_LOG: npmLog,
     });
-    const pinned = npmDependencies.filter(
-        (dep) => splitDependency(dep).range !== undefined,
-    );
     let failed = false;
 
-    for (const variant of VARIANTS) {
-        const label = `${variant.framework} ${variant.src ? "with src/" : "without src/"}`;
-        const dir = path.join(
-            workspace,
-            `${variant.framework}-${variant.src ? "src" : "root"}`,
-        );
-        const srcRoot = variant.src ? "src/" : "";
-        missing.length = 0;
-        external.length = 0;
-
-        await scaffold(dir, variant, registryUrl, npmDependencies);
-        await writeFile(npmLog, "", "utf-8");
-        const before = await snapshot(dir);
-
-        const { code, output } = await run(
-            SHADCN_BIN,
-            [
-                "add",
-                "--cwd",
-                dir,
-                "--yes",
-                ...items.map((item) => `@fragiola/${item.name}`),
-            ],
-            env,
-        );
-
-        const after = await snapshot(dir);
-        const created = [...after.keys()].filter((file) => !before.has(file));
-        const modified = [...before.keys()].filter(
-            (file) => after.has(file) && after.get(file) !== before.get(file),
-        );
-        const expected = new Set(
-            items.flatMap((item) =>
-                (item.files ?? []).map((f) => expectedPath(f, srcRoot)),
+    for (const base of BASES) {
+        served = path.join(BUILT_R, baseOutputDir(base));
+        const npmDependencies = [
+            ...new Set(
+                (builtItems.get(base.name) ?? []).flatMap((item) => [
+                    ...(item.dependencies ?? []),
+                    ...(item.devDependencies ?? []),
+                ]),
             ),
+        ];
+        const pinned = npmDependencies.filter(
+            (dep) => splitDependency(dep).range !== undefined,
         );
-        const misplaced = created.filter((file) => !expected.has(file));
-        const absent = [...expected].filter((file) => !after.has(file));
-        // The CLI may record the registry in components.json; nothing else
-        // the scaffold wrote should change.
-        const touched = modified.filter((file) => file !== "components.json");
-        const broken = await unresolvedImports(
-            after,
-            created,
-            srcRoot,
-            (file) => readFile(path.join(dir, file), "utf-8"),
-        );
-        const rewritten: string[] = [];
-        for (const item of items) {
-            const built = JSON.parse(
-                await readFile(
-                    path.join(BUILT_R, `${item.name}.json`),
-                    "utf-8",
+        for (const variant of VARIANTS) {
+            const label = `${base.name}: ${variant.framework} ${variant.src ? "with src/" : "without src/"}`;
+            const dir = path.join(
+                workspace,
+                `${base.name}-${variant.framework}-${variant.src ? "src" : "root"}`,
+            );
+            const srcRoot = variant.src ? "src/" : "";
+            missing.length = 0;
+            external.length = 0;
+
+            await scaffold(dir, variant, registryUrl, npmDependencies);
+            await writeFile(npmLog, "", "utf-8");
+            const before = await snapshot(dir);
+
+            const { code, output } = await run(
+                SHADCN_BIN,
+                [
+                    "add",
+                    "--cwd",
+                    dir,
+                    "--yes",
+                    ...items.map((item) => `@fragiola/${item.name}`),
+                ],
+                env,
+            );
+
+            const after = await snapshot(dir);
+            const created = [...after.keys()].filter(
+                (file) => !before.has(file),
+            );
+            const modified = [...before.keys()].filter(
+                (file) =>
+                    after.has(file) && after.get(file) !== before.get(file),
+            );
+            const expected = new Set(
+                items.flatMap((item) =>
+                    (item.files ?? []).map((f) => expectedPath(f, srcRoot)),
                 ),
-            ) as { files: Array<RegistryFile & { content: string }> };
-            for (const file of built.files) {
-                const installedPath = expectedPath(file, srcRoot);
-                if (!/\.tsx?$/.test(installedPath) || !after.has(installedPath))
-                    continue;
-                const installed = await readFile(
-                    path.join(dir, installedPath),
-                    "utf-8",
-                );
-                rewritten.push(
-                    ...rewrittenImports(file.content, installed, installedPath),
+            );
+            const misplaced = created.filter((file) => !expected.has(file));
+            const absent = [...expected].filter((file) => !after.has(file));
+            // The CLI may record the registry in components.json; nothing else
+            // the scaffold wrote should change.
+            const touched = modified.filter(
+                (file) => file !== "components.json",
+            );
+            const broken = await unresolvedImports(
+                after,
+                created,
+                srcRoot,
+                (file) => readFile(path.join(dir, file), "utf-8"),
+            );
+            const rewritten: string[] = [];
+            for (const item of items) {
+                const built = JSON.parse(
+                    await readFile(
+                        path.join(served, `${item.name}.json`),
+                        "utf-8",
+                    ),
+                ) as { files: Array<RegistryFile & { content: string }> };
+                for (const file of built.files) {
+                    const installedPath = expectedPath(file, srcRoot);
+                    if (
+                        !/\.tsx?$/.test(installedPath) ||
+                        !after.has(installedPath)
+                    )
+                        continue;
+                    const installed = await readFile(
+                        path.join(dir, installedPath),
+                        "utf-8",
+                    );
+                    rewritten.push(
+                        ...rewrittenImports(
+                            file.content,
+                            installed,
+                            installedPath,
+                        ),
+                    );
+                }
+            }
+
+            const installed = (await readFile(npmLog, "utf-8"))
+                .split("\n")
+                .filter(Boolean)
+                .flatMap((line) => line.split(" -- ")[1]?.split(" ") ?? []);
+
+            const problems: string[] = [];
+            for (const dep of installed.filter((d) => !pinned.includes(d)))
+                problems.push(`unexpected install: ${dep}`);
+            for (const dep of pinned.filter((d) => !installed.includes(d)))
+                problems.push(`pinned range not installed: ${dep}`);
+            if (code !== 0) problems.push(`shadcn exited with ${code}`);
+            for (const url of external)
+                problems.push(`external request: ${url}`);
+            for (const url of missing) problems.push(`registry 404: ${url}`);
+            for (const file of misplaced)
+                problems.push(`unexpected file: ${file}`);
+            for (const file of absent) problems.push(`missing file: ${file}`);
+            for (const file of touched)
+                problems.push(`modified scaffold file: ${file}`);
+            for (const entry of broken)
+                problems.push(`unresolved import: ${entry}`);
+            for (const entry of new Set(rewritten))
+                problems.push(`rewritten import: ${entry}`);
+
+            if (problems.length) {
+                failed = true;
+                console.log(`✗ ${label}`);
+                for (const problem of problems) console.log(`    ${problem}`);
+                if (code !== 0) console.log(output.replace(/^/gm, "    | "));
+            } else {
+                console.log(
+                    `✓ ${label}: ${items.length} items, ${created.length} files under ${srcRoot || "./"}, no external requests`,
                 );
             }
-        }
-
-        const installed = (await readFile(npmLog, "utf-8"))
-            .split("\n")
-            .filter(Boolean)
-            .flatMap((line) => line.split(" -- ")[1]?.split(" ") ?? []);
-
-        const problems: string[] = [];
-        for (const dep of installed.filter((d) => !pinned.includes(d)))
-            problems.push(`unexpected install: ${dep}`);
-        for (const dep of pinned.filter((d) => !installed.includes(d)))
-            problems.push(`pinned range not installed: ${dep}`);
-        if (code !== 0) problems.push(`shadcn exited with ${code}`);
-        for (const url of external) problems.push(`external request: ${url}`);
-        for (const url of missing) problems.push(`registry 404: ${url}`);
-        for (const file of misplaced) problems.push(`unexpected file: ${file}`);
-        for (const file of absent) problems.push(`missing file: ${file}`);
-        for (const file of touched)
-            problems.push(`modified scaffold file: ${file}`);
-        for (const entry of broken)
-            problems.push(`unresolved import: ${entry}`);
-        for (const entry of new Set(rewritten))
-            problems.push(`rewritten import: ${entry}`);
-
-        if (problems.length) {
-            failed = true;
-            console.log(`✗ ${label}`);
-            for (const problem of problems) console.log(`    ${problem}`);
-            if (code !== 0) console.log(output.replace(/^/gm, "    | "));
-        } else {
-            console.log(
-                `✓ ${label}: ${items.length} items, ${created.length} files under ${srcRoot || "./"}, no external requests`,
-            );
         }
     }
 

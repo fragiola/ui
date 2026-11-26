@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { everyBase } from "./base-sources";
 
 // ─── Foundation guard ───────────────────────────────────────────────────────
 // The visual language (docs/visual-language.md) lives in ONE family,
@@ -122,8 +123,11 @@ describe("foundation", () => {
             "families/track.ts",
             "atoms/clickable/index.tsx",
         ]) {
-            const text = await readFile(path.join(REGISTRY, name), "utf-8");
-            expect(text, name).toMatch(/from "(\.\/|#\/families\/)foundation"/);
+            for (const { label, source } of await everyBase(name)) {
+                expect(source, label).toMatch(
+                    /from "(\.\/|#\/families\/)foundation"/,
+                );
+            }
         }
     });
 
@@ -133,8 +137,9 @@ describe("foundation", () => {
             "ui/radio.tsx",
             "ui/switch.tsx",
         ]) {
-            const text = await readFile(path.join(REGISTRY, name), "utf-8");
-            expect(text, name).toContain('from "#/families/choice"');
+            for (const { label, source } of await everyBase(name)) {
+                expect(source, label).toContain('from "#/families/choice"');
+            }
         }
     });
 });

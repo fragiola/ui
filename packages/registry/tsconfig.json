@@ -2,9 +2,16 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "#/*": ["./registry/*"]
+            "#/*": ["./registry/bases/base/*", "./registry/*"]
         },
         "types": ["node"]
     },
-    "include": ["registry", "scripts", "smoke", "tests", "vitest.config.ts"]
+    "include": [
+        "bases.ts",
+        "registry",
+        "scripts",
+        "smoke",
+        "tests",
+        "vitest.config.ts"
+    ]
 }

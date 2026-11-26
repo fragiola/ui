@@ -27,3 +27,6 @@ Thumbs.db
 
 # Local worktrees
 .worktrees/
+
+# Per-base tsconfigs written by typecheck-bases.ts
+tsconfig.*.tmp.json

@@ -16,9 +16,9 @@
 import type { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 import type * as React from "react";
+import { menu } from "#/families/menu";
+import { popup } from "#/families/popup";
 import { cn } from "#/lib/cn";
-import { menu } from "../menu";
-import { popup } from "../popup";
 
 // Structural type of the namespace — only the parts the factory consumes.
 // Root and Trigger are deliberately excluded: they differ between Menu and

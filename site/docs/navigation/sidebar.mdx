@@ -91,10 +91,10 @@ useEffect(() => localStorage.setItem("sidebar_state", String(open)), [open]);
 
 ## Collapsible groups and sub-menus
 
-Base UI's `Collapsible` gives the behaviour, the sidebar part is its trigger through `render`, and `Collapsible.Panel` brings the height animation:
+The base's unstyled `Collapsible` (`CollapsiblePrimitive` from the `base` item, `npx shadcn@latest add @fragiola/base`) gives the behaviour, the sidebar part is its trigger through `render`, and `Collapsible.Panel` brings the height animation:
 
 ```tsx
-import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
+import { CollapsiblePrimitive } from "@/lib/base";
 
 <CollapsiblePrimitive.Root defaultOpen render={<Sidebar.MenuItem />}>
     <CollapsiblePrimitive.Trigger render={<Sidebar.MenuButton />}>
