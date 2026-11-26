@@ -138,6 +138,17 @@ const panel = tv({
     `,
 });
 
+// raised — a card that stands on the floor: a Card, a tile, the inset
+// sidebar. A step above the floor (`palette-raised`), a `line` stroke,
+// `rounded-lg` and the light shadow (the elevation axis scales it). A palette
+// class on the element replaces `raised` (cn knows the palette group).
+const raised = tv({
+    base: `
+        palette-raised rounded-lg border border-palette-line bg-palette-base
+        text-palette-contrast shadow-sm
+    `,
+});
+
 // overlay — a surface above the page: a popup, a menu, a popover, a dialog,
 // a drawer. A raised panel with the overlay shadow (the elevation axis
 // scales it). One edge, one shadow for everything that floats.
@@ -204,6 +215,7 @@ export const foundation = {
     selected,
     hoverRow,
     panel,
+    raised,
     overlay,
     checked,
     rail,
