@@ -1,0 +1,59 @@
+---
+title: "Color Picker Popover"
+description: "A colour picker in a popup opened from a swatch: the focus moves in, Escape returns it."
+---
+
+<InstallCommand item="color-picker-popover" />
+
+<Example id="color-picker-popover" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A color picker popover shows a [Color Picker](/docs/color/color-picker)'s controls in a popup. It
+lives inside a `ColorPicker.Root`: its `Trigger` is a square swatch of the picker's colour that
+toggles a non-modal dialog below it, aligned to its start. Opening it moves the focus to the
+popup's first control; Escape and a press outside close it and return the focus to the trigger;
+Tab out of the popup closes it, and Shift+Tab from its first control returns to the trigger. The
+controls in the popup bind to the picker, as they do inline, and the picker's hidden input stays in
+the page while the popup is closed, so a form always has the value. A field beside the trigger,
+bound to the same picker, edits the colour without opening it (the example's first row).
+
+Name the trigger (`aria-label`, or `aria-labelledby` with the label's `id`) and the popup
+(`aria-label="Choose color"`). `ColorPickerPopover.Template.Simple` is the swatch trigger with the
+common picker's controls in its popup (`swatches` included). Every ColorPicker.Root prop is
+forwarded; `className`, `id` and the trigger's name go to the trigger.
+
+## The look
+
+It adds no family. The trigger is an outline square `Clickable` — the control box at the control's
+height — holding a [Color Swatch](/docs/color/color-swatch) of the picker's colour, so its focus
+ring is a button's. The popup is `popup.content`, the overlay every menu and popover uses, a
+column of the controls, `w-64`, with no surface of its own.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color picker, so this is one shared file
+(`ui/color-picker-popover.tsx`) that wraps Fragiola Primitives' opt-in `ColorPickerPopover` entry on
+**both** bases, and the item depends on `@fragiola/primitives-react@0.2.0` on both.
+
+On Base UI, name the trigger with `aria-labelledby` or `aria-label`, as the example does: Base UI's
+`Field` does not reach it.
+
+**Inside a dialog.** `scenarios/overlays/color-picker-in-dialog` puts the popover in the base's
+Dialog: the popup takes the focus on its first control, the arrows move the area's thumb, Escape
+and an outside press close only the popup and return the focus to the trigger, and the next Escape
+closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorPickerPopover.Root`: the open state, no element |
+| `Trigger` | primitive `ColorPickerPopover.Trigger` + `Clickable` outline, square; a ColorSwatch by default |
+| `Content` | primitive `ColorPickerPopover.Portal`, `.Positioner` and `.Popup` in one: `popup.content`, below the trigger at its start |
+| `Template.Simple` | the swatch trigger and the common picker's controls in the popup |

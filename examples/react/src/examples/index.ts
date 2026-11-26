@@ -1724,4 +1724,41 @@ export const examples: Example[] = [
         height: 380,
         load: () => import("./color-swatch-picker.tsx"),
     },
+    {
+        id: "color-picker",
+        title: "Color Picker",
+        description:
+            "A theme colour from ColorPicker.Template.Simple, its area, sliders, hex field and swatches bound to one value; then the picker composed from its parts with a wheel, the format select and the eyedropper, and a disabled picker. Primitives-backed: one shared file on every base.",
+        level: "color",
+        order: 7,
+        features: [
+            "ColorPicker.Template.Simple",
+            "bound controls",
+            "ColorPicker.FormatSelect",
+            "ColorPicker.EyeDropperTrigger",
+            "primitives-backed",
+        ],
+        docs: "/docs/color/color-picker",
+        layout: "flow",
+        height: 620,
+        load: () => import("./color-picker.tsx"),
+    },
+    {
+        id: "color-picker-popover",
+        title: "Color Picker Popover",
+        description:
+            "A brand colour from a swatch trigger beside a hex field, the picker's controls in a popup; then ColorPickerPopover.Template.Simple with swatches, a disabled one and one row of surface-ring palettes. Primitives-backed: one shared file on every base.",
+        level: "color",
+        order: 8,
+        features: [
+            "ColorPickerPopover.Trigger",
+            "ColorPickerPopover.Content",
+            "ColorPickerPopover.Template.Simple",
+            "primitives-backed",
+        ],
+        docs: "/docs/color/color-picker-popover",
+        layout: "flow",
+        height: 640,
+        load: () => import("./color-picker-popover.tsx"),
+    },
 ];

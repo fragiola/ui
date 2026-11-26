@@ -291,6 +291,14 @@
                 {
                     "label": "Color Swatch Picker",
                     "path": "color/color-swatch-picker"
+                },
+                {
+                    "label": "Color Picker",
+                    "path": "color/color-picker"
+                },
+                {
+                    "label": "Color Picker Popover",
+                    "path": "color/color-picker-popover"
                 }
             ]
         },
