@@ -9,20 +9,24 @@ description: "A menu of actions opened by a button. It shares the `popup` and `m
 
 ## Style families
 
-`dropdown-menu` and `context-menu` render from the same `menu` source. The parts factory (`createMenuParts`) takes a Base UI namespace and returns the styled wrappers — twelve of them, written once. Each component file declares only `Root`, `Trigger`, `Content` and `SubContent` with its own positioning defaults.
+`dropdown-menu` and `context-menu` render from the same `menu` source. The parts factory (`createMenuParts`) takes the base's namespace and returns the styled wrappers — twelve of them, written once. Each component file declares only `Root`, `Trigger`, `Content` and `SubContent` with its own positioning defaults.
 
-The namespace is **injected, not imported**. `ContextMenu.Item === Menu.Item` at runtime today, but if Base UI ever diverges, injection means each component inherits its own divergence instead of being silently pinned to the wrong primitive.
+The namespace is **injected, not imported**. `ContextMenu.Item === Menu.Item` at runtime today, but if a base ever diverges, injection means each component inherits its own divergence instead of being silently pinned to the wrong primitive.
 
 ## Destructive tone
 
 There is no `tone`, `variant` or `destructive` prop. Tone arrives as a palette class applied from outside: `className="palette-danger"`. The `highlighted:bg-palette-soft` and `text-palette-accent` rules resolve against whichever palette is active — inheritance does the work.
 
+## Bases
+
+On Fragiola Primitives (the default base) a menu is non-modal by default, as the APG's menu button is: the page keeps scrolling and stays clickable while it is open. Pass `modal` to `DropdownMenu.Root` for Base UI's default (scroll lock, outside presses blocked). Parts, classes and `data-slot` names are the same on both bases.
+
 ## Parts
 
 | Part | Source |
 |---|---|
-| `Root` | Base UI `Menu.Root` |
-| `Trigger` | Base UI `Menu.Trigger` |
+| `Root` | primitive `Menu.Root` |
+| `Trigger` | primitive `Menu.Trigger` |
 | `Content` | `popup.content()` + positioning |
 | `Item` | `menu.item()` |
 | `CheckboxItem` | `menu.selectableItem()` |
