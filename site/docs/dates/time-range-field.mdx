@@ -20,7 +20,7 @@ Fragiola Primitives' `TimeRangeField` on **both** bases, and the item depends on
 `DirectionProvider` on Base UI too, and `dir="rtl"` without one.
 
 On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
-it: name the ends with `aria-labelledby` (the label's `id`, as the example does) or `aria-label`,
+it: name each end with `aria-labelledby` (the label's `id` and the end's own `id`, so each end keeps its `aria-label`, as the example does),
 and pass `name`, `disabled` and `required` to the Root. On Fragiola Primitives it is also a
 `Field` control: the label names the group, a press on the label focuses the first segment, and
 the Field's description, `disabled` and validation reach it.

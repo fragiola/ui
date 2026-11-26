@@ -338,10 +338,11 @@ function createDayCalendarParts(N: DayCalendarNamespace, slot: string) {
     }
 
     /** Every visible month: a header and a grid each, the page buttons on the outer ones. */
-    function Pages({ count = 1 }: { count?: number }) {
+    function Pages({ count: asked = 1 }: { count?: number }) {
+        const count = Math.max(1, asked);
         return (
             <CalendarMonths>
-                {Array.from({ length: Math.max(1, count) }, (_, offset) => (
+                {Array.from({ length: count }, (_, offset) => (
                     <CalendarMonth
                         // biome-ignore lint/suspicious/noArrayIndexKey: a month's offset is its identity
                         key={offset}

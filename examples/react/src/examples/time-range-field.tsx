@@ -36,14 +36,16 @@ export default function TimeRangeFieldDemo() {
                     <TimeRangeField.Root value={range} onValueChange={setRange}>
                         <TimeRangeField.Input
                             range="start"
+                            id="hours-start"
                             aria-label="Opens"
-                            aria-labelledby="hours-label"
+                            aria-labelledby="hours-label hours-start"
                         />
                         <TimeRangeField.Separator />
                         <TimeRangeField.Input
                             range="end"
+                            id="hours-end"
                             aria-label="Closes"
-                            aria-labelledby="hours-label"
+                            aria-labelledby="hours-label hours-end"
                         />
                     </TimeRangeField.Root>
                 </Field.Row>

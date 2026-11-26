@@ -36,14 +36,16 @@ export default function DateRangeFieldDemo() {
                     >
                         <DateRangeField.Input
                             range="start"
+                            id="trip-start"
                             aria-label="Departure"
-                            aria-labelledby="trip-label"
+                            aria-labelledby="trip-label trip-start"
                         />
                         <DateRangeField.Separator />
                         <DateRangeField.Input
                             range="end"
+                            id="trip-end"
                             aria-label="Return"
-                            aria-labelledby="trip-label"
+                            aria-labelledby="trip-label trip-end"
                         />
                     </DateRangeField.Root>
                 </Field.Row>

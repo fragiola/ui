@@ -18,8 +18,14 @@ popup too. `name` submits the date (ISO 8601), `required` refuses an empty one, 
 keeps the popup closed, `readOnly` opens it on a read-only calendar.
 
 `DatePicker.Template.Simple` is the common picker: the trigger shows the value in the calendar's
-locale (or `placeholder`), the popup a bound calendar. Every Root prop is forwarded; `className`,
-`id` and the trigger's name (`aria-label`, `aria-labelledby`) go to the trigger.
+locale (or `placeholder`), the popup a bound calendar with `visibleMonths` months. Every Root prop
+is forwarded; `className`, `id` and the trigger's name (`aria-label`, `aria-labelledby`) go to the
+trigger. With a `calendar` system, compose the trigger yourself: the template writes the
+Gregorian date.
+
+A bound calendar takes its options from the picker, but the grids it **draws** are the ones you
+render: when the picker has `visibleMonths={2}`, give its `Template.Simple` the same
+`visibleMonths` (the template does).
 
 ## The look
 

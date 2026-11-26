@@ -44,7 +44,12 @@ type P = typeof DatePickerPrimitive;
 
 type PositionerProps = Pick<
     PrimitivesProps<P["Positioner"], "div">,
-    "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
+    | "side"
+    | "align"
+    | "sideOffset"
+    | "alignOffset"
+    | "collisionPadding"
+    | "anchor"
 >;
 
 /** A picker's trigger: a field row that opens the popup. */
@@ -126,6 +131,7 @@ function createPickerParts(
         align = "start",
         sideOffset = 4,
         alignOffset,
+        collisionPadding,
         anchor,
         children,
         ...props
@@ -139,12 +145,16 @@ function createPickerParts(
                     align={align}
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
+                    {...(collisionPadding === undefined
+                        ? {}
+                        : { collisionPadding })}
                     anchor={anchor}
                 >
                     <Primitive.Popup
                         data-slot={`${slot}-content`}
                         className={cn(
-                            popup.content("z-50 w-auto p-3 outline-none"),
+                            popup.content(),
+                            "z-50 w-auto p-3 outline-none",
                             className as string,
                         )}
                         {...props}
@@ -174,17 +184,26 @@ type PlainDate = { year: number; month: number; day: number };
 
 /**
  * A date in the calendar's locale (`Intl`, medium style): the picker's
- * `locale`, else the document's `lang`, as the calendar reads it.
+ * `locale`, else the document's `lang` once mounted (`en-US` on a server and
+ * its hydration, as the calendar). Written in UTC, so years 0–99 stay
+ * themselves. With a `calendar` system, compose the trigger yourself.
  */
-function formatDate(date: PlainDate, locale?: string): string {
-    const lang =
-        locale ??
-        (typeof document === "undefined"
-            ? undefined
-            : document.documentElement.lang || undefined);
-    return new Intl.DateTimeFormat(lang, { dateStyle: "medium" }).format(
-        new Date(date.year, date.month - 1, date.day),
-    );
+function formatDate(date: PlainDate, locale: string): string {
+    const at = new Date(Date.UTC(2000, date.month - 1, date.day));
+    at.setUTCFullYear(date.year);
+    return new Intl.DateTimeFormat(locale, {
+        dateStyle: "medium",
+        timeZone: "UTC",
+    }).format(at);
+}
+
+/** The document's `lang`, read once mounted (none on a server). */
+function useDocumentLang(): string | undefined {
+    const [lang, setLang] = React.useState<string | undefined>(undefined);
+    React.useEffect(() => {
+        setLang(document.documentElement.lang || undefined);
+    }, []);
+    return lang;
 }
 
 /**
@@ -212,6 +231,7 @@ function DatePickerTemplateSimple({
         props.defaultValue ?? null,
     );
     const shown = props.value !== undefined ? props.value : own;
+    const lang = useDocumentLang();
     return (
         <DatePickerRoot
             onValueChange={(value, details) => {
@@ -227,7 +247,7 @@ function DatePickerTemplateSimple({
                 aria-labelledby={ariaLabelledby}
             >
                 {shown ? (
-                    formatDate(shown, props.locale)
+                    formatDate(shown, props.locale ?? lang ?? "en-US")
                 ) : (
                     <span className={foundation.secondary()}>
                         {placeholder}
@@ -235,7 +255,7 @@ function DatePickerTemplateSimple({
                 )}
             </parts.Trigger>
             <parts.Content aria-label="Choose date">
-                <Calendar.Template.Simple />
+                <Calendar.Template.Simple visibleMonths={props.visibleMonths} />
             </parts.Content>
         </DatePickerRoot>
     );

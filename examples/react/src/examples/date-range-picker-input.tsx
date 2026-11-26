@@ -28,16 +28,18 @@ export default function DateRangePickerInputDemo() {
                     <Field.Row>
                         <DateRangePickerInput.Segments
                             range="start"
+                            id="stay-start"
                             aria-label="Check-in"
-                            aria-labelledby="stay-label"
+                            aria-labelledby="stay-label stay-start"
                         />
                         <DateRangePickerInput.Separator />
                         <DateRangePickerInput.Segments
                             range="end"
+                            id="stay-end"
                             aria-label="Check-out"
-                            aria-labelledby="stay-label"
+                            aria-labelledby="stay-label stay-end"
                         />
-                        <DateRangePickerInput.Trigger className="ms-auto" />
+                        <DateRangePickerInput.Trigger />
                     </Field.Row>
                     <DateRangePickerInput.Content aria-label="Choose stay">
                         <RangeCalendar.Template.Simple visibleMonths={2} />

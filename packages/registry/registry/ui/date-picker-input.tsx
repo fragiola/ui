@@ -30,7 +30,7 @@ import { pickerParts } from "#/ui/date-picker";
 //   Root      the picker's and the segments' state, no element
 //   Segments  the typed date, DateField's Input (`field.segments`)
 //   Segment   DateField's Segment
-//   Trigger   a small ghost icon button at the row's inline end, opening
+//   Trigger   a small ghost icon button pushed to the row's inline end, opening
 //             the popup; named "Choose date" unless given a name
 //   Content   the DatePicker's popup, aligned to the trigger's end
 
@@ -53,7 +53,7 @@ function inputTriggerClass(className: unknown): string {
     return cn(
         clickable({ variant: "ghost", shape: "square", size: "sm" }),
         foundation.secondary(),
-        "me-0.5 shrink-0 self-center",
+        "ms-auto me-0.5 shrink-0 self-center",
         className as string,
     );
 }
