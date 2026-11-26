@@ -105,6 +105,13 @@ the shown month is `disabled` (unavailable is also struck through); a range's mi
 `soft` band joined to its ends; a preset matching the value is `selected`. The date fields'
 focused segment is `highlighted`, and an empty segment is secondary text, as every placeholder.
 
+**A colour control speaks them too.** Its ground (an area, a wheel's ring, a slider's track, a
+swatch) is the colour being picked, the one place a component paints something that is not a
+palette role: the primitive's CSS variable. Its thumb is the `knob` with that colour inside and a
+`contrast` hairline, readable over white, black and saturated colours; a slider's or a wheel's
+thumb is the focusable (`focus`), the area's holds its inputs (`focusNested`). A chosen swatch is
+`checked`, a `ring` frame around it.
+
 **"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
 palette that palette's colour, and on a chromatic palette its deeper tone. The checked
 box, the selected radio, the switch, the slider's fill and the progress bar are one
