@@ -1405,6 +1405,158 @@
             ]
         },
         {
+            "name": "date-picker",
+            "type": "registry:ui",
+            "title": "Date Picker",
+            "description": "A trigger and a popup holding a calendar: the trigger opens a non-modal dialog whose calendar takes the focus, a choice sets the value, closes and returns the focus; a Calendar in the popup binds to the picker; name submits the ISO date. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger is a field row (field.row + field-control) with a calendar icon, Content the popup.content overlay; DatePicker.Template.Simple is the common picker with a bound Calendar.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/foundation",
+                "@fragiola/popup",
+                "@fragiola/calendar",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/date-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "date-picker-input",
+            "type": "registry:ui",
+            "title": "Date Picker Input",
+            "description": "A date picker typed into segments: the date is typed into a Date Field's segments or chosen in the popup's calendar, and either fills the other; one value, one form input. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Segments and Segment are the Date Field's, Trigger a small ghost icon button inside the Field.Row, Content the Date Picker's popup.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/date-field",
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/date-picker-input.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-picker-input.tsx"
+                }
+            ]
+        },
+        {
+            "name": "date-range-picker",
+            "type": "registry:ui",
+            "title": "Date Range Picker",
+            "description": "A trigger and a popup holding a range calendar; the second choice sets the range and closes, name submits the ISO interval, presets in the popup are choices too. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger and Content are the Date Picker's.",
+            "registryDependencies": [
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/date-range-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-range-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "date-range-picker-input",
+            "type": "registry:ui",
+            "title": "Date Range Picker Input",
+            "description": "A date range picker typed into two ends' segments, one sequence across both, with a bound range calendar in the popup. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Its parts are the Date Picker Input's and the Date Range Field's Separator.",
+            "registryDependencies": [
+                "@fragiola/date-field",
+                "@fragiola/date-range-field",
+                "@fragiola/date-picker",
+                "@fragiola/date-picker-input",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/date-range-picker-input.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-range-picker-input.tsx"
+                }
+            ]
+        },
+        {
+            "name": "month-picker",
+            "type": "registry:ui",
+            "title": "Month Picker",
+            "description": "A trigger and a popup holding a month calendar that binds to it; name submits the month. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger and Content are the Date Picker's.",
+            "registryDependencies": [
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/month-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/month-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "month-range-picker",
+            "type": "registry:ui",
+            "title": "Month Range Picker",
+            "description": "A trigger and a popup holding a month range calendar; name submits the interval. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger and Content are the Date Picker's.",
+            "registryDependencies": [
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/month-range-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/month-range-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "year-picker",
+            "type": "registry:ui",
+            "title": "Year Picker",
+            "description": "A trigger and a popup holding a year calendar; name submits the year. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger and Content are the Date Picker's.",
+            "registryDependencies": [
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/year-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/year-picker.tsx"
+                }
+            ]
+        },
+        {
+            "name": "year-range-picker",
+            "type": "registry:ui",
+            "title": "Year Range Picker",
+            "description": "A trigger and a popup holding a year range calendar; name submits the interval. Primitives-backed: one shared file wraps Fragiola Primitives' on every base. Trigger and Content are the Date Picker's.",
+            "registryDependencies": [
+                "@fragiola/date-picker",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/year-range-picker.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/year-range-picker.tsx"
+                }
+            ]
+        },
+        {
             "name": "autocomplete",
             "type": "registry:ui",
             "title": "Autocomplete",

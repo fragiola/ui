@@ -205,6 +205,46 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "time-range-field",
         reason: "Base UI has no time range field",
     },
+    {
+        file: "registry/ui/date-picker.tsx",
+        entry: "date-picker",
+        reason: "Base UI has no date picker",
+    },
+    {
+        file: "registry/ui/date-picker-input.tsx",
+        entry: "date-picker-input",
+        reason: "Base UI has no typed date picker",
+    },
+    {
+        file: "registry/ui/date-range-picker.tsx",
+        entry: "date-range-picker",
+        reason: "Base UI has no date range picker",
+    },
+    {
+        file: "registry/ui/date-range-picker-input.tsx",
+        entry: "date-range-picker-input",
+        reason: "Base UI has no typed date range picker",
+    },
+    {
+        file: "registry/ui/month-picker.tsx",
+        entry: "month-picker",
+        reason: "Base UI has no month picker",
+    },
+    {
+        file: "registry/ui/month-range-picker.tsx",
+        entry: "month-range-picker",
+        reason: "Base UI has no month range picker",
+    },
+    {
+        file: "registry/ui/year-picker.tsx",
+        entry: "year-picker",
+        reason: "Base UI has no year picker",
+    },
+    {
+        file: "registry/ui/year-range-picker.tsx",
+        entry: "year-range-picker",
+        reason: "Base UI has no year range picker",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */
