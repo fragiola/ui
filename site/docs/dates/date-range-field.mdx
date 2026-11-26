@@ -1,0 +1,45 @@
+---
+title: "Date Range Field"
+description: "A start and an end date typed in segments, in one field row."
+---
+
+<InstallCommand item="date-range-field" />
+
+<Example id="date-range-field" />
+
+A date range field types two dates in one row. The ends are one sequence: a start that
+completes goes on into the end's first segment, Backspace on an empty end goes back into the
+start, Left and Right cross between them. Each end is an `Input` with `range="start"` or
+`"end"` and a name of its own (`aria-label="Departure"`): the primitive has no text. The value is
+`{ start, end }`, or `null` until both are complete; an end before the start, out of `min` /
+`max` or unavailable makes the whole range **invalid**, every segment of both ends. `startName`
+and `endName` submit the two dates.
+
+Its parts are the [Date Field](/docs/dates/date-field)'s, plus a `Separator`: the dash between
+the ends (`field.separator`), hidden from assistive technology since each end carries its name.
+
+## Bases
+
+**Primitives-backed.** Base UI has no date range field, so this is one shared file (`ui/date-range-field.tsx`) that wraps
+Fragiola Primitives' `DateRangeField` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
+it: name the ends with `aria-labelledby` (the label's `id`, as the example does) or `aria-label`,
+and pass `name`, `disabled` and `required` to the Root. On Fragiola Primitives it is also a
+`Field` control: the label names the group, a press on the label focuses the first segment, and
+the Field's description, `disabled` and validation reach it.
+
+**Invalid.** The range's own invalid state (`data-invalid` on its parts) turns its segments
+`palette-danger` by inheritance; the row's stroke follows when the `Field` itself is invalid —
+pass `invalid` to `Field.Root`, which works on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DateRangeField.Root` + `field.body`; renders the two hidden inputs |
+| `Input` | primitive `DateRangeField.Input` (`range`) + `field.segments` |
+| `Segment` | primitive `DateField.Segment` + `field.segment` |
+| `Separator` | the dash between the ends, `field.separator` |

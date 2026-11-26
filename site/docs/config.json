@@ -189,6 +189,22 @@
                 {
                     "label": "Calendar View",
                     "path": "dates/calendar-view"
+                },
+                {
+                    "label": "Date Field",
+                    "path": "dates/date-field"
+                },
+                {
+                    "label": "Date Range Field",
+                    "path": "dates/date-range-field"
+                },
+                {
+                    "label": "Time Field",
+                    "path": "dates/time-field"
+                },
+                {
+                    "label": "Time Range Field",
+                    "path": "dates/time-range-field"
                 }
             ]
         },

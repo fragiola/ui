@@ -1,0 +1,54 @@
+---
+title: "Date Field"
+description: "A date typed in segments — month, day, year, and optionally the time — inside a field row."
+---
+
+<InstallCommand item="date-field" />
+
+<Example id="date-field" />
+
+A date field types a date the way it is written in the reader's locale: each segment (month,
+day, year, and with `granularity` the hour, minute, second and day period) is a spinbutton.
+Digits fill the focused segment and the focus moves on once no further digit could fit; the
+arrows step a segment (from `placeholderValue`, today, when it is empty), Backspace erases, Left
+and Right move between segments, and each segment is a tab stop. The value is a
+`{ year, month, day }` (a `PlainDateTime` with a time granularity), or `null` while a segment is
+empty. `min`, `max` and `isDateUnavailable` make a complete value **invalid**; `name` submits it
+as an ISO 8601 string, and `required` refuses an empty one.
+
+## The field family
+
+The control is only its middle (rule 3): it goes in a `Field.Row`, which draws the box, the
+height and the focus ring. The field family gains three members for every date and time field:
+
+- `segments` — the group of one value's segments: `control`'s marker, type and padding, laid out
+  **inline**. The primitive keeps each numeric segment one left-to-right run; inline layout then
+  keeps the locale's order in a right-to-left page, where flex items would reverse it.
+- `segment` — one segment: the focused one is `highlighted` (`soft`, `contrast` text); a
+  placeholder and a literal (`/`, `:`) are secondary text, as every placeholder.
+- `separator` — the dash between a range's ends, secondary.
+
+## Bases
+
+**Primitives-backed.** Base UI has no date field, so this is one shared file (`ui/date-field.tsx`) that wraps
+Fragiola Primitives' `DateField` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
+it: name the group with `aria-labelledby` (the label's `id`, as the example does) or `aria-label`,
+and pass `name`, `disabled` and `required` to the Root. On Fragiola Primitives it is also a
+`Field` control: the label names the group, a press on the label focuses the first segment, and
+the Field's description, `disabled` and validation reach it.
+
+**Invalid.** The field's own invalid state (`data-invalid` on its parts) turns its segments
+`palette-danger` by inheritance; the row's stroke follows when the `Field` itself is invalid —
+pass `invalid` to `Field.Root`, which works on both bases.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DateField.Root` + `field.body`; renders the hidden input |
+| `Input` | primitive `DateField.Input` + `field.segments` (every segment when it has no children) |
+| `Segment` | primitive `DateField.Segment` + `field.segment` |
