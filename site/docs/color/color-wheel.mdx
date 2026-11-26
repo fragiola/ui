@@ -1,0 +1,48 @@
+---
+title: "Color Wheel"
+description: "A colour's hue on a ring: press or drag on the ring, or step it with the arrows."
+---
+
+<InstallCommand item="color-wheel" />
+
+<Example id="color-wheel" />
+
+A color wheel picks a colour's hue on a ring. Its thumb is an APG slider over 0–360°: a press
+on the ring moves it there and drags it, the arrows step it by a degree (Shift and Page Up /
+Page Down by 15°) and wrap past 360°, Home and End go to 0° and 359°. The ring is physical: a
+wheel has no reading direction, so RTL changes nothing. `outerRadius` and `innerRadius` (px,
+100 and 75 by default) size the ring; the primitive sizes the box from them. `colorSpace` is
+`hsl` or `hsb`; `name` submits the colour as hex.
+
+Name the thumb (`aria-label="Hue"`). `ColorWheel.Template.Simple` is the ring and its thumb, named
+"Hue" unless you give `aria-label`. Inside a [Color Picker](/docs/color/color-picker), a wheel with
+neither `value` nor `defaultValue` **binds** to the picker's colour.
+
+## The look
+
+It composes the `color` family:
+
+- the **Track** is `color.wheelTrack`: the primitive's conic gradient of every hue
+  (`--color-wheel-track-background`, 0° at the top, clockwise), masked inside the inner radius
+  (`--color-wheel-inner-radius`) so only the ring shows. The ground is the colour being picked,
+  never a palette role.
+- the **Thumb** is `color.wheelThumb`: the knob with the colour inside and a `contrast` hairline,
+  as every colour thumb; it is the slider itself, so its ring is the standalone `focus`.
+
+The ring's size is the primitive's pixel option: it does not follow the density axis.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color wheel, so this is one shared file
+(`ui/color-wheel.tsx`) that wraps Fragiola Primitives' `ColorWheel` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. Name its thumb with `aria-label` or
+`aria-labelledby` on either base: it is no `Field` control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorWheel.Root` + `color.wheel()`, sized by the primitive |
+| `Track` | primitive `ColorWheel.Track` + `color.wheelTrack()` |
+| `Thumb` | primitive `ColorWheel.Thumb` + `color.wheelThumb()` |
+| `Template.Simple` | the ring and its thumb |

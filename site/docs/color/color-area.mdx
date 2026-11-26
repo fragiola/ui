@@ -1,0 +1,55 @@
+---
+title: "Color Area"
+description: "Two channels of a colour at once on a 2D area: drag the thumb, or move both axes with the arrows."
+---
+
+<InstallCommand item="color-area" />
+
+<Example id="color-area" />
+
+A color area picks two channels of one colour at once: saturation across and brightness up by
+default, the square under a hue slider. Its accessible model is **two APG sliders**, one hidden
+native range input per axis inside the thumb, so a screen reader meets two named sliders with
+their values. A press on the area moves the thumb there and drags it; either input moves both
+axes (Left and Right move `x`, Up and Down, Page Up and Page Down move `y`, Shift takes the
+large step, Home and End set `x` to its ends), and the focus follows the axis a key moved. In
+RTL, `x` runs from the right. `xChannel`, `yChannel` and `colorSpace` choose the axes (red and
+green in rgb, saturation and lightness in hsl, ...); a change reports the colour in that space.
+Each input's `name` submits its channel.
+
+Name the area (`aria-label`: it is a `group`) and each input (`aria-label="Saturation"`).
+`ColorArea.Template.Simple` is the area, its thumb and both inputs named after their channels
+(saturation and brightness by default). Inside a [Color Picker](/docs/color/color-picker), an area
+with neither `value` nor `defaultValue` **binds** to the picker's colour.
+
+## The look
+
+It composes the `color` family:
+
+- the **Root** is `color.area`: the primitive's two background layers and their blend mode
+  (`--color-area-background`, `--color-area-background-blend-mode`). The ground is the colour
+  being picked, never a palette role. A hairline inside its edge keeps a white corner apart from a
+  white floor. Its size is yours (`h-48 w-full` by default; `className="size-40"`).
+- the **Thumb** is `color.areaThumb`: the foundation's `knob` (the palette's `base` over a light
+  shadow) with the colour inside it and a `contrast` hairline around it, so it reads over white,
+  black and saturated colours. Its focus ring is `focusNested`, drawn while one of its inputs
+  has the keyboard focus.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color area, so this is one shared file
+(`ui/color-area.tsx`) that wraps Fragiola Primitives' `ColorArea` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too (`lib/primitives-backed.tsx`), and `dir="rtl"` without one.
+
+The area is no `Field` control on either base (its two values have two names): name it and its
+inputs with `aria-label` or `aria-labelledby`.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorArea.Root` + `color.area()` |
+| `Thumb` | primitive `ColorArea.Thumb` + `color.areaThumb()` |
+| `Input` | primitive `ColorArea.Input` (`axis="x"` or `"y"`), visually hidden |
+| `Template.Simple` | the area, the thumb and both inputs, named after the channels |

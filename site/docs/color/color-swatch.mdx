@@ -1,0 +1,34 @@
+---
+title: "Color Swatch"
+description: "A colour shown as a tile, its transparency over a checkerboard."
+---
+
+<InstallCommand item="color-swatch" />
+
+<Example id="color-swatch" />
+
+A color swatch shows a colour (`color`: a hex, `rgb()`, `hsl()` or a colour value). It is an
+image to assistive technologies: name it with the colour's name (`aria-label="Ocean"`); without
+one, its name is the colour's CSS text (`rgb(37, 99, 235)`). A swatch that only repeats a value
+written beside it is decoration: give it `aria-hidden="true"`. Inside a
+[Color Picker](/docs/color/color-picker), a swatch without `color` shows the picker's colour;
+inside a [Color Swatch Picker](/docs/color/color-swatch-picker) option it is the option's name.
+
+## The look
+
+It composes the `color` family's `swatch`: the primitive's `--color-swatch-color` (the colour,
+never a palette role) over the checkerboard, a 32px tile with `rounded-md` and a hairline inside
+its edge, so a white swatch stands apart from a white floor. Resize it with a class
+(`size-5`, `size-full`). The checkerboard is drawn in the palette's `line` and `base`.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color swatch, so this is one shared file
+(`ui/color-swatch.tsx`) that wraps Fragiola Primitives' `ColorSwatch` on **both** bases, and the
+item depends on `@fragiola/primitives-react@0.2.0` on both. It behaves the same on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `ColorSwatch` | primitive `ColorSwatch` + `color.swatch()`: one part, no namespace |

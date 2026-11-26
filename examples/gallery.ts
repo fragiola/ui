@@ -28,6 +28,7 @@ export const LEVELS = [
     { id: "actions", title: "Actions" },
     { id: "fields", title: "Fields" },
     { id: "dates", title: "Dates" },
+    { id: "color", title: "Color" },
     { id: "menus", title: "Menus" },
     { id: "overlays", title: "Overlays" },
     { id: "disclosure", title: "Disclosure" },

@@ -1,0 +1,52 @@
+---
+title: "Color Field"
+description: "A colour typed as text: hex, rgb() or hsl(), committed on Enter or blur."
+---
+
+<InstallCommand item="color-field" />
+
+<Example id="color-field" />
+
+A color field takes a colour as text. Without `channel` it shows the hex (`#336699`, with its
+alpha below full opacity) and reads hex with or without `#`, `rgb()` and `hsl()`; the text is
+committed on Enter or blur, an empty text gives `null`, and a text that is no colour goes back
+to the value. ArrowUp and ArrowDown step it as a 24-bit number. With `channel` it edits one
+channel as an APG spinbutton (`120°`, `50%`) with the channel's steps. `onValueChange` fires on a
+commit or a step, never while typing; `name` submits the value, `required`, `disabled` and
+`readOnly` are a form control's.
+
+The control is only its middle: put `ColorField.Root` in a `Field.Row`, which draws the box, the
+height and the focus ring, as every input. A swatch of the value goes in the row's `Field.Inset`
+(as the example does). Inside a [Color Picker](/docs/color/color-picker), a field with neither
+`value` nor `defaultValue` **binds** to the picker's colour.
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+## The look
+
+It adds no family. The **Root** is `field.body`, the control's area inside the row; the **Input**
+is the bare `field.control` (the `field-control` marker, the type, the padding), so its focus ring
+and its invalid state are the row's.
+
+## Bases
+
+**Primitives-backed.** Base UI has no color field, so this is one shared file
+(`ui/color-field.tsx`) that wraps Fragiola Primitives' `ColorField` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
+it: name the input with `aria-labelledby` (the label's `id`) or `aria-label`, as the example does,
+and pass `name`, `disabled` and `required` to the Root. On Fragiola Primitives the field is also a
+`Field` control (its label, description and invalid state reach it).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `ColorField.Root` + `field.body()`, renders the hidden input |
+| `Input` | primitive `ColorField.Input` + `field.control()` |
