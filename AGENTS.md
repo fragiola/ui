@@ -76,8 +76,17 @@ the others at `r/<base>/`. Do not "fix" these:
   the component's docs page. A type or a missing part is adapted in the wrapper.
 - `registry.json` never lists a base's package: the build adds it per base.
 - `FRAGIOLA_BASE=<base>` selects the base for `pnpm dev`, the examples build,
-  `site:dev`, `check:embeds` and `check:create`. The playground also switches it
-  from its toolbar. `pnpm typecheck` checks every base.
+  `check:embeds` (which hosts the app where a v1.8 host does:
+  `/ui/embed/react/` for the default base, `/ui/embed/react/<base>/` for
+  another) and `check:create`. The playground also switches it from its
+  toolbar. `pnpm typecheck` checks every base.
+- **The export declares the bases** (fragiola/www `CONTRACT.md` v1.8 §2,
+  §5.6, §7): `project.json` `bases` comes from `bases.ts`; `site:export` builds
+  the examples app once per base (`embed/react/`, `embed/react/<base>/`) and
+  the registry once per base (`r/`, `r/<base>/`), and `validateBases` checks
+  that every base has the same items and examples. `site:dev` runs one Vite
+  server per base behind a proxy on its port, each at its base's path, so
+  fragiola.com's dev server switches base too.
 
 ## Secondary text
 
@@ -176,6 +185,6 @@ gives them room. `check:embeds` checks both.
 | `pnpm build` | `pnpm -r build` (production build) |
 | `pnpm registry:build` | build the registry JSON files of every base (`packages/registry/dist/r`, `dist/r/<base>`) |
 | `pnpm registry:smoke` | install every registry item of every base with the real shadcn CLI |
-| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.7, fragiola/www `CONTRACT.md`) |
-| `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
+| `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, every base included, validated against its contract (v1.8, fragiola/www `CONTRACT.md`) |
+| `pnpm site:dev --base /ui --port <n>` | the examples app of every base with hot reload, for fragiola.com's dev server (a proxy on `<n>`, one Vite server per base on the next ports) |
 | `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium` locally; CI runs it in Playwright's image, see `.github/workflows/ci.yml`) |

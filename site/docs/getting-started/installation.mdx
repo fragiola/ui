@@ -62,9 +62,10 @@ base. For Base UI:
 }
 ```
 
-Base UI's items are built at `packages/registry/dist/r/base/` by
-`pnpm registry:build`; fragiola.com serves them once the site's base switch
-ships.
+The base switch in the sidebar (and in the examples gallery) shows every
+example on the base you choose, and adds the base's `components.json` entry
+under each install command. Locally, `pnpm registry:build` writes Base UI's
+items to `packages/registry/dist/r/base/`.
 
 ### Installed before Fragiola Primitives was the default?
 

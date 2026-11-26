@@ -1,7 +1,9 @@
 "use client";
 
+import type { ChangeDetails } from "@fragiola/primitives-react/navigation-menu";
 import { NavigationMenu as NavigationMenuPrimitive } from "@fragiola/primitives-react/navigation-menu";
 import { ChevronDownIcon } from "lucide-react";
+import * as React from "react";
 import { Text } from "#/atoms/text";
 import { foundation } from "#/families/foundation";
 import { popup } from "#/families/popup";
@@ -26,16 +28,46 @@ import { cn } from "#/lib/cn";
 // Content layout (grids of links) is the consumer's; we supply the parts,
 // not a layout.
 
+// Base UI's Link takes `closeOnClick` (close the menu when the link is
+// pressed); Fragiola Primitives' has none. The Root holds the open value
+// (controlled or not, as the consumer passes it) and gives its Links a way to
+// close it, so the prop works the same on every base.
+const CloseMenuContext = React.createContext<
+    ((event: React.MouseEvent) => void) | null
+>(null);
+
 function NavigationMenuRoot({
     className,
+    value,
+    defaultValue = null,
+    onValueChange,
     ...props
 }: PrimitiveProps<typeof NavigationMenuPrimitive.Root, "nav">) {
+    const [own, setOwn] = React.useState<string | null>(defaultValue);
+    const controlled = value !== undefined;
+    const current = controlled ? value : own;
+    const change = React.useCallback(
+        (next: string | null, details: ChangeDetails) => {
+            if (!controlled) setOwn(next);
+            onValueChange?.(next, details);
+        },
+        [controlled, onValueChange],
+    );
+    const close = React.useCallback(
+        (event: React.MouseEvent) =>
+            change(null, { reason: "item-press", event: event.nativeEvent }),
+        [change],
+    );
     return (
-        <NavigationMenuPrimitive.Root
-            data-slot="navigation-menu"
-            className={cn("flex flex-col gap-2", className as string)}
-            {...props}
-        />
+        <CloseMenuContext.Provider value={close}>
+            <NavigationMenuPrimitive.Root
+                data-slot="navigation-menu"
+                className={cn("flex flex-col gap-2", className as string)}
+                value={current}
+                onValueChange={change}
+                {...props}
+            />
+        </CloseMenuContext.Provider>
     );
 }
 
@@ -135,8 +167,14 @@ function NavigationMenuContent({
 
 function NavigationMenuLink({
     className,
+    closeOnClick = false,
+    onClick,
     ...props
-}: PrimitiveProps<typeof NavigationMenuPrimitive.Link, "a">) {
+}: PrimitiveProps<typeof NavigationMenuPrimitive.Link, "a"> & {
+    /** Close the menu when the link is pressed (Base UI's prop). */
+    closeOnClick?: boolean;
+}) {
+    const close = React.useContext(CloseMenuContext);
     // Renders Text.Link through render — the consumer stitches a router link
     // the same way as every other link in the project. The active state is a
     // role (data-[active]:text-palette-contrast), not a colour.
@@ -148,6 +186,10 @@ function NavigationMenuLink({
                 "text-palette-accent/85 data-active:text-palette-contrast",
                 className as string,
             )}
+            onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+                onClick?.(event);
+                if (closeOnClick && !event.defaultPrevented) close?.(event);
+            }}
             {...props}
         />
     );

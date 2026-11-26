@@ -221,7 +221,8 @@
             "files": [
                 {
                     "path": "registry/lib/base.ts",
-                    "type": "registry:lib"
+                    "type": "registry:lib",
+                    "target": "@lib/base.ts"
                 }
             ],
             "registryDependencies": []
