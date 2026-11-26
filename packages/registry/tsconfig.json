@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "#/*": ["./registry/bases/base/*", "./registry/*"]
+            "#/*": ["./registry/bases/primitives/*", "./registry/*"]
         },
         "types": ["node"]
     },

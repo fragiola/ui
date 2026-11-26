@@ -39,12 +39,12 @@ export const BASES: Base[] = [
         name: "primitives",
         title: "Fragiola Primitives",
         dependencies: ["@fragiola/primitives-react@0.2.0"],
+        default: true,
     },
     {
         name: "base",
         title: "Base UI",
         dependencies: ["@base-ui/react"],
-        default: true,
     },
 ];
 

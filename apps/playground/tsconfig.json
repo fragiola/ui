@@ -3,11 +3,11 @@
     "compilerOptions": {
         "paths": {
             "#/components/*": [
-                "../../packages/registry/registry/bases/base/*",
+                "../../packages/registry/registry/bases/primitives/*",
                 "../../packages/registry/registry/*"
             ],
             "#/*": [
-                "../../packages/registry/registry/bases/base/*",
+                "../../packages/registry/registry/bases/primitives/*",
                 "../../packages/registry/registry/*"
             ]
         },

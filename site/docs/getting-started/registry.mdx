@@ -12,7 +12,14 @@ edge-cacheable.
 | | lives at | has `content`? | read by |
 |---|---|---|---|
 | source | `registry.json` | no — only `path` | the build |
-| served | `https://fragiola.com/r/<name>.json` | yes, inlined | the CLI |
+| served | `https://fragiola.com/r/<name>.json` (Fragiola Primitives), `https://fragiola.com/r/base/<name>.json` (Base UI) | yes, inlined | the CLI |
+
+`registry.json` is one list for both [bases](/docs/getting-started/installation#bases).
+A file that imports a primitive library is written once per base
+(`registry/bases/<base>/…`), and the build writes every item once per base,
+reading the base's copy of each file and adding the base's primitive package
+to the item's `dependencies`. The item names and their `registryDependencies`
+are the same on both.
 
 The CLI fetches one JSON per item and has everything it needs. It resolves
 `registryDependencies` recursively, with a `visited` set that both

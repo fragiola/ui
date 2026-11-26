@@ -1,8 +1,10 @@
 # Fragiola UI
 
 A copy-paste component library (shadcn-style distribution: the CLI ships source
-files, there is no `@fragiola/ui` package to install). Built on Base UI primitives
-and Tailwind v4.
+files, there is no `@fragiola/ui` package to install). Built on headless
+primitives and Tailwind v4, on two **bases** as shadcn/ui offers several:
+Fragiola Primitives (`@fragiola/primitives-react`, the default) and Base UI
+(architecture §5, "Bases").
 
 Fragiola exists because of three specific problems with shadcn/ui, each measured:
 
@@ -41,7 +43,7 @@ These are deliberately tight. Do not "fix" them.
 4. **Style families have zero variants.** Variation becomes a named member, not a
    variant. If two components of a family need different values and both are right,
    that is a variant — otherwise unify.
-5. **`render`, never `asChild`.** One polymorphism mechanism, matching Base UI.
+5. **`render`, never `asChild`.** One polymorphism mechanism, matching both bases.
 6. **Logical properties on the inline axis** (`ps`/`pe`, `border-s`/`border-e`,
    `start`/`end`). RTL is an MVP goal. The block axis stays physical.
 7. **No `!important`.** If you need it, there is an architectural problem — report
@@ -54,6 +56,28 @@ These are deliberately tight. Do not "fix" them.
    (architecture §4). No component gets a variant or a prop for one. A token
    an axis changes must compile to `var()` or to an expression over an axis
    variable, never to an inlined value. `tests/design-axes.test.ts` pins it.
+
+## Bases
+
+`packages/registry/bases.ts` lists the bases; the default one is served at `r/`,
+the others at `r/<base>/`. Do not "fix" these:
+
+- **Only a file that imports a primitive library is per base**, at
+  `registry/bases/<base>/<its path>`, and it exists on **every** base. Everything
+  else stays shared. Code reaches a base file through `#/` (never a relative
+  import across the boundary), which resolves to the selected base's copy, else
+  the shared file.
+- **The UI adapts; a base library is never changed** to match another. A base file
+  differs from its twins only in primitive wiring. Its exports, namespace and
+  factory members, classes and `data-slot` names are identical
+  (`tests/bases.test.ts`). The base's adapter is `lib/base.ts` (`PrimitiveProps`,
+  `controlText`, `POSITIONER_DEFAULTS`, ...).
+- **A behaviour a base decided differently is kept** and written under "Bases" on
+  the component's docs page. A type or a missing part is adapted in the wrapper.
+- `registry.json` never lists a base's package: the build adds it per base.
+- `FRAGIOLA_BASE=<base>` selects the base for `pnpm dev`, the examples build,
+  `site:dev`, `check:embeds` and `check:create`. The playground also switches it
+  from its toolbar. `pnpm typecheck` checks every base.
 
 ## Secondary text
 
@@ -147,11 +171,11 @@ gives them room. `check:embeds` checks both.
 | `pnpm dev` | the playground (`apps/playground`): every example and scenario, live |
 | `pnpm check` | Biome lint + format + assist (non-mutating) |
 | `pnpm check:fix` | Biome check with auto-fix |
-| `pnpm typecheck` | `pnpm -r typecheck` (TypeScript, no emit) |
+| `pnpm typecheck` | `pnpm -r typecheck` (TypeScript, no emit, once per base) |
 | `pnpm test` | `pnpm -r test` (guard tests) |
 | `pnpm build` | `pnpm -r build` (production build) |
-| `pnpm registry:build` | build the registry JSON files (`packages/registry/dist/r`) |
-| `pnpm registry:smoke` | install every registry item with the real shadcn CLI |
+| `pnpm registry:build` | build the registry JSON files of every base (`packages/registry/dist/r`, `dist/r/<base>`) |
+| `pnpm registry:smoke` | install every registry item of every base with the real shadcn CLI |
 | `pnpm site:export --base /ui --out <dir>` | the export fragiola.com builds from, validated against its contract (v1.7, fragiola/www `CONTRACT.md`) |
 | `pnpm site:dev --base /ui --port <n>` | the examples app with hot reload, for fragiola.com's dev server |
 | `pnpm --filter examples-react check:embeds` | every example in a real iframe, as a v1.2 host shows it, and every modal example promoted by a v1.3 host (needs `playwright install chromium` locally; CI runs it in Playwright's image, see `.github/workflows/ci.yml`) |

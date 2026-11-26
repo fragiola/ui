@@ -1,6 +1,6 @@
 # Fragiola UI
 
-A copy-paste React component library built on [Base UI](https://base-ui.com) and [Tailwind CSS](https://tailwindcss.com). Composable color palettes you can scope to any subtree, shared style families, and one way to do each thing. No package to install — the source lands in your project, and it is yours.
+A copy-paste React component library built on [Fragiola Primitives](https://fragiola.com/primitives) (the default base) or [Base UI](https://base-ui.com), and [Tailwind CSS](https://tailwindcss.com). Composable color palettes you can scope to any subtree, shared style families, and one way to do each thing. No package to install — the source lands in your project, and it is yours.
 
 ## Documentation
 
