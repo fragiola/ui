@@ -46,7 +46,7 @@ function ScrollAreaViewport({
             data-slot="scroll-area-viewport"
             className={cn(
                 foundation.focusInset(),
-                "size-full max-h-[inherit] rounded-[inherit] outline-none",
+                "size-full max-h-[inherit] rounded-[inherit]",
                 className as string,
             )}
             {...props}

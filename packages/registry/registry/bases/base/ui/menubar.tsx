@@ -69,10 +69,11 @@ function MenubarContent({
     );
 }
 
+// A submenu opens on the inline end (the primitive's default on both bases:
+// the right in LTR, the left in RTL), so no side is given here.
 function MenubarSubContent({
     align = "start",
     alignOffset = -3,
-    side = "right",
     sideOffset = 0,
     ...props
 }: React.ComponentProps<typeof parts.Content>) {
@@ -81,7 +82,6 @@ function MenubarSubContent({
             data-slot="menubar-sub-content"
             align={align}
             alignOffset={alignOffset}
-            side={side}
             sideOffset={sideOffset}
             {...props}
         />

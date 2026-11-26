@@ -21,7 +21,7 @@ Tab enters the bar on its last focused item and leaves it. The arrows along the 
 
 ## Bases
 
-On Fragiola Primitives (the default base) a menubar is non-modal by default, as the APG menubar is: the page keeps scrolling and the pointer reaches it while a menu is open. Base UI's `Menubar` is modal by default; pass `modal` to `Menubar.Root` for the same behaviour on either base. With a menu open, the bar's arrow moves to the next menu on both bases, but on Fragiola Primitives the focus stays on the bar's item (the APG's recommendation; Down then enters the menu), while Base UI moves it into the next menu, on its first item. Parts, classes and `data-slot` names are the same on both bases.
+On Fragiola Primitives (the default base) a menubar is non-modal by default, as the APG menubar is: the page keeps scrolling and the pointer reaches it while a menu is open. Base UI's `Menubar` is modal by default. Pass `modal={false}` to `Menubar.Root` for a non-modal bar on both bases, or `modal` for a modal one. With a menu open, the bar's arrow moves to the next menu on both bases, but on Fragiola Primitives the focus stays on the bar's item (the APG's recommendation; Down then enters the menu), while Base UI moves it into the next menu, on its first item. Parts, classes and `data-slot` names are the same on both bases.
 
 ## Parts
 

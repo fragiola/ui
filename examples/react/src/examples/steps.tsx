@@ -78,9 +78,9 @@ export default function StepsDemo() {
                                 <Steps.Item key={title} index={index}>
                                     <Steps.Trigger>
                                         <Steps.Indicator />
-                                        <span className="pt-1.5">
+                                        <Steps.Text>
                                             <Steps.Title>{title}</Steps.Title>
-                                        </span>
+                                        </Steps.Text>
                                     </Steps.Trigger>
                                     {index < 2 ? <Steps.Separator /> : null}
                                 </Steps.Item>

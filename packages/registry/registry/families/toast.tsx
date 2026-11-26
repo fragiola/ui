@@ -18,7 +18,8 @@
 //
 // The look is the visual language's (docs/visual-language.md):
 //   root         an overlay (`foundation.overlay`): raised, a `line` border,
-//                `rounded-lg`, the overlay shadow — a card above the page.
+//                `rounded-lg`, the overlay shadow — a card above the page;
+//                a tab stop, with the standalone ring (`focus`).
 //   content      the card's row, which clips while the toast is behind the
 //                frontmost one and fades out then (`data-behind`), so a
 //                peeking toast shows its edge, not its text.
@@ -54,6 +55,7 @@ const viewport = tv({
 const root = tv({
     base: [
         foundation.overlay(),
+        foundation.focus(),
         `
         group/toast absolute end-0 bottom-0 w-full origin-bottom select-none
         [--gap:0.75rem] [--peek:0.75rem]

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRender } from "@fragiola/primitives-react/render";
 import {
     type ToastObject,
     Toast as ToastPrimitive,
@@ -8,7 +9,7 @@ import { XIcon } from "lucide-react";
 import * as React from "react";
 import { Clickable } from "#/atoms/clickable";
 import { toast as family } from "#/families/toast";
-import type { PrimitiveProps } from "#/lib/base";
+import type { PrimitiveProps, RenderComponentProps } from "#/lib/base";
 import { cn } from "#/lib/cn";
 
 // Toast — brief notifications in a stack at the page's corner: announced to
@@ -82,16 +83,23 @@ function ToastRoot({
     );
 }
 
-function ToastContent({ className, ...props }: React.ComponentProps<"div">) {
+// Written with the base's useRender, so it takes `render` as Base UI's
+// Content does.
+function ToastContent({
+    className,
+    render,
+    ...props
+}: RenderComponentProps<"div">) {
     const behind = React.useContext(BehindContext);
-    return (
-        <div
-            data-slot="toast-content"
-            data-behind={behind ? "" : undefined}
-            className={cn(family.content(), className)}
-            {...props}
-        />
-    );
+    return useRender({
+        render,
+        props: {
+            "data-slot": "toast-content",
+            "data-behind": behind ? "" : undefined,
+            className: cn(family.content(), className as string),
+            ...props,
+        },
+    });
 }
 
 function ToastIcon({ className, ...props }: React.ComponentProps<"span">) {

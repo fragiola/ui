@@ -157,6 +157,7 @@ function CarouselIndicatorGroup({
 function CarouselIndicator({
     className,
     render,
+    children: label,
     ...props
 }: PrimitivesProps<typeof CarouselPrimitive.Indicator, "button">) {
     // A dot in a 24px target: the button carries the focus ring, the dot
@@ -174,16 +175,21 @@ function CarouselIndicator({
                 state: { current: boolean },
             ) => {
                 const own = { ...itemProps };
+                // The consumer's children (an sr-only name) stay beside the
+                // dot.
                 const children = (
-                    <span
-                        aria-hidden="true"
-                        data-checked={state.current ? "" : undefined}
-                        className={cn(
-                            foundation.rail(),
-                            foundation.checked(),
-                            "size-2 rounded-full transition-colors duration-150",
-                        )}
-                    />
+                    <>
+                        <span
+                            aria-hidden="true"
+                            data-checked={state.current ? "" : undefined}
+                            className={cn(
+                                foundation.rail(),
+                                foundation.checked(),
+                                "size-2 rounded-full transition-colors duration-150",
+                            )}
+                        />
+                        {label as React.ReactNode}
+                    </>
                 );
                 if (typeof render === "function") {
                     return (

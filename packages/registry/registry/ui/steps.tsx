@@ -177,6 +177,17 @@ function StepsTitle({ className, ...props }: React.ComponentProps<"span">) {
     );
 }
 
+// The title and description beside the indicator, lined up with its centre.
+function StepsText({ className, ...props }: React.ComponentProps<"span">) {
+    return (
+        <span
+            data-slot="steps-text"
+            className={cn("flex flex-col gap-0.5 pt-1.5", className)}
+            {...props}
+        />
+    );
+}
+
 function StepsDescription({
     className,
     ...props
@@ -278,6 +289,17 @@ export type Step = {
     content: React.ReactNode;
 };
 
+// Back and Next, side by side.
+function StepsActions({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+        <div
+            data-slot="steps-actions"
+            className={cn("flex gap-2", className)}
+            {...props}
+        />
+    );
+}
+
 /** The common process: the steps, the current step's content, Back and Next. */
 function StepsTemplateSimple({
     steps,
@@ -300,14 +322,14 @@ function StepsTemplateSimple({
                     <StepsItem key={index} index={index}>
                         <StepsTrigger>
                             <StepsIndicator />
-                            <span className="flex flex-col gap-0.5 pt-1.5">
+                            <StepsText>
                                 <StepsTitle>{step.title}</StepsTitle>
                                 {step.description ? (
                                     <StepsDescription>
                                         {step.description}
                                     </StepsDescription>
                                 ) : null}
-                            </span>
+                            </StepsText>
                         </StepsTrigger>
                         {index < steps.length - 1 ? <StepsSeparator /> : null}
                     </StepsItem>
@@ -322,12 +344,12 @@ function StepsTemplateSimple({
             {completed ? (
                 <StepsCompletedContent>{completed}</StepsCompletedContent>
             ) : null}
-            <div className="flex gap-2">
+            <StepsActions>
                 <StepsPrevTrigger>Back</StepsPrevTrigger>
                 <StepsNextTrigger className="palette-neutral">
                     Next
                 </StepsNextTrigger>
-            </div>
+            </StepsActions>
         </StepsRoot>
     );
 }
@@ -338,6 +360,7 @@ export const Steps = {
     Item: StepsItem,
     Trigger: StepsTrigger,
     Indicator: StepsIndicator,
+    Text: StepsText,
     Title: StepsTitle,
     Description: StepsDescription,
     Separator: StepsSeparator,
@@ -345,5 +368,6 @@ export const Steps = {
     CompletedContent: StepsCompletedContent,
     PrevTrigger: StepsPrevTrigger,
     NextTrigger: StepsNextTrigger,
+    Actions: StepsActions,
     Template: { Simple: StepsTemplateSimple },
 };
