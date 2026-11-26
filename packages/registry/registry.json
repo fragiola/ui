@@ -217,7 +217,7 @@
             "name": "base",
             "type": "registry:lib",
             "title": "Base primitives",
-            "description": "The base's unstyled primitives the registry does not wrap: DirectionProvider (the direction the primitives read in RTL) and CollapsiblePrimitive (for compositions such as a collapsible sidebar menu). The same names on every base.",
+            "description": "The base's unstyled primitives the registry does not wrap: DirectionProvider (the direction the primitives read in RTL), useProvidedDirection (that direction, for the primitives-backed components) and CollapsiblePrimitive (for compositions such as a collapsible sidebar menu). The same names on every base.",
             "files": [
                 {
                     "path": "registry/lib/base.ts",
@@ -226,6 +226,20 @@
                 }
             ],
             "registryDependencies": []
+        },
+        {
+            "name": "primitives-backed",
+            "type": "registry:lib",
+            "title": "Primitives-backed bridge",
+            "description": "What a component only Fragiola Primitives has needs on every base: PrimitivesDirection, which hands the base's DirectionProvider direction to the Fragiola Primitives component inside it (on the Base UI base too), and PrimitivesProps, its wrapper's props typed alike on every base. Depends on @fragiola/primitives-react on every base.",
+            "registryDependencies": ["@fragiola/base"],
+            "files": [
+                {
+                    "path": "registry/lib/primitives-backed.tsx",
+                    "type": "registry:lib",
+                    "target": "@lib/primitives-backed.tsx"
+                }
+            ]
         },
         {
             "name": "cn",
@@ -863,6 +877,27 @@
             ]
         },
         {
+            "name": "meter",
+            "type": "registry:ui",
+            "title": "Meter",
+            "description": "A value within a known range — a quota, a storage, a score — with the meter role, its bounds and its text formatted for the locale. The track family like Progress: the rail is line, the fill ring, from the inline start (inverted under RTL). A field label and a secondary value. Tone is a palette class, not a prop.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/track",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/meter.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/meter.tsx"
+                }
+            ]
+        },
+        {
             "name": "slider",
             "type": "registry:ui",
             "title": "Slider",
@@ -902,6 +937,246 @@
                     "path": "registry/ui/tabs.tsx",
                     "type": "registry:ui",
                     "target": "@ui/tabs.tsx"
+                }
+            ]
+        },
+        {
+            "name": "segmented-control",
+            "type": "registry:ui",
+            "title": "Segmented Control",
+            "description": "One value of a few, side by side, with a mark that slides to the checked segment: a radio group (APG) whose arrows move and check, RTL included. Primitives-backed: Base UI has no segmented control, so one shared file wraps Fragiola Primitives' on every base. The root is the foundation's control box, the checked segment is current (soft, contrast, font-medium) and the sliding fill is the same current fill. No variants; colour is the palette in scope.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/segmented-control.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/segmented-control.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toggle",
+            "type": "registry:ui",
+            "title": "Toggle",
+            "description": "A two-state button (aria-pressed). A Clickable (ghost by default, outline or icon; size and shape) whose pressed state is the foundation's current mark — soft, contrast text, font-medium — read from aria-pressed by the current variant. No colour variant: colour is the palette class. Inside a ToggleGroup it joins the group's value.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/base"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/toggle.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toggle.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toggle-group",
+            "type": "registry:ui",
+            "title": "Toggle Group",
+            "description": "Toggles sharing one value — one pressed at most, or several with multiple — with one tab stop and the arrows between them (roving focus, RTL included). The group draws nothing: its items are Toggle, a gap apart.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/toggle",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/toggle-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toggle-group.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toolbar",
+            "type": "registry:ui",
+            "title": "Toolbar",
+            "description": "A row or column of controls with one tab stop: buttons, toggles, links, inputs, groups and separators, the arrows moving between them (the APG toolbar, RTL included). The root is the foundation's panel; buttons and links are small ghost Clickables; Toolbar.Toggle is a small Toggle that is one of the toolbar's items on both bases (alone or in a ToggleGroup); the input is a bare field control; the separator a line rule. No family of its own.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/toggle",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/toolbar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toolbar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "checkbox-group",
+            "type": "registry:ui",
+            "title": "Checkbox Group",
+            "description": "Checkboxes sharing one value, the list of the checked ones. With allValues, a parent Checkbox checks or clears them all and shows the mixed mark while some are checked. The group draws nothing: a column of Checkboxes in Field.ChoiceRoot.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/checkbox",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/checkbox-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/checkbox-group.tsx"
+                }
+            ]
+        },
+        {
+            "name": "fieldset",
+            "type": "registry:ui",
+            "title": "Fieldset",
+            "description": "A group of fields under one name: a native fieldset named by its Legend, disabling every field inside when disabled. The legend is a label (field.label); the root draws no box, only a column of fields.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/fieldset.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/fieldset.tsx"
+                }
+            ]
+        },
+        {
+            "name": "form",
+            "type": "registry:ui",
+            "title": "Form",
+            "description": "A native form its Fields validate together: validationMode for every Field, and errors (a server's answer, by Field name) shown on those Fields until their value changes. The Fields show them — data-invalid applies palette-danger by inheritance and Field.Error the message — the form only lays them out.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/form.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/form.tsx"
+                }
+            ]
+        },
+        {
+            "name": "number-field",
+            "type": "registry:ui",
+            "title": "Number Field",
+            "description": "A number typed, stepped or scrubbed: the arrows (Shift and Alt for the large and small steps), Page Up/Down, Home/End, the Increment and Decrement buttons (held to repeat), the wheel with allowWheelScrub, a ScrubArea's drag, and the locale's format. The control is only its middle: the Group is the field's box (field.row), the Input a bare field control, the steppers field addons on the inline start and end. No style of its own.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/foundation",
+                "@fragiola/base"
+            ],
+            "dependencies": ["lucide-react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/number-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/number-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "otp-field",
+            "type": "registry:ui",
+            "title": "OTP Field",
+            "description": "A one-time code, one character per slot: typing moves to the next slot, Backspace back, a pasted code fills them all, validationType refuses other characters, onValueComplete fires on a whole code. Each slot is the field's box around one centred character; Separator a short line dash between groups.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/otp-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/otp-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "password-input",
+            "type": "registry:ui",
+            "title": "Password Input",
+            "description": "A password with a button that shows and hides it (a toggle button the app names), hidden again on submit and reset. Primitives-backed: Base UI has no password input, so one shared file wraps Fragiola Primitives' on every base. The control is only its middle: Root is field.body, Input a bare field control, the trigger a small ghost Clickable with the eye icons; it goes in a Field.Row.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/password-input.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/password-input.tsx"
+                }
+            ]
+        },
+        {
+            "name": "search-field",
+            "type": "registry:ui",
+            "title": "Search Field",
+            "description": "A search box: Escape clears it, Enter submits the query, the clear button empties it and returns the focus. Primitives-backed: Base UI has no search field, so one shared file wraps Fragiola Primitives' on every base. The control is only its middle: Root is field.body, Icon a field inset with the glass, Input a bare field control, ClearButton a small ghost Clickable hidden while empty; it goes in a Field.Row.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/search-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/search-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "autocomplete",
+            "type": "registry:ui",
+            "title": "Autocomplete",
+            "description": "A text input that suggests completions: the value is the text, and picking an item fills it (unlike a Combobox, nothing is selected). Filtering, limit, mode (list, inline or both), the arrows and Enter. Combobox's recombination — field + popup + menu — with no style of its own: the input group is field.row, the content popup.content, items menu.item.",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/clickable",
+                "@fragiola/base"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/autocomplete.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/autocomplete.tsx"
                 }
             ]
         },

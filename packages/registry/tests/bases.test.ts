@@ -2,13 +2,14 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
-    BASE_PACKAGES,
     BASES,
     BASES_DIR,
     DEFAULT_BASE,
-    findBase,
+    PRIMITIVES_BACKED,
+    type PrimitivesBackedFile,
     resolveBaseFile,
 } from "../bases";
+import { baseImportProblems } from "../scripts/base-imports";
 import {
     type BaseFiles,
     dataSlots,
@@ -47,22 +48,18 @@ async function baseFiles(name: string): Promise<BaseFiles> {
 
 const IMPORT = /(?:from\s+|import\s*\(\s*|import\s+)["']([^"']+)["']/g;
 
-function importedPackages(source: string): string[] {
-    return [...source.matchAll(IMPORT)].flatMap(([, specifier = ""]) => {
-        const parts = specifier.split("/");
-        const name = specifier.startsWith("@")
-            ? parts.slice(0, 2).join("/")
-            : parts[0];
-        return name ? [name] : [];
-    });
-}
-
-function packagesOf(baseName: string): Set<string> {
+/** The entries Base UI ships: its package.json `exports` (`./toggle` → `toggle`). */
+async function baseUiEntries(): Promise<Set<string>> {
+    const manifest = JSON.parse(
+        await readFile(
+            path.join(ROOT, "node_modules/@base-ui/react/package.json"),
+            "utf-8",
+        ),
+    ) as { exports: Record<string, unknown> };
     return new Set(
-        findBase(baseName).dependencies.map((dep) => {
-            const at = dep.indexOf("@", dep.startsWith("@") ? 1 : 0);
-            return at > 0 ? dep.slice(0, at) : dep;
-        }),
+        Object.keys(manifest.exports)
+            .filter((key) => key.startsWith("./"))
+            .map((key) => key.slice(2)),
     );
 }
 
@@ -82,20 +79,17 @@ describe("bases", () => {
         expect(folders).toEqual(BASES.map((base) => base.name).sort());
     });
 
-    it("imports a base's library only from that base's files", async () => {
-        const offenders: string[] = [];
+    it("imports a base's library only from that base's files, or from a listed primitives-backed file", async () => {
+        const files = new Map<string, string>();
         for (const file of await walk(REGISTRY)) {
-            const relative = path.relative(REGISTRY, file);
-            const [, owner] = relative.match(/^bases\/([^/]+)\//) ?? [];
-            const allowed = owner ? packagesOf(owner) : new Set<string>();
-            const source = await readFile(file, "utf-8");
-            for (const name of importedPackages(source)) {
-                if (BASE_PACKAGES.has(name) && !allowed.has(name)) {
-                    offenders.push(`registry/${relative} imports ${name}`);
-                }
-            }
+            files.set(
+                path.relative(REGISTRY, file),
+                await readFile(file, "utf-8"),
+            );
         }
-        expect(offenders).toEqual([]);
+        expect(
+            baseImportProblems({ files, baseUiEntries: await baseUiEntries() }),
+        ).toEqual([]);
     });
 
     it("keeps every base in parity with the default base", async () => {
@@ -207,6 +201,164 @@ describe("the parity check", () => {
         ).toEqual([
             'registry/bases/two/ui/dialog.tsx: data-slot "dialog-close" is missing (one has it)',
             'registry/bases/two/ui/dialog.tsx: data-slot "dialog-x" is not in one',
+        ]);
+    });
+});
+
+describe("the bases guard", () => {
+    const segmented = `import { SegmentedControl } from "@fragiola/primitives-react/segmented-control";`;
+    const listed: PrimitivesBackedFile[] = [
+        {
+            file: "registry/ui/segmented-control.tsx",
+            entry: "segmented-control",
+            reason: "Base UI has no segmented control",
+        },
+    ];
+    const run = (
+        files: [string, string][],
+        allowed = listed,
+        baseUiEntries = new Set(["dialog", "toggle"]),
+    ) =>
+        baseImportProblems({
+            files: new Map([["ui/segmented-control.tsx", segmented], ...files]),
+            baseUiEntries,
+            allowed,
+        });
+
+    it("lets a listed shared file import Fragiola Primitives", () => {
+        expect(run([])).toEqual([]);
+    });
+
+    it("lists every primitives-backed file with a reason", () => {
+        expect(PRIMITIVES_BACKED.length).toBeGreaterThan(0);
+        for (const entry of PRIMITIVES_BACKED) {
+            expect(entry.reason, entry.file).not.toBe("");
+        }
+    });
+
+    it("fails on a shared file that imports Fragiola Primitives without being listed", () => {
+        expect(
+            run([
+                [
+                    "ui/planted.tsx",
+                    `import { Toggle } from "@fragiola/primitives-react/toggle";`,
+                ],
+            ]),
+        ).toEqual([
+            "registry/ui/planted.tsx imports @fragiola/primitives-react but is not on the primitives-backed list (bases.ts)",
+        ]);
+    });
+
+    it("fails on a shared or listed file that imports Base UI", () => {
+        expect(
+            run([
+                [
+                    "ui/planted.tsx",
+                    `import { Dialog } from "@base-ui/react/dialog";`,
+                ],
+                [
+                    "ui/segmented-control.tsx",
+                    `${segmented}\nimport { Toggle } from "@base-ui/react/toggle";`,
+                ],
+            ]),
+        ).toEqual([
+            "registry/ui/segmented-control.tsx imports @base-ui/react",
+            "registry/ui/planted.tsx imports @base-ui/react",
+        ]);
+    });
+
+    it("fails on a Base UI file that imports Fragiola Primitives", () => {
+        expect(
+            run([
+                [
+                    "bases/base/ui/dialog.tsx",
+                    `import { Dialog } from "@fragiola/primitives-react/dialog";`,
+                ],
+            ]),
+        ).toEqual([
+            "registry/bases/base/ui/dialog.tsx imports @fragiola/primitives-react",
+        ]);
+    });
+
+    it("fails on a listed file Base UI could serve", () => {
+        expect(
+            run(
+                [
+                    [
+                        "ui/toggle.tsx",
+                        `import { Toggle } from "@fragiola/primitives-react/toggle";`,
+                    ],
+                ],
+                [
+                    ...listed,
+                    {
+                        file: "registry/ui/toggle.tsx",
+                        entry: "toggle",
+                        reason: "planted",
+                    },
+                ],
+            ),
+        ).toEqual([
+            'registry/ui/toggle.tsx: Base UI ships "toggle", so it is a per-base pair, not primitives-backed',
+        ]);
+    });
+
+    it("fails on a listed file that is per base, or that wraps another entry", () => {
+        expect(
+            run(
+                [
+                    [
+                        "ui/meter.tsx",
+                        `import { Meter } from "@fragiola/primitives-react/progress";`,
+                    ],
+                    ["bases/base/ui/meter.tsx", ""],
+                ],
+                [
+                    ...listed,
+                    {
+                        file: "registry/ui/meter.tsx",
+                        entry: "meter",
+                        reason: "planted",
+                    },
+                ],
+                new Set(),
+            ),
+        ).toEqual([
+            "registry/ui/meter.tsx is primitives-backed but has a copy in bases/base/",
+            "registry/ui/meter.tsx does not import @fragiola/primitives-react/meter, the entry the list names",
+        ]);
+    });
+
+    it("fails on a listed file that also imports an entry Base UI ships", () => {
+        expect(
+            run([
+                [
+                    "ui/segmented-control.tsx",
+                    `${segmented}\nimport { mergeProps } from "@fragiola/primitives-react/render";\nimport { Toggle } from "@fragiola/primitives-react/toggle";`,
+                ],
+            ]),
+        ).toEqual([
+            "registry/ui/segmented-control.tsx imports @fragiola/primitives-react/toggle, which Base UI ships: compose the registry's own component instead",
+        ]);
+    });
+
+    it("lets the bridge import only the direction entry", () => {
+        const bridge = {
+            file: "registry/lib/primitives-backed.tsx",
+            reason: "the bridge",
+        };
+        expect(
+            run(
+                [
+                    [
+                        "lib/primitives-backed.tsx",
+                        `import { DirectionProvider } from "@fragiola/primitives-react/direction";\nimport { Dialog } from "@fragiola/primitives-react/dialog";`,
+                    ],
+                ],
+                [...listed, bridge],
+            ),
+        ).toEqual([
+            "registry/lib/primitives-backed.tsx is the bridge and may import only @fragiola/primitives-react/direction (it imports dialog)",
         ]);
     });
 });

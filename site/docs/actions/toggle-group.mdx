@@ -1,0 +1,34 @@
+---
+title: "Toggle Group"
+description: "Toggles sharing one value — one pressed, or several with `multiple` — with one tab stop and the arrows between them."
+---
+
+<InstallCommand item="toggle-group" />
+
+<Example id="toggle-group" />
+
+A toggle group holds the value of its [Toggles](/docs/actions/toggle): the list of the pressed
+ones' `value`s. Without `multiple` at most one is pressed, and pressing it again releases it (a
+choice that must always have one value is a [Segmented Control](/docs/fields/segmented-control)).
+The group is one tab stop: the arrows move between its toggles (roving focus, `loopFocus`,
+swapped in RTL), and Space or Enter presses.
+
+## Composition
+
+`ToggleGroup` draws nothing of its own: an inline row (or a column with
+`orientation="vertical"`) of `Toggle`s a gap apart, each with its Clickable surface and the
+`current` mark when pressed. A row of buttons that share one border is a button group, which has
+no behaviour of its own and is not this component.
+
+## Bases
+
+Both bases' `ToggleGroup` behave the same. Base UI's `onValueChange` details can be cancelled; on
+Fragiola Primitives they cannot. Inside a [Toolbar](/docs/actions/toolbar), Fragiola Primitives
+reports the toolbar's `data-orientation` on the group (the toolbar's keys apply), Base UI its own.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `ToggleGroup` | primitive `ToggleGroup` + a flex row |
+| `Toggle` | [Toggle](/docs/actions/toggle) |

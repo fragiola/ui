@@ -1,0 +1,49 @@
+---
+title: "Toolbar"
+description: "A row of buttons, toggles, inputs and links with one tab stop: the arrows move between them."
+---
+
+<InstallCommand item="toolbar" />
+
+<Example id="toolbar" />
+
+A toolbar groups the tools of an editor, a table or a canvas behind **one** tab stop: Tab enters
+it, the arrows move between its buttons, links and inputs (the APG toolbar; swapped in RTL, with
+`loopFocus`), and Tab leaves it.
+
+## Composition
+
+The toolbar adds no family; it composes what exists:
+
+- **Root** is a panel (`foundation.panel`): the floor's fill, a `line` stroke, `rounded-lg`, a 4px
+  inner gap. `orientation="vertical"` stacks it.
+- **Button** and **Link** are small ghost [Clickables](/docs/atoms/clickable). A tool that stays
+  pressed renders a [Toggle](/docs/actions/toggle): `<Toolbar.Button render={<Toggle />} />`, and
+  a set of them goes in a [Toggle Group](/docs/actions/toggle-group). A menu renders its trigger
+  the same way (`render={<DropdownMenu.Trigger />}`).
+- **Input** is a bare field control: it carries no box (rule 3), so it goes in a `Field.Row` and
+  `Field.Body`, like any input.
+- **Group** keeps tools that belong together a gap apart; **Separator** is a 1px `line` rule
+  across the toolbar.
+
+## Bases
+
+Both bases' `Toolbar` have the same parts. Where they differ by design:
+
+- a disabled Button or Input stays focusable on Base UI (`focusableWhenDisabled` is `true` there);
+  on Fragiola Primitives it is skipped unless you pass `focusableWhenDisabled`;
+- a disabled Input is natively `disabled` on Fragiola Primitives, `aria-disabled` on Base UI;
+- Base UI selects an Input's text on every focus; Fragiola Primitives only when the arrows move
+  the focus to it;
+- the Separator is always across the toolbar on Fragiola Primitives; Base UI's takes an
+  `orientation`.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Toolbar.Root` + `foundation.panel()` |
+| `Button` / `Link` | `clickable({ variant: "ghost", size: "sm" })` |
+| `Input` | `field.control()` |
+| `Group` | a flex row |
+| `Separator` | a `line` rule |

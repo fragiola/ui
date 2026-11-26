@@ -9,6 +9,8 @@ import {
     type Base,
     baseFilePath,
     baseOutputDir,
+    isPrimitivesBacked,
+    PRIMITIVES_BACKED_DEPENDENCIES,
     resolveBaseFile,
 } from "../bases.ts";
 import { ecosystemRangeProblems, splitDependency } from "./dependencies.ts";
@@ -21,7 +23,8 @@ import { rootTargetRefused } from "./targets.ts";
 // reader switches base by pointing the @fragiola namespace at another URL.
 // A file is read from the base's copy when it has one (resolveBaseFile), and
 // an item with a base-dependent file gets the base's packages as
-// dependencies; registry.json names neither. The output defaults to
+// dependencies, and an item with a primitives-backed file (bases.ts) gets
+// Fragiola Primitives' on every base; registry.json names neither. The output defaults to
 // dist/r; callers pass their own (the site export ships it as r/). A relative --out is resolved against the working
 // directory, so each caller names a path of its own.
 //
@@ -273,10 +276,22 @@ function isBaseDependent(item: Item, base: Base): boolean {
     );
 }
 
-/** An item's dependencies on a base: the base's packages first when it needs them. */
+/** Whether one of an item's files is a primitives-backed shared file (bases.ts). */
+function isPrimitivesBackedItem(item: Item): boolean {
+    return (item.files ?? []).some((file) => isPrimitivesBacked(file.path));
+}
+
+/**
+ * An item's dependencies on a base: the base's packages first when it needs
+ * them, and Fragiola Primitives' on every base when a file is primitives-backed.
+ */
 function dependenciesFor(item: Item, base: Base): string[] | undefined {
-    if (!isBaseDependent(item, base)) return item.dependencies;
-    return [...base.dependencies, ...(item.dependencies ?? [])];
+    const added = [
+        ...(isBaseDependent(item, base) ? base.dependencies : []),
+        ...(isPrimitivesBackedItem(item) ? PRIMITIVES_BACKED_DEPENDENCIES : []),
+    ];
+    if (!added.length) return item.dependencies;
+    return [...new Set([...added, ...(item.dependencies ?? [])])];
 }
 
 // An item's keys keep registry.json's order; `dependencies`, when the item

@@ -1,0 +1,34 @@
+---
+title: "Form"
+description: "A native form its Fields validate together, with a server's errors shown on the Fields by name."
+---
+
+<InstallCommand item="form" />
+
+<Example id="form" />
+
+`Form` is a native `<form>` whose [Fields](/docs/fields/field) validate together.
+`validationMode` sets when every Field inside it validates. `errors` is a server's answer, an
+object keyed by a Field's `name` (a message or a list of them): each of those Fields shows it until
+its value changes.
+
+## Errors are the Fields'
+
+The form shows no error itself. A Field with an error is `data-invalid`, and `[data-invalid]`
+applies `palette-danger` by inheritance (`global.css`): its box becomes a red stroke and its text
+red, nothing else (the visual language's "invalid"), and its `Field.Error` shows the message. The
+form only lays its fields out, a column apart.
+
+## Bases
+
+Both bases' `Form` take `errors` and `validationMode`, and a native `onSubmit`. Base UI also has
+`onFormSubmit` (the values as an object) and `actionsRef` (to validate from code); Fragiola
+Primitives has neither, so the example reads the values with `new FormData(event.currentTarget)`
+in `onSubmit`, which works on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Form` | primitive `Form` + a flex column |
+| `Field.Error` | [Field](/docs/fields/field) |

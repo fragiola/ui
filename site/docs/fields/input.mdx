@@ -24,6 +24,8 @@ None of `Input`, `Textarea` and `Numeric` carry a border, background, height, ra
 
 `Numeric` is a control written from scratch. It contains no box styling of any kind — no border, background, height, focus ring, invalid state or theme. If writing it required one line of box styling, the rule would be wrong. It does not.
 
+`Numeric` is the bare control. A number with steppers, a scrub area, the wheel or a locale's format is a [Number Field](/docs/fields/number-field), whose steppers are the field's addons.
+
 ## Input.Template.Simple
 
 A composition template with at most seven of its own props, no appearance props, and no props bag. It obeys three rules: no style of its own, no appearance props, one `className` going to the main piece (the palette channel).

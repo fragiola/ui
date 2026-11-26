@@ -1,0 +1,47 @@
+---
+title: "Number Field"
+description: "A number typed, stepped with the keys, the buttons or the wheel, or scrubbed, formatted for the locale. The steppers are the field's addons."
+---
+
+<InstallCommand item="number-field" />
+
+<Example id="number-field" />
+
+A number field keeps a number, not text: `value` and `onValueChange` hold a `number` (or `null`
+while empty), and `format` shows it for the locale (`{ style: "percent" }`, a currency, units).
+It steps by `step` with ArrowUp and ArrowDown (Shift for `largeStep`, Alt for `smallStep`), by
+`largeStep` with Page Up and Page Down, to `min` and `max` with Home and End, with the Increment and
+Decrement buttons (held to repeat), with the wheel when `allowWheelScrub` is set, and by dragging a
+ScrubArea sideways. For a bare numeric input without steppers there is `Numeric` in
+[Input](/docs/fields/input).
+
+## The field's box
+
+The control is only its middle (rule 3), so a number field is written like any field:
+
+- **Group** is the box, `field.row` — the stroke, the radius, the focus ring;
+- **Input** is the bare control, `field.control`, inside a `Field.Body`, with tabular numbers;
+- **Decrement** and **Increment** are field addons (`field.addon`): the `soft` adornment, here a
+  button. Their side is `data-side`, set by `side` (`inline-start` and `inline-end` by default),
+  so both may sit at the end, as the discount does;
+- **ScrubArea** wraps the label in a `cursor-ew-resize` area, and **ScrubAreaCursor** is the
+  cursor shown while dragging.
+
+The steppers are named "Decrease" and "Increase" unless you give an `aria-label`.
+
+## Bases
+
+The parts and the props are the same on both bases. Where they differ by design: the Input is a
+`spinbutton` with `aria-valuenow` on Fragiola Primitives, a textbox described as a number field on
+Base UI; Base UI's `allowOutOfRange` is Fragiola Primitives' `clampOnBlur` (its inverse); a
+change cannot be cancelled on Fragiola Primitives.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `NumberField.Root` |
+| `Group` | `field.row()` |
+| `Input` | `field.control()` |
+| `Decrement` / `Increment` | `field.addon()` + `foundation.focusInset()` |
+| `ScrubArea` / `ScrubAreaCursor` | primitive parts |

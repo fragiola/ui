@@ -1,3 +1,4 @@
+import { useDirection } from "@base-ui/react/direction-provider";
 import type { useRender } from "@base-ui/react/use-render";
 import type * as React from "react";
 
@@ -7,6 +8,9 @@ import type * as React from "react";
 //
 // - DirectionProvider: the direction the primitives read (RTL: keyboard
 //   navigation, slider direction, submenu sides).
+// - useProvidedDirection: the direction a DirectionProvider of this base
+//   gives, for the primitives-backed components (lib/primitives-backed.tsx),
+//   which read Fragiola Primitives' own; `undefined` leaves them theirs.
 // - CollapsiblePrimitive: the unstyled Collapsible, for compositions that
 //   need it (a collapsible sidebar menu).
 // - PrimitiveProps<typeof Part, "element">: a wrapper's props, the part's
@@ -21,6 +25,17 @@ import type * as React from "react";
 
 export { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
 export { DirectionProvider } from "@base-ui/react/direction-provider";
+
+/**
+ * Base UI's provided direction, for the primitives-backed components. Base
+ * UI's `useDirection` reads "ltr" without a provider, which a provider set to
+ * "ltr" also reads, so only "rtl" is passed on: otherwise the components keep
+ * their own reading (their provider, else the element's computed direction,
+ * which follows `dir`).
+ */
+export function useProvidedDirection(): "rtl" | undefined {
+    return useDirection() === "rtl" ? "rtl" : undefined;
+}
 
 export type PrimitiveProps<
     Part extends React.ElementType,

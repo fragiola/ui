@@ -1,0 +1,28 @@
+---
+title: "Fieldset"
+description: "A group of fields under one name: a native fieldset whose Legend reads like a field's label."
+---
+
+<InstallCommand item="fieldset" />
+
+<Example id="fieldset" />
+
+A fieldset names a group of [Fields](/docs/fields/field) — an address, a card's details — and is
+named by its `Legend` (`aria-labelledby`). `disabled` on the Root disables every field in it.
+
+## Composition
+
+The legend is a label: `field.label`, the size and weight of a field's name, so the group's name
+reads like one field's. The root draws no box — no border, no padding — only a column of fields
+a gap apart, like a form's; the fields are the boxes.
+
+## Bases
+
+Both bases' `Fieldset` behave the same: a native `<fieldset>` and a `div` legend that names it.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Fieldset.Root` + a flex column |
+| `Legend` | primitive `Fieldset.Legend` + `field.label()` |

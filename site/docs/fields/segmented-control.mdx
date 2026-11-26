@@ -1,0 +1,55 @@
+---
+title: "Segmented Control"
+description: "One value of a few, side by side, with a fill that slides to the checked segment: a radio group whose arrows move and check."
+---
+
+<InstallCommand item="segmented-control" />
+
+<Example id="segmented-control" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A segmented control is a choice of one value: a view (List, Board, Timeline), a unit, a density.
+It switches no panel of its own — that is [Tabs](/docs/navigation/tabs) — and it presses one
+segment, never several or none — that is a toggle group. Its keyboard is the APG radio group's:
+Tab enters at the checked segment, every arrow moves the focus **and** checks, wrapping
+(`loopFocus`), and in RTL Left and Right are swapped. A `name` submits the value with a form.
+
+## The foundation
+
+It composes the foundation's members and adds no family:
+
+- the **Root** is a control box (`foundation.box`): the `line` stroke on a transparent background,
+  `rounded-control`, `min-h-control`, with a 2px inner gap;
+- the checked **Item** is `current` — `soft`, `contrast` text, `font-medium` — the same mark as
+  the current tab or sidebar link; the others are secondary text with the `hover` fill, and focus
+  is `focusInset`, inside the box;
+- the sliding fill is the Root's own Indicator, rendered after the Items: it is `current`'s fill,
+  placed from the primitive's `--segment-indicator-*` variables, and it moves with a 200ms
+  transition (the motion axis scales it, `prefers-reduced-motion` stops it).
+
+## Bases
+
+**Primitives-backed.** Base UI has no segmented control, so this is one shared file
+(`ui/segmented-control.tsx`) that wraps Fragiola Primitives' `SegmentedControl` on **both** bases,
+and the item depends on `@fragiola/primitives-react@0.2.0` on both. It follows the direction of
+the base's `DirectionProvider` on Base UI too (`lib/primitives-backed.tsx`), and `dir="rtl"`
+without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives control does not join
+it: name the control with `aria-label` or `aria-labelledby`, as the example does, and pass `name`,
+`disabled` and `required` to the Root. On Fragiola Primitives the control is also a `Field`
+control (its label, description and invalid state reach it).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `SegmentedControl.Root` + `foundation.box()`, renders the Indicator |
+| `Item` | primitive `SegmentedControl.Item` + `foundation.current()`, `hover()`, `focusInset()` |
+| `ItemText` | primitive `SegmentedControl.ItemText` |

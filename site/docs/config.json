@@ -71,6 +71,24 @@
             ]
         },
         {
+            "label": "Actions",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Toggle",
+                    "path": "actions/toggle"
+                },
+                {
+                    "label": "Toggle Group",
+                    "path": "actions/toggle-group"
+                },
+                {
+                    "label": "Toolbar",
+                    "path": "actions/toolbar"
+                }
+            ]
+        },
+        {
             "label": "Fields",
             "collapsible": true,
             "pages": [
@@ -93,6 +111,42 @@
                 {
                     "label": "Combobox",
                     "path": "fields/combobox"
+                },
+                {
+                    "label": "Segmented Control",
+                    "path": "fields/segmented-control"
+                },
+                {
+                    "label": "Checkbox Group",
+                    "path": "fields/checkbox-group"
+                },
+                {
+                    "label": "Fieldset",
+                    "path": "fields/fieldset"
+                },
+                {
+                    "label": "Form",
+                    "path": "fields/form"
+                },
+                {
+                    "label": "Number Field",
+                    "path": "fields/number-field"
+                },
+                {
+                    "label": "OTP Field",
+                    "path": "fields/otp-field"
+                },
+                {
+                    "label": "Password Input",
+                    "path": "fields/password-input"
+                },
+                {
+                    "label": "Search Field",
+                    "path": "fields/search-field"
+                },
+                {
+                    "label": "Autocomplete",
+                    "path": "fields/autocomplete"
                 }
             ]
         },
@@ -203,6 +257,10 @@
                 {
                     "label": "Progress",
                     "path": "display/progress"
+                },
+                {
+                    "label": "Meter",
+                    "path": "display/meter"
                 },
                 {
                     "label": "Slider",

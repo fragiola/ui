@@ -511,7 +511,8 @@ served at `r/base/{name}.json`. The namespace is `@fragiola` on both, and the
 registry URL selects the base, the way shadcn's `style` does. Fragiola has one style,
 so the base is the registry's only dimension.
 
-- **Only what imports a primitive is per base.** Such a file is written once per base at
+- **Only what imports a primitive is per base** (except the primitives-backed files,
+  below). Such a file is written once per base at
   `registry/bases/<base>/<its path>` (`registry/bases/primitives/ui/dialog.tsx`).
   Families, styles, palettes, lib, hooks and the special components stay shared, so
   the "duplicated components" answer holds. shadcn copies every component, example
@@ -528,13 +529,28 @@ so the base is the registry's only dimension.
   join later. Each base's adapter is `lib/base.ts` (the `base` item): one set of names
   (`DirectionProvider`, `CollapsiblePrimitive`, `PrimitiveProps`, `RenderComponentProps`,
   `POSITIONER_DEFAULTS`, `controlText`), one implementation per base.
+- **A component only Fragiola Primitives has is primitives-backed.** A component Base UI
+  also has is a per-base file pair, as above. One Base UI lacks (a segmented control, a
+  password input, ...) is **one shared file that imports `@fragiola/primitives-react` on
+  every base**, the way shadcn's Calendar uses react-day-picker on every base, and the build
+  adds `@fragiola/primitives-react@0.2.0` to its item on every base
+  (`PRIMITIVES_BACKED_DEPENDENCIES`). So every base offers the **same catalog**. These
+  files are an explicit list in `bases.ts` (`PRIMITIVES_BACKED`), each with its reason and
+  the Fragiola Primitives entry it wraps; the guard refuses any other shared or Base UI
+  file that imports the package, and a listed one whose entry Base UI ships (then it is a
+  per-base pair). The list's bridge, `lib/primitives-backed.tsx` (the `primitives-backed`
+  item), hands them the base's direction — on Base UI, the direction of Base UI's
+  `DirectionProvider` (`useProvidedDirection` in each base's adapter) — and types their
+  props alike on every base (`PrimitivesProps`). On Base UI, Base UI's `Field` does not
+  reach a Fragiola Primitives control: its page says how to name it.
 - **A behaviour a base decided differently stays its own**, documented under "Bases"
   on the component's page. Fragiola Primitives follows the APG first: menus and
   selects are non-modal by default, a select's list opens below its trigger, and
   tabs activate on focus.
 - **Parity is tested, not promised.** `tests/bases.test.ts` fails when a base lacks
   a file, an export, a namespace or factory member, or a `data-slot` the default base
-  has; when a file imports another base's library; and when an item's `#/` imports
+  has; when a file imports another base's library, or a shared file not on the
+  primitives-backed list imports one; and when an item's `#/` imports
   are not shipped by the item or its registry dependencies on some base. Typecheck,
   `registry:smoke` and `check:embeds` run on every base (CI's "Bases" job).
 

@@ -7,6 +7,9 @@ import type * as React from "react";
 //
 // - DirectionProvider: the direction the primitives read (RTL: keyboard
 //   navigation, slider direction, submenu sides).
+// - useProvidedDirection: the direction a DirectionProvider of this base
+//   gives, for the primitives-backed components (lib/primitives-backed.tsx),
+//   which read Fragiola Primitives' own; `undefined` leaves them theirs.
 // - CollapsiblePrimitive: the unstyled Collapsible, for compositions that
 //   need it (a collapsible sidebar menu).
 // - PrimitiveProps<typeof Part, "element">: a wrapper's props, the part's
@@ -24,6 +27,14 @@ import type * as React from "react";
 
 export { Collapsible as CollapsiblePrimitive } from "@fragiola/primitives-react/collapsible";
 export { DirectionProvider } from "@fragiola/primitives-react/direction";
+
+/**
+ * Nothing to pass on: on this base the primitives-backed components read the
+ * same DirectionProvider as every other component.
+ */
+export function useProvidedDirection(): "rtl" | undefined {
+    return undefined;
+}
 
 type Declared<T> = {
     [K in keyof T as string extends K

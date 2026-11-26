@@ -70,6 +70,9 @@ type Opener = "click" | "hover" | "contextmenu";
 const OVERLAYS: Record<string, Opener> = {
     select: "click",
     combobox: "click",
+    // The destination's suggestions (its Trigger); the disabled one opens
+    // nothing.
+    autocomplete: "click",
     "dropdown-menu": "click",
     "context-menu": "contextmenu",
     popover: "click",

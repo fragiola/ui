@@ -1,0 +1,44 @@
+---
+title: "Toggle"
+description: "A two-state button: a Clickable whose pressed state is the foundation's `current` mark, the same as the current tab."
+---
+
+<InstallCommand item="toggle" />
+
+<Example id="toggle" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A toggle is a button that stays pressed (`aria-pressed`): bold in an editor, a pinned note, a
+muted channel. Space and Enter press it; `pressed`, `defaultPressed` and `onPressedChange`
+hold its state. A choice between values is a [Segmented Control](/docs/fields/segmented-control)
+or a [Toggle Group](/docs/actions/toggle-group); an on/off **setting** is a
+[Switch](/docs/fields/choice).
+
+## Clickable and `current`
+
+`Toggle` is a [Clickable](/docs/atoms/clickable) — its height, radius, focus ring and soft hover —
+with Clickable's axes minus `solid`: `variant` (`ghost`, the default, `outline` or `icon`),
+`size` and `shape`. Pressed, it takes the foundation's `current` member: `soft`, `contrast`
+text and `font-medium`, the mark of the current tab, page or sidebar link. The `current`
+variant reads `aria-pressed="true"` (`global.css`), so neither base's attribute needs a
+translation. It is not the `checked` fill: a pressed toggle marks where you are in a set of
+tools, not a value that is on.
+
+## Bases
+
+Both bases' `Toggle` (`@fragiola/primitives-react/toggle`, `@base-ui/react/toggle`) behave the
+same. Base UI's `onPressedChange` details can be cancelled, and Base UI gives a toggle inside a
+group a generated `value` when it has none; on Fragiola Primitives a change cannot be cancelled
+and a toggle inside a group needs its `value` (give it one on both).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Toggle` | primitive `Toggle` + `clickable()` + `foundation.current()` |

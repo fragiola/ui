@@ -50,7 +50,13 @@ Both bases ship the same items under the same names: the same parts, classes,
 other. Only the primitive wiring inside each component differs, and where the
 two libraries behave differently by design, the component's page says so
 under **Bases**. The namespace stays `@fragiola` on both; the URL chooses the
-base. For Base UI:
+base.
+
+A few components exist only in Fragiola Primitives (Segmented Control, for
+one). They are **primitives-backed**: one shared source that uses
+`@fragiola/primitives-react` on both bases, so the Base UI registry installs
+that package too for them, and both bases keep the same catalog. Their page
+says so under **Bases**. For Base UI:
 
 ```json
 {
