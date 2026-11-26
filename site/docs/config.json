@@ -485,6 +485,22 @@
                 {
                     "label": "Tag Group",
                     "path": "display/tag-group"
+                },
+                {
+                    "label": "Card",
+                    "path": "display/card"
+                },
+                {
+                    "label": "Alert",
+                    "path": "display/alert"
+                },
+                {
+                    "label": "Empty",
+                    "path": "display/empty"
+                },
+                {
+                    "label": "Featured Icon",
+                    "path": "display/featured-icon"
                 }
             ]
         },

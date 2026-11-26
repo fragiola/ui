@@ -27,7 +27,7 @@ and it changes everywhere.
 |---|---|---|
 | floor | the page, the app shell's content | `palette-surface`, `bg-palette-base` |
 | panel | a container on the floor: an accordion, a collapsible, a data grid, a dock panel | the floor's `bg-palette-base`, a `line` border, `rounded-lg` (`panel`) |
-| raised | a card that stands on the floor: a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `shadow-sm` |
+| raised | a card that stands on the floor: a Card, a tile, the inset sidebar | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-sm` (`raised`) |
 | overlay | a popup, a menu, a popover, a dialog, a drawer | `palette-raised`, `bg-palette-base`, a `line` border, `rounded-lg`, `shadow-lg` (`overlay`; the elevation axis scales it) |
 
 A frame with cards inside it — the Create page — is two tones, never three and never
@@ -49,6 +49,8 @@ its value in `accent`. That covers:
 - the select and combobox triggers;
 - an outline button;
 - an unchecked checkbox and radio;
+- an alert: its colour is the palette class on it, so `palette-danger` makes it a red stroke
+  with red text, as an invalid field;
 - a slot of an OTP field: each slot is one character's box, so the field's box sits on the
   slot's input itself (`field.row` with the `field-control` marker), the one input that is its
   own box, as a checkbox's mark is.
