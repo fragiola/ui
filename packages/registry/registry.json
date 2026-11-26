@@ -940,6 +940,123 @@
             ]
         },
         {
+            "name": "toggle",
+            "type": "registry:ui",
+            "title": "Toggle",
+            "description": "A two-state button (aria-pressed). A Clickable (ghost by default, outline or icon; size and shape) whose pressed state is the foundation's current mark — soft, contrast text, font-medium — read from aria-pressed by the current variant. No colour variant: colour is the palette class. Inside a ToggleGroup it joins the group's value.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/base"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/toggle.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toggle.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toggle-group",
+            "type": "registry:ui",
+            "title": "Toggle Group",
+            "description": "Toggles sharing one value — one pressed at most, or several with multiple — with one tab stop and the arrows between them (roving focus, RTL included). The group draws nothing: its items are Toggle, a gap apart.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/toggle",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/toggle-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toggle-group.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toolbar",
+            "type": "registry:ui",
+            "title": "Toolbar",
+            "description": "A row or column of controls with one tab stop: buttons, toggles, links, inputs, groups and separators, the arrows moving between them (the APG toolbar, RTL included). The root is the foundation's panel; buttons and links are small ghost Clickables; Toolbar.Toggle is a small Toggle that is one of the toolbar's items on both bases (alone or in a ToggleGroup); the input is a bare field control; the separator a line rule. No family of its own.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/toggle",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/ui/toolbar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toolbar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "checkbox-group",
+            "type": "registry:ui",
+            "title": "Checkbox Group",
+            "description": "Checkboxes sharing one value, the list of the checked ones. With allValues, a parent Checkbox checks or clears them all and shows the mixed mark while some are checked. The group draws nothing: a column of Checkboxes in Field.ChoiceRoot.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/checkbox",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/checkbox-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/checkbox-group.tsx"
+                }
+            ]
+        },
+        {
+            "name": "fieldset",
+            "type": "registry:ui",
+            "title": "Fieldset",
+            "description": "A group of fields under one name: a native fieldset named by its Legend, disabling every field inside when disabled. The legend is a label (field.label); the root draws no box, only a column of fields.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/fieldset.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/fieldset.tsx"
+                }
+            ]
+        },
+        {
+            "name": "form",
+            "type": "registry:ui",
+            "title": "Form",
+            "description": "A native form its Fields validate together: validationMode for every Field, and errors (a server's answer, by Field name) shown on those Fields until their value changes. The Fields show them — data-invalid applies palette-danger by inheritance and Field.Error the message — the form only lays them out.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/form.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/form.tsx"
+                }
+            ]
+        },
+        {
             "name": "navigation-menu",
             "type": "registry:ui",
             "title": "Navigation Menu",
