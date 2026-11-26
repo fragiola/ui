@@ -1,0 +1,63 @@
+---
+title: "Tag Group"
+description: "A focusable group of tags to move through, select and remove by keyboard and pointer."
+---
+
+<InstallCommand item="tag-group" />
+
+<Example id="tag-group" />
+
+<Callout type="info">
+**No colour variants.** The colour is the palette class the element carries: the
+`palettes` row above changes nothing but `className="palette-*"`. A new colour is a
+new palette ([Writing a palette](/docs/architecture/palettes#writing-a-palette)) — the component never
+changes.
+</Callout>
+
+A tag group is tags that stay on the page: labels, categories, filters. It is one tab stop (the
+tag that last had the focus); the arrows move between the tags (Left and Right swap in RTL),
+Home and End go to the ends. With `selectionMode` `"single"` or `"multiple"`, **Space**,
+**Enter** or a press selects or toggles a tag (`value`, `onValueChange`); a move never selects.
+With `onRemove`, **Delete**, **Backspace** or a tag's remove button asks the app to remove it:
+remove it from your list in the handler, and the focus moves to the next tag, else the previous
+one, else the list. `disabledKeys` (or a Tag's `disabled`) leaves a tag out of the focus and the
+selection. It holds no form value: to submit chosen values, use a
+[Listbox](/docs/fields/listbox); to type new tags, a [Tags Input](/docs/fields/tags-input).
+
+`TagGroup.Template.Simple` renders a `label`, then a tag per entry of `tags` (a string, or
+`{ value, label }`), each with a remove button ("Remove Design" for a tag "Design") when `onRemove` is given.
+Every Root prop is forwarded; `className` goes to the root; without a `label`, `aria-label` or
+`aria-labelledby` names the list.
+
+## The look
+
+A tag is the `chip` family's `tag`: the same soft chip as a
+[Combobox](/docs/fields/combobox)'s and a Tags Input's, which a user can choose. A chosen tag is
+`checked`, the `ring` fill with its text in `base` (the wrapper maps the primitive's
+`data-selected` onto `data-checked`, as the swatch picker does); a disabled one is dimmed; the
+focus is the standalone ring. The **List** wraps the tags (`chip.group`), the **Label** has the
+field label's type, and the **RemoveButton** is a ghost square [Clickable](/docs/atoms/clickable)
+in the tag's own text colour (`chip.remove`), so it reads on a chosen tag too.
+
+## Bases
+
+**Primitives-backed.** Base UI has no tag group, so this is one shared file
+(`ui/tag-group.tsx`) that wraps Fragiola Primitives' `TagGroup` on **both** bases, and the item
+depends on `@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the list with `TagGroup.Label`, `aria-label` or `aria-labelledby`. On Fragiola Primitives
+the list is also a `Field` control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `TagGroup.Root`, a column |
+| `Label` | primitive `TagGroup.Label` + `field.label()` |
+| `List` | primitive `TagGroup.List` (the `grid`) + `chip.group()` |
+| `Tag` | primitive `TagGroup.Tag` (a `row`) + `chip.tag()`; `data-checked` from its state |
+| `TagCell` | primitive `TagGroup.TagCell` (the `gridcell`), a row |
+| `RemoveButton` | primitive `TagGroup.RemoveButton` + `clickable()` + `chip.remove()` |
+| `Template.Simple` | a label and a tag per entry, removable with `onRemove` |

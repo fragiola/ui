@@ -5,6 +5,7 @@ import { CheckIcon, ChevronDownIcon, XIcon } from "lucide-react";
 import type * as React from "react";
 import { Clickable } from "#/atoms/clickable";
 import { Text } from "#/atoms/text";
+import { chip } from "#/families/chip";
 import { field } from "#/families/field";
 import { menu } from "#/families/menu";
 import { popup } from "#/families/popup";
@@ -19,6 +20,8 @@ import { cn } from "#/lib/cn";
 //   - ItemIndicator uses menu.itemIndicator
 //   - GroupLabel uses menu.label
 //   - Separator uses menu.separator
+//   - Chips, Chip and ChipRemove use the chip family (group, item, remove),
+//     shared with the Tags Input's tags
 //
 // If this file contains a class that does not come from a family, the
 // recombination claim is wrong. It does not.
@@ -295,7 +298,7 @@ function ComboboxChips({
     return (
         <ComboboxPrimitive.Chips
             data-slot="combobox-chips"
-            className={cn("flex flex-wrap gap-1", className as string)}
+            className={cn(chip.group(), className as string)}
             {...props}
         />
     );
@@ -305,18 +308,12 @@ function ComboboxChip({
     className,
     ...props
 }: React.ComponentProps<typeof ComboboxPrimitive.Chip>) {
-    // A chip is a small badge-like element. It uses the same visual language
-    // as a soft badge: bg-palette-soft + text-palette-contrast + rounded-md.
-    // This is the one place where a class is not from a family — but it is
-    // a role combination (soft + contrast), not a new style. The chip is
-    // too specific to multiselect to justify a family member.
+    // The chip family's item: a soft badge, the same chip as a Tags Input's
+    // tag (families/chip.ts).
     return (
         <ComboboxPrimitive.Chip
             data-slot="combobox-chip"
-            className={cn(
-                "inline-flex items-center gap-1 rounded-md bg-palette-soft px-2 py-0.5 text-xs text-palette-contrast",
-                className as string,
-            )}
+            className={cn(chip.item(), className as string)}
             {...props}
         />
     );
@@ -337,7 +334,7 @@ function ComboboxChipRemove({
                     aria-label="Remove"
                 />
             }
-            className={cn(className as string)}
+            className={cn(chip.remove(), className as string)}
             {...props}
         >
             <XIcon className="size-icon-xs" />

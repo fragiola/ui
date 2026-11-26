@@ -112,6 +112,13 @@ palette role: the primitive's CSS variable. Its thumb is the `knob` with that co
 thumb is the focusable (`focus`), the area's holds its inputs (`focusNested`). A chosen swatch is
 `checked`, a `ring` frame around it.
 
+**A chip speaks them too.** A Combobox's chip, a Tags Input's tag and a Tag Group's tag are one
+chip (`families/chip.ts`): a `soft` adornment with the badge's type, the standalone ring when it
+takes the focus. A chosen tag is `checked` (the `ring` fill), and a Rating's filled star is "on"
+(`ring`) over an empty one in `line`, as a track over its rail. A drop target's drag-over is the libraries' drop outline (dashed,
+`ring`), and a rejected file is `palette-danger` by its class, as an invalid field: a red stroke
+with red text.
+
 **"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
 palette that palette's colour, and on a chromatic palette its deeper tone. The checked
 box, the selected radio, the switch, the slider's fill and the progress bar are one

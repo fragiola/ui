@@ -85,6 +85,10 @@
                 {
                     "label": "Toolbar",
                     "path": "actions/toolbar"
+                },
+                {
+                    "label": "Clipboard",
+                    "path": "actions/clipboard"
                 }
             ]
         },
@@ -171,6 +175,26 @@
                 {
                     "label": "Listbox Virtual",
                     "path": "fields/listbox-virtual"
+                },
+                {
+                    "label": "Tags Input",
+                    "path": "fields/tags-input"
+                },
+                {
+                    "label": "Editable",
+                    "path": "fields/editable"
+                },
+                {
+                    "label": "Rating",
+                    "path": "fields/rating"
+                },
+                {
+                    "label": "Drop Zone",
+                    "path": "fields/drop-zone"
+                },
+                {
+                    "label": "File Upload",
+                    "path": "fields/file-upload"
                 }
             ]
         },
@@ -457,6 +481,10 @@
                 {
                     "label": "Carousel",
                     "path": "display/carousel"
+                },
+                {
+                    "label": "Tag Group",
+                    "path": "display/tag-group"
                 }
             ]
         },

@@ -340,6 +340,41 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "color-picker-popover",
         reason: "Base UI has no color picker: its popup is Fragiola Primitives' opt-in popover entry",
     },
+    {
+        file: "registry/ui/tags-input.tsx",
+        entry: "tags-input",
+        reason: "Base UI has no tags input",
+    },
+    {
+        file: "registry/ui/tag-group.tsx",
+        entry: "tag-group",
+        reason: "Base UI has no tag group",
+    },
+    {
+        file: "registry/ui/editable.tsx",
+        entry: "editable",
+        reason: "Base UI has no editable (inline edit)",
+    },
+    {
+        file: "registry/ui/rating.tsx",
+        entry: "rating",
+        reason: "Base UI has no rating",
+    },
+    {
+        file: "registry/ui/drop-zone.tsx",
+        entry: "drop-zone",
+        reason: "Base UI has no drop zone",
+    },
+    {
+        file: "registry/ui/file-upload.tsx",
+        entry: "file-upload",
+        reason: "Base UI has no file upload",
+    },
+    {
+        file: "registry/ui/clipboard.tsx",
+        entry: "clipboard",
+        reason: "Base UI has no clipboard",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */
