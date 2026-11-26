@@ -28,7 +28,7 @@ import {
 //   Root           a row: the Area, then the triggers; dimmed when disabled
 //   Area           the box (`field.row`), stroked only while editing; rings
 //                  while the Input has the focus
-//   Preview        the text (`contrast`), the `hover` fill and the inset
+//   Preview        the text (`accent`, the Input's value colour), the `hover` fill and the inset
 //                  ring on the box's area; the placeholder is secondary text
 //   Input          the bare control (`field.control`); name it (a
 //                  `Field.Label`, a `<label for>` its `id`, or `aria-label`)
@@ -88,8 +88,8 @@ function EditablePreview({
                 foundation.hover(),
                 foundation.focusInset(),
                 `
-                flex min-h-control w-full min-w-0 cursor-text items-center
-                truncate px-3 py-2 text-sm text-palette-contrast
+                block min-h-control w-full min-w-0 cursor-text truncate
+                px-3 py-2 text-sm text-palette-accent
                 data-placeholder:text-palette-accent/85
                 data-disabled:pointer-events-none data-readonly:pointer-events-none
                 `,
@@ -116,7 +116,9 @@ function EditableInput({
 const trigger = () =>
     cn(
         clickable({ variant: "ghost", shape: "square" }),
-        "shrink-0 text-palette-accent/85",
+        foundation.disabled(),
+        foundation.secondary(),
+        "shrink-0",
     );
 
 function EditableEditTrigger({

@@ -20,15 +20,16 @@ the value is empty; `readOnly` and `disabled` start no edit. For several lines, 
 
 `Editable.Template.Simple` is the Area with its Preview and Input, then an EditTrigger ("Edit"),
 a SubmitTrigger ("Save") and a CancelTrigger ("Cancel"). Every Root prop is forwarded;
-`className` goes to the root; `aria-label` and `aria-labelledby` name the input.
+`className` goes to the root; `aria-label` and `aria-labelledby` name the input. Its buttons'
+names are generic: with several editables on a page, compose the parts and name each trigger
+(`aria-label="Edit title"`).
 
 ## The look
 
 It is the [Field](/docs/fields/field)'s box, switched on in place. The **Area** is the box
 (`field.row`), with a transparent stroke while the Preview shows: the Preview's text sits where
 the Input's value will, at the control's height and padding, so starting an edit only draws the
-stroke around it (and the ring while the input has the focus). The **Preview** is body text
-(`contrast`) with the `hover` fill and the inset focus ring; its placeholder is secondary text.
+stroke around it (and the ring while the input has the focus). The **Preview** is the Input's value colour (`accent`) with the `hover` fill and the inset focus ring; its placeholder is secondary text.
 The **Input** is the bare control (`field.control`). The triggers are ghost square
 [Clickables](/docs/atoms/clickable), as tall as the box (a pencil, a check, a cross by default),
 each hidden while it does not apply. A disabled editable is dimmed once, on the Root.

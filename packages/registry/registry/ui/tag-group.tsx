@@ -80,7 +80,7 @@ function TagGroupList({
             className={cn(
                 chip.group(),
                 foundation.focus(),
-                "gap-1.5 rounded-md",
+                "rounded-md",
                 className as string,
             )}
             {...props}
@@ -143,7 +143,7 @@ function TagGroupRemoveButton({
             )}
             {...props}
         >
-            {children ?? <XIcon />}
+            {children ?? <XIcon className="size-icon-xs" />}
         </TagGroupPrimitive.RemoveButton>
     );
 }

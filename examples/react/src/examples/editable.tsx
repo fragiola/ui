@@ -9,8 +9,8 @@ import { Editable } from "#/components/ui/editable";
 // (the text does not move: the box only gains its stroke). Focusing it, or
 // the pencil, starts the edit with the text selected; Enter or the check
 // saves, Escape or the cross reverts, and the focus returns to the pencil.
-// The description is composed from the parts: a double press edits it, and
-// leaving it saves. Each is named by its label through `aria-labelledby`,
+// The description is composed from the parts: a double press (or its
+// pencil, the keyboard's way) edits it, and leaving it saves. Each is named by its label through `aria-labelledby`,
 // which works on both bases. Then the states a reader needs: an empty value
 // showing its placeholder, a read-only and a disabled one.
 export default function EditableDemo() {
@@ -47,9 +47,11 @@ export default function EditableDemo() {
                             <Editable.Preview />
                             <Editable.Input aria-labelledby="project-description" />
                         </Editable.Area>
+                        <Editable.EditTrigger aria-label="Edit description" />
                     </Editable.Root>
                     <span className="text-xs text-palette-accent/85">
-                        Double-click to edit; leaving the field saves it.
+                        Double-click it, or press the pencil, to edit; leaving
+                        the field saves it.
                     </span>
                 </div>
             </div>

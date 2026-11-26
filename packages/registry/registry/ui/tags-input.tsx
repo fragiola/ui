@@ -140,7 +140,7 @@ function TagsInputTagRemove({
             )}
             {...props}
         >
-            {children ?? <XIcon />}
+            {children ?? <XIcon className="size-icon-xs" />}
         </TagsInputPrimitive.TagRemove>
     );
 }

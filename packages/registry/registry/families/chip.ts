@@ -19,7 +19,8 @@
 //           Clickable (`clickable({ variant: "ghost", shape: "square",
 //           size: "xs" })`): it sits at the chip's inline end and takes the
 //           chip's text colour, so it reads on a `soft` chip and on a
-//           checked (`ring`) tag alike
+//           checked (`ring`) tag alike; its hover is that colour at 15%,
+//           visible on both (the ghost's `soft` hover vanished on a chip)
 //   input   the in-place edit of a Tags Input's tag: the bare text of the
 //           chip, sized to its content; the tag shows the nested focus ring
 //           around it while editing (`focusNested` on `item`)
@@ -53,7 +54,7 @@ const tag = tv({
 });
 
 const remove = tv({
-    base: "-me-1 shrink-0 rounded-sm text-inherit",
+    base: "-me-1 shrink-0 rounded-sm text-inherit hover:bg-current/15",
 });
 
 const input = tv({
