@@ -1,0 +1,39 @@
+---
+title: "Autocomplete"
+description: "A text input that suggests completions: the value is the text, and picking a suggestion fills it."
+---
+
+<InstallCommand item="autocomplete" />
+
+<Example id="autocomplete" />
+
+An autocomplete is a text input first: its value is what is typed, and the list suggests
+completions — picking one fills the input. Nothing is selected, so any text is a valid value (a
+choice among fixed options is a [Combobox](/docs/fields/combobox)). `items` and `filter` decide
+the suggestions, `limit` caps them, and `mode` chooses between a list, an inline completion or
+both. The arrows move the highlighted suggestion, Enter picks it, Escape closes the list.
+
+## Combobox's recombination
+
+It is `field` + `popup` + `menu`, as Combobox is, and declares no style of its own: the
+**InputGroup** is the field's box (`field.row`) around the bare **Input**, **Trigger** and
+**Clear** are ghost [Clickables](/docs/atoms/clickable), **Content** is `popup.content`, an
+**Item** is `menu.item` (no check mark: nothing is selected), **GroupLabel** is `menu.label` and
+**Separator** `menu.separator`.
+
+## Bases
+
+The parts are the same on both bases. Items and the render function of `Autocomplete.List` are
+typed as loosely as on Base UI (`any`), so the same code compiles on both.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Autocomplete.Root` |
+| `InputGroup` | `field.row()` |
+| `Input` | the `field-control` marker |
+| `Trigger` / `Clear` | `Clickable.Button` |
+| `Content` | `popup.content()` |
+| `Item` | `menu.item()` |
+| `GroupLabel` / `Separator` | `menu.label()` / `menu.separator()` |

@@ -1,0 +1,39 @@
+---
+title: "Search Field"
+description: "A search box: Escape clears it, Enter submits, the clear button empties it, the control only its middle."
+---
+
+<InstallCommand item="search-field" />
+
+<Example id="search-field" />
+
+A search field holds a query: Escape clears it (a second Escape is the page's), Enter submits it
+(`onSubmit`, with the query), and the clear button empties it and gives the focus back to the
+input. It is no listbox: suggestions while typing are an [Autocomplete](/docs/fields/autocomplete).
+
+## The field's middle
+
+It goes in a `Field.Row`, which draws the box: **Root** is the control's area (`field.body`),
+**Icon** the search glass in a `field.inset` (secondary, as every secondary icon), **Input** the
+bare control (`field.control`, without the browser's own clear button), and **ClearButton** a
+small ghost [Clickable](/docs/atoms/clickable) at the inline end, hidden while the field is
+empty. Name the input and the clear button (`aria-label`).
+
+## Bases
+
+**Primitives-backed.** Base UI has no search field, so this is one shared file
+(`ui/search-field.tsx`) that wraps Fragiola Primitives' `SearchField` on **both** bases, and the
+item depends on `@fragiola/primitives-react@0.2.0` on both.
+
+On Base UI, the registry's `Field` is Base UI's and does not reach a Fragiola Primitives control:
+name the input with `aria-label`, or give the Root an `id` and a label `htmlFor`. On Fragiola
+Primitives the input is also a `Field` control.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `SearchField.Root` + `field.body()` |
+| `Icon` | `field.inset()` |
+| `Input` | primitive `SearchField.Input` + `field.control()` |
+| `ClearButton` | primitive `SearchField.ClearButton` + `clickable()` |

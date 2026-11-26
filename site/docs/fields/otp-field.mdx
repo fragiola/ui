@@ -1,0 +1,37 @@
+---
+title: "OTP Field"
+description: "A one-time code, one character per slot: typing moves on, a pasted code fills every slot."
+---
+
+<InstallCommand item="otp-field" />
+
+<Example id="otp-field" />
+
+An OTP field holds a code of `length` characters, one per slot. A typed character fills its slot
+and moves the focus to the next, Backspace goes back, the arrows move between slots (swapped in
+RTL), and a pasted code fills every slot from the first. `validationType` (`numeric` by default)
+refuses other characters, `mask` hides them, and `onValueComplete` fires when the code is whole.
+The first slot carries `autocomplete="one-time-code"`, so a phone can fill it.
+
+## The slot is a control box
+
+Each slot is the field's box (`field.row`: the `line` stroke, the field's radius, the ring when it
+is focused) around one centred character, `h-control` tall: a slot composes the box, as a
+checkbox's mark does, and adds no style of its own. Name each slot by its position
+(`aria-label="Digit 2 of 6"`). **Separator** is a short `line` dash between two groups.
+
+## Bases
+
+Fragiola Primitives' OTPField has no Separator: here it is Fragiola Primitives' `Separator`, vertical, and Base UI's own
+`OTPField.Separator` on Base UI, the same part on both. Base UI names the first slot by the field's
+label and ignores its `aria-label`; Fragiola Primitives keeps the slot's own name. Base UI's
+`autoSubmit` and `normalizeValue` are not on Fragiola Primitives (`validationType` takes a
+`RegExp` there).
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `OTPField.Root` |
+| `Input` | `field.row()` + the `field-control` marker |
+| `Separator` | a `line` dash |

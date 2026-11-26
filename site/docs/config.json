@@ -127,6 +127,26 @@
                 {
                     "label": "Form",
                     "path": "fields/form"
+                },
+                {
+                    "label": "Number Field",
+                    "path": "fields/number-field"
+                },
+                {
+                    "label": "OTP Field",
+                    "path": "fields/otp-field"
+                },
+                {
+                    "label": "Password Input",
+                    "path": "fields/password-input"
+                },
+                {
+                    "label": "Search Field",
+                    "path": "fields/search-field"
+                },
+                {
+                    "label": "Autocomplete",
+                    "path": "fields/autocomplete"
                 }
             ]
         },
@@ -237,6 +257,10 @@
                 {
                     "label": "Progress",
                     "path": "display/progress"
+                },
+                {
+                    "label": "Meter",
+                    "path": "display/meter"
                 },
                 {
                     "label": "Slider",
