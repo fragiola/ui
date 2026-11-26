@@ -185,6 +185,26 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "calendar-view",
         reason: "Base UI has no calendar views",
     },
+    {
+        file: "registry/ui/date-field.tsx",
+        entry: "date-field",
+        reason: "Base UI has no date field",
+    },
+    {
+        file: "registry/ui/date-range-field.tsx",
+        entry: "date-range-field",
+        reason: "Base UI has no date range field",
+    },
+    {
+        file: "registry/ui/time-field.tsx",
+        entry: "time-field",
+        reason: "Base UI has no time field",
+    },
+    {
+        file: "registry/ui/time-range-field.tsx",
+        entry: "time-range-field",
+        reason: "Base UI has no time range field",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

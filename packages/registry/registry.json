@@ -449,7 +449,7 @@
             "name": "field",
             "type": "registry:ui",
             "title": "Field",
-            "description": "The field family (root, choiceRoot, row, body, control, addon, inset, label, description, error — zero variants) plus the Field composition stitching Base UI's Field primitive to the family via render. The box is the row; the control is only its middle. Invalid state by inheritance from data-invalid. Addon sides via data-side in logical vocabulary.",
+            "description": "The field family (root, choiceRoot, row, body, control, addon, inset, label, description, error, and segments, segment, separator for the date and time fields — zero variants) plus the Field composition stitching Base UI's Field primitive to the family via render. The box is the row; the control is only its middle. Invalid state by inheritance from data-invalid. Addon sides via data-side in logical vocabulary.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -1327,6 +1327,80 @@
                     "path": "registry/ui/calendar-view.tsx",
                     "type": "registry:ui",
                     "target": "@ui/calendar-view.tsx"
+                }
+            ]
+        },
+        {
+            "name": "date-field",
+            "type": "registry:ui",
+            "title": "Date Field",
+            "description": "A date typed in segments: digits fill a segment and move on, the arrows step, Backspace erases; granularity adds the time's segments, min, max and isDateUnavailable make a value invalid, name submits it. Primitives-backed: Base UI has no date field, so one shared file wraps Fragiola Primitives' on every base. The control is only its middle: Root is field.body, Input field.segments (laid out inline, the locale's order in RTL), Segment field.segment (the focused one highlighted, placeholders secondary); it goes in a Field.Row. Invalid is palette-danger by inheritance.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/foundation",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/date-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "time-field",
+            "type": "registry:ui",
+            "title": "Time Field",
+            "description": "A time typed in segments (hours, minutes, seconds, the day period on a 12-hour clock). Primitives-backed: one shared file on every base, with the Date Field's parts; it goes in a Field.Row.",
+            "registryDependencies": [
+                "@fragiola/date-field",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/time-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/time-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "date-range-field",
+            "type": "registry:ui",
+            "title": "Date Range Field",
+            "description": "A start and an end date typed in segments, one sequence across both ends; an end before the start is invalid (palette-danger by inheritance). Primitives-backed: one shared file on every base, with the Date Field's parts and a Separator; one Field.Row holds both ends.",
+            "registryDependencies": [
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/date-field",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/date-range-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/date-range-field.tsx"
+                }
+            ]
+        },
+        {
+            "name": "time-range-field",
+            "type": "registry:ui",
+            "title": "Time Range Field",
+            "description": "A start and an end time typed in segments, as the Date Range Field. Primitives-backed: one shared file on every base, with the Date Range Field's parts.",
+            "registryDependencies": [
+                "@fragiola/date-field",
+                "@fragiola/date-range-field",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/time-range-field.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/time-range-field.tsx"
                 }
             ]
         },
