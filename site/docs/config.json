@@ -93,6 +93,10 @@
                 {
                     "label": "Combobox",
                     "path": "fields/combobox"
+                },
+                {
+                    "label": "Segmented Control",
+                    "path": "fields/segmented-control"
                 }
             ]
         },

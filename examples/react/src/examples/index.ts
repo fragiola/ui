@@ -218,6 +218,25 @@ export const examples: Example[] = [
         load: () => import("./combobox.tsx"),
     },
 
+    {
+        id: "segmented-control",
+        title: "Segmented Control",
+        description:
+            "An issue list's view switcher with icons and a density picker, then a disabled segment, a disabled control and the vertical orientation, and one row of surface-ring palettes. Primitives-backed: one shared file on every base.",
+        level: "fields",
+        order: 6,
+        features: [
+            "SegmentedControl.Root",
+            "SegmentedControl.Item",
+            "current",
+            "orientation",
+            "primitives-backed",
+        ],
+        docs: "/docs/fields/segmented-control",
+        layout: "flow",
+        height: 470,
+        load: () => import("./segmented-control.tsx"),
+    },
     // ─── Menus ──────────────────────────────────────────────────────────────
     {
         id: "dropdown-menu",
