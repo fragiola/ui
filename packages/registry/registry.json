@@ -1469,6 +1469,84 @@
             ]
         },
         {
+            "name": "file",
+            "type": "registry:lib",
+            "title": "file family",
+            "description": "Dropping and listing files, after Untitled UI's file upload: the drop target (a dashed line box, the hover fill and focus ring; while files are dragged over it the libraries' drop outline, a dashed ring stroke over a ring/15 fill), its featured icon, the list, a file's row (a control box, so a rejected file under palette-danger is a red stroke with red text), the rejected member the wrapper adds from state, the preview square and image, and the name, size and error text. Zero variants.",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/foundation"],
+            "dependencies": ["tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/file.ts",
+                    "type": "registry:lib",
+                    "target": "@components/families/file.ts"
+                }
+            ]
+        },
+        {
+            "name": "drop-zone",
+            "type": "registry:ui",
+            "title": "Drop Zone",
+            "description": "A target files are dropped on, pasted on (Ctrl or Cmd+V) or picked for in the browser's dialog, which a press opens: an APG button that reports the accepted (accept) and rejected files and writes the app's announcement into a polite live region; it keeps no files. Primitives-backed: Base UI has no drop zone, so one shared file wraps Fragiola Primitives' on every base. The target is the file family's dropZone: a dashed line box, and the dashed ring drop outline while files are dragged over it. DropZone.Template.Simple is the icon, a line of copy and a hint.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/file",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/drop-zone.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/drop-zone.tsx"
+                }
+            ]
+        },
+        {
+            "name": "file-upload",
+            "type": "registry:ui",
+            "title": "File Upload",
+            "description": "A form control holding a list of files: picked in the dialog (the Trigger, the Label, the Dropzone), dropped or pasted; each file checked by accept, maxFiles, minFileSize, maxFileSize and validate into the value or the rejected list with its reasons; the hidden file input submits them. It does not upload: the app sends the files and shows their progress. Primitives-backed: Base UI has no file upload, so one shared file wraps Fragiola Primitives' on every base. The file family dresses it after Untitled UI's: the Dropzone with the dashed ring drop outline, each file a row with its preview, name, size or error (palette-danger) and delete button. FileUpload.Template.Simple is the label, the dropzone with a hint and every file.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/file",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/file-upload.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/file-upload.tsx"
+                }
+            ]
+        },
+        {
+            "name": "clipboard",
+            "type": "registry:ui",
+            "title": "Clipboard",
+            "description": "A button that copies a text and shows for a while that it did: every part carries data-copied, the Indicator turns its copy icon into a check, the trigger turns ring, and the app's announcement is written into a polite live region; a failed copy focuses the read-only Input with its text selected. Primitives-backed: Base UI has no clipboard, so one shared file wraps Fragiola Primitives' on every base. Control is the field's box around the Input and the Trigger, a ghost square Clickable. Clipboard.Template.Simple is the value with its copy button, announcing Copied to clipboard.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/field",
+                "@fragiola/clickable",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/clipboard.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/clipboard.tsx"
+                }
+            ]
+        },
+        {
             "name": "calendar",
             "type": "registry:ui",
             "title": "Calendar",

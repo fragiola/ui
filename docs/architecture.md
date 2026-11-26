@@ -140,6 +140,7 @@ calendar    the date grids         every calendar, and the pickers' popups
 toast       the notification stack toast
 color       the colour controls    color area, wheel, slider, swatch, swatch picker, color picker
 chip        a value as a small tag combobox chips, tags input, tag group
+file        dropping, listing files drop zone, file upload
 ```
 
 Families are **orthogonal**, not a hierarchy: `select` is `field` + `popup` + `menu`.
@@ -267,6 +268,16 @@ swatch picker does) and `disabled`; `remove` what a chip's remove button adds to
 Clickable (the inline end, the chip's own text colour, so it reads on a checked tag). Editable
 and Rating add no family: Editable's area is `field.row` stroked only while editing, and a
 Rating's filled star is "on" (`ring`) over an empty one in `line`.
+
+`file` is dropping and listing files (Epic #172), after Untitled UI's file upload: the drop
+target (`dropZone`, a dashed `line` box with the `hover` fill and the standalone ring; while files
+are dragged over it, `data-drop-target`, the libraries' drop outline: a dashed `ring` stroke over a
+`ring/15` fill, Grid Layout's placeholder), its featured `icon`, the `list`, a file's row (`item`, a
+control box, so `palette-danger` makes it a red stroke with red text), `rejected` (that palette,
+added from the Item's state as Grid Layout's `refused`), the `preview` square and its `image`, and
+the `text` column with its `label`, `name` and `meta`. Drop Zone's target and File Upload's
+Dropzone are the same member. Clipboard adds no family: its Control is `field.row`, its Trigger a
+ghost Clickable that turns `ring` while copied.
 
 `dock` dresses a headless package of its own (Dockable, see §5) instead of the base's primitives:
 one member per part — tabset, header, tab, panel, splitter, drop indicator, border —

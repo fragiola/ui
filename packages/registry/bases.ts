@@ -360,6 +360,21 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "rating",
         reason: "Base UI has no rating",
     },
+    {
+        file: "registry/ui/drop-zone.tsx",
+        entry: "drop-zone",
+        reason: "Base UI has no drop zone",
+    },
+    {
+        file: "registry/ui/file-upload.tsx",
+        entry: "file-upload",
+        reason: "Base UI has no file upload",
+    },
+    {
+        file: "registry/ui/clipboard.tsx",
+        entry: "clipboard",
+        reason: "Base UI has no clipboard",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */
