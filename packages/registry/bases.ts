@@ -285,6 +285,21 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "autocomplete-virtual",
         reason: "Base UI's Autocomplete virtualizes only through an external virtualizer (`virtualized`): a virtual autocomplete is Fragiola Primitives' Autocomplete on every base, beside the base's own",
     },
+    {
+        file: "registry/ui/steps.tsx",
+        entry: "steps",
+        reason: "Base UI has no steps",
+    },
+    {
+        file: "registry/ui/carousel.tsx",
+        entry: "carousel",
+        reason: "Base UI has no carousel",
+    },
+    {
+        file: "registry/ui/link.tsx",
+        entry: "link",
+        reason: "Base UI has no link with current and disabled states",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

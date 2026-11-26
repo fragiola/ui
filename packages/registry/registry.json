@@ -1042,6 +1042,25 @@
             ]
         },
         {
+            "name": "link",
+            "type": "registry:ui",
+            "title": "Link",
+            "description": "A link with the two states navigation gives it: current (aria-current=page) and disabled (focusable and announced, its press navigating nowhere, a router's included); the app's router link through render. Primitives-backed: Base UI has no link. Text.Link's look; the current page in the label weight, disabled the foundation's.",
+            "registryDependencies": [
+                "@fragiola/text",
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/link.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/link.tsx"
+                }
+            ]
+        },
+        {
             "name": "track",
             "type": "registry:lib",
             "title": "track family",
@@ -1840,6 +1859,46 @@
                     "path": "registry/ui/pagination.tsx",
                     "type": "registry:ui",
                     "target": "@ui/pagination.tsx"
+                }
+            ]
+        },
+        {
+            "name": "steps",
+            "type": "registry:ui",
+            "title": "Steps",
+            "description": "A process in a fixed number of steps: an ordered list whose current step is aria-current=step, the current step's content, Back and Next, and the completed content; linear makes a step reachable only once the ones before are valid. Primitives-backed: Base UI has no steps. A completed step's indicator is checked (the ring disc with a check), the current one current, one to come the control box; horizontal or vertical by orientation. Steps.Template.Simple is the whole process.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/steps.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/steps.tsx"
+                }
+            ]
+        },
+        {
+            "name": "carousel",
+            "type": "registry:ui",
+            "title": "Carousel",
+            "description": "Slides shown a page at a time (the APG carousel): Previous and Next, the slide picker's dots, an optional rotation that stops on focus; native scrolling with snapping, swipe and mouse drag, RTL. Primitives-backed: Base UI has no carousel. The arrows are outline icon buttons on the raised surface, a dot is the rail and checked (ring) on the current page.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/carousel.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/carousel.tsx"
                 }
             ]
         },
