@@ -24,6 +24,15 @@
 // min-w-36 are always applied on `content`; the tooltip member has its own
 // compact padding and sizing.
 //
+// ─── STACKING AND FOCUS ARE THE BOX'S ───────────────────────────────────────
+// `content` carries `z-50 outline-none` itself: every popup above the page,
+// and no browser outline on a popup that takes the focus (a menu, a select's
+// list) — its items draw the ring. They were passed as an argument
+// (`popup.content("z-50 outline-none")`), which tailwind-variants ignores (a
+// member takes `{ class }`, never a string), so every popup silently lost
+// them (Epic #166). A member is called with no argument; extras go through
+// `cn()`, and tests/popup.test.ts refuses a string argument anywhere.
+//
 // ─── TWO MEMBERS, NOT TWO VARIANTS ──────────────────────────────────────────
 // `content` is the menu/popover floating box: raised surface, border, radius,
 // shadow, p-2, min-w-36, zoom animation. `tooltip` is a transient text label:
@@ -48,7 +57,7 @@ const content = tv({
     base: [
         foundation.overlay(),
         `
-        min-w-36 p-2
+        z-50 min-w-36 p-2 outline-none
         max-h-(--available-height) origin-(--transform-origin)
         overflow-x-hidden overflow-y-auto
         data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95

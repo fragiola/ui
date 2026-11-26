@@ -142,10 +142,7 @@ function AutocompleteContent({
             >
                 <AutocompletePrimitive.Popup
                     data-slot="autocomplete-content"
-                    className={cn(
-                        popup.content("z-50 outline-none"),
-                        className as string,
-                    )}
+                    className={cn(popup.content(), className as string)}
                     {...props}
                 />
             </AutocompletePrimitive.Positioner>

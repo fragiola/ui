@@ -3,6 +3,7 @@ import { Clickable } from "#/components/atoms/clickable";
 import { Dialog } from "#/components/ui/dialog";
 import { SegmentedControl } from "#/components/ui/segmented-control";
 import { popup } from "#/families/popup";
+import { cn } from "#/lib/cn";
 
 // The Epic #158 probe: a Fragiola Primitives popup inside the base's Dialog.
 // On the Base UI base the two libraries share one page, so this checks that
@@ -54,8 +55,9 @@ export default function PrimitivesInDialog() {
                                     className="z-50"
                                 >
                                     <PrimitivesPopover.Popup
-                                        className={popup.content(
-                                            "z-50 flex flex-col gap-2 p-4 outline-none",
+                                        className={cn(
+                                            popup.content(),
+                                            "flex flex-col gap-2 p-4",
                                         )}
                                     >
                                         <PrimitivesPopover.Title className="text-sm font-medium">

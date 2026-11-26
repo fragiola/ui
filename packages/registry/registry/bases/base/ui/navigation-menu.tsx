@@ -188,7 +188,7 @@ function NavigationMenuPopup({
         <NavigationMenuPrimitive.Popup
             data-slot="navigation-menu-popup"
             className={cn(
-                popup.content("z-50 outline-none"),
+                popup.content(),
                 "overflow-hidden",
                 className as string,
             )}

@@ -168,10 +168,7 @@ function ComboboxContent({
             >
                 <ComboboxPrimitive.Popup
                     data-slot="combobox-content"
-                    className={cn(
-                        popup.content("z-50 outline-none"),
-                        className as string,
-                    )}
+                    className={cn(popup.content(), className as string)}
                     {...props}
                 />
             </ComboboxPrimitive.Positioner>

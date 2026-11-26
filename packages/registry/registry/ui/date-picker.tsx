@@ -154,7 +154,7 @@ function createPickerParts(
                         data-slot={`${slot}-content`}
                         className={cn(
                             popup.content(),
-                            "z-50 w-auto p-3 outline-none",
+                            "w-auto p-3",
                             className as string,
                         )}
                         {...props}
