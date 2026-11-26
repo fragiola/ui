@@ -19,9 +19,10 @@ everyone, a form that could not be saved. It stays until the page changes; for a
 comes and goes, use a [Toast](/docs/overlays/toast), and for one that asks for a decision before
 anything else, an [Alert Dialog](/docs/overlays/alert-dialog).
 
-The Root is `role="alert"`, which a screen reader announces as soon as it appears. For a message
-that is not urgent (a note shown with the page), pass `role="status"`, or `role="none"` for one
-that is only decoration. The **Icon** sits at the inline start and is hidden from assistive
+The Root has no live role: an alert rendered with the page is read with the page. For one you
+insert in response to an action (a form that could not be saved), pass `role="alert"`, so a screen
+reader announces it at once, or `role="status"` for a polite announcement; keep `role="alert"` for
+what is urgent, since several assertive regions on one page compete. The **Icon** sits at the inline start and is hidden from assistive
 technology; the **Title**, the **Description** and the **Actions** take the column after it, or
 start at the padding when there is no icon.
 
@@ -43,7 +44,7 @@ same on both bases.
 
 | Part | Source |
 |---|---|
-| `Root` | `div` + `foundation.box()`, `role="alert"` |
+| `Root` | `div` + `foundation.box()` |
 | `Icon` | `span`, `aria-hidden` |
 | `Title` | `div`, the label type |
 | `Description` | `div` + `foundation.secondary()` |

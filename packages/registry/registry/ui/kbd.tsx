@@ -7,8 +7,8 @@ import { cn } from "#/lib/cn";
 // drawn with roles: a `line` stroke around a `soft` adornment (a recessed
 // adornment, as a field's addon or inline code), its text in `accent`. Its
 // height is the badge's line, so it sits in a line of text or a field's
-// inset without moving it. The field's addon and inset already round a
-// `kbd` inside them to the field's radius.
+// inset without moving it. A field's addon and inset round a Kbd that is
+// their direct child to the field's radius.
 //
 // A menu's or a Command's shortcut is not a Kbd: it is the menu family's
 // `shortcut`, secondary text at the row's inline end, because a cap in every

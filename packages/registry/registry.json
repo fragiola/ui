@@ -1551,11 +1551,7 @@
             "type": "registry:ui",
             "title": "Button Group",
             "description": "Clickables joined into one row (or a column): every child but the first loses its start radius and start border, every child but the last its end radius, with logical properties, so the join mirrors in RTL; a focused child rises above its neighbours. Separator is a line rule between solid buttons. A role group with no keyboard behaviour: each button stays a tab stop (a Toolbar is one tab stop with arrow keys). No primitive, no family. Markup only, the same file on every base.",
-            "registryDependencies": [
-                "@fragiola/theme",
-                "@fragiola/cn",
-                "@fragiola/clickable"
-            ],
+            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
             "dependencies": [],
             "files": [
                 {
@@ -2411,7 +2407,7 @@
             "name": "alert",
             "type": "registry:ui",
             "title": "Alert",
-            "description": "A message that stays in the page: Root (role alert), Icon, Title, Description, Actions. No primitive, no family of its own: the box is the control box (foundation.box: a line stroke, transparent, its text in accent), so its colour is only the palette class it carries: palette-danger makes it a red stroke with red text, never a red block; a palette class on the Icon alone colours the mark, the toast's look. No colour variant. Markup only, the same file on every base.",
+            "description": "A message that stays in the page: Root (no live role by default; role alert for one inserted after an action), Icon, Title, Description, Actions. No primitive, no family of its own: the box is the control box (foundation.box: a line stroke, transparent, its text in accent), so its colour is only the palette class it carries: palette-danger makes it a red stroke with red text, never a red block; a palette class on the Icon alone colours the mark, the toast's look. No colour variant. Markup only, the same file on every base.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -2430,7 +2426,7 @@
             "name": "featured-icon",
             "type": "registry:ui",
             "title": "Featured Icon",
-            "description": "An icon in a tinted shape: a circle in the palette's soft tint with the icon in its accent, the soft badge's roles. Its colour is only the palette class it carries or inherits; its size is a class. Decorative unless labelled. No primitive, no family, no variants. Markup only, the same file on every base.",
+            "description": "An icon in a tinted shape: a circle in the palette's soft tint with the icon in its accent, the soft badge's roles. Its colour is only the palette class it carries or inherits; its size is a class. Decorative unless labelled (then role img). No primitive, no family, no variants. Markup only, the same file on every base.",
             "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
             "dependencies": [],
             "files": [

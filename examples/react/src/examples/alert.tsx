@@ -43,7 +43,7 @@ export default function AlertDemo() {
                     </Alert.Actions>
                 </Alert.Root>
 
-                <Alert.Root role="status">
+                <Alert.Root>
                     <Alert.Description>
                         Changes to these settings apply to every member of the
                         workspace.
@@ -54,11 +54,7 @@ export default function AlertDemo() {
             {/* the same alert, only its palette-* class changed */}
             <Row label="palettes">
                 {CHROMATIC.map((palette) => (
-                    <Alert.Root
-                        key={palette}
-                        role="none"
-                        className={`palette-${palette}`}
-                    >
+                    <Alert.Root key={palette} className={`palette-${palette}`}>
                         <Alert.Icon>
                             <CircleAlertIcon />
                         </Alert.Icon>

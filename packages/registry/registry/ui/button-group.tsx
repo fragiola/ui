@@ -37,7 +37,7 @@ function ButtonGroupRoot({
             role="group"
             data-orientation={orientation}
             className={cn(
-                "flex w-fit items-stretch",
+                "group/button-group flex w-fit items-stretch",
                 "*:focus-visible:relative *:focus-visible:z-10",
                 "data-[orientation=horizontal]:[&>*:not(:first-child)]:rounded-s-none",
                 "data-[orientation=horizontal]:[&>*:not(:first-child)]:border-s-0",
@@ -63,8 +63,8 @@ function ButtonGroupSeparator({
             aria-hidden
             className={cn(
                 "shrink-0 self-stretch bg-palette-line",
-                "in-data-[orientation=horizontal]:w-px",
-                "in-data-[orientation=vertical]:h-px",
+                "group-data-[orientation=horizontal]/button-group:w-px",
+                "group-data-[orientation=vertical]/button-group:h-px",
                 className as string,
             )}
             {...props}

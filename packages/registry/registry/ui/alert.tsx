@@ -14,8 +14,10 @@ import { cn } from "#/lib/cn";
 // alone colours only the mark, the toast's look (families/toast.tsx). There
 // is no colour variant: a new colour is a new palette.
 //
-//   Root         the box, `role="alert"` (pass `role="status"`, or none,
-//                for a message that is not urgent)
+//   Root         the box, with no live role: a message rendered with the
+//                page is read with it. Pass `role="alert"` for one inserted
+//                in response to an action (a form that failed to save), so
+//                it is announced at once, or `role="status"` for a polite one
 //   Icon         the mark at the inline start, sized like the toast's
 //   Title        the label type (`font-medium`)
 //   Description  secondary text
@@ -28,7 +30,6 @@ function AlertRoot({ className, ...props }: React.ComponentProps<"div">) {
     return (
         <div
             data-slot="alert"
-            role="alert"
             className={cn(
                 foundation.box(),
                 "group/alert grid w-full grid-cols-1 items-start gap-x-3 gap-y-1",

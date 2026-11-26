@@ -66,7 +66,7 @@ function EmptyTitle({
     className,
     as = "h3",
     ...props
-}: React.ComponentProps<typeof Text.Heading>) {
+}: Omit<React.ComponentProps<typeof Text.Heading>, "hierarchy">) {
     return (
         <Text.Heading
             data-slot="empty-title"

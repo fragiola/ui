@@ -9,7 +9,7 @@ import { Progress } from "#/components/ui/progress";
 // stands apart from the page by its edge, not by a colour of its own. The
 // plan card carries its badge in the header's Action, its usage in the
 // Content and its buttons in the Footer, the primary one palette-neutral;
-// the second card is a header and a footer, with a rule between them.
+// the second card lists its invoices, with a rule above its footer.
 export default function CardDemo() {
     return (
         <div className="palette-surface grid w-full items-start gap-6 bg-palette-base text-palette-contrast md:grid-cols-2">

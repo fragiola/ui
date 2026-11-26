@@ -17,6 +17,8 @@ import { cn } from "#/lib/cn";
 // typography axis); a denser context passes its size (`size-icon-xs` in a
 // badge). It is `role="status"` named "Loading"; pass another
 // `aria-label`, or `aria-hidden` when the text beside it already says so.
+// Inside a labelled control (a button) it must be `aria-hidden`, or its name
+// joins the button's ("Loading Saving…").
 
 function Spinner({
     className,

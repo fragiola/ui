@@ -7,8 +7,10 @@ import { cn } from "#/lib/cn";
 // summary. No primitive, no family of its own: the box is the visual
 // language's raised tier (`foundation.raised`: `palette-raised`, a `line`
 // stroke, `rounded-lg`, `shadow-sm`), the tier a tile and the inset sidebar
-// stand on. A palette class on the Root replaces `raised` (cn knows the
-// palette group); a colour is a palette, never a variant.
+// stand on. A surface-tier palette class on the Root (`palette-surface-*`)
+// replaces `raised` (cn knows the palette group); a chromatic one would put
+// the secondary text on a coloured ground, below AA. A colour is a palette,
+// never a variant.
 //
 // The anatomy is Untitled UI's modal and card header (title, supporting
 // text, an action at the inline end), in Fragiola's type:
@@ -56,7 +58,7 @@ function CardTitle({
     className,
     as = "h3",
     ...props
-}: React.ComponentProps<typeof Text.Heading>) {
+}: Omit<React.ComponentProps<typeof Text.Heading>, "hierarchy">) {
     return (
         <Text.Heading
             data-slot="card-title"

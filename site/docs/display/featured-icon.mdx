@@ -17,7 +17,7 @@ changes.
 A featured icon draws the eye to what a block is about: it leads an [Empty](/docs/display/empty)
 state, a confirmation, a row of features. Pass the icon as its child. It is decorative by
 default (`aria-hidden`), because the text beside it says what it means; when it stands alone,
-give it `role="img"` and an `aria-label`, and it is no longer hidden.
+give it an `aria-label`: it becomes an image (`role="img"`), no longer hidden.
 
 ## The look
 
@@ -36,4 +36,4 @@ follows the typography axis) unless it sets its own. There is no size or colour 
 
 | Part | Source |
 |---|---|
-| `FeaturedIcon` | `span`, `aria-hidden` unless labelled |
+| `FeaturedIcon` | `span`, `aria-hidden`; `role="img"` when labelled |

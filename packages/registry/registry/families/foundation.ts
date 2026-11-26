@@ -138,8 +138,7 @@ const panel = tv({
     `,
 });
 
-// raised — a card that stands on the floor: a Card, a tile, the inset
-// sidebar. A step above the floor (`palette-raised`), a `line` stroke,
+// raised — a card that stands on the floor: a Card, a Grid Layout tile. A step above the floor (`palette-raised`), a `line` stroke,
 // `rounded-lg` and the light shadow (the elevation axis scales it). A palette
 // class on the element replaces `raised` (cn knows the palette group).
 const raised = tv({

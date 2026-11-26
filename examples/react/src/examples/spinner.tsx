@@ -30,7 +30,7 @@ export default function SpinnerDemo() {
                 </Badge>
             </div>
 
-            <div className="flex max-w-sm items-center justify-center gap-2 rounded-lg border border-palette-line p-6 text-sm text-palette-accent/85">
+            <div className="flex items-center gap-2 text-sm text-palette-accent/85">
                 <Spinner aria-label="Loading invoices" />
                 Loading invoices
             </div>

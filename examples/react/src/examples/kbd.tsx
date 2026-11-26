@@ -23,7 +23,7 @@ export default function KbdDemo() {
                     <Field.Row>
                         <Field.Body>
                             <Field.Inset>
-                                <SearchIcon className="size-4" />
+                                <SearchIcon />
                             </Field.Inset>
                             <Input
                                 aria-label="Search issues"

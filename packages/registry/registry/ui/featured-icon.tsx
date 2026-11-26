@@ -12,7 +12,8 @@ import { cn } from "#/lib/cn";
 // standalone illustration size (`size-icon-lg`) unless it sets its own.
 //
 // It is decorative by default (`aria-hidden`): the text beside it says what
-// it means. Give it `role="img"` and an `aria-label` when it stands alone.
+// it means. Give it an `aria-label` when it stands alone: it is then an
+// image (`role="img"`), no longer hidden.
 
 function FeaturedIcon({
     className,
@@ -25,6 +26,7 @@ function FeaturedIcon({
     return (
         <span
             data-slot="featured-icon"
+            role={labelled ? "img" : undefined}
             aria-hidden={ariaHidden ?? (labelled ? undefined : true)}
             className={cn(
                 "inline-flex size-10 shrink-0 items-center justify-center rounded-full",

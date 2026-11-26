@@ -19,7 +19,7 @@ export default function AspectRatioDemo() {
                     className="flex items-center justify-center rounded-lg border border-palette-line bg-palette-soft"
                 >
                     <Clickable.Button
-                        className="palette-neutral rounded-full"
+                        className="palette-neutral rounded-pill"
                         shape="square"
                         aria-label="Play lesson 3"
                     >
