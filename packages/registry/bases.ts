@@ -245,6 +245,46 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "year-range-picker",
         reason: "Base UI has no year range picker",
     },
+    {
+        file: "registry/ui/command.tsx",
+        entry: "command",
+        reason: "Base UI has no command palette",
+    },
+    {
+        file: "registry/ui/command-virtual.tsx",
+        entry: "command-virtual",
+        reason: "Base UI has no command palette, nor a virtual one",
+    },
+    {
+        file: "registry/ui/listbox.tsx",
+        entry: "listbox",
+        reason: "Base UI has no listbox",
+    },
+    {
+        file: "registry/ui/listbox-virtual.tsx",
+        entry: "listbox-virtual",
+        reason: "Base UI has no listbox, nor a virtual one",
+    },
+    {
+        file: "registry/ui/cascade-select.tsx",
+        entry: "cascade-select",
+        reason: "Base UI has no cascade select",
+    },
+    {
+        file: "registry/ui/select-virtual.tsx",
+        entry: "select-virtual",
+        reason: "Base UI's Select has no virtual list: a virtual select is Fragiola Primitives' Select on every base, beside the base's own",
+    },
+    {
+        file: "registry/ui/combobox-virtual.tsx",
+        entry: "combobox-virtual",
+        reason: "Base UI's Combobox virtualizes only through an external virtualizer (`virtualized`): a virtual combobox is Fragiola Primitives' Combobox on every base, beside the base's own",
+    },
+    {
+        file: "registry/ui/autocomplete-virtual.tsx",
+        entry: "autocomplete-virtual",
+        reason: "Base UI's Autocomplete virtualizes only through an external virtualizer (`virtualized`): a virtual autocomplete is Fragiola Primitives' Autocomplete on every base, beside the base's own",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

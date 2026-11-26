@@ -387,7 +387,7 @@
             "name": "menu",
             "type": "registry:lib",
             "title": "menu family + parts factory",
-            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, a menubar's barItem, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, menubar, select, combobox and sidebar.",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, a menubar's barItem, a standing list's list and option, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, menubar, select, combobox and sidebar.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -462,6 +462,44 @@
                     "path": "registry/ui/menubar.tsx",
                     "type": "registry:ui",
                     "target": "@ui/menubar.tsx"
+                }
+            ]
+        },
+        {
+            "name": "command",
+            "type": "registry:ui",
+            "title": "Command",
+            "description": "A command palette: a text field filtering a list of actions, always shown; the arrows move the highlight, typing highlights the best match, Enter runs it, Backspace goes back a page. Primitives-backed: Base UI has no command palette, so one shared file wraps Fragiola Primitives' on every base. Root a foundation panel, Item menu.item, Shortcut menu.shortcut, GroupLabel menu.label; in a Dialog it is a composition. Command.Template.Simple is the palette from groups of actions.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/command.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/command.tsx"
+                }
+            ]
+        },
+        {
+            "name": "command-virtual",
+            "type": "registry:ui",
+            "title": "Command Virtual",
+            "description": "A Command palette over thousands of actions that renders only the matches in view; the highlighted one, its neighbours, the best match and the ends stay rendered. Primitives-backed, Command's twin: every part is Command's but the List, which filters items and calls a function for each match in view.",
+            "registryDependencies": [
+                "@fragiola/command",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/command-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/command-virtual.tsx"
                 }
             ]
         },
@@ -621,6 +659,88 @@
                     "path": "registry/ui/select.tsx",
                     "type": "registry:ui",
                     "target": "@ui/select.tsx"
+                }
+            ]
+        },
+        {
+            "name": "select-virtual",
+            "type": "registry:ui",
+            "title": "Select Virtual",
+            "description": "A Select over thousands of items that renders only the options in view; the keys and typeahead reach every item and the highlighted option scrolls into view. Primitives-backed: Fragiola Primitives' Select on every base, beside the base's own, and its twin: field.row trigger, popup.content, menu.selectableItem options.",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/select-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/select-virtual.tsx"
+                }
+            ]
+        },
+        {
+            "name": "listbox",
+            "type": "registry:ui",
+            "title": "Listbox",
+            "description": "A list of options that stays on the page, for one value or several (the APG listbox): roving focus, typeahead, Shift ranges and Ctrl+A with multiple; it submits in a form. Primitives-backed: Base UI has no listbox. Root menu.list (the control box), Item menu.option (selected soft with a check, half-soft hover, the ring inside), GroupLabel menu.label.",
+            "registryDependencies": [
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/listbox.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/listbox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "listbox-virtual",
+            "type": "registry:ui",
+            "title": "Listbox Virtual",
+            "description": "A Listbox of thousands of options that renders only the ones in view: the keys, typeahead, ranges and form value reach every option, each with its place in the set. Primitives-backed, Listbox's twin: the same menu.list Root and Listbox.Item rows.",
+            "registryDependencies": [
+                "@fragiola/listbox",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/listbox-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/listbox-virtual.tsx"
+                }
+            ]
+        },
+        {
+            "name": "cascade-select",
+            "type": "registry:ui",
+            "title": "Cascade Select",
+            "description": "One path through a tree of options from a button whose popup shows a list per level, side by side (the APG select-only combobox): Right opens a parent's level, Left goes back, mirrored in RTL; it submits the path. Primitives-backed: Base UI has no cascader. Select's recombination: field.row trigger, popup.content, menu.selectableItem items with a chevron on parents. CascadeSelect.Template.Simple renders every level.",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/cascade-select.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/cascade-select.tsx"
                 }
             ]
         },
@@ -1660,6 +1780,29 @@
             ]
         },
         {
+            "name": "autocomplete-virtual",
+            "type": "registry:ui",
+            "title": "Autocomplete Virtual",
+            "description": "An Autocomplete over thousands of suggestions that renders only the matches in view, the ends and the highlighted one pinned. Primitives-backed: Fragiola Primitives' Autocomplete on every base, beside the base's own, and its twin part for part (field + popup + menu).",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/clickable",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/autocomplete-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/autocomplete-virtual.tsx"
+                }
+            ]
+        },
+        {
             "name": "navigation-menu",
             "type": "registry:ui",
             "title": "Navigation Menu",
@@ -1719,6 +1862,30 @@
                     "path": "registry/ui/combobox.tsx",
                     "type": "registry:ui",
                     "target": "@ui/combobox.tsx"
+                }
+            ]
+        },
+        {
+            "name": "combobox-virtual",
+            "type": "registry:ui",
+            "title": "Combobox Virtual",
+            "description": "A Combobox over thousands of items that renders only the matching options in view, the ends, the highlighted and the selected one pinned. Primitives-backed: Fragiola Primitives' Combobox on every base, beside the base's own, and its twin part for part (field + popup + menu).",
+            "registryDependencies": [
+                "@fragiola/field",
+                "@fragiola/popup",
+                "@fragiola/menu",
+                "@fragiola/clickable",
+                "@fragiola/text",
+                "@fragiola/cn",
+                "@fragiola/base",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/combobox-virtual.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/combobox-virtual.tsx"
                 }
             ]
         },
