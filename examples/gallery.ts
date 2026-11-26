@@ -25,6 +25,7 @@ export type Theme = {
 
 export const LEVELS = [
     { id: "atoms", title: "Atoms" },
+    { id: "actions", title: "Actions" },
     { id: "fields", title: "Fields" },
     { id: "menus", title: "Menus" },
     { id: "overlays", title: "Overlays" },

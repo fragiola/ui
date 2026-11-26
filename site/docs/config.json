@@ -71,6 +71,24 @@
             ]
         },
         {
+            "label": "Actions",
+            "collapsible": true,
+            "pages": [
+                {
+                    "label": "Toggle",
+                    "path": "actions/toggle"
+                },
+                {
+                    "label": "Toggle Group",
+                    "path": "actions/toggle-group"
+                },
+                {
+                    "label": "Toolbar",
+                    "path": "actions/toolbar"
+                }
+            ]
+        },
+        {
             "label": "Fields",
             "collapsible": true,
             "pages": [
@@ -97,6 +115,18 @@
                 {
                     "label": "Segmented Control",
                     "path": "fields/segmented-control"
+                },
+                {
+                    "label": "Checkbox Group",
+                    "path": "fields/checkbox-group"
+                },
+                {
+                    "label": "Fieldset",
+                    "path": "fields/fieldset"
+                },
+                {
+                    "label": "Form",
+                    "path": "fields/form"
                 }
             ]
         },

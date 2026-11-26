@@ -1,0 +1,31 @@
+---
+title: "Checkbox Group"
+description: "Checkboxes sharing one value, with a parent checkbox that checks them all and shows the mixed mark."
+---
+
+<InstallCommand item="checkbox-group" />
+
+<Example id="checkbox-group" />
+
+A checkbox group holds the value of its [Checkboxes](/docs/fields/choice): the list of the
+checked ones' `value`s (`value`, `defaultValue`, `onValueChange`). Give it `allValues` and put a
+`<Checkbox.Root parent />` in it: the parent checks or clears every checkbox, and while only some
+are checked it shows the mixed mark — the choice family's dash on the `checked` fill
+(`data-indeterminate`).
+
+## Composition
+
+`CheckboxGroup` draws nothing: a column of `Checkbox`es, each in a `Field.ChoiceRoot` with its
+label, a gap apart like a `RadioGroup`'s. Name the group with `aria-labelledby` (the parent's
+label, as in the example) or `aria-label`.
+
+## Bases
+
+Both bases' `CheckboxGroup` and the checkbox's `parent` behave the same.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `CheckboxGroup` | primitive `CheckboxGroup` + a flex column |
+| `Checkbox.Root parent` | [Checkbox](/docs/fields/choice) |

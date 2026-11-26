@@ -121,6 +121,58 @@ export const examples: Example[] = [
         load: () => import("./component-showcase.tsx"),
     },
 
+    // ─── Actions ────────────────────────────────────────────────────────────
+    {
+        id: "toggle",
+        title: "Toggle",
+        description:
+            "A note's formatting: icon toggles and an outline toggle with text, then the disabled state and one row of surface-ring palettes. Pressed is `current`, like the current tab.",
+        level: "actions",
+        order: 1,
+        features: ["Toggle", "aria-pressed", "current", "variant", "shape"],
+        docs: "/docs/actions/toggle",
+        layout: "flow",
+        height: 268,
+        load: () => import("./toggle.tsx"),
+    },
+    {
+        id: "toggle-group",
+        title: "Toggle Group",
+        description:
+            "A paragraph's alignment (one pressed) and its text styles (`multiple`), each one tab stop with the arrows between its toggles, then the disabled and vertical groups.",
+        level: "actions",
+        order: 2,
+        features: [
+            "ToggleGroup",
+            "Toggle",
+            "multiple",
+            "orientation",
+            "roving focus",
+        ],
+        docs: "/docs/actions/toggle-group",
+        layout: "flow",
+        height: 264,
+        load: () => import("./toggle-group.tsx"),
+    },
+    {
+        id: "toolbar",
+        title: "Toolbar",
+        description:
+            "An editor's toolbar: buttons, toggles, a toggle group, a bare input in a field box and a link, one tab stop with the arrows between them.",
+        level: "actions",
+        order: 3,
+        features: [
+            "Toolbar.Root",
+            "Toolbar.Button",
+            "Toolbar.Input",
+            "Toolbar.Separator",
+            "render={<Toggle />}",
+        ],
+        docs: "/docs/actions/toolbar",
+        layout: "flow",
+        height: 108,
+        load: () => import("./toolbar.tsx"),
+    },
     // ─── Fields ─────────────────────────────────────────────────────────────
     {
         id: "field",
@@ -236,6 +288,50 @@ export const examples: Example[] = [
         layout: "flow",
         height: 470,
         load: () => import("./segmented-control.tsx"),
+    },
+    {
+        id: "checkbox-group",
+        title: "Checkbox Group",
+        description:
+            "A role's permissions: a CheckboxGroup with a parent checkbox that checks them all and shows the mixed dash while some are checked, then a disabled group.",
+        level: "fields",
+        order: 7,
+        features: [
+            "CheckboxGroup",
+            "Checkbox parent",
+            "allValues",
+            "indeterminate",
+        ],
+        docs: "/docs/fields/checkbox-group",
+        layout: "flow",
+        height: 284,
+        load: () => import("./checkbox-group.tsx"),
+    },
+    {
+        id: "fieldset",
+        title: "Fieldset",
+        description:
+            "A shipping address: a Fieldset whose Legend names the group of Fields, then the same group disabled by its Root.",
+        level: "fields",
+        order: 8,
+        features: ["Fieldset.Root", "Fieldset.Legend", "disabled"],
+        docs: "/docs/fields/fieldset",
+        layout: "flow",
+        height: 388,
+        load: () => import("./fieldset.tsx"),
+    },
+    {
+        id: "form",
+        title: "Form",
+        description:
+            "A sign-up form: the browser's validation on the email, then the server's answer in the Form's `errors`, shown by the username's Field until it changes. Invalid is `palette-danger` by inheritance.",
+        level: "fields",
+        order: 9,
+        features: ["Form", "errors", "Field.Error", "palette-danger"],
+        docs: "/docs/fields/form",
+        layout: "flow",
+        height: 280,
+        load: () => import("./form.tsx"),
     },
     // ─── Menus ──────────────────────────────────────────────────────────────
     {

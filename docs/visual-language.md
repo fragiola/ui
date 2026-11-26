@@ -82,7 +82,7 @@ The ring is drawn outside because `ring` contrasts with what is behind the eleme
 |---|---|---|
 | hover (a transparent interactive thing) | `bg-palette-soft` | `hover` |
 | highlighted (the item the pointer or keyboard is on, in a list) | `bg-palette-soft`, text `contrast` | `highlighted` |
-| current (where you are in a set: the active tab, the current page, the active sidebar or navigation link) | `bg-palette-soft`, text `contrast`, `font-medium` | `current` |
+| current (where you are in a set: the active tab, the current page, the active sidebar or navigation link, a pressed toggle, the checked segment of a segmented control) | `bg-palette-soft`, text `contrast`, `font-medium` | `current` |
 | selected (what the user chose: tree rows, grid and table rows, a dockable tabset's shown tab) | `bg-palette-soft`, text `contrast` (no weight: a row does not reflow) | `selected` |
 | hover on a row of a selectable list (tree, grid, table) | half of `soft`, mixed opaque over the row's `base`, never on a selected row | `hoverRow` |
 | checked / on (checkbox, radio, switch, slider fill, progress fill), and mixed (an indeterminate checkbox, with a dash) | `bg-palette-ring`, content in `base` | `checked` |
@@ -92,8 +92,8 @@ The ring is drawn outside because `ring` contrasts with what is behind the eleme
 | invalid | `palette-danger` by inheritance, nothing else | none (global.css) |
 
 `current` and `selected` are custom variants (global.css), like `highlighted`: each
-library spells these states its own way (`data-active`, `aria-current`, `data-selected`,
-`data-state="selected"`), and the variant reads them all, so every set is lit the same
+library spells these states its own way (`data-active`, `aria-current`, `aria-pressed`,
+`data-selected`, `data-state="selected"`), and the variant reads them all, so every set is lit the same
 way.
 
 **"On" is `ring`.** On a neutral palette it is the dark neutral, on a `surface-*`
