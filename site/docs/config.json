@@ -205,6 +205,38 @@
                 {
                     "label": "Time Range Field",
                     "path": "dates/time-range-field"
+                },
+                {
+                    "label": "Date Picker",
+                    "path": "dates/date-picker"
+                },
+                {
+                    "label": "Date Picker Input",
+                    "path": "dates/date-picker-input"
+                },
+                {
+                    "label": "Date Range Picker",
+                    "path": "dates/date-range-picker"
+                },
+                {
+                    "label": "Date Range Picker Input",
+                    "path": "dates/date-range-picker-input"
+                },
+                {
+                    "label": "Month Picker",
+                    "path": "dates/month-picker"
+                },
+                {
+                    "label": "Month Range Picker",
+                    "path": "dates/month-range-picker"
+                },
+                {
+                    "label": "Year Picker",
+                    "path": "dates/year-picker"
+                },
+                {
+                    "label": "Year Range Picker",
+                    "path": "dates/year-range-picker"
                 }
             ]
         },

@@ -1,0 +1,38 @@
+---
+title: "Year Range Picker"
+description: "A trigger and a popup holding a year range calendar."
+---
+
+<InstallCommand item="year-range-picker" />
+
+<Example id="year-range-picker" />
+
+A year range picker is a [Date Picker](/docs/dates/date-picker) over a
+[Year Range Calendar](/docs/dates/year-range-calendar): the trigger opens the popup, a Year Range Calendar in it without a value of its
+own binds to the picker, and a choice sets the value, closes the popup and returns the focus to
+the trigger. `name` submits it as ISO 8601.
+
+## Bases
+
+**Primitives-backed.** Base UI has no year range picker, so this is one shared file (`ui/year-range-picker.tsx`) that wraps
+Fragiola Primitives' `YearRangePicker` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name the trigger with `aria-labelledby` (the label's `id` and the trigger's own, so its name
+holds the value, as the example does) or `aria-label`, and pass `name`, `disabled` and `required`
+to the Root. On Fragiola Primitives the picker is also a `Field` control.
+
+**Inside a Base UI dialog.** On the Base UI base, the picker's popup is Fragiola Primitives'
+inside Base UI's focus trap: `scenarios/overlays/date-picker-in-dialog` checks that the popup
+takes the focus, that Escape and an outside press close only the popup, returning the focus to
+the trigger, and that the next Escape closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `YearRangePicker.Root`: the picker's state, no element |
+| `Trigger` | primitive `YearRangePicker.Trigger` + `field.row` (the `field-control` marker): a calendar icon, then your content |
+| `Content` | primitive `YearRangePicker.Portal`, `.Positioner` and `.Popup` in one: `popup.content`, below the trigger at its start |

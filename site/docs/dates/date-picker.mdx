@@ -1,0 +1,55 @@
+---
+title: "Date Picker"
+description: "A trigger and a popup holding a calendar: the field row opens it, a choice sets the date and closes."
+---
+
+<InstallCommand item="date-picker" />
+
+<Example id="date-picker" />
+
+A date picker is a trigger and a non-modal popup holding a calendar. Opening it focuses the
+calendar on the value (else today); a choice sets the value, closes the popup and returns the
+focus to the trigger, as Escape and an outside press do; Tab out closes it. A
+[Calendar](/docs/dates/calendar) rendered in the popup without a value of its own **binds** to
+the picker: it shows the picker's value, and its options (`min`, `max`, `isDateUnavailable`,
+`locale`, `firstDayOfWeek`, `visibleMonths`) come from the picker's Root. A
+[CalendarView](/docs/dates/calendar-view) or [presets](/docs/dates/calendar-preset) go in the
+popup too. `name` submits the date (ISO 8601), `required` refuses an empty one, `disabled`
+keeps the popup closed, `readOnly` opens it on a read-only calendar.
+
+`DatePicker.Template.Simple` is the common picker: the trigger shows the value in the calendar's
+locale (or `placeholder`), the popup a bound calendar. Every Root prop is forwarded; `className`,
+`id` and the trigger's name (`aria-label`, `aria-labelledby`) go to the trigger.
+
+## The look
+
+It adds no family. The trigger **is** a field row, as the select trigger: the `field.row` box
+with the `field-control` marker, so its focus ring is the field's. The popup is
+`popup.content`, the overlay every menu and popover uses, with no surface of its own, and the
+calendar inside is the `calendar` family's.
+
+## Bases
+
+**Primitives-backed.** Base UI has no date picker, so this is one shared file (`ui/date-picker.tsx`) that wraps
+Fragiola Primitives' `DatePicker` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name the trigger with `aria-labelledby` (the label's `id` and the trigger's own, so its name
+holds the value, as the example does) or `aria-label`, and pass `name`, `disabled` and `required`
+to the Root. On Fragiola Primitives the picker is also a `Field` control.
+
+**Inside a Base UI dialog.** On the Base UI base, the picker's popup is Fragiola Primitives'
+inside Base UI's focus trap: `scenarios/overlays/date-picker-in-dialog` checks that the popup
+takes the focus, that Escape and an outside press close only the popup, returning the focus to
+the trigger, and that the next Escape closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DatePicker.Root`: the picker's state, no element |
+| `Trigger` | primitive `DatePicker.Trigger` + `field.row` (the `field-control` marker): a calendar icon, then your content |
+| `Content` | primitive `DatePicker.Portal`, `.Positioner` and `.Popup` in one: `popup.content`, below the trigger at its start |
+| `Template.Simple` | the trigger with the value and a bound Calendar |

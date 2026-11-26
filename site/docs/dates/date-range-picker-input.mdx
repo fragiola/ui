@@ -1,0 +1,39 @@
+---
+title: "Date Range Picker Input"
+description: "A date range picker typed into two ends' segments."
+---
+
+<InstallCommand item="date-range-picker-input" />
+
+<Example id="date-range-picker-input" />
+
+A date range picker input types the range into two ends' segments in one row — one sequence
+across both, as the [Date Range Field](/docs/dates/date-range-field)'s — with a trigger that
+opens a bound [Range Calendar](/docs/dates/range-calendar). Each end is a `Segments` group with
+`range="start"` or `"end"` and a name of its own; a choice in the calendar fills both ends.
+
+## Bases
+
+**Primitives-backed.** Base UI has no typed date range picker, so this is one shared file (`ui/date-range-picker-input.tsx`) that wraps
+Fragiola Primitives' `DateRangePickerInput` on **both** bases, and the item depends on
+`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`DirectionProvider` on Base UI too, and `dir="rtl"` without one.
+
+On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
+it: name the trigger with `aria-labelledby` (the label's `id` and the trigger's own, so its name
+holds the value, as the example does) or `aria-label`, and pass `name`, `disabled` and `required`
+to the Root. On Fragiola Primitives the picker is also a `Field` control.
+
+**Inside a Base UI dialog.** On the Base UI base, the picker's popup is Fragiola Primitives'
+inside Base UI's focus trap: `scenarios/overlays/date-picker-in-dialog` checks that the popup
+takes the focus, that Escape and an outside press close only the popup, returning the focus to
+the trigger, and that the next Escape closes the dialog.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `DateRangePickerInput.Root` |
+| `Segments`, `Segment` | the Date Field's Input (`range`) and Segment |
+| `Separator` | the Date Range Field's dash |
+| `Trigger`, `Content` | the Date Picker Input's, over `DateRangePicker` |
