@@ -73,3 +73,10 @@ describe("cn() palette merge", () => {
         expect(result).toContain("rounded-sm");
     });
 });
+
+describe("cn() control height merge", () => {
+    it("lets a smaller box replace the control height", () => {
+        expect(cn("min-h-control px-3", "min-h-8")).toBe("px-3 min-h-8");
+        expect(cn("h-control", "h-8")).toBe("h-8");
+    });
+});

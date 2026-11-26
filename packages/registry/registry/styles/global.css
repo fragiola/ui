@@ -13,14 +13,22 @@
    spelled several ways by the libraries:
    - "current": the one item of a set that is where you are — the active tab
      (Base UI `data-active`), the current page (`aria-current`), the active
-     sidebar or navigation link (`data-active`);
+     sidebar or navigation link (`data-active`), and a pressed toggle (both
+     bases' `aria-pressed="true"`, not `data-pressed`, which a menu or
+     select trigger also carries while pressed: a toolbar's bold, a toggle
+     group's view);
    - "selected": items the user chose, any number of them — a tree row, a
      grid or table row (`data-selected`, `data-state="selected"`), the shown
      tab of a dockable tabset (`data-selected`).
    The foundation's `current` and `selected` members read these variants, so
    every set marks its item the same way whatever the library calls it. */
 @custom-variant current (
-    &:is([data-active], [aria-current="page"], [aria-current="true"])
+    &:is(
+        [data-active],
+        [aria-current="page"],
+        [aria-current="true"],
+        [aria-pressed="true"]
+    )
 );
 @custom-variant selected (&:is([data-selected], [data-state="selected"]));
 

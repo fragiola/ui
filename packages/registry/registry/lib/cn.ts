@@ -15,6 +15,10 @@ const customTwMerge = extendTailwindMerge<"palette">({
     extend: {
         theme: {
             radius: ["control", "pill"],
+            // The control height (`h-control`, `min-h-control`): a smaller
+            // box inside a toolbar, `cn("min-h-control", "min-h-8")`, keeps
+            // only `min-h-8`.
+            spacing: ["control"],
         },
         // The icon sizes (global.css `--size-icon*`): `cn("size-icon", "size-6")`
         // keeps only `size-6`.
