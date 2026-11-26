@@ -210,3 +210,57 @@ describe("the parity check", () => {
         ]);
     });
 });
+
+describe("every base's items", () => {
+    type Item = {
+        name: string;
+        files?: { path: string }[];
+        registryDependencies?: string[];
+    };
+    const EXTENSIONS = [".tsx", ".ts", "/index.tsx", "/index.ts"];
+
+    it("ship every #/ module their files import, themselves or through their registry dependencies", async () => {
+        const { items } = JSON.parse(
+            await readFile(path.join(ROOT, "registry.json"), "utf-8"),
+        ) as { items: Item[] };
+        const byName = new Map(items.map((item) => [item.name, item]));
+        const shipped = (name: string, seen = new Set<string>()): string[] => {
+            if (seen.has(name)) return [];
+            seen.add(name);
+            const item = byName.get(name);
+            if (!item) return [];
+            return [
+                ...(item.files ?? []).map((file) => file.path),
+                ...(item.registryDependencies ?? []).flatMap((dep) =>
+                    shipped(dep.replace(/^@fragiola\//, ""), seen),
+                ),
+            ];
+        };
+        const problems: string[] = [];
+        for (const base of BASES) {
+            for (const item of items) {
+                const available = new Set(shipped(item.name));
+                for (const file of item.files ?? []) {
+                    if (!/\.tsx?$/.test(file.path)) continue;
+                    const source = await readFile(
+                        resolveBaseFile(ROOT, base, file.path),
+                        "utf-8",
+                    );
+                    for (const [, specifier = ""] of source.matchAll(IMPORT)) {
+                        if (!specifier.startsWith("#/")) continue;
+                        const rest = specifier.slice(2);
+                        const found = EXTENSIONS.map(
+                            (ext) => `registry/${rest}${ext}`,
+                        ).some((candidate) => available.has(candidate));
+                        if (!found) {
+                            problems.push(
+                                `${base.name}: ${item.name} (${file.path}) imports ${specifier}, which neither it nor its registry dependencies ship`,
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        expect(problems).toEqual([]);
+    });
+});

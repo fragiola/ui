@@ -13,7 +13,13 @@ import { BASES, BASES_DIR, type Base } from "../bases.ts";
 // The package's tsconfig.json carries the default base's paths, for editors;
 // tests/bases.test.ts checks them. Erasable syntax only (Node type stripping).
 
-type TsConfig = { compilerOptions?: { paths?: Record<string, string[]> } };
+type TsConfig = {
+    compilerOptions?: { paths?: Record<string, string[]> };
+    exclude?: string[];
+};
+
+// The root tsconfig's exclude, which a package's `exclude` replaces.
+const ROOT_EXCLUDE = ["node_modules", "dist", ".next", ".turbo", "coverage"];
 
 const BASE_SEGMENT = new RegExp(`${BASES_DIR.replace("/", "\\/")}\\/[^/]+\\/`);
 const REGISTRY_SOURCES = /(^|\/)registry\/\*$/;
@@ -41,6 +47,18 @@ export function pathsForBase(
     return result;
 }
 
+/** The registry's sources folder, as the package's paths name it (`./registry`). */
+function registryDir(paths: Record<string, string[]>): string {
+    for (const targets of Object.values(paths)) {
+        for (const target of targets) {
+            if (REGISTRY_SOURCES.test(target) && !BASE_SEGMENT.test(target)) {
+                return target.replace(/\/\*$/, "");
+            }
+        }
+    }
+    return "./registry";
+}
+
 function main(): void {
     const cwd = process.cwd();
     const config = JSON.parse(
@@ -57,6 +75,15 @@ function main(): void {
                 {
                     extends: "./tsconfig.json",
                     compilerOptions: { paths: pathsForBase(paths, base) },
+                    // Another base's files belong to that base's program:
+                    // their `#/` imports resolve against it, not this one.
+                    exclude: [
+                        ...(config.exclude ?? ROOT_EXCLUDE),
+                        ...BASES.filter((other) => other !== base).map(
+                            (other) =>
+                                `${registryDir(paths)}/bases/${other.name}`,
+                        ),
+                    ],
                 },
                 null,
                 4,

@@ -72,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [base]
+        base: [primitives, base]
     env:
       FRAGIOLA_BASE: ${{ matrix.base }}
     steps:

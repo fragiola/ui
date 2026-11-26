@@ -36,6 +36,11 @@ export type Base = {
 
 export const BASES: Base[] = [
     {
+        name: "primitives",
+        title: "Fragiola Primitives",
+        dependencies: ["@fragiola/primitives-react@0.2.0"],
+    },
+    {
         name: "base",
         title: "Base UI",
         dependencies: ["@base-ui/react"],

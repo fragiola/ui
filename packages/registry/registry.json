@@ -297,7 +297,8 @@
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -376,7 +377,8 @@
                 "@fragiola/theme",
                 "@fragiola/cn",
                 "@fragiola/popup",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants", "lucide-react"],
             "files": [
@@ -397,7 +399,11 @@
             "type": "registry:ui",
             "title": "Dropdown Menu",
             "description": "A menu of actions triggered by a button. Declares only Root, Trigger, Content and SubContent with its own positioning defaults — everything else comes from the menu parts factory. No tone/variant/destructive prop; tone arrives as a palette class.",
-            "registryDependencies": ["@fragiola/menu", "@fragiola/popup"],
+            "registryDependencies": [
+                "@fragiola/menu",
+                "@fragiola/popup",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/dropdown-menu.tsx",
@@ -411,7 +417,11 @@
             "type": "registry:ui",
             "title": "Context Menu",
             "description": "A menu of actions triggered by right-click. Declares only Root, Trigger (with select-none — behavioural, not visual), Content and SubContent. Installing after dropdown-menu writes exactly one file — the shared families are already on disk.",
-            "registryDependencies": ["@fragiola/menu", "@fragiola/popup"],
+            "registryDependencies": [
+                "@fragiola/menu",
+                "@fragiola/popup",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/context-menu.tsx",
@@ -429,7 +439,8 @@
                 "@fragiola/theme",
                 "@fragiola/cn",
                 "@fragiola/text",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -450,7 +461,7 @@
             "type": "registry:ui",
             "title": "Input / Textarea / Numeric",
             "description": "One input component — Input, Textarea and Numeric. None carry a border, background, height, radius, focus ring, invalid state or theme; the box comes from the row. Numeric is the thesis test: a control written from scratch with no box styling. Includes Input.Template.Simple — a composition template with at most 7 props, no appearance props.",
-            "registryDependencies": ["@fragiola/field"],
+            "registryDependencies": ["@fragiola/field", "@fragiola/base"],
             "files": [
                 {
                     "path": "registry/atoms/fields/index.ts",
@@ -508,7 +519,11 @@
             "type": "registry:ui",
             "title": "Checkbox",
             "description": "A checkable box. Uses the choice family's root (the box) and indicator (the check icon). Base UI's Checkbox provides checked/unchecked/indeterminate states, keyboard and aria.",
-            "registryDependencies": ["@fragiola/choice", "@fragiola/field"],
+            "registryDependencies": [
+                "@fragiola/choice",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
             "dependencies": ["lucide-react"],
             "files": [
                 {
@@ -523,7 +538,11 @@
             "type": "registry:ui",
             "title": "Radio + RadioGroup",
             "description": "A checkable circle. Uses the choice family's root (the circle, rounded-full) and indicator (a filled dot). RadioGroup provides the group behaviour and keyboard navigation.",
-            "registryDependencies": ["@fragiola/choice", "@fragiola/field"],
+            "registryDependencies": [
+                "@fragiola/choice",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/radio.tsx",
@@ -537,7 +556,11 @@
             "type": "registry:ui",
             "title": "Switch",
             "description": "A toggle. Uses the choice family's root (the track, w-9 h-5 rounded-full) and control (the thumb that slides). data-checked fills the track with palette-base.",
-            "registryDependencies": ["@fragiola/choice", "@fragiola/field"],
+            "registryDependencies": [
+                "@fragiola/choice",
+                "@fragiola/field",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/switch.tsx",
@@ -554,7 +577,8 @@
             "registryDependencies": [
                 "@fragiola/field",
                 "@fragiola/popup",
-                "@fragiola/menu"
+                "@fragiola/menu",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -575,7 +599,8 @@
                 "@fragiola/cn",
                 "@fragiola/text",
                 "@fragiola/clickable",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants", "lucide-react"],
             "files": [
@@ -599,7 +624,8 @@
             "registryDependencies": [
                 "@fragiola/layer",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -618,7 +644,8 @@
             "registryDependencies": [
                 "@fragiola/layer",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/base"
             ],
             "files": [
                 {
@@ -636,7 +663,8 @@
             "registryDependencies": [
                 "@fragiola/layer",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -676,7 +704,11 @@
             "type": "registry:ui",
             "title": "Tooltip",
             "description": "A transient text label that appears on hover or focus. Composes popup.tooltip — a new member of the popup family, not a variant of popup.content. Inverted palette (accent as background, base as text), no border, no shadow, compact padding, fade-only animation. Provider coordinates delay between siblings.",
-            "registryDependencies": ["@fragiola/popup"],
+            "registryDependencies": [
+                "@fragiola/popup",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/tooltip.tsx",
@@ -693,7 +725,8 @@
             "registryDependencies": [
                 "@fragiola/popup",
                 "@fragiola/text",
-                "@fragiola/clickable"
+                "@fragiola/clickable",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -726,7 +759,9 @@
             "description": "A group of expand/collapse items with coordination. Composes the disclosure family (trigger, panel, content). Declares only Root, Item and Header — the coordination points. openMultiple controls whether one or many items can be open. The trigger is a group; put a chevron inside with group-data-[panel-open]:rotate-180.",
             "registryDependencies": [
                 "@fragiola/disclosure",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/base"
             ],
             "files": [
                 {
@@ -743,7 +778,9 @@
             "description": "A single expand/collapse section. Composes the disclosure family (trigger, panel, content). An accordion is a group of collapsibles with coordination; a collapsible is one section on its own. Both share the same trigger, panel and content — the zero-variant rule is preserved.",
             "registryDependencies": [
                 "@fragiola/disclosure",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/base"
             ],
             "files": [
                 {
@@ -811,7 +848,9 @@
                 "@fragiola/theme",
                 "@fragiola/cn",
                 "@fragiola/track",
-                "@fragiola/text"
+                "@fragiola/text",
+                "@fragiola/field",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -833,7 +872,8 @@
                 "@fragiola/track",
                 "@fragiola/text",
                 "@fragiola/field",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -852,7 +892,8 @@
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["tailwind-variants"],
             "files": [
@@ -872,7 +913,8 @@
                 "@fragiola/popup",
                 "@fragiola/text",
                 "@fragiola/clickable",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -913,7 +955,8 @@
                 "@fragiola/popup",
                 "@fragiola/menu",
                 "@fragiola/clickable",
-                "@fragiola/text"
+                "@fragiola/text",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react"],
             "files": [
@@ -948,7 +991,11 @@
             "type": "registry:ui",
             "title": "Avatar",
             "description": "A profile picture with a fallback. Uses Base UI primitive for the loading-status state machine. No family — just palette roles and layout. Size is controlled by the consumer via className (default size-10).",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/avatar.tsx",
@@ -977,7 +1024,11 @@
             "type": "registry:ui",
             "title": "Separator",
             "description": "A visual divider. Uses Base UI primitive for ARIA (role=separator, aria-orientation). No family — the menu family separator carries menu spacing. This separator is generic: bg-palette-line (a role) + orientation from primitive. Horizontal: h-px w-full. Vertical: h-full w-px.",
-            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
             "files": [
                 {
                     "path": "registry/ui/separator.tsx",
@@ -1005,7 +1056,8 @@
                 "@fragiola/input",
                 "@fragiola/separator",
                 "@fragiola/skeleton",
-                "@fragiola/foundation"
+                "@fragiola/foundation",
+                "@fragiola/base"
             ],
             "dependencies": ["lucide-react", "tailwind-variants"],
             "files": [
