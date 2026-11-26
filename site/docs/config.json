@@ -361,6 +361,14 @@
                 {
                     "label": "Sidebar",
                     "path": "navigation/sidebar"
+                },
+                {
+                    "label": "Steps",
+                    "path": "navigation/steps"
+                },
+                {
+                    "label": "Link",
+                    "path": "navigation/link"
                 }
             ]
         },
@@ -407,6 +415,10 @@
                 {
                     "label": "Scroll Area",
                     "path": "display/scroll-area"
+                },
+                {
+                    "label": "Carousel",
+                    "path": "display/carousel"
                 }
             ]
         },

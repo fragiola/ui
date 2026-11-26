@@ -855,6 +855,37 @@ export const examples: Example[] = [
         height: 640,
         load: () => import("./sidebar.tsx"),
     },
+    {
+        id: "steps",
+        title: "Steps",
+        description:
+            "A workspace setup in three linear steps — complete, current and to come — whose next step opens once the current one is valid, then an order's steps vertical.",
+        level: "navigation",
+        order: 6,
+        features: [
+            "Steps.Template.Simple",
+            "linear",
+            "isStepValid",
+            "orientation",
+        ],
+        docs: "/docs/navigation/steps",
+        layout: "flow",
+        height: 470,
+        load: () => import("./steps.tsx"),
+    },
+    {
+        id: "link",
+        title: "Link",
+        description:
+            "A docs page's navigation with the current page and a disabled link, in Text.Link's look.",
+        level: "navigation",
+        order: 7,
+        features: ["Link", "current", "disabled", "render"],
+        docs: "/docs/navigation/link",
+        layout: "flow",
+        height: 90,
+        load: () => import("./link.tsx"),
+    },
 
     // ─── Display ────────────────────────────────────────────────────────────
     {
@@ -1012,6 +1043,24 @@ export const examples: Example[] = [
         layout: "flow",
         height: 360,
         load: () => import("./scroll-area.tsx"),
+    },
+    {
+        id: "carousel",
+        title: "Carousel",
+        description:
+            "Featured projects a slide a page with arrows, dots and a rotation that stops on focus, then two slides a page; it swipes, drags and runs right to left in RTL.",
+        level: "display",
+        order: 11,
+        features: [
+            "Carousel.Viewport",
+            "Carousel.Indicator",
+            "slidesPerPage",
+            "defaultPlaying",
+        ],
+        docs: "/docs/display/carousel",
+        layout: "flow",
+        height: 660,
+        load: () => import("./carousel.tsx"),
     },
     // ─── Special ────────────────────────────────────────────────────────────
     {

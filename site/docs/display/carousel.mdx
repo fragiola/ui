@@ -1,0 +1,33 @@
+---
+title: "Carousel"
+description: "Slides shown a page at a time, with arrows, dots and a rotation that stops on focus. Native scrolling with snapping, swipe, mouse drag and RTL."
+---
+
+<InstallCommand item="carousel" />
+
+<Example id="carousel" />
+
+## Behaviour
+
+The slides scroll natively with CSS snapping: a swipe, a trackpad or a mouse drag scroll them, and a page change (the arrows, a dot) scrolls to its first slide. `slidesPerPage` shows several side by side and `spacing` sets the gap. With `defaultPlaying` the slides rotate every `delay`; the rotation pauses under the pointer and **stops** when the focus enters the carousel, until the play button starts it again (the APG). The slides out of view are inert. In RTL the first slide is on the right and Next goes left; the chevrons mirror. Name the carousel (`aria-label`), the slides ("1 of 4") and the dots.
+
+## The look
+
+- `Carousel.Viewport` is the frame the slides scroll in and the arrows sit on; `ItemGroup` is the scroller, `rounded-lg`, with its ring inside when it is the tab stop.
+- `PrevTrigger` and `NextTrigger` are small outline icon buttons on the raised surface, over the slides' inline ends, dimmed at an end (`disabled`).
+- An `Indicator` is a dot in a 24px target: the `rail` at rest and `checked` (the `ring`) on the current page — "on" is `ring` everywhere.
+- `AutoplayTrigger` is a ghost icon button (Pause, Play), named for assistive technology.
+
+## Bases
+
+Primitives-backed: Base UI has no carousel, so this one shared file wraps Fragiola Primitives' on every base, with the same behaviour on both. `PrimitivesDirection` hands it the base's direction.
+
+## Parts
+
+| Part | Source |
+|---|---|
+| `Root` | primitive `Root` |
+| `Viewport` | a `div`, the arrows' frame |
+| `ItemGroup` / `Item` | primitive parts + `foundation.focusInset()` |
+| `PrevTrigger` / `NextTrigger` / `AutoplayTrigger` | `Clickable.Button` via `render` |
+| `IndicatorGroup` / `Indicator` | primitive parts; the dot `foundation.rail()` + `checked()` |
