@@ -130,6 +130,16 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "segmented-control",
         reason: "Base UI has no segmented control",
     },
+    {
+        file: "registry/ui/password-input.tsx",
+        entry: "password-input",
+        reason: "Base UI has no password input",
+    },
+    {
+        file: "registry/ui/search-field.tsx",
+        entry: "search-field",
+        reason: "Base UI has no search field",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */
