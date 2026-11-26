@@ -9,6 +9,12 @@
 #                     version of examples/react), which ships Chromium and its system packages,
 #                     so `check:embeds` installs no browser. Upgrading Playwright changes the
 #                     tag in the same PR; site/tests/ci-workflow.test.ts fails otherwise.
+#   Bases             The registry is authored per base (packages/registry/bases.ts): the
+#                     examples app and the playground build on each base (FRAGIOLA_BASE), and
+#                     `check:embeds` runs on each, in the same Playwright image. The matrix
+#                     lists every base; site/tests/ci-workflow.test.ts fails otherwise.
+#                     Checks covers the rest per base: `pnpm typecheck` checks each base,
+#                     `pnpm build` and `pnpm registry:smoke` build and install every base.
 #   Trigger www build after a push to main passes, asks fragiola/www to rebuild fragiola.com
 #                     (a repository_dispatch of type "project-updated"). It needs the
 #                     WWW_DISPATCH_TOKEN secret: a fine-grained token with Contents: read &
@@ -54,6 +60,38 @@ jobs:
 
       - run: pnpm build
 
+      # Every item of every base, installed with the real shadcn CLI offline.
+      - run: pnpm registry:smoke
+
+  bases:
+    name: Bases (${{ matrix.base }})
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user 1001
+    strategy:
+      fail-fast: false
+      matrix:
+        base: [base]
+    env:
+      FRAGIOLA_BASE: ${{ matrix.base }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter examples-react --filter playground build
+
+      # Every example in a real iframe, on this base.
+      - run: pnpm --filter examples-react check:embeds
+
   site-export:
     name: Site export
     runs-on: ubuntu-latest
@@ -76,14 +114,10 @@ jobs:
       # against the contract; any violation exits non-zero.
       - run: pnpm site:export --base /ui --out "$RUNNER_TEMP/site-export"
 
-      # Every example in a real iframe: ready/resize/theme messages, popups
-      # that fit their frame, no console errors.
-      - run: pnpm --filter examples-react check:embeds
-
   trigger-www-build:
     name: Trigger www build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [checks, site-export]
+    needs: [checks, bases, site-export]
     runs-on: ubuntu-latest
     env:
       WWW_DISPATCH_TOKEN: ${{ secrets.WWW_DISPATCH_TOKEN }}
