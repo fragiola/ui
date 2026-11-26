@@ -329,6 +329,19 @@ describe("the bases guard", () => {
         ]);
     });
 
+    it("fails on a listed file that also imports an entry Base UI ships", () => {
+        expect(
+            run([
+                [
+                    "ui/segmented-control.tsx",
+                    `${segmented}\nimport { mergeProps } from "@fragiola/primitives-react/render";\nimport { Toggle } from "@fragiola/primitives-react/toggle";`,
+                ],
+            ]),
+        ).toEqual([
+            "registry/ui/segmented-control.tsx imports @fragiola/primitives-react/toggle, which Base UI ships: compose the registry's own component instead",
+        ]);
+    });
+
     it("lets the bridge import only the direction entry", () => {
         const bridge = {
             file: "registry/lib/primitives-backed.tsx",

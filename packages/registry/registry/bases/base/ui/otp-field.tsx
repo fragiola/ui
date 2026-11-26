@@ -61,6 +61,7 @@ function OTPFieldSeparator({
     return (
         <OTPFieldPrimitive.Separator
             data-slot="otp-field-separator"
+            orientation="vertical"
             className={cn(
                 "h-0.5 w-2.5 shrink-0 rounded-full bg-palette-line",
                 className as string,

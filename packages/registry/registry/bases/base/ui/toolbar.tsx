@@ -114,7 +114,7 @@ function ToolbarGroup({
         <ToolbarPrimitive.Group
             data-slot="toolbar-group"
             className={cn(
-                "flex items-center gap-1 in-data-[orientation=vertical]:flex-col",
+                "flex items-center gap-1 data-[orientation=vertical]:flex-col",
                 className as string,
             )}
             {...props}

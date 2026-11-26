@@ -59,11 +59,7 @@ export default function PasswordInputDemo() {
                     states
                 </span>
                 <Field.Row className="max-w-sm opacity-50">
-                    <PasswordInput.Root
-                        defaultValue="locked"
-                        disabled
-                        aria-label="Password, disabled"
-                    >
+                    <PasswordInput.Root defaultValue="locked" disabled>
                         <PasswordInput.Input aria-label="Password, disabled" />
                         <PasswordInput.VisibilityTrigger aria-label="Show password" />
                     </PasswordInput.Root>

@@ -14,7 +14,8 @@ import {
 // - A shared file imports no base library, except the primitives-backed
 //   files listed in bases.ts, which import Fragiola Primitives on every base.
 // - A listed component wraps a Fragiola Primitives entry Base UI does not
-//   ship (its `entry`); one Base UI ships is a per-base pair instead. The
+//   ship (its `entry`); one Base UI ships is a per-base pair instead. Beside
+//   it, it imports no entry Base UI ships (only `render` and `direction`). The
 //   bridge (no `entry`) imports only the direction entry.
 //
 // Pure: the test feeds it the registry's files, and planted ones.
@@ -23,6 +24,9 @@ import {
 const IMPORT = /(?:from\s+|import\s*\(\s*|import\s+)["']([^"']+)["']/g;
 
 const PRIMITIVES_PACKAGE = "@fragiola/primitives-react";
+
+// Entries that are no component: a listed file may import them beside its own.
+const SHARED_ENTRIES = new Set(["render", "direction"]);
 
 /** The specifiers a source imports (`@fragiola/primitives-react/toggle`). */
 export function importSpecifiers(source: string): string[] {
@@ -117,6 +121,17 @@ export function baseImportProblems({
         if (baseUiEntries.has(entry.entry)) {
             problems.push(
                 `registry/${relative}: Base UI ships "${entry.entry}", so it is a per-base pair, not primitives-backed`,
+            );
+        }
+        const served = entries.filter(
+            (name) =>
+                name !== entry.entry &&
+                !SHARED_ENTRIES.has(name) &&
+                baseUiEntries.has(name),
+        );
+        if (served.length) {
+            problems.push(
+                `registry/${relative} imports ${served.map((name) => `${PRIMITIVES_PACKAGE}/${name}`).join(", ")}, which Base UI ships: compose the registry's own component instead`,
             );
         }
         if (!entries.includes(entry.entry)) {

@@ -32,6 +32,17 @@ import {
 //              `current`'s text and weight over it.
 // No variant, no size: colour is the palette in scope.
 
+type AnyRef = React.Ref<unknown> | undefined;
+
+function mergeRefs(...refs: unknown[]): React.RefCallback<unknown> {
+    return (node) => {
+        for (const ref of refs as AnyRef[]) {
+            if (typeof ref === "function") ref(node);
+            else if (ref) (ref as React.RefObject<unknown>).current = node;
+        }
+    };
+}
+
 const INNER_RADIUS = "rounded-[max(0px,calc(var(--radius-control)-2px))]";
 
 function SegmentedControlRoot({
@@ -109,7 +120,7 @@ function SegmentedControlItem({
                 itemProps: Record<string, unknown>,
                 state: { checked: boolean },
             ) => {
-                const active = {
+                const active: Record<string, unknown> = {
                     ...itemProps,
                     "data-active": state.checked ? "" : undefined,
                 };
@@ -119,12 +130,15 @@ function SegmentedControlItem({
                     )(active, state);
                 }
                 if (React.isValidElement(render)) {
+                    const own = render.props as Record<string, unknown>;
+                    // Both refs: the primitive's registers the segment (the
+                    // roving focus, the indicator), the consumer's is theirs.
                     return React.cloneElement(
-                        render,
-                        mergeProps(
-                            active,
-                            render.props as Record<string, unknown>,
-                        ),
+                        render as React.ReactElement<Record<string, unknown>>,
+                        {
+                            ...mergeProps(active, own),
+                            ref: mergeRefs(active.ref, own.ref),
+                        },
                     );
                 }
                 return <button type="button" {...active} />;

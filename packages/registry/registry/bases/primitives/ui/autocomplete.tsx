@@ -78,6 +78,7 @@ function AutocompleteInput({
 
 function AutocompleteTrigger({
     className,
+    "aria-label": ariaLabel = "Show suggestions",
     ...props
 }: PrimitiveProps<typeof AutocompletePrimitive.Trigger, "button">) {
     return (
@@ -88,7 +89,7 @@ function AutocompleteTrigger({
                     variant="ghost"
                     shape="square"
                     size="xs"
-                    aria-label="Show suggestions"
+                    aria-label={ariaLabel}
                 />
             }
             className={cn(className as string)}
@@ -101,6 +102,7 @@ function AutocompleteTrigger({
 
 function AutocompleteClear({
     className,
+    "aria-label": ariaLabel = "Clear",
     ...props
 }: PrimitiveProps<typeof AutocompletePrimitive.Clear, "button">) {
     return (
@@ -111,7 +113,7 @@ function AutocompleteClear({
                     variant="ghost"
                     shape="square"
                     size="xs"
-                    aria-label="Clear"
+                    aria-label={ariaLabel}
                 />
             }
             className={cn(className as string)}

@@ -73,6 +73,7 @@ function AutocompleteInput({
 
 function AutocompleteTrigger({
     className,
+    "aria-label": ariaLabel = "Show suggestions",
     ...props
 }: React.ComponentProps<typeof AutocompletePrimitive.Trigger>) {
     return (
@@ -83,7 +84,7 @@ function AutocompleteTrigger({
                     variant="ghost"
                     shape="square"
                     size="xs"
-                    aria-label="Show suggestions"
+                    aria-label={ariaLabel}
                 />
             }
             className={cn(className as string)}
@@ -96,6 +97,7 @@ function AutocompleteTrigger({
 
 function AutocompleteClear({
     className,
+    "aria-label": ariaLabel = "Clear",
     ...props
 }: React.ComponentProps<typeof AutocompletePrimitive.Clear>) {
     return (
@@ -106,7 +108,7 @@ function AutocompleteClear({
                     variant="ghost"
                     shape="square"
                     size="xs"
-                    aria-label="Clear"
+                    aria-label={ariaLabel}
                 />
             }
             className={cn(className as string)}

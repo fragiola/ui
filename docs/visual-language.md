@@ -48,7 +48,10 @@ its value in `accent`. That covers:
 - the field row;
 - the select and combobox triggers;
 - an outline button;
-- an unchecked checkbox and radio.
+- an unchecked checkbox and radio;
+- a slot of an OTP field: each slot is one character's box, so the field's box sits on the
+  slot's input itself (`field.row` with the `field-control` marker), the one input that is its
+  own box, as a checkbox's mark is.
 
 It has the height `h-control`, the radius `rounded-control` (capped at half the height
 for the field) and inner padding `px-3`.
