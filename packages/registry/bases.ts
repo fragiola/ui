@@ -375,6 +375,11 @@ export const PRIMITIVES_BACKED: PrimitivesBackedFile[] = [
         entry: "clipboard",
         reason: "Base UI has no clipboard",
     },
+    {
+        file: "registry/ui/aspect-ratio.tsx",
+        entry: "aspect-ratio",
+        reason: "Base UI has no aspect ratio",
+    },
 ];
 
 /** What a primitives-backed item depends on, on every base. */

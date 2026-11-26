@@ -209,6 +209,10 @@ const UTILITIES: Record<string, [property: string, value: string]> = {
         "animation",
         "pulse calc(2s * var(--motion-scale, 1))\n        cubic-bezier(0.4, 0, 0.6, 1) infinite",
     ],
+    "animate-spin": [
+        "animation",
+        "spin calc(1s * var(--motion-scale, 1)) linear infinite",
+    ],
     // The handle's mark (families/handle.ts) reads both handle tokens.
     "opacity-\\[var\\(--handle-rest\\,0\\)\\]": [
         "opacity",

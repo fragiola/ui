@@ -88,6 +88,7 @@
     --transition-duration-1000: calc(1000ms * var(--motion-scale, 1));
     --animate-pulse: pulse calc(2s * var(--motion-scale, 1))
         cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --animate-spin: spin calc(1s * var(--motion-scale, 1)) linear infinite;
 
     /* Elevation (the `data-elevation` axis). Tailwind INLINES a shadow's
        value into its utility (it rewrites the colours to inject

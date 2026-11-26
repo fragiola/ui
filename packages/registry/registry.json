@@ -1547,6 +1547,25 @@
             ]
         },
         {
+            "name": "button-group",
+            "type": "registry:ui",
+            "title": "Button Group",
+            "description": "Clickables joined into one row (or a column): every child but the first loses its start radius and start border, every child but the last its end radius, with logical properties, so the join mirrors in RTL; a focused child rises above its neighbours. Separator is a line rule between solid buttons. A role group with no keyboard behaviour: each button stays a tab stop (a Toolbar is one tab stop with arrow keys). No primitive, no family. Markup only, the same file on every base.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/clickable"
+            ],
+            "dependencies": [],
+            "files": [
+                {
+                    "path": "registry/ui/button-group.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/button-group.tsx"
+                }
+            ]
+        },
+        {
             "name": "calendar",
             "type": "registry:ui",
             "title": "Calendar",
@@ -2419,6 +2438,55 @@
                     "path": "registry/ui/featured-icon.tsx",
                     "type": "registry:ui",
                     "target": "@ui/featured-icon.tsx"
+                }
+            ]
+        },
+        {
+            "name": "spinner",
+            "type": "registry:ui",
+            "title": "Spinner",
+            "description": "Something is loading and its length is unknown: a circle with a gap that turns, role status named Loading. It follows the motion axis (animate-spin is one turn per second times --motion-scale, still at none and under prefers-reduced-motion) and takes the text colour and the icon size it sits in. No primitive, no family. Markup only, the same file on every base.",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "dependencies": ["lucide-react"],
+            "files": [
+                {
+                    "path": "registry/ui/spinner.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/spinner.tsx"
+                }
+            ]
+        },
+        {
+            "name": "kbd",
+            "type": "registry:ui",
+            "title": "Kbd",
+            "description": "A key, or a combination of keys, to press: Kbd and KbdGroup. The visual language's keyboard-hint type (text-xs font-medium) on a key cap drawn with roles: a line stroke around a soft adornment, its text in accent. A menu's or a Command's shortcut stays the menu family's shortcut. No primitive, no family. Markup only, the same file on every base.",
+            "registryDependencies": ["@fragiola/theme", "@fragiola/cn"],
+            "dependencies": [],
+            "files": [
+                {
+                    "path": "registry/ui/kbd.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/kbd.tsx"
+                }
+            ]
+        },
+        {
+            "name": "aspect-ratio",
+            "type": "registry:ui",
+            "title": "Aspect Ratio",
+            "description": "Keeps its content at a width-to-height ratio (ratio, 1 by default): an image, a video, a map. It clips its content, so a radius on it rounds the image inside. Primitives-backed: Base UI has no aspect ratio, so one shared file wraps Fragiola Primitives' on every base. No family.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/primitives-backed"
+            ],
+            "dependencies": [],
+            "files": [
+                {
+                    "path": "registry/ui/aspect-ratio.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/aspect-ratio.tsx"
                 }
             ]
         },
