@@ -387,7 +387,7 @@
             "name": "menu",
             "type": "registry:lib",
             "title": "menu family + parts factory",
-            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, select, combobox and sidebar.",
+            "description": "The option list family — item, selectableItem, label, separator, shortcut, subTrigger, itemIndicator, a menubar's barItem, and the navigation members navItem and navSubItem (lit by hover, data-active and a focus-visible ring instead of focus). Zero variants. Plus createMenuParts(P): a factory that takes a Base UI menu namespace and returns the styled wrappers (Item, SelectableItem, Label, Separator, Group, Shortcut, CheckboxItem, RadioGroup, RadioItem, SubTrigger, SubContent, Content, Sub). Shared by dropdown-menu, context-menu, menubar, select, combobox and sidebar.",
             "registryDependencies": [
                 "@fragiola/theme",
                 "@fragiola/cn",
@@ -442,6 +442,26 @@
                     "path": "registry/ui/context-menu.tsx",
                     "type": "registry:ui",
                     "target": "@ui/context-menu.tsx"
+                }
+            ]
+        },
+        {
+            "name": "menubar",
+            "type": "registry:ui",
+            "title": "Menubar",
+            "description": "An application's bar of menus (File, Edit, View), the APG menubar: one tab stop, the arrows move along the bar and from one open menu to the next, hovering switches the open menu. Its menus come from the menu parts factory injected with the Menu namespace, as Dropdown Menu's; Root is a foundation panel, Trigger the menu family's barItem (lit by hover and its open menu). Installing after dropdown-menu writes one file.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/menu",
+                "@fragiola/popup",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/menubar.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/menubar.tsx"
                 }
             ]
         },
@@ -749,6 +769,68 @@
                     "path": "registry/ui/popover.tsx",
                     "type": "registry:ui",
                     "target": "@ui/popover.tsx"
+                }
+            ]
+        },
+        {
+            "name": "hover-card",
+            "type": "registry:ui",
+            "title": "Hover Card",
+            "description": "A preview of what is behind a link, shown while the link is hovered or keyboard-focused (Base UI's Preview Card): not modal, never takes the focus, stays open while hovered. Composes popup.content with a card's width and padding; delay and closeDelay are the Root's on every base.",
+            "registryDependencies": [
+                "@fragiola/popup",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/hover-card.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/hover-card.tsx"
+                }
+            ]
+        },
+        {
+            "name": "toast",
+            "type": "registry:ui",
+            "title": "Toast",
+            "description": "Brief notifications in a stack at the page's corner: announced in live regions, closed by their timer, a swipe, Escape or Close, reached with F6; the queue lives outside React (createToastManager) or in the Provider (useToastManager). Ships the toast family: a neutral overlay card, collapsed into a pile and spread while hovered or focused, its status the palette class on its Icon, Title in the label type, Description secondary, Actions and a Close. Toast.Template.Simple renders the whole stack from the queue. No variants.",
+            "registryDependencies": [
+                "@fragiola/theme",
+                "@fragiola/cn",
+                "@fragiola/foundation",
+                "@fragiola/clickable",
+                "@fragiola/base"
+            ],
+            "dependencies": ["lucide-react", "tailwind-variants"],
+            "files": [
+                {
+                    "path": "registry/families/toast.tsx",
+                    "type": "registry:lib",
+                    "target": "@components/families/toast.tsx"
+                },
+                {
+                    "path": "registry/ui/toast.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/toast.tsx"
+                }
+            ]
+        },
+        {
+            "name": "scroll-area",
+            "type": "registry:ui",
+            "title": "Scroll Area",
+            "description": "A box that scrolls natively (keyboard, wheel, touch, find in page) with thin scrollbars of its own: a transparent track shown while hovered or scrolling, a pill thumb in the foundation's rail; the viewport's ring is focusInset when it is a tab stop. ScrollArea.Template.Simple is the viewport, its content and both scrollbars.",
+            "registryDependencies": [
+                "@fragiola/foundation",
+                "@fragiola/cn",
+                "@fragiola/base"
+            ],
+            "files": [
+                {
+                    "path": "registry/ui/scroll-area.tsx",
+                    "type": "registry:ui",
+                    "target": "@ui/scroll-area.tsx"
                 }
             ]
         },

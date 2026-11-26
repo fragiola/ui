@@ -1,5 +1,5 @@
 // Family `menu` — the option list (item, selectableItem, label, separator,
-// group, shortcut, sub-trigger, item-indicator, navItem, navSubItem).
+// group, shortcut, sub-trigger, item-indicator, barItem, navItem, navSubItem).
 // Origin: ~12 parts repeated across dropdown/context/menubar/select/combobox,
 // and the same list rebuilt a third time by shadcn's sidebar.
 //
@@ -115,6 +115,26 @@ const itemIndicator = tv({
     base: "pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center",
 });
 
+// barItem — an item of a menubar (Menubar.Trigger): the button that opens
+// one of the bar's menus. The same row as the popup items, a step taller,
+// in the label weight, lit by hover and by its open menu
+// (`data-popup-open`, as `subTrigger`). The bar packs its items, so the ring
+// is drawn inside (`focusInset`); no `outline-none`, which would swallow it.
+// The arrows move the focus along the bar without opening a menu, so focus
+// alone is the ring, never the fill.
+const barItem = tv({
+    extend: itemSkeleton,
+    base: [
+        foundation.hover(),
+        foundation.focusInset(),
+        `
+        h-8 cursor-default px-2.5 font-medium
+        hover:text-palette-contrast
+        data-popup-open:bg-palette-soft data-popup-open:text-palette-contrast
+    `,
+    ],
+});
+
 // navItem — an item of a navigation list (Sidebar.MenuButton). Lit by hover,
 // by `data-active` (the current page, which also takes the label weight) and
 // by an open MENU it triggers (a team switcher is a navigation item that
@@ -159,6 +179,7 @@ export const menu = {
     shortcut,
     subTrigger,
     itemIndicator,
+    barItem,
     navItem,
     navSubItem,
 };
