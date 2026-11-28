@@ -222,7 +222,7 @@ export function createMenuParts(P: MenuNamespace) {
 
     function SubContent({
         className,
-        side = "right",
+        side = "inline-end",
         ...props
     }: React.ComponentProps<typeof Content>) {
         return (

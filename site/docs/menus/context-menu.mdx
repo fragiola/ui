@@ -13,6 +13,10 @@ description: "A menu of actions opened by a right-click. It shares the `popup` a
 
 The `select-none` on `ContextMenu.Trigger` stops text selection on right-click. It is behavioural, not visual, so it does not come from a family — keep the distinction.
 
+## Positioning
+
+The menu opens at the pointer, on its **inline end** (`side="inline-end"`, `align="start"`): to the right of the pointer in a left-to-right page, to the left in a right-to-left one. A submenu opens on the inline end of its trigger too. Both bases honour the logical side.
+
 ## Distribution proof
 
 Installing `dropdown-menu` pulls `menu` and `popup`. Installing `context-menu` afterwards writes **one file** — `context-menu.tsx` itself. The shared families are already on disk. This is the distribution-level proof that the duplication claim holds.
