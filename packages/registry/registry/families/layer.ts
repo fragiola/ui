@@ -56,7 +56,12 @@ import { foundation } from "./foundation";
 // attribute that lives for ONE frame, so the animation was cancelled as soon
 // as it started. Keyframes are the right tool where the state persists
 // (`data-open` in popup.content); for starting/ending markers it is always
-// a transition. Duration and easing are declared here so every member of
+// a transition. A keyframe exit also holds its last frame
+// (`data-closed:fill-mode-forwards`): tw-animate-css fills with `none`, so
+// once the exit ends the element is back at opacity 1 until the base
+// unmounts it, a frame later on Fragiola Primitives (Epic #186). A
+// transition needs nothing: it keeps its ending style until unmount.
+// Duration and easing are declared here so every member of
 // the family shares one tempo; the component adds its own motion (the
 // dialog scales, the drawer slides) on top of the family's fade.
 
