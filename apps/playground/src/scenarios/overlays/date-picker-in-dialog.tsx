@@ -9,7 +9,9 @@ import { Field } from "#/components/ui/field";
 // trap (on the calendar's focused date), the arrows must move in the grid,
 // a choice must close the popup and return the focus to the trigger, and
 // Escape must close the popup first, then the dialog. On the Fragiola
-// Primitives base both are one library: the reference.
+// Primitives base both are one library: since Fragiola Primitives 0.3.0 the
+// calendar takes the focus once its popup is a layer of the dialog, with no
+// workaround in the UI (Epic #184).
 export default function DatePickerInDialog() {
     return (
         <div className="palette-surface flex flex-col gap-3 rounded-lg border border-palette-line bg-palette-base p-6">

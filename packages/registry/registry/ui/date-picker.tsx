@@ -65,36 +65,6 @@ function triggerClass(className: unknown): string {
     );
 }
 
-/**
- * The popup's focus, once it has opened. The bound calendar focuses its date
- * while it mounts, a layout effect that runs before the popup registers as
- * an overlay; inside Fragiola Primitives' own Dialog, the dialog's focus trap
- * takes that focus back (to its first tabbable) — a primitive's ordering,
- * which the UI absorbs here (Base UI's dialog keeps it). A frame later, the
- * popup is a layer of the dialog: if the focus is not in it, it goes to the
- * grid's focused cell, where the spec puts it. A hidden mark inside the
- * popup does it on mount (a ref on the Popup itself would be merged anew on
- * every render, restarting its overlay session).
- */
-function FocusSettler() {
-    const mark = React.useRef<HTMLSpanElement>(null);
-    React.useEffect(() => {
-        const popup = mark.current?.parentElement;
-        const view = popup?.ownerDocument.defaultView;
-        if (!popup || !view) return undefined;
-        const frame = view.requestAnimationFrame(() => {
-            const active = popup.ownerDocument.activeElement;
-            if (popup.closest("[hidden]")) return;
-            if (active && popup.contains(active)) return;
-            popup
-                .querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')
-                ?.focus({ preventScroll: true });
-        });
-        return () => view.cancelAnimationFrame(frame);
-    }, []);
-    return <span ref={mark} hidden />;
-}
-
 /** The styled Trigger and Content over a picker namespace's parts. */
 function createPickerParts(
     N: { Trigger: Part; Portal: Part; Positioner: Part; Popup: Part },
@@ -160,7 +130,6 @@ function createPickerParts(
                         {...props}
                     >
                         {children}
-                        <FocusSettler />
                     </Primitive.Popup>
                 </Primitive.Positioner>
             </Primitive.Portal>
