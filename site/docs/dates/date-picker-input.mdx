@@ -22,14 +22,14 @@ the Date Picker's, aligned to the trigger's end.
 
 **Primitives-backed.** Base UI has no typed date picker, so this is one shared file (`ui/date-picker-input.tsx`) that wraps
 Fragiola Primitives' `DatePickerInput` on **both** bases, and the item depends on
-`@fragiola/primitives-react@0.2.0` on both. It follows the direction of the base's
+`@fragiola/primitives-react@0.3.0` on both. It follows the direction of the base's
 `DirectionProvider` on Base UI too, and `dir="rtl"` without one.
 
 On Base UI, the registry's `Field` is Base UI's, and a Fragiola Primitives picker does not join
 it: name `Segments` with `aria-labelledby` (the label's `id`, as the example does), and pass `name`, `disabled` and `required`
 to the Root. On Fragiola Primitives the picker is also a `Field` control.
 
-**Inside a Base UI dialog.** The popup is the Date Picker's, whose probe
+**Inside a dialog.** The popup is the Date Picker's, whose probe
 (`scenarios/overlays/date-picker-in-dialog`) checks it inside the base's Dialog: the popup takes
 the focus, Escape and a choice close only the popup and return the focus to the trigger, and the
 next Escape closes the dialog.

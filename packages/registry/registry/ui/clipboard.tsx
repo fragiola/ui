@@ -29,11 +29,16 @@ import {
 //              Trigger, for a value shown beside its copy button
 //   Input      the read-only value, the bare control (`field.control`); name
 //              it (`aria-label`, or a label's `htmlFor`)
-//   Trigger    a ghost square Clickable (for one with text, pass
-//              `className="aspect-auto px-3"`); while copied it is `ring`, the "on" colour;
-//              name it (`aria-label="Copy install command"`)
+//   Trigger    a ghost square Clickable; while copied it is `ring`, the "on"
+//              colour. An icon-only one is named with `aria-label` ("Copy
+//              install command"); a labelled one (`className="aspect-auto
+//              px-3"`) takes a function of the state as children
+//              (`({ copied }) => ...`), so its visible text ("Copy link",
+//              then "Copied") names it in both states, with no `aria-label`
+//              (WCAG 2.5.3, Label in Name)
 //   Indicator  the icon that follows the status: a copy icon, a check while
-//              copied (or your children, a function of the state)
+//              copied (or your children, a function of the state); hidden
+//              from assistive technology, so it never names the Trigger
 //   Template.Simple  the value in a Control with an icon Trigger, announcing
 //              "Copied to clipboard" (`announcement`).
 

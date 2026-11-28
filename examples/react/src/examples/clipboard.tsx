@@ -1,6 +1,5 @@
 "use client";
 
-import { CheckIcon, CopyIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Text } from "#/components/atoms/text";
 import { Clipboard } from "#/components/ui/clipboard";
@@ -21,10 +20,11 @@ const SURFACE_RING = [
 // Clipboard.Template.Simple shows the value read-only beside a copy button;
 // a press copies it, the button's icon becomes a `ring` check for a while,
 // and "Copied to clipboard" is announced to a screen reader without the
-// focus moving. Then a share button composed from the parts, whose
-// visible label says "Copied" (the Indicator is hidden from assistive
-// technology: the button keeps its name, the live region speaks), and last the same clipboard in each surface-ring
-// palette.
+// focus moving. Then a share button composed from the parts: its children
+// are a function of the state, so its visible text, "Copy link" and then
+// "Copied", is also its accessible name (no `aria-label`; the Indicator's
+// icon is hidden from assistive technology), and last the same clipboard
+// in each surface-ring palette.
 export default function ClipboardDemo() {
     return (
         <div className="palette-surface flex w-full flex-col gap-6 bg-palette-base text-palette-contrast">
@@ -48,23 +48,13 @@ export default function ClipboardDemo() {
                     value="https://fragiola.com/ui"
                     announcement="Link copied"
                 >
-                    <Clipboard.Trigger
-                        aria-label="Copy link"
-                        className="aspect-auto px-3"
-                    >
-                        <Clipboard.Indicator>
-                            {({ copied }) =>
-                                copied ? (
-                                    <>
-                                        <CheckIcon /> Copied
-                                    </>
-                                ) : (
-                                    <>
-                                        <CopyIcon /> Copy link
-                                    </>
-                                )
-                            }
-                        </Clipboard.Indicator>
+                    <Clipboard.Trigger className="aspect-auto px-3">
+                        {({ copied }) => (
+                            <>
+                                <Clipboard.Indicator />
+                                {copied ? "Copied" : "Copy link"}
+                            </>
+                        )}
                     </Clipboard.Trigger>
                 </Clipboard.Root>
             </div>

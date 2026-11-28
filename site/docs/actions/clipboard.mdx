@@ -31,15 +31,34 @@ inline end ("Copy"), announcing "Copied to clipboard". Every Root prop is forwar
 It adds no family. **Control** is the field's box (`field.row`) around the **Input**, the bare
 control (`field.control`, monospace). The **Trigger** is a ghost square
 [Clickable](/docs/atoms/clickable) whose content is the Indicator by default; while copied it is
-`ring`, the "on" colour, so the check reads as done. Give the Trigger text (and
-`className="aspect-auto px-3"`) for a labelled button, and the Indicator a function of the state
-(`({ copied }) => ...`) to say "Copied" in it.
+`ring`, the "on" colour, so the check reads as done.
+
+## A labelled trigger
+
+For a button with text, give the Trigger `className="aspect-auto px-3"` and a function of the
+state as its children: the Indicator, then the text that follows the status.
+
+```tsx
+<Clipboard.Trigger className="aspect-auto px-3">
+  {({ copied }) => (
+    <>
+      <Clipboard.Indicator />
+      {copied ? "Copied" : "Copy link"}
+    </>
+  )}
+</Clipboard.Trigger>
+```
+
+The button is named by its visible text in both states, "Copy link" and then "Copied", so give
+it no `aria-label` (WCAG 2.5.3, Label in Name). The Indicator stays hidden from assistive
+technology, and the Root's `announcement` still speaks the copy. An icon-only Trigger is the one
+you name with `aria-label`, as `Template.Simple` does ("Copy").
 
 ## Bases
 
 **Primitives-backed.** Base UI has no clipboard, so this is one shared file
 (`ui/clipboard.tsx`) that wraps Fragiola Primitives' `Clipboard` on **both** bases, and the item
-depends on `@fragiola/primitives-react@0.2.0` on both. It is no form control.
+depends on `@fragiola/primitives-react@0.3.0` on both. It is no form control.
 
 ## Parts
 

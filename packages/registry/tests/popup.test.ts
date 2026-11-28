@@ -85,8 +85,10 @@ describe("popup family", () => {
 // ─── Keyframe exits hold their last frame ───────────────────────────────────
 // tw-animate-css's `animate-out` fills with `var(--tw-animation-fill-mode,
 // none)`: once the exit ends, the element is back at its resting style
-// (opacity 1) until the base unmounts it. Fragiola Primitives 0.2.0 unmounts
-// a paint later, so every popup reappeared for a frame (Epic #186). Every
+// (opacity 1) until the base unmounts it. Fragiola Primitives 0.2.0 unmounted
+// a paint later, so every popup reappeared for a frame (Epic #186); 0.3.0
+// unmounts before the next paint, but the rule stays base-agnostic, so a
+// base that unmounts late can never flash again. Every
 // class string with an `animate-out` therefore also carries
 // `fill-mode-forwards` under the same variant (gated on `data-closed`, so
 // the fill never leaks into the next open). `check:embeds` measures it.
@@ -151,6 +153,36 @@ describe("keyframe exits", () => {
         }
         // popup.content and the navigation menu's backdrop on each base.
         expect(exits).toBeGreaterThanOrEqual(3);
+        expect(offenders).toEqual([]);
+    });
+});
+
+// ─── Popups open on a logical side ──────────────────────────────────────────
+// A popup beside its anchor (a submenu, the context menu at the pointer)
+// opens on the inline end, so it follows the reading direction (rule 6):
+// `side="right"` kept submenus on the right in RTL on both bases (Epic
+// #184). Both bases name the logical sides `inline-start` / `inline-end`.
+// Drawer's `left` / `right` are a physical choice the reader makes (and the
+// Sidebar maps its logical side onto them), so they are not popup defaults.
+const PHYSICAL_SIDE = /\bside\s*(?:=|:)\s*\{?\s*["'](?:left|right)["']/;
+const PHYSICAL_SIDE_ALLOWED = /(?:^|\/)(?:drawer|sidebar)\.tsx$/;
+
+describe("popup sides", () => {
+    it("no registry part defaults to a physical side", async () => {
+        const offenders: string[] = [];
+        const dir = path.join(ROOT, "packages/registry/registry");
+        for (const file of await sources(dir)) {
+            if (PHYSICAL_SIDE_ALLOWED.test(file)) continue;
+            const source = await readFile(file, "utf-8");
+            source.split("\n").forEach((line, i) => {
+                if (/^\s*\/\//.test(line)) return;
+                if (PHYSICAL_SIDE.test(line)) {
+                    offenders.push(
+                        `${path.relative(ROOT, file)}:${i + 1}: ${line.trim()}`,
+                    );
+                }
+            });
+        }
         expect(offenders).toEqual([]);
     });
 });

@@ -32,7 +32,7 @@ function ContextMenuTrigger({
 function ContextMenuContent({
     align = "start",
     alignOffset = 4,
-    side = "right",
+    side = "inline-end",
     sideOffset = 0,
     ...props
 }: PrimitiveProps<typeof ContextMenuPrimitive.Popup, "div"> &
@@ -58,7 +58,7 @@ function ContextMenuSubContent({
     return (
         <ContextMenuContent
             data-slot="context-menu-sub-content"
-            side="right"
+            side="inline-end"
             {...props}
         />
     );

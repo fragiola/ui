@@ -13,6 +13,10 @@ description: "A menu of actions opened by a button. It shares the `popup` and `m
 
 The namespace is **injected, not imported**. `ContextMenu.Item === Menu.Item` at runtime today, but if a base ever diverges, injection means each component inherits its own divergence instead of being silently pinned to the wrong primitive.
 
+## Submenus
+
+A submenu (`DropdownMenu.Sub`, `SubTrigger`, `SubContent`) opens on the **inline end** of its trigger (`side="inline-end"`): to the right in a left-to-right page, to the left in a right-to-left one, on both bases. Pass `side` to `SubContent` for another side.
+
 ## Destructive tone
 
 There is no `tone`, `variant` or `destructive` prop. Tone arrives as a palette class applied from outside: `className="palette-danger"`. The `highlighted:bg-palette-soft` and `text-palette-accent` rules resolve against whichever palette is active — inheritance does the work.
