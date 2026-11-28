@@ -824,6 +824,99 @@ async function closeAll(frame: Frame, page: Page) {
     await page.waitForTimeout(250);
 }
 
+// ─── Keyframe exits ─────────────────────────────────────────────────────────
+//
+// A popup's exit (`data-closed:animate-out`) is a keyframe animation; once it
+// ends, the element is back at its resting style until the base unmounts it.
+// Without `fill-mode-forwards` that resting style is opacity 1, so a base
+// that unmounts a paint later (Fragiola Primitives 0.2.0) shows the popup
+// again for a frame (Epic #186). Each popup below is opened, closed with
+// Escape and sampled every animation frame until it is gone: once its
+// opacity starts falling it must never rise again. Then it is reopened
+// during its exit and must end fully shown (the forwards fill is gated on
+// `data-closed`, so it does not leak into the next open).
+const EXITS: Record<string, string> = {
+    popover: "popover",
+    "dropdown-menu": "dropdown-menu",
+};
+
+async function exitFrames(
+    page: Page,
+    frame: Frame,
+    slot: string,
+): Promise<string[]> {
+    const found: string[] = [];
+    const trigger = frame
+        .locator(`main [data-slot="${slot}-trigger"]:not([disabled])`)
+        .first();
+    const content = `[data-slot="${slot}-content"]`;
+    const openPopup = async () => {
+        await trigger.click();
+        await frame.locator(content).first().waitFor({ state: "visible" });
+        // Let the entrance end.
+        await page.waitForTimeout(400);
+    };
+
+    await openPopup();
+    // Sample from before the Escape, so the exit's first frame is seen.
+    await frame.evaluate((selector) => {
+        const el = document.querySelector<HTMLElement>(selector);
+        const w = window as unknown as { exit?: Promise<unknown> };
+        w.exit = (async () => {
+            if (!el) return null;
+            const opacities: number[] = [];
+            const start = performance.now();
+            while (el.isConnected && performance.now() - start < 2000) {
+                await new Promise(requestAnimationFrame);
+                if (el.isConnected)
+                    opacities.push(Number(getComputedStyle(el).opacity));
+            }
+            return { opacities, gone: !el.isConnected };
+        })();
+    }, content);
+    await page.keyboard.press("Escape");
+    const exit = (await frame.evaluate(
+        () => (window as unknown as { exit: Promise<unknown> }).exit,
+    )) as { opacities: number[]; gone: boolean } | null;
+    if (!exit) return [`exit: no ${content}`];
+    if (!exit.gone) found.push(`exit: ${content} still mounted after 2s`);
+    // Once falling, never rising: a rise is the popup shown again.
+    let lowest = Number.POSITIVE_INFINITY;
+    let started = false;
+    for (const [i, opacity] of exit.opacities.entries()) {
+        if (opacity < 0.99) started = true;
+        if (started && opacity > lowest + 0.01) {
+            found.push(
+                `exit: opacity rose to ${opacity} at frame ${i} after falling to ${lowest} (${exit.opacities.map((o) => o.toFixed(2)).join(" ")})`,
+            );
+            break;
+        }
+        if (started) lowest = Math.min(lowest, opacity);
+    }
+    if (!started) found.push("exit: opacity never fell before unmounting");
+
+    // Reopened during its exit: it animates in and ends fully shown.
+    await openPopup();
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(40);
+    await trigger.click();
+    await page.waitForTimeout(400);
+    const shown = await frame.evaluate(
+        (selector) =>
+            [...document.querySelectorAll<HTMLElement>(selector)].map((el) => ({
+                open: el.hasAttribute("data-open"),
+                opacity: Number(getComputedStyle(el).opacity),
+            })),
+        content,
+    );
+    if (!shown.some((s) => s.open && s.opacity > 0.99))
+        found.push(
+            `reopened during its exit, not fully shown: ${JSON.stringify(shown)}`,
+        );
+    await closeAll(frame, page);
+    return found;
+}
+
 type Observation = { key: string; popups: Popup[] };
 
 // Opens every trigger of an overlay example, then one level of submenus,
@@ -1141,6 +1234,12 @@ for (const example of selected) {
             floors.push(
                 `${example.id.padEnd(16)} ${content} (manifest ${example.height})`,
             );
+        }
+
+        const exitSlot = EXITS[example.id];
+        if (exitSlot) {
+            const f = await open(page, example.id, ROOM, { theme: "light" });
+            for (const p of await exitFrames(page, f, exitSlot)) say(p);
         }
     } catch (error) {
         say(error instanceof Error ? error.message : String(error));
