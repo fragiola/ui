@@ -600,7 +600,7 @@ so the base is the registry's only dimension.
   also has is a per-base file pair, as above. One Base UI lacks (a segmented control, a
   password input, ...) is **one shared file that imports `@fragiola/primitives-react` on
   every base**, the way shadcn's Calendar uses react-day-picker on every base, and the build
-  adds `@fragiola/primitives-react@0.2.0` to its item on every base
+  adds `@fragiola/primitives-react@0.3.0` to its item on every base
   (`PRIMITIVES_BACKED_DEPENDENCIES`). So every base offers the **same catalog**. These
   files are an explicit list in `bases.ts` (`PRIMITIVES_BACKED`), each with its reason and
   the Fragiola Primitives entry it wraps; the guard refuses any other shared or Base UI

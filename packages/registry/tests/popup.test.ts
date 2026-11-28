@@ -85,8 +85,10 @@ describe("popup family", () => {
 // ─── Keyframe exits hold their last frame ───────────────────────────────────
 // tw-animate-css's `animate-out` fills with `var(--tw-animation-fill-mode,
 // none)`: once the exit ends, the element is back at its resting style
-// (opacity 1) until the base unmounts it. Fragiola Primitives 0.2.0 unmounts
-// a paint later, so every popup reappeared for a frame (Epic #186). Every
+// (opacity 1) until the base unmounts it. Fragiola Primitives 0.2.0 unmounted
+// a paint later, so every popup reappeared for a frame (Epic #186); 0.3.0
+// unmounts before the next paint, but the rule stays base-agnostic, so a
+// base that unmounts late can never flash again. Every
 // class string with an `animate-out` therefore also carries
 // `fill-mode-forwards` under the same variant (gated on `data-closed`, so
 // the fill never leaks into the next open). `check:embeds` measures it.

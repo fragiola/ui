@@ -72,7 +72,7 @@ the others at `r/<base>/`. Do not "fix" these:
   `@fragiola/primitives-react` on every base (as shadcn's Calendar uses
   react-day-picker on every base), on the explicit `PRIMITIVES_BACKED` list in
   `bases.ts` with its reason and its Fragiola Primitives entry. Its item gets
-  `@fragiola/primitives-react@0.2.0` on every base (the build) and registry-depends on
+  `@fragiola/primitives-react@0.3.0` on every base (the build) and registry-depends on
   `@fragiola/primitives-backed` (`lib/primitives-backed.tsx`: the base's direction,
   `PrimitivesProps`, `renderMarked`). A component Base UI also has is a per-base pair. Every base
   offers the same catalog; the guard refuses any other shared or Base UI file that

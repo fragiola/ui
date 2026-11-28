@@ -38,7 +38,7 @@ export const BASES: Base[] = [
     {
         name: "primitives",
         title: "Fragiola Primitives",
-        dependencies: ["@fragiola/primitives-react@0.2.0"],
+        dependencies: ["@fragiola/primitives-react@0.3.0"],
         default: true,
     },
     {

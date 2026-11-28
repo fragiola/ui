@@ -829,7 +829,7 @@ async function closeAll(frame: Frame, page: Page) {
 // A popup's exit (`data-closed:animate-out`) is a keyframe animation; once it
 // ends, the element is back at its resting style until the base unmounts it.
 // Without `fill-mode-forwards` that resting style is opacity 1, so a base
-// that unmounts a paint later (Fragiola Primitives 0.2.0) shows the popup
+// that unmounts a paint later (Fragiola Primitives 0.2.0 did; 0.3.0 does not) shows the popup
 // again for a frame (Epic #186). Each popup below is opened, closed with
 // Escape and sampled every animation frame until it is gone: once its
 // opacity starts falling it must never rise again. Then it is reopened
