@@ -81,3 +81,76 @@ describe("popup family", () => {
         expect(offenders).toEqual([]);
     });
 });
+
+// ─── Keyframe exits hold their last frame ───────────────────────────────────
+// tw-animate-css's `animate-out` fills with `var(--tw-animation-fill-mode,
+// none)`: once the exit ends, the element is back at its resting style
+// (opacity 1) until the base unmounts it. Fragiola Primitives 0.2.0 unmounts
+// a paint later, so every popup reappeared for a frame (Epic #186). Every
+// class string with an `animate-out` therefore also carries
+// `fill-mode-forwards` under the same variant (gated on `data-closed`, so
+// the fill never leaks into the next open). `check:embeds` measures it.
+
+// The exits of one class string that do not hold their last frame.
+function unheldExits(literal: string): string[] {
+    const tokens = literal.split(/\s+/).filter(Boolean);
+    return tokens
+        .filter((token) => token.endsWith("animate-out"))
+        .filter(
+            (token) =>
+                !tokens.includes(
+                    `${token.slice(0, -"animate-out".length)}fill-mode-forwards`,
+                ),
+        );
+}
+
+describe("keyframe exits", () => {
+    it("the guard refuses an exit without fill-mode-forwards", () => {
+        expect(
+            unheldExits("data-closed:animate-out data-closed:fade-out-0"),
+        ).toEqual(["data-closed:animate-out"]);
+        expect(
+            unheldExits("data-closed:animate-out data-open:fill-mode-forwards"),
+        ).toEqual(["data-closed:animate-out"]);
+        expect(
+            unheldExits(
+                "data-closed:animate-out data-closed:fill-mode-forwards",
+            ),
+        ).toEqual([]);
+    });
+
+    it("popup.content holds its exit", () => {
+        expect(unheldExits(popup.content())).toEqual([]);
+        expect(popup.content().split(/\s+/)).toContain(
+            "data-closed:animate-out",
+        );
+    });
+
+    it("every animate-out in the sources holds its last frame", async () => {
+        const offenders: string[] = [];
+        let exits = 0;
+        for (const dir of DIRS) {
+            for (const file of await sources(path.join(ROOT, dir))) {
+                const source = await readFile(file, "utf-8");
+                for (const match of source.matchAll(
+                    /"([^"\n]*)"|'([^'\n]*)'|`([^`]*)`/g,
+                )) {
+                    const literal = match[1] ?? match[2] ?? match[3] ?? "";
+                    if (!literal.includes("animate-out")) continue;
+                    exits++;
+                    for (const token of unheldExits(literal)) {
+                        const line = source
+                            .slice(0, match.index)
+                            .split("\n").length;
+                        offenders.push(
+                            `${path.relative(ROOT, file)}:${line}: ${token}`,
+                        );
+                    }
+                }
+            }
+        }
+        // popup.content and the navigation menu's backdrop on each base.
+        expect(exits).toBeGreaterThanOrEqual(3);
+        expect(offenders).toEqual([]);
+    });
+});

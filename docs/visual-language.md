@@ -194,6 +194,12 @@ no rule to stand in for them).
 
 Every duration follows the motion axis (`--motion-scale`).
 
+A keyframe exit (`data-closed:animate-out`) holds its last frame with
+`data-closed:fill-mode-forwards`, so a popup never shows again between the end of its
+exit and its unmount, whatever the base (`tests/popup.test.ts`, `check:embeds`). A
+starting/ending-style transition needs nothing: it keeps its ending style until
+unmount (`families/layer.ts`).
+
 ## Examples
 
 The examples are where a reader first sees the design, and they copy them verbatim. So

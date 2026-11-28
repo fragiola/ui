@@ -141,6 +141,13 @@ describe("class compilation guard", () => {
         expect(compiledCss).toContain("--chart-ramp-1");
     });
 
+    it("generates the closed state's forwards fill (keyframe exits, Epic #186)", () => {
+        const rule = compiledCss.match(
+            /\.data-closed\\:fill-mode-forwards\[data-closed\]\s*\{[^}]*\}/,
+        );
+        expect(rule?.[0]).toMatch(/animation-fill-mode:\s*forwards/);
+    });
+
     it("generates palette-base-hover derivation", () => {
         expect(compiledCss).toContain("palette-base-hover");
     });
